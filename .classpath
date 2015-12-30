@@ -2,5 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Biojava"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons_cli"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/htsjdk"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4j"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
