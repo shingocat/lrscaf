@@ -21,6 +21,7 @@
 	<!-- 初始化 -->
 	<target name="init" depends="clean">
 		<mkdir dir="${build}" />
+		<mkdir dir="${build}/lib" />
 		<mkdir dir="${temp}" />
 	</target>
 
@@ -37,12 +38,12 @@
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Main-class" value="agis.ps.Main" />
-				<attribute name="Class-Path" value="." />
+				<attribute name="Class-Path" value="lib/*.jar" />
 			</manifest>
 		</jar>
 		<!-- 复制jar文件  todir="复制到目录"-->
 		<move file="${ps_jar}" tofile="${build}\ps.jar" />
-		<copy todir="${build}">
+		<copy todir="${build}/lib">
 			<fileset dir="${lib}">
 				<include name="*.jar" />
 			</fileset>
