@@ -15,6 +15,7 @@
 
 	<target name="clean">
 		<delete dir="${temp}" />
+		<delete dir="${build}" />
 	</target>
 
 	<!-- 初始化 -->
@@ -36,6 +37,7 @@
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Main-class" value="agis.ps.Main" />
+				<attribute name="Class-Path" value="${build}" />
 			</manifest>
 		</jar>
 		<!-- 复制jar文件  todir="复制到目录"-->
