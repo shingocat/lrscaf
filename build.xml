@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PacBioScaffolder" default="build" basedir=".">
+	<property name="src" value="${basedir}\src" />
+	<property name="bin" value="${basedir}\bin" />
+	<property name="lib" value="${basedir}\lib" />
+	<property name="build" value="${basedir}\build" />
+	<property name="temp" value="${basedir}\temp" />
+	<property name="ps_jar" value="ps.jar" />
+
+	<path id="project.classpath">
+		<fileset dir="${lib}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="clean">
+		<delete dir="${temp}" />
+	</target>
+
+	<!-- 初始化 -->
+	<target name="init" depends="clean">
+		<mkdir dir="${build}" />
+		<mkdir dir="${temp}" />
+	</target>
+
+	<!-- 编译 -->
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${temp}" includeantruntime="on" encoding="UTF-8">
+			<classpath refid="project.classpath" />
+		</javac>
+	</target>
+
+	<!-- 建立jar包 -->
+	<target name="build" depends="compile">
+		<jar destfile="${ps_jar}" basedir="temp">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Main-class" value="agis.ps.Main" />
+			</manifest>
+		</jar>
+		<!-- 复制jar文件  todir="复制到目录"-->
+		<move file="${ps_jar}" tofile="${build}\ps.jar" />
+		<copy todir="${build}">
+			<fileset dir="${lib}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<delete dir="${temp}" />
+	</target>
+
+	<!-- 运行 -->
+	<target name="run" depends="build">
+		<java classname="agis.ps.Main">
+			<classpath>
+				<fileset dir="${build}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</java>
+	</target>
+
+</project>

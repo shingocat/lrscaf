@@ -2,7 +2,7 @@
 *File: agis.ps.HamiltonPath.java
 *User: mqin
 *Email: mqin@ymail.com
-*Date: 2015Äê12ÔÂ28ÈÕ
+*Date: 2015å¹´12æœˆ28æ—¥
 */
 package agis.ps;
 

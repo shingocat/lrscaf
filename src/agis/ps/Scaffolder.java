@@ -2,7 +2,7 @@
 *File: agis.ps.Scaffolder.java
 *User: mqin
 *Email: mqin@ymail.com
-*Date: 2015Äê12ÔÂ29ÈÕ
+*Date: 2015å¹´12æœˆ28æ—¥
 */
 package agis.ps;
 
@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.util.DotGraphFileWriter;
+import agis.ps.util.M5Reader;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamInputResource;
@@ -38,6 +39,7 @@ public class Scaffolder {
 	private String cFilePath;
 	private String aFilePath;
 	private String type;
+	private boolean m5Header;
 	private String gFilePath;
 	private LinkedHashMap<String, DNASequence> contigs;
 	private SamReader samReader;
@@ -51,6 +53,7 @@ public class Scaffolder {
 	
 	public Scaffolder(HashMap<String, Object> paras)
 	{
+		this.paras = paras;
 		this.cFilePath = (String)paras.get("CONTIG");
 		this.aFilePath = (String)paras.get("ALIGNED");
 		this.type = (String)paras.get("TYPE");
@@ -63,7 +66,10 @@ public class Scaffolder {
 		try
 		{
 			readContigs(cFilePath);
-			readAligned(aFilePath);
+			if(type.equalsIgnoreCase("m"))
+				readM5Aligned(aFilePath);
+			else
+				readSAMAligned(aFilePath);
 			//listContigs();
 			//listAligns();
 			if(gFilePath != null)
@@ -101,7 +107,42 @@ public class Scaffolder {
 		setContigs(FastaReaderHelper.readFastaDNASequence(cFile));
 	}
 	
-	public void readAligned(String aFilePath) throws NullPointerException, MalformedURLException,IOException
+	public void readM5Aligned(String aFilePath)
+	{
+		if(aFilePath.isEmpty())
+		{
+			logger.debug("The aligned file was null or not setted!");
+			logger.info("The aligned file was null or not setted!");
+			return;
+		}
+		M5Reader reader = null;
+		if(Boolean.valueOf((boolean) paras.get("M5HEADER")))
+			reader = new M5Reader(aFilePath, true);
+		else
+			reader = new M5Reader(aFilePath, false);
+		
+		reader.read();
+		List<M5Record> m5Records = reader.getM5List();
+		HashMap<String, String> pSet = new HashMap<String, String>();
+		for(M5Record m5 : m5Records)
+		{
+			String c = m5.gettName() + "==" +  m5.getqStart() + ";";
+			if(pSet.containsKey(m5.getqName()))
+			{
+				pSet.put(m5.getqName(), pSet.get(m5.getqName()) + c);
+			} else
+			{
+				pSet.put(m5.getqName(), c);
+			}
+		}
+		for(String s : pSet.keySet())
+		{
+			//logger.debug(s);
+			logger.debug(s + "\t" + pSet.get(s));
+		}
+	}
+	
+	public void readSAMAligned(String aFilePath) throws NullPointerException, MalformedURLException,IOException
 	{
 		if(aFilePath == null || aFilePath.length() == 0)
 		{
@@ -127,7 +168,7 @@ public class Scaffolder {
 //			logger.debug("Read name:" + r.getReadName() + "\tReference name:" + r.getReferenceName() +
 //					"\tAligned start:" + r.getAlignmentStart() + "\tAligned end:" + r.getAlignmentEnd() +
 //					"\tFLAG:" + r.getFlags());
-			String c =  r.getReferenceName() + "==" +  r.getReadPositionAtReferencePosition(r.getAlignmentStart()) + ";";
+			String c =  r.getReferenceName() + "==" +  r.getAlignmentStart() + ";";
 //			HashMap<String, Integer> cSet = new HashMap<String,Integer>();
 //			cSet.put(r.getReferenceName(), r.getReadPositionAtReferencePosition(r.getAlignmentStart()));
 			if(pSet.containsKey(r.getReadName()))

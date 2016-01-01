@@ -2,7 +2,7 @@
 *File: agis.ps.Scaffolder.java
 *User: mqin
 *Email: mqin@ymail.com
-*Date: 2015Äê12ÔÂ28ÈÕ
+*Date: 2015å¹´12æœˆ28æ—¥
 *The main function interface for scaffolding
 */
 package agis.ps;
@@ -34,6 +34,7 @@ public class Main {
 			ops.addOption("c", "contig", true, "The file of contig in fasta format!");
 			ops.addOption("a", "align", true, "The file in sam|bam format after aligned by using blasr!");
 			ops.addOption("t", "type", true, "The aligned file type, s for sam or bam, m for m5!");
+			ops.addOption("mh", "m5header", false, "The indicator of m5 file whether has header!");
 			ops.addOption("g", "dotgraph", true, "The output file path for dot graph file!");
 			ops.addOption("h", "help", false, "Print help info!");
 			
@@ -49,7 +50,7 @@ public class Main {
 			{
 				String cFile = cl.getOptionValue("c");
 				String aFile = cl.getOptionValue("a");
-				String type = cl.getOptionValue("type");
+				String type = cl.getOptionValue("t");
 				
 				HashMap<String, Object> paras = new HashMap<String, Object>();
 				paras.put("CONTIG", cFile);
@@ -57,7 +58,20 @@ public class Main {
 				
 				if(type != null)
 				{
+					if(!(type.matches("(?i:[ms])")))
+					{
+						logger.info("The type parameter is not valid, setted "+ type + ", only accepted s or m!");
+						logger.debug("The type parameter is not valid, setted "+ type + ", only accepted s or m!");
+						System.exit(0);
+					}
 					paras.put("TYPE", type);
+					if(type.equalsIgnoreCase("m"))
+					{
+						if(cl.hasOption("mh"))
+							paras.put("M5HEADER", true);
+						else
+							paras.put("M5HEADER", false);
+					}
 				} else
 				{
 					paras.put("TYPE", "s");
