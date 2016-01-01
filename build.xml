@@ -37,7 +37,7 @@
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Main-class" value="agis.ps.Main" />
-				<attribute name="Class-Path" value="${build}" />
+				<attribute name="Class-Path" value="." />
 			</manifest>
 		</jar>
 		<!-- 复制jar文件  todir="复制到目录"-->
