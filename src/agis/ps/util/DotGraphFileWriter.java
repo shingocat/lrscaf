@@ -32,6 +32,9 @@ public class DotGraphFileWriter {
 	}
 
 	public void write() {
+		if(paths == null)
+			return;
+		
 		File out = null;
 		FileWriter fw = null;
 		BufferedWriter bw = null;

@@ -34,7 +34,8 @@
 
 	<!-- 建立jar包 -->
 	<target name="build" depends="compile">
-		<jar destfile="${ps_jar}" basedir="temp">
+		<copy file="${src}\log4j.properties" tofile="${temp}\log4j.properties"/>
+		<jar destfile="${ps_jar}" basedir="${temp}">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Main-class" value="agis.ps.Main" />
