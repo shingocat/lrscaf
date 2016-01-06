@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import org.biojava.nbio.core.sequence.DNASequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.util.Color;
 import agis.ps.util.DotGraphFileWriter;
 import agis.ps.util.M5Reader;
 import htsjdk.samtools.AlignmentBlock;
@@ -124,9 +126,10 @@ public class Scaffolder {
 		reader.read();
 		List<M5Record> m5Records = reader.getM5List();
 		HashMap<String, String> pSet = new HashMap<String, String>();
+		
 		for(M5Record m5 : m5Records)
 		{
-			String c = m5.gettName() + "==" +  m5.getqStart() + ";";
+			String c = m5.gettName() + "==" + m5.getqStart() + ";";
 			if(pSet.containsKey(m5.getqName()))
 			{
 				pSet.put(m5.getqName(), pSet.get(m5.getqName()) + c);
@@ -135,11 +138,12 @@ public class Scaffolder {
 				pSet.put(m5.getqName(), c);
 			}
 		}
-		for(String s : pSet.keySet())
-		{
-			//logger.debug(s);
-			logger.debug(s + "\t" + pSet.get(s));
-		}
+//		for(String s : pSet.keySet())
+//		{
+//			//logger.debug(s);
+//			logger.debug(s + "\t" + pSet.get(s));
+//		}
+		this.m5RecordToSimplePath(pSet);
 	}
 	
 	public void readSAMAligned(String aFilePath) throws NullPointerException, MalformedURLException,IOException
@@ -184,6 +188,44 @@ public class Scaffolder {
 		{
 			//logger.debug(s);
 			logger.debug(s + "\t" + pSet.get(s));
+		}
+	}
+	
+	public void m5RecordToSimplePath(Map<String, String> pSet)
+	{
+		if(simPaths != null)
+		{
+			simPaths.clear();
+		} else
+		{
+			simPaths = new ArrayList<SimplePath>();
+		}
+		for(String s : pSet.keySet())
+		{
+			String [] arrs = pSet.get(s).split(";");
+			if(arrs.length >= 2)
+			{
+				for(int i = 0; i < arrs.length - 1; i++)
+				{
+					SimplePath sp = new SimplePath();
+					String [] ar1 = arrs[i].split("==");
+					String [] ar2 = arrs[i + 1].split("==");
+					if(Integer.valueOf(ar1[1]) <= Integer.valueOf(ar2[1]))
+					{
+						sp.setStart(ar1[0]);
+						sp.setEnd(ar2[0]);
+						sp.setLabel(ar1[1] + ":" + ar2[1]);
+						sp.setColor(Color.BLUE);
+					} else
+					{
+						sp.setStart(ar2[0]);
+						sp.setEnd(ar1[0]);
+						sp.setLabel(ar2[1] + ":" + ar1[1]);
+						sp.setColor(Color.BLUE);
+					}
+					simPaths.add(sp);
+				}
+			}
 		}
 	}
 	

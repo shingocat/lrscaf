@@ -30,7 +30,7 @@ public class DotGraphFileWriter {
 		this.filePath = filePath;
 		this.paths = paths;
 	}
-
+	
 	public void write() {
 		if(paths == null)
 			return;
@@ -48,11 +48,11 @@ public class DotGraphFileWriter {
 			out.createNewFile();
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);
-			bw.write("digraph graph{\n");
+			bw.write("digraph G{\n");
 			for(SimplePath sp : paths)
 			{
-				bw.write(sp.getStart() + " -> " + sp.getEnd() + " [label=" +
-						sp.getLabel() + ",color=" + sp.getColor().toString() + "];\n");
+				bw.write(sp.getStart() + " -> " + sp.getEnd() + " [label=\"" +
+						sp.getLabel() + "\",color=" + sp.getColor().toString() + "];\n");
 			}
 			bw.write("}");
 		} catch (IOException e) {
