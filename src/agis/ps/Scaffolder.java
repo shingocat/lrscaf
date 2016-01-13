@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import agis.ps.link.PBLink;
 import agis.ps.util.Color;
 import agis.ps.util.DotGraphFileWriter;
+import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
 import agis.ps.util.M5Reader;
 import htsjdk.samtools.AlignmentBlock;
@@ -49,6 +50,7 @@ public class Scaffolder {
 	private SamReader samReader;
 	private List<SimplePath> simPaths;
 	private List<PBLink> pbLinks;
+	private List<Edge> edges;
 	
 	public Scaffolder(String cFilePath, String aFilePath)
 	{
@@ -79,7 +81,8 @@ public class Scaffolder {
 			//listAligns();
 			if(gFilePath != null)
 			{
-				DotGraphFileWriter.writePBLink(gFilePath, pbLinks);
+//				DotGraphFileWriter.writePBLink(gFilePath, pbLinks);
+				DotGraphFileWriter.writeEdge(gFilePath, edges);
 //				DotGraphFileWriter dGFW = new DotGraphFileWriter(gFilePath, simPaths);
 //				dGFW.write();
 			}
@@ -143,6 +146,7 @@ public class Scaffolder {
 			}
 		}
 		pbLinks = LinkBuilder.m5Record2Link(m5Records, null);
+		edges = EdgeBundler.pbLinkBundling(pbLinks, null);
 //		for(String s : pSet.keySet())
 //		{
 //			//logger.debug(s);
