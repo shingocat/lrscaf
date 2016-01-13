@@ -24,8 +24,10 @@ import org.biojava.nbio.core.sequence.DNASequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.link.PBLink;
 import agis.ps.util.Color;
 import agis.ps.util.DotGraphFileWriter;
+import agis.ps.util.LinkBuilder;
 import agis.ps.util.M5Reader;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
@@ -46,6 +48,7 @@ public class Scaffolder {
 	private LinkedHashMap<String, DNASequence> contigs;
 	private SamReader samReader;
 	private List<SimplePath> simPaths;
+	private List<PBLink> pbLinks;
 	
 	public Scaffolder(String cFilePath, String aFilePath)
 	{
@@ -76,8 +79,9 @@ public class Scaffolder {
 			//listAligns();
 			if(gFilePath != null)
 			{
-				DotGraphFileWriter dGFW = new DotGraphFileWriter(gFilePath, simPaths);
-				dGFW.write();
+				DotGraphFileWriter.writePBLink(gFilePath, pbLinks);
+//				DotGraphFileWriter dGFW = new DotGraphFileWriter(gFilePath, simPaths);
+//				dGFW.write();
 			}
 				
 		} catch(NullPointerException e)
@@ -138,12 +142,13 @@ public class Scaffolder {
 				pSet.put(m5.getqName(), c);
 			}
 		}
+		pbLinks = LinkBuilder.m5Record2Link(m5Records, null);
 //		for(String s : pSet.keySet())
 //		{
 //			//logger.debug(s);
 //			logger.debug(s + "\t" + pSet.get(s));
 //		}
-		this.m5RecordToSimplePath(pSet);
+		//this.m5RecordToSimplePath(pSet);
 	}
 	
 	public void readSAMAligned(String aFilePath) throws NullPointerException, MalformedURLException,IOException

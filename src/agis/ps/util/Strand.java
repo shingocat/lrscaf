@@ -26,6 +26,7 @@ public enum Strand {
 	{
 		return type;
 	}
+	
 }
 
 

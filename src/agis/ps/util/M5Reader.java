@@ -71,12 +71,12 @@ public class M5Reader {
 				m5.setqLength(Integer.valueOf(arrs[1]));
 				m5.setqStart(Integer.valueOf(arrs[2]));
 				m5.setqEnd(Integer.valueOf(arrs[3]));
-				m5.setqStrand(arrs[4] == "+" ? Strand.FORWARD : Strand.REVERSE);
+				m5.setqStrand(arrs[4].equals("+") ? Strand.FORWARD : Strand.REVERSE);
 				m5.settName(arrs[5]);
 				m5.settLength(Integer.valueOf(arrs[6]));
 				m5.settStart(Integer.valueOf(arrs[7]));
 				m5.settEnd(Integer.valueOf(arrs[8]));
-				m5.settStrand(arrs[9] == "+" ? Strand.FORWARD : Strand.REVERSE);
+				m5.settStrand(arrs[9].equals("+") ? Strand.FORWARD : Strand.REVERSE);
 				m5.setScore(Integer.valueOf(arrs[10]));
 				m5.setNumMatch(Integer.valueOf(arrs[11]));
 				m5.setNumMismatch(Integer.valueOf(arrs[12]));
