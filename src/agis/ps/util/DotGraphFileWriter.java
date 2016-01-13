@@ -108,9 +108,16 @@ public class DotGraphFileWriter {
 			bw.write("digraph G{\n");
 			for(Edge e : edges)
 			{
+				String color = "red";
+				if(e.getoStrand().equals(Strand.FORWARD) && e.gettStrand().equals(Strand.REVERSE))
+					color = "green";
+				else if(e.getoStrand().equals(Strand.REVERSE) && e.gettStrand().equals(Strand.REVERSE))
+					color = "blue";
+				else if(e.getoStrand().equals(Strand.REVERSE) && e.gettStrand().equals(Strand.FORWARD))
+					color = "yellow";
 				bw.write(e.getOrigin().getID() + " -> " + e.getTerminus().getID() + " [label=\"" +
-						e.getLinkNum()
-						+ "\",color= blue];\n");
+						 e.getoStrand().toString() + ":" + e.gettStrand().toString() +
+						 "\",color=" + color + "];\n");
 			}
 			bw.write("}");
 		} catch (IOException e) {

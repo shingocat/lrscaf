@@ -41,8 +41,10 @@ public class EdgeBundler {
 			{
 				Edge edge = new Edge();
 				edge.setOrigin(temp.get(s).get(0).getOrigin());
+				edge.setoStrand(temp.get(s).get(0).getoStrand());
 				edge.setTerminus(temp.get(s).get(0).getTerminus());
 				edge.setLinkNum(temp.get(s).size());
+				edge.settStrand(temp.get(s).get(0).gettStrand());
 				edges.add(edge);
 			}
 		}

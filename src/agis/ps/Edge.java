@@ -6,11 +6,16 @@
 */
 package agis.ps;
 
-import agis.ps.link.Contig;
+import java.io.Serializable;
 
-public class Edge {
+import agis.ps.link.Contig;
+import agis.ps.util.Strand;
+
+public class Edge implements Serializable{
 	private Contig origin;
 	private Contig terminus;
+	private Strand oStrand;
+	private Strand tStrand;
 	private int linkNum;
 
 	public Contig getOrigin() {
@@ -36,5 +41,23 @@ public class Edge {
 	public void setLinkNum(int linkNum) {
 		this.linkNum = linkNum;
 	}
+
+	public Strand getoStrand() {
+		return oStrand;
+	}
+
+	public void setoStrand(Strand oStrand) {
+		this.oStrand = oStrand;
+	}
+
+	public Strand gettStrand() {
+		return tStrand;
+	}
+
+	public void settStrand(Strand tStrnad) {
+		this.tStrand = tStrnad;
+	}
+	
+	
 
 }
