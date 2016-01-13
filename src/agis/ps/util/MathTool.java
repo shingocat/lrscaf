@@ -13,7 +13,7 @@ public class MathTool {
 	
 	public static Integer mean(List<Integer> nums)
 	{
-		return MathTool.mean((Integer [])nums.toArray());
+		return MathTool.mean(nums.toArray(new Integer[nums.size()]));
 	}
 	
 	public static Integer mean(Integer [] nums)
@@ -29,7 +29,7 @@ public class MathTool {
 	
 	public static Integer sd(List<Integer> nums)
 	{
-		return MathTool.sd((Integer [])nums.toArray());
+		return MathTool.sd(nums.toArray(new Integer[nums.size()]));
 	}
 	
 	public static Integer sd(Integer [] nums)
