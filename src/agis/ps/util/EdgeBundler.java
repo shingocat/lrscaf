@@ -39,12 +39,78 @@ public class EdgeBundler {
 		{
 			if(temp.get(s).size() >= EdgeBundler.MIN_LINK_NUM)
 			{
+				// statistical analysis contig pairs distance 
+				List<PBLink> tlinks = temp.get(s);
+				List<Integer> dists = new ArrayList<Integer>();
+				for(PBLink pb : tlinks)
+				{
+					dists.add(pb.getDistance());
+				}
+				int mean = MathTool.mean(dists);
+				int sd = MathTool.sd(dists);
+				int upper = mean + 2 * sd;
+				int low = mean - 2 * sd;
+				//if the distance larger than mean + 2 * sd, then remove;
+				for(PBLink pb : tlinks)
+				{
+					if(pb.getDistance() > upper || pb.getDistance() < low)
+						tlinks.remove(pb);
+				}
+				//checking the most frequencies contig pair type
+				int typeA = 0; // + +;
+				int typeB = 0; // + -;
+				int typeC = 0; // - -;
+				int typeD = 0; // - +;
+				for(PBLink pb : tlinks)
+				{
+					Strand oStrand = pb.getoStrand();
+					Strand tStrand = pb.gettStrand();
+					if(oStrand.equals(Strand.FORWARD))
+					{
+						if(tStrand.equals(Strand.FORWARD))
+						{
+							typeA += 1;
+						} else
+						{
+							typeB += 1;
+						}
+					} else
+					{
+						if(tStrand.equals(Strand.FORWARD))
+						{
+							typeC += 1;
+						} else
+						{
+							typeD += 1;
+						}
+					}
+				}
+				int max = MathTool.max(typeA,typeB,typeC,typeD);
+				
 				Edge edge = new Edge();
 				edge.setOrigin(temp.get(s).get(0).getOrigin());
-				edge.setoStrand(temp.get(s).get(0).getoStrand());
 				edge.setTerminus(temp.get(s).get(0).getTerminus());
-				edge.setLinkNum(temp.get(s).size());
-				edge.settStrand(temp.get(s).get(0).gettStrand());
+				if( max == typeA)
+				{
+					edge.setoStrand(Strand.FORWARD);
+					edge.settStrand(Strand.FORWARD);
+					edge.setLinkNum(typeA);
+				} else if(max == typeB)
+				{
+					edge.setoStrand(Strand.FORWARD);
+					edge.settStrand(Strand.REVERSE);
+					edge.setLinkNum(typeB);
+				} else if(max == typeC)
+				{
+					edge.setoStrand(Strand.REVERSE);
+					edge.settStrand(Strand.REVERSE);
+					edge.setLinkNum(typeC);
+				} else if(max == typeD)
+				{
+					edge.setoStrand(Strand.REVERSE);
+					edge.settStrand(Strand.FORWARD);
+					edge.setLinkNum(typeD);
+				}
 				edges.add(edge);
 			}
 		}
