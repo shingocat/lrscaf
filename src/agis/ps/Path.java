@@ -7,13 +7,13 @@
 package agis.ps;
 
 public class Path {
-	private Node [] nodes;
+	private Vertex [] nodes;
 	private Edge [] edges;
 	
-	public Node[] getNodes() {
+	public Vertex[] getNodes() {
 		return nodes;
 	}
-	public void setNodes(Node[] nodes) {
+	public void setNodes(Vertex[] nodes) {
 		this.nodes = nodes;
 	}
 	public Edge[] getEdges() {

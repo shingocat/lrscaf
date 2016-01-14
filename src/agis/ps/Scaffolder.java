@@ -30,6 +30,7 @@ import agis.ps.util.DotGraphFileWriter;
 import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
 import agis.ps.util.M5Reader;
+import agis.ps.util.PathBuilder;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamInputResource;
@@ -147,6 +148,7 @@ public class Scaffolder {
 		}
 		pbLinks = LinkBuilder.m5Record2Link(m5Records, null);
 		edges = EdgeBundler.pbLinkBundling(pbLinks, null);
+		PathBuilder.buildHamiltonPath(edges);
 //		for(String s : pSet.keySet())
 //		{
 //			//logger.debug(s);

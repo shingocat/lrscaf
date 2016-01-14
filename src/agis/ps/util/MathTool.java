@@ -52,6 +52,17 @@ public class MathTool {
 		return arr[3];
 	}
 
+	public static int min(Integer[] values) {
+		// TODO Auto-generated method stub
+		
+		return 0;
+	}
+	
+	public static int min(List<Integer> values)
+	{
+		return 0;
+	}
+
 }
 
 

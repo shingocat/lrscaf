@@ -115,6 +115,9 @@ public class EdgeBundler {
 				edges.add(edge);
 			}
 		}
+		
+		//merge two opposite direction edge to only one edge base
+		// not implemented now
 		return edges;
 	}
 }
