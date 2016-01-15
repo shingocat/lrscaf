@@ -50,6 +50,27 @@ public class PathBuilder {
 			{
 				logger.debug(s + ":" + sIns.get(s));
 			}
+			// statistics of edges info
+			Map<String, Integer> eStat = diGraph.getEdgesStatistics();
+			for(String s : eStat.keySet())
+			{
+				logger.debug(s + ":" + eStat.get(s));
+			}
+			// go go go through the graph
+			// for random start;
+			String id = diGraph.getOneRandomVertex();
+			logger.debug("id: " + id);
+			LinkedHashMap<String, List<Edge>> values = diGraph.getAdjs(id);
+//			while(true)
+//			{
+//				if(diGraph.getAdjs(id).get(id).size() > 0)
+//				{
+//					
+//				} else
+//				{
+//					break;
+//				}
+//			}
 			return null;
 		} catch(Exception e)
 		{
@@ -57,6 +78,16 @@ public class PathBuilder {
 			logger.error(e.getMessage());
 			return null;
 		}
+	}
+	
+	private void findNextVertex()
+	{
+		
+	}
+	
+	private void findPreviousVertex()
+	{
+		
 	}
 }
 
