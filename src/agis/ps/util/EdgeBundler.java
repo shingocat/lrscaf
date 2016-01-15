@@ -7,9 +7,11 @@
 package agis.ps.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +24,7 @@ public class EdgeBundler {
 	static final Logger logger = LoggerFactory.getLogger(EdgeBundler.class);
 
 	public static List<Edge> pbLinkBundling(List<PBLink> links, Map<String, String> paras) {
-		List<Edge> edges = new ArrayList<Edge>();
+		List<Edge> edges = new Vector<Edge>();
 		// storing all the same origin and terminus to a hash map;
 		Map<String, List<PBLink>> temp = new HashMap<String, List<PBLink>>();
 		for (PBLink pb : links) {
@@ -30,7 +32,7 @@ public class EdgeBundler {
 			if (temp.containsKey(id)) {
 				temp.get(id).add(pb);
 			} else {
-				List<PBLink> tLinks = new ArrayList<PBLink>();
+				List<PBLink> tLinks = new Vector<PBLink>();
 				tLinks.add(pb);
 				temp.put(id, tLinks);
 			}
@@ -42,7 +44,7 @@ public class EdgeBundler {
 				count += 1;
 				// statistical analysis contig pairs distance
 				List<PBLink> tlinks = temp.get(s);
-				List<Integer> dists = new ArrayList<Integer>();
+				List<Integer> dists = new Vector<Integer>();
 				for (PBLink pb : tlinks) {
 					dists.add(pb.getDistance());
 				}

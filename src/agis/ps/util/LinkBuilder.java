@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import agis.ps.M5Record;
 import agis.ps.SimplePath;
@@ -34,7 +35,7 @@ public class LinkBuilder {
 	private static int MIN_PB_LENGTH = 10000; // the minimum length of pacbio;
 
 	public static List<PBLink> m5Record2Link(List<M5Record> m5Records, Map<String, String> parameters) {
-		List<PBLink> pbLinks = new ArrayList<PBLink>();
+		List<PBLink> pbLinks = new Vector<PBLink>();
 		HashMap<String, List<M5Record>> pSet = new HashMap<String, List<M5Record>>();
 		for (M5Record m5 : m5Records) {
 			if (m5.gettLength() < LinkBuilder.MIN_CONTIG_LENGTH)
@@ -48,7 +49,7 @@ public class LinkBuilder {
 				pSet.get(m5.getqName()).add(m5);
 				//pSet.put(m5.getqName(), pSet.get(m5.getqName()) + c);
 			} else {
-				List<M5Record> records = new ArrayList<M5Record>();
+				List<M5Record> records = new Vector<M5Record>();
 				records.add(m5);
 				pSet.put(m5.getqName(), records);
 				//pSet.put(m5.getqName(), c);
