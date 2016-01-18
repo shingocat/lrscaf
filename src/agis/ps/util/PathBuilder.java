@@ -80,6 +80,21 @@ public class PathBuilder {
 			{
 				logger.debug(s + ":" + eStat.get(s));
 			}
+			//remove the support links less than 4
+			diGraph.removeEdge(4);
+			logger.debug("After process less than 4");
+			aE = diGraph.getEdges();
+			for(Edge e : aE)
+			{
+				logger.debug("A: " + e.getOrigin().getID() + "->" + e.getTerminus().getID() + " : " + e.getLinkNum());
+			}
+			eStat = diGraph.getEdgesStatistics();
+			for(String s : eStat.keySet())
+			{
+				logger.debug(s + ":" + eStat.get(s));
+			}
+			logger.debug(System.getProperty("user.dir"));
+			DotGraphFileWriter.writeEdge(System.getProperty("user.dir") + System.getProperty("file.separator") + "removeLessThan10.txt", diGraph.getEdges());
 			// go go go through the graph
 			// for random start;
 //			String id = diGraph.getOneRandomVertex();

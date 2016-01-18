@@ -42,7 +42,7 @@ public class MathTool {
 			diff += Math.pow(nums[i] - mean, 2);		
 		}
 		
-		return (int) Math.round(Math.sqrt(diff/size));
+		return (int) Math.round(Math.sqrt(diff/(size - 1)));
 	}
 
 	public static int max(int typeA, int typeB, int typeC, int typeD) {
