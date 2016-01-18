@@ -80,8 +80,8 @@ public class PathBuilder {
 			{
 				logger.debug(s + ":" + eStat.get(s));
 			}
-			//remove the support links less than 4
-			diGraph.removeEdge(4);
+			//remove the support links less than 10
+			diGraph.removeEdge(10);
 			logger.debug("After process less than 4");
 			aE = diGraph.getEdges();
 			for(Edge e : aE)
