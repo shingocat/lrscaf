@@ -136,6 +136,45 @@ public class DotGraphFileWriter {
 
 	}
 	
+	public static void writePaths(String filePath, List<Path> paths)
+	{
+		if(filePath == null)
+			return;
+		File out = null;
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try {
+			out = new File(filePath);
+			if (out.exists()) {
+				logger.debug("The output file of dot graph is exist!");
+				logger.info("The output file of dot graph is exist!");
+				return;
+			}
+			out.createNewFile();
+			fw = new FileWriter(out);
+			bw = new BufferedWriter(fw);
+			bw.write("digraph G{\n");
+			for(Path p : paths)
+			{
+				bw.write(p.toString() + ";\n");
+			}
+			bw.write("}");
+		} catch (IOException e) {
+			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
+		} finally
+		{
+			if(bw != null)
+				try {
+					bw.close();
+				} catch (IOException e) {
+					logger.debug(e.getMessage());
+					logger.error(e.getMessage());;
+				}
+		}
+
+	}
+	
 	public void write() {
 		if(paths == null)
 			return;

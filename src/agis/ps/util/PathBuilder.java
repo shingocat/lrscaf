@@ -180,6 +180,7 @@ public class PathBuilder {
 				logger.debug("Path " + count + ": "+ p.toString());
 				count++;
 			}
+			DotGraphFileWriter.writePaths(System.getProperty("user.dir") + System.getProperty("file.separator") + "paths.txt", paths);
 			return null;
 		} catch (Exception e) {
 			logger.debug(e.getMessage());
