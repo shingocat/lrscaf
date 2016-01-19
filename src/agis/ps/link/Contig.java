@@ -33,7 +33,14 @@ public class Contig extends DNASequence {
 		this.length = length;
 	}
 	
-	
+	@Override
+	public boolean equals(Object o)
+	{
+		Contig c = (Contig) o;
+		if(c.getID().equals(this.getID()))
+			return true;
+		return false;
+	}
 
 }
 

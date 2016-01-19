@@ -6,24 +6,164 @@
 */
 package agis.ps;
 
+import java.util.LinkedList;
+
+import agis.ps.link.Contig;
+
 public class Path {
-	private Vertex [] nodes;
-	private Edge [] edges;
+	private LinkedList<Contig> vertices;
 	
-	public Vertex[] getNodes() {
-		return nodes;
-	}
-	public void setNodes(Vertex[] nodes) {
-		this.nodes = nodes;
-	}
-	public Edge[] getEdges() {
-		return edges;
-	}
-	public void setEdges(Edge[] edges) {
-		this.edges = edges;
+	public Path()
+	{
+		if(vertices == null)
+			vertices = new LinkedList<Contig>();
+		vertices.clear();
 	}
 	
+	// push one vertex to the end of this linked list;
+	public void push(Contig v)
+	{
+		vertices.addLast(v);
+	}
 	
+	// pop one vertex from the end of this linked list;
+	// if the linked list is empty, do nothing;
+	public Contig pop()
+	{
+		return vertices.pollLast();
+	}
+	
+	// shift one vertex from the first of this linked list;
+	public Contig shift()
+	{
+		return vertices.pollFirst();
+	}
+	
+	// unshift one vertex to the first of this linked list;
+	public void unshift(Contig v)
+	{
+		vertices.addFirst(v);
+	}
+	
+	// get the first element 
+	public Contig getFirstElement()
+	{
+		return vertices.getFirst();
+	}
+	
+	// get the last element
+	public Contig getLastElement()
+	{
+		return vertices.getLast();
+	}
+	
+	// equal the first element
+	public boolean isEqualFirstElement(Contig c)
+	{
+		Contig f = this.getFirstElement();
+		if(f.getID().equals(c.getID()))
+			return true;
+		return false;
+	}
+	//equal the last element
+	public boolean isEqualLastElement(Contig c)
+	{
+		Contig f = this.getLastElement();
+		if(f.getID().equals(c.getID()))
+			return true;
+		return false;
+	}
+	// path cotain reverse edge, i.e. A->B->C in the path, and now edge C->B is the reverse edge in the path
+	public boolean isExistReverseEdge(Edge e)
+	{
+		boolean value = false;
+		String oId = e.getOrigin().getID();
+		String tId = e.getTerminus().getID();
+		for(int i = getSize() - 1; i > 0; i--)
+		{
+			if(this.vertices.get(i).getID().equals(oId) && this.vertices.get(i - 1).getID().equals(tId))
+			{
+				value = true;
+				break;
+			}
+		}
+		return value;
+	}
+	
+	// path cotain edge, i.e. A->B->C int the path, and now edge B->C is the edge;
+	public boolean isExistEdge(Edge e)
+	{
+		boolean value = false;
+		String oId = e.getOrigin().getID();
+		String tId = e.getTerminus().getID();
+		for(int i = 0; i < getSize() - 1; i++)
+		{
+			if(this.vertices.get(i).getID().equals(oId) && this.vertices.get(i + 1).getID().equals(tId))
+			{
+				value = true;
+				break;
+			}
+		}
+		return value;
+	}
+	
+	// get path element by index
+	public Contig getElement(int index)
+	{
+		if(index > getSize() - 1)
+		{
+			throw new IllegalArgumentException("The index out of box in path, larger than size!");
+		}
+		return this.vertices.get(index);
+	}
+	
+	public int getSize()
+	{
+		return this.vertices.size();
+	}
+	
+	public boolean isEmpty()
+	{
+		if(getSize() == 0)
+			return true;
+		return false;
+	}
+	
+	//return -1 means that do not contain this contig in path, else return the index of this contig in the path
+	public int containVertex(Contig origin) {
+		boolean isExist = getVertices().contains(origin);
+		if(isExist)
+		{
+			int index = 0;
+			for(Contig c : getVertices())
+			{
+				if(c.getID().equals(origin.getID()))
+				{
+					return index;
+				}
+				index++;
+			}
+		}
+		return -1;
+	}
+	
+	public LinkedList<Contig> getVertices()
+	{
+		return this.vertices;
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0 ; i < getSize(); i++)
+		{
+			sb.append(getElement(i).getID());
+			if(i != getSize() - 1)
+				sb.append("->");
+		}
+		return sb.toString();
+	}
 }
 
 

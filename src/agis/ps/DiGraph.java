@@ -27,9 +27,9 @@ public class DiGraph {
 	private int verNum; // number of vertices in this directed graph;
 	private int edgNum; // number of edges in this directed graph;
 	private HashSet<String> verticesId; // the id of vertices;
-	private LinkedHashMap<String, List<Edge>> pTMap; // adjacency list for
+	private LinkedHashMap<String, List<Edge>> pTMap; // outdegree, adjacency list for
 														// vertex v point to;
-	private LinkedHashMap<String, List<Edge>> pFMap; // map of vertex v point
+	private LinkedHashMap<String, List<Edge>> pFMap; // indegree, map of vertex v point
 														// from;
 	private List<Edge> edges; // the edges list in this graph;
 
@@ -48,6 +48,7 @@ public class DiGraph {
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("The parametes is empty for constructed Graph instance!");
 		this.edges = edges;
+		getVerticesId();
 		updateGraph();
 	}
 
@@ -76,7 +77,7 @@ public class DiGraph {
 	public void removeEdge(String oId, String tTd) {
 		List<Edge> values = new Vector<Edge>(); // storing the valid values;
 		for (int i = 0; i < edges.size(); i++) {
-			if ((!edges.get(i).getOrigin().getID().equals(oId)) || !(edges.get(i).getTerminus().getID().equals(tTd))) {
+			if ((!edges.get(i).getOrigin().getID().equals(oId)) | !(edges.get(i).getTerminus().getID().equals(tTd))) {
 				values.add(edges.get(i));
 			}
 		}
@@ -251,17 +252,28 @@ public class DiGraph {
 		return pTMap;
 	}
 
-	// return all adjacency vertices over the specific vertex id;
-	public LinkedHashMap<String, List<Edge>> getAdjs(String id) {
-		if (!this.getVerticesId().contains(id)) {
+	// outdegree, return all adjacency vertices over the specific vertex id point to;
+	public LinkedHashMap<String, List<Edge>> getAdjsPT(String id) {
+		if (!verticesId.contains(id)) {
 			throw new IllegalArgumentException("ID of vertices in a Digraph was not exists!");
 		}
 		LinkedHashMap<String, List<Edge>> values = new LinkedHashMap<String, List<Edge>>();
-		List<Edge> edges = pFMap.get(id);
+		List<Edge> edges = getpTMap().get(id);
 		values.put(id, edges);
 		return values;
 	}
-
+	
+	// indegere, return all adjacency vertices over the specific vertex id point from other vertex;
+	public LinkedHashMap<String, List<Edge>> getAdjsPF(String id)
+	{
+		if(!verticesId.contains(id))
+			throw new IllegalArgumentException("Id of vertex in a digraph was not exists!");
+		LinkedHashMap<String, List<Edge>> values = new LinkedHashMap<String, List<Edge>>();
+		List<Edge> edges = getpFMap().get(id);
+		values.put(id, edges);
+		return values;
+	}
+	
 	public void setAdjs(LinkedHashMap<String, List<Edge>> adjs) {
 		this.pTMap = adjs;
 	}
@@ -305,5 +317,35 @@ public class DiGraph {
 
 	public void setEdges(List<Edge> edges) {
 		this.edges = edges;
+	}
+	
+	public boolean isEdgesEmpty()
+	{
+		//if the edges in the digraph is empty, return true;
+		if(this.getEdges().isEmpty())
+			return true;
+		return false;
+	}
+	// return true or false whether the specified id had edges
+	public boolean hasEdges(String id)
+	{
+		if(!verticesId.contains(id))
+			throw new IllegalArgumentException("The specified id do not exist in graph!");
+		boolean value = false;
+		if(getAdjsPT(id).size() > 0)
+			return true;
+		return value;
+	}
+	
+	// return list of edges origin from the specified id
+	public List<Edge> getEdgesBySpecifiedId(String id)
+	{
+		if(!verticesId.contains(id))
+			throw new IllegalArgumentException("The specified id do not exist in graph!");
+		List<Edge> values = new Vector<Edge>();
+		values = getpTMap().get(id);
+		if(values == null)
+			return new Vector<Edge>();
+		return values;
 	}
 }
