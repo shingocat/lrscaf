@@ -153,12 +153,15 @@ public class DotGraphFileWriter {
 			out.createNewFile();
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);
-			bw.write("digraph G{\n");
+			int count = 0;
 			for(Path p : paths)
 			{
+				bw.write("digraph G" + count + "{\n");
 				bw.write(p.toString() + ";\n");
+				bw.write("}");
+				count++;
 			}
-			bw.write("}");
+			
 		} catch (IOException e) {
 			logger.debug(e.getMessage());
 			logger.error(e.getMessage());
