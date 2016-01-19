@@ -158,7 +158,7 @@ public class DotGraphFileWriter {
 			{
 				bw.write("digraph G" + count + "{\n");
 				bw.write(p.toString() + ";\n");
-				bw.write("}");
+				bw.write("}\n");
 				count++;
 			}
 			
