@@ -9,15 +9,40 @@ package agis.ps;
 import java.util.LinkedList;
 
 import agis.ps.link.Contig;
+import agis.ps.util.Strand;
 
 public class Path {
-	private LinkedList<Contig> vertices;
+	// the vertices and verStatus should be synchronized, i.e. add or remove.
+	private LinkedList<Contig> vertices; // store contig;
+	private LinkedList<Strand> verStatus; // store strand over each contig;
 	
 	public Path()
 	{
 		if(vertices == null)
 			vertices = new LinkedList<Contig>();
 		vertices.clear();
+		if(verStatus == null)
+			verStatus = new LinkedList<Strand>();
+		verStatus.clear();
+	}
+	
+	//push one vertex Strand status in the verStatus linked list;
+	public void pushStrand(Strand s)
+	{
+		verStatus.addLast(s);
+	}
+	
+	// unshift one vertex strand status in the verStatus linked list;
+	public void unshiftStrand(Strand s)
+	{
+		verStatus.addFirst(s);
+	}
+	
+	public Strand getStrandByIndex(int index)
+	{
+		if(verStatus == null || verStatus.isEmpty())
+			return null;
+		return verStatus.get(index);
 	}
 	
 	// push one vertex to the end of this linked list;

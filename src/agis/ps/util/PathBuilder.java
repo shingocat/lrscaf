@@ -94,13 +94,14 @@ public class PathBuilder {
 
 			// go go go through the graph
 			// for random start;
-			String id = diGraph.getOneRandomVertex();
-//			String id = "1695";
+//			String id = diGraph.getOneRandomVertex();
+			String id = "1709";
 			String startId = id;
 			boolean isReverse = false;
 			logger.debug("id: " + id);
 			List<Path> paths = new Vector<Path>();
 			Path path = new Path();
+			Strand strandStatus = Strand.FORWARD;
 			while (!diGraph.isEdgesEmpty()) {
 				List<Edge> pTEdges = diGraph.getEdgesBySpecifiedId(id);
 				// remove the reverse edge if in the path;
@@ -135,18 +136,20 @@ public class PathBuilder {
 						if (selectedE == null) {
 							selectedE = e;
 							continue;
-						} else if (e.getLinkNum() > selectedE.getLinkNum()) {
+						} else if (e.getLinkNum() > selectedE.getLinkNum() && e.getoStrand().equals(strandStatus)) {
 							selectedE = e;
 							continue;
 						}
 					}
-					// push or unshift vertex to Path
+					// push or unshift vertex and Strand into Path
 					Contig origin = selectedE.getOrigin();
 					Contig terminus = selectedE.getTerminus();
 					
 					if (path.isEmpty()) {
 						path.push(origin);
+						path.pushStrand(selectedE.getoStrand());
 						path.push(terminus);
+						path.pushStrand(selectedE.gettStrand());
 					} else {
 						int oIndex = path.containVertex(origin);
 						int tIndex = path.containVertex(terminus);
@@ -154,10 +157,14 @@ public class PathBuilder {
 							if(!isReverse)
 								isReverse = true;
 							path.unshift(terminus);
+							path.unshiftStrand(selectedE.gettStrand());
 						} else if (oIndex == path.getSize() - 1 && tIndex == -1) {
 							path.push(terminus);
+							path.pushStrand(selectedE.gettStrand());
 						}
 					}
+					// storing the terminus Strand status;
+					strandStatus = selectedE.gettStrand();
 					// remove edge in the digraph after push or unshift in the
 					// path
 					diGraph.removeEdge(origin.getID(), terminus.getID());
