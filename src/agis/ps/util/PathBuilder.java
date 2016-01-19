@@ -178,6 +178,7 @@ public class PathBuilder {
 			for(Path p : paths)
 			{
 				logger.debug("Path " + count + ": "+ p.toString());
+				count++;
 			}
 			return null;
 		} catch (Exception e) {
