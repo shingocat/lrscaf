@@ -148,6 +148,7 @@ public class Scaffolder {
 		}
 		pbLinks = LinkBuilder.m5Record2Link(m5Records, null);
 		edges = EdgeBundler.pbLinkBundling(pbLinks, null);
+		logger.debug("edges size: " + edges.size());
 		PathBuilder.buildHamiltonPath(edges);
 //		for(String s : pSet.keySet())
 //		{

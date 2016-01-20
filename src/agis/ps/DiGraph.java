@@ -53,7 +53,7 @@ public class DiGraph {
 
 	public DiGraph(List<Edge> edges) {
 		if (edges == null || edges.size() == 0)
-			throw new IllegalArgumentException("The parametes is empty for constructed Graph instance!");
+			throw new IllegalArgumentException("The parametes edges were empty for constructed Graph instance!");
 		this.edges = edges;
 		getVerticesId();
 		updateGraph();
