@@ -80,7 +80,7 @@ public class PathBuilder {
 				logger.debug(s + ":" + eStat.get(s));
 			}
 			// remove the support links less than 10
-			diGraph.removeEdge(4);
+			diGraph.removeEdge(10);
 			// logger.debug("After process less than 4");
 			// aE = diGraph.getEdges();
 			// for (Edge e : aE) {
@@ -130,7 +130,8 @@ public class PathBuilder {
 					}
 				}
 				if (pTEdges.isEmpty()) {
-					paths.add(path);
+					if(!path.isEmpty())
+						paths.add(path);
 					path = new Path();
 					// id = diGraph.getOneRandomVertex();
 					id = diGraph.getVertexByOrdering();
@@ -181,7 +182,8 @@ public class PathBuilder {
 					diGraph.removeEdge(origin.getID(), terminus.getID());
 					id = terminus.getID();
 					if (startId.equals(terminus.getID()) && isReverse) {
-						paths.add(path);
+						if(!path.isEmpty())
+							paths.add(path);
 						path = new Path();
 						// id = diGraph.getOneRandomVertex();
 						id = diGraph.getVertexByOrdering();
