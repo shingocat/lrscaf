@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import agis.ps.DiGraph;
 import agis.ps.Edge;
 import agis.ps.Path;
+import agis.ps.link.ContInOut;
 import agis.ps.link.Contig;
 
 public class PathBuilder {
@@ -61,28 +62,31 @@ public class PathBuilder {
 			}
 			// simplest graph by remove lower and upper links number
 			// edges former;
-//			logger.debug("Before remove");
-//			List<Edge> oE = diGraph.getEdges();
-//			for (Edge e : oE) {
-//				logger.debug("B: " + e.getOrigin().getID() + "->" + e.getTerminus().getID() + " : " + e.getLinkNum());
-//			}
+			// logger.debug("Before remove");
+			// List<Edge> oE = diGraph.getEdges();
+			// for (Edge e : oE) {
+			// logger.debug("B: " + e.getOrigin().getID() + "->" +
+			// e.getTerminus().getID() + " : " + e.getLinkNum());
+			// }
 			diGraph.removeEdge(lower, upper);
-//			logger.debug("After process");
-//			List<Edge> aE = diGraph.getEdges();
-//			for (Edge e : aE) {
-//				logger.debug("A: " + e.getOrigin().getID() + "->" + e.getTerminus().getID() + " : " + e.getLinkNum());
-//			}
+			// logger.debug("After process");
+			// List<Edge> aE = diGraph.getEdges();
+			// for (Edge e : aE) {
+			// logger.debug("A: " + e.getOrigin().getID() + "->" +
+			// e.getTerminus().getID() + " : " + e.getLinkNum());
+			// }
 			eStat = diGraph.getEdgesStatistics();
 			for (String s : eStat.keySet()) {
 				logger.debug(s + ":" + eStat.get(s));
 			}
 			// remove the support links less than 10
-			diGraph.removeEdge(10);
-//			logger.debug("After process less than 4");
-//			aE = diGraph.getEdges();
-//			for (Edge e : aE) {
-//				logger.debug("A: " + e.getOrigin().getID() + "->" + e.getTerminus().getID() + " : " + e.getLinkNum());
-//			}
+			diGraph.removeEdge(4);
+			// logger.debug("After process less than 4");
+			// aE = diGraph.getEdges();
+			// for (Edge e : aE) {
+			// logger.debug("A: " + e.getOrigin().getID() + "->" +
+			// e.getTerminus().getID() + " : " + e.getLinkNum());
+			// }
 			eStat = diGraph.getEdgesStatistics();
 			for (String s : eStat.keySet()) {
 				logger.debug(s + ":" + eStat.get(s));
@@ -91,14 +95,19 @@ public class PathBuilder {
 			DotGraphFileWriter.writeEdge(
 					System.getProperty("user.dir") + System.getProperty("file.separator") + "removeLessThan10.txt",
 					diGraph.getEdges());
-
+			// check each contig sorted indegree and outdegree
+			List<ContInOut> values = diGraph.getCandiVertices();
+			for (ContInOut c : values) {
+				logger.debug(c.toString());
+			}
 			// go go go through the graph
 			// for random start;
-//			String id = diGraph.getOneRandomVertex();
-			String id = "1709";
+			String id = diGraph.getVertexByOrdering();
+			DiGraph.selectedVertices.add(id);
+			logger.debug("id: " + id);
+			// String id = "1709";
 			String startId = id;
 			boolean isReverse = false;
-			logger.debug("id: " + id);
 			List<Path> paths = new Vector<Path>();
 			Path path = new Path();
 			Strand strandStatus = Strand.FORWARD;
@@ -107,16 +116,13 @@ public class PathBuilder {
 				// remove the reverse edge if in the path;
 				if (!path.isEmpty()) {
 					if (pTEdges.size() > 1) {
-						for(int i = 0; i < pTEdges.size(); i++)
-						{
+						for (int i = 0; i < pTEdges.size(); i++) {
 							Edge e = pTEdges.get(i);
-							if (path.isExistReverseEdge(e))
-							{
+							if (path.isExistReverseEdge(e)) {
 								pTEdges.remove(e);
 								continue;
 							}
-							if (path.isExistEdge(e))
-							{
+							if (path.isExistEdge(e)) {
 								pTEdges.remove(e);
 								continue;
 							}
@@ -126,8 +132,13 @@ public class PathBuilder {
 				if (pTEdges.isEmpty()) {
 					paths.add(path);
 					path = new Path();
-					id = diGraph.getOneRandomVertex();
-					if(isReverse)
+					// id = diGraph.getOneRandomVertex();
+					id = diGraph.getVertexByOrdering();
+					logger.debug("id: " + id);
+					if (id == null || id.length() == 0)
+						break;
+					DiGraph.selectedVertices.add(id);
+					if (isReverse)
 						isReverse = false;
 				} else {
 					// define the selected edge
@@ -144,7 +155,7 @@ public class PathBuilder {
 					// push or unshift vertex and Strand into Path
 					Contig origin = selectedE.getOrigin();
 					Contig terminus = selectedE.getTerminus();
-					
+
 					if (path.isEmpty()) {
 						path.push(origin);
 						path.pushStrand(selectedE.getoStrand());
@@ -154,7 +165,7 @@ public class PathBuilder {
 						int oIndex = path.containVertex(origin);
 						int tIndex = path.containVertex(terminus);
 						if (oIndex == 0 && tIndex == -1) {
-							if(!isReverse)
+							if (!isReverse)
 								isReverse = true;
 							path.unshift(terminus);
 							path.unshiftStrand(selectedE.gettStrand());
@@ -169,25 +180,29 @@ public class PathBuilder {
 					// path
 					diGraph.removeEdge(origin.getID(), terminus.getID());
 					id = terminus.getID();
-					if(startId.equals(terminus.getID()) && isReverse)
-					{
+					if (startId.equals(terminus.getID()) && isReverse) {
 						paths.add(path);
 						path = new Path();
-						id = diGraph.getOneRandomVertex();
-						if(isReverse)
+						// id = diGraph.getOneRandomVertex();
+						id = diGraph.getVertexByOrdering();
+						logger.debug("id: " + id);
+						if (id == null || id.length() == 0)
+							break;
+						DiGraph.selectedVertices.add(id);
+						if (isReverse)
 							isReverse = false;
 					}
 				}
 			}
-			
+
 			logger.debug("Contain " + paths.size() + " Paths!");
 			int count = 0;
-			for(Path p : paths)
-			{
-				logger.debug("Path " + count + ": "+ p.toString());
+			for (Path p : paths) {
+				logger.debug("Path " + count + ": " + p.toString());
 				count++;
 			}
-			DotGraphFileWriter.writePaths(System.getProperty("user.dir") + System.getProperty("file.separator") + "paths.txt", paths);
+			DotGraphFileWriter.writePaths(
+					System.getProperty("user.dir") + System.getProperty("file.separator") + "paths.txt", paths);
 			return null;
 		} catch (Exception e) {
 			logger.debug(e.getMessage());

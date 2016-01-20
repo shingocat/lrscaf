@@ -6,10 +6,14 @@
 */
 package agis.ps;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -19,14 +23,17 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.link.ContInOut;
 import agis.ps.util.MathTool;
 
 //Directed Graph
 public class DiGraph {
+	public static List<String> selectedVertices = new Vector<String>();
 	private static Logger logger = LoggerFactory.getLogger(DiGraph.class);
 	private int verNum; // number of vertices in this directed graph;
 	private int edgNum; // number of edges in this directed graph;
 	private HashSet<String> verticesId; // the id of vertices;
+	private List<ContInOut> candiVertices; // the id of vertices for candidate graph travel 
 	private LinkedHashMap<String, List<Edge>> pTMap; // outdegree, adjacency list for
 														// vertex v point to;
 	private LinkedHashMap<String, List<Edge>> pFMap; // indegree, map of vertex v point
@@ -50,6 +57,69 @@ public class DiGraph {
 		this.edges = edges;
 		getVerticesId();
 		updateGraph();
+	}
+	// return all the vertices list based on indegree and outdegree increasing order
+	public List<ContInOut> getCandiVertices()
+	{
+		if(candiVertices == null)
+			candiVertices = Collections.synchronizedList(new LinkedList<ContInOut>());
+		Map<String, Integer> indegrees = indegrees();
+		Map<String, Integer> outdegrees = outdegrees();
+		ContInOut cin = null;
+		// build a map 
+		Map<String, Integer[]> values = new HashMap<String, Integer[]>();
+		for(String s : indegrees.keySet())
+		{
+			Integer [] value = new Integer[2];
+			value[0] = indegrees.get(s);
+			value[1] = 0;
+			values.put(s, value);
+		}
+		for(String s : outdegrees.keySet())
+		{
+			if(values.containsKey(s))
+			{
+				Integer [] value = values.get(s);
+				value[1] = outdegrees.get(s);
+			} else
+			{
+				Integer [] value = new Integer[2];
+				value[0] = 0;
+				value[1] = outdegrees.get(s);
+				values.put(s, value);
+			}
+		}
+		// initiated the linkedlist
+		for(String s : values.keySet())
+		{
+			cin = new ContInOut();
+			cin.setId(s);
+			Integer [] value = values.get(s);
+			cin.setIndegrees(value[0]);
+			cin.setOutdegrees(value[1]);
+			candiVertices.add(cin);
+		}
+		// sorted linked list by indegree and outdegree increasing order;
+		Collections.sort(candiVertices, new Comparator<ContInOut>()
+				{
+					@Override
+					public int compare(ContInOut o1, ContInOut o2) {
+							Integer o1I = o1.getIndegrees();
+							Integer o2I = o2.getIndegrees();
+							Integer o1O = o1.getOutdegrees();
+							Integer o2O = o2.getOutdegrees();
+							
+							int icomp = o1I.compareTo(o2I);
+							if(icomp != 0)
+							{
+								return icomp;
+							} else
+							{
+								return o1O.compareTo(o2O);
+							}
+					}
+				});;
+		return candiVertices;
 	}
 
 	// update the graph when initiated or modification
@@ -108,6 +178,25 @@ public class DiGraph {
 		String[] ss = pTMap.keySet().toArray(new String[pTMap.size()]);
 		String s = ss[random];
 		return s;
+	}
+	
+	// return vertex by their indegree or outdegree order
+	public String getVertexByOrdering()
+	{
+		String value = "";
+		List<ContInOut> cins = getCandiVertices();
+		for(ContInOut c : cins)
+		{
+			if(selectedVertices.contains(c.getId()))
+			{
+				continue;
+			} else
+			{
+				value = c.getId();
+				break;
+			}
+		}
+		return value;
 	}
 
 	public Map<String, Integer> minIndegeres() {
