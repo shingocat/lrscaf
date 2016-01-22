@@ -75,7 +75,8 @@ public class Scaffolder {
 		this.cFilePath = (String)paras.get("CONTIG");
 		this.aFilePath = (String)paras.get("ALIGNED");
 		this.type = (String)paras.get("TYPE");
-		this.gFilePath = (String)paras.get("DOTGRAPH");
+//		this.gFilePath = (String)paras.get("DOTGRAPH");
+		this.outFolder = (String) paras.get("OUTPUT");
 	}
 	
 	public void scaffolding()
@@ -84,20 +85,27 @@ public class Scaffolder {
 		try
 		{
 			readContigs(cFilePath);
+			List<M5Record> m5Records = null;
 			if(type.equalsIgnoreCase("m"))
-				readM5Aligned(aFilePath);
-			else
+			{
+				m5Records = readM5Aligned(aFilePath);
+				pbLinks = LinkBuilder.m5Record2Link(m5Records, null);
+			} else
+			{
 				readSAMAligned(aFilePath);
+			}
+			edges = EdgeBundler.pbLinkBundling(pbLinks, null);
+			logger.debug("edges size: " + edges.size());
+			PathBuilder.buildHamiltonPath(edges);
 			//listContigs();
 			//listAligns();
-			if(gFilePath != null)
-			{
+//			if(gFilePath != null)
+//			{
 //				DotGraphFileWriter.writePBLink(gFilePath, pbLinks);
-				DotGraphFileWriter.writeEdge(gFilePath, edges);
+//				DotGraphFileWriter.writeEdge(gFilePath, edges);
 //				DotGraphFileWriter dGFW = new DotGraphFileWriter(gFilePath, simPaths);
 //				dGFW.write();
-			}
-				
+//			}
 		} catch(NullPointerException e)
 		{
 			logger.debug(e.getMessage());
@@ -119,30 +127,26 @@ public class Scaffolder {
 	{
 		if(cFilePath == null || cFilePath.length() == 0)
 		{
-			logger.debug("The aligned file was null or not setted!");
-			logger.info("The aligned file was null or not setted!");
+			logger.error("The contig file was null or not setted!");
+			logger.debug("The contig file was null or not setted!");
+			logger.info("The contig file was null or not setted!");
 			return;
 		}
 		File cFile = new File(cFilePath);
 		setContigs(FastaReaderHelper.readFastaDNASequence(cFile));
 	}
 	
-	public void readM5Aligned(String aFilePath)
+	public List<M5Record> readM5Aligned(String aFilePath)
 	{
 		if(aFilePath.isEmpty())
-		{
+		{	
+			logger.error("The aligned file was null or not setted!");
 			logger.debug("The aligned file was null or not setted!");
 			logger.info("The aligned file was null or not setted!");
-			return;
+			return null;
 		}
-		M5Reader reader = null;
-		if(Boolean.valueOf((boolean) paras.get("M5HEADER")))
-			reader = new M5Reader(aFilePath, true);
-		else
-			reader = new M5Reader(aFilePath, false);
-		
-		reader.read();
-		List<M5Record> m5Records = reader.getM5List();
+		M5Reader reader = new M5Reader(aFilePath);	
+		List<M5Record> m5Records = reader.read();
 		HashMap<String, String> pSet = new HashMap<String, String>();
 		
 		for(M5Record m5 : m5Records)
@@ -156,16 +160,14 @@ public class Scaffolder {
 				pSet.put(m5.getqName(), c);
 			}
 		}
-		pbLinks = LinkBuilder.m5Record2Link(m5Records, null);
-		edges = EdgeBundler.pbLinkBundling(pbLinks, null);
-		logger.debug("edges size: " + edges.size());
-		PathBuilder.buildHamiltonPath(edges);
+
 //		for(String s : pSet.keySet())
 //		{
 //			//logger.debug(s);
 //			logger.debug(s + "\t" + pSet.get(s));
 //		}
 		//this.m5RecordToSimplePath(pSet);
+		return m5Records;
 	}
 	
 	public void readSAMAligned(String aFilePath) throws NullPointerException, MalformedURLException,IOException

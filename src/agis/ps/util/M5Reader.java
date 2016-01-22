@@ -24,7 +24,6 @@ public class M5Reader {
 	private final static Logger logger = LoggerFactory.getLogger(M5Reader.class);
 	
 	private String path;
-	private Boolean isHeader;
 	private List<M5Record> m5List;
 	
 	public M5Reader(String path)
@@ -32,13 +31,7 @@ public class M5Reader {
 		this.path = path;
 	}
 	
-	public M5Reader(String path, Boolean isHeader)
-	{
-		this.path = path;
-		this.isHeader = isHeader;
-	}
-	
-	public void read()
+	public List<M5Record> read()
 	{
 		FileReader fr = null;
 		BufferedReader br = null;
@@ -49,7 +42,7 @@ public class M5Reader {
 			{
 				logger.debug("The m5 file do not exist!");
 				logger.error("The m5 file do not exist!");
-				return;
+				return null;
 			}
 			
 			fr = new FileReader(m5File);
@@ -57,15 +50,12 @@ public class M5Reader {
 			String line = null;
 			String [] arrs = null;
 			m5List = new ArrayList<M5Record>();
-			int count = 0;
 			while((line = br.readLine()) != null)
 			{
-				if(isHeader && count == 0)
-				{
-					count++;
-					continue;
-				}
 				arrs = line.split("\\s+");
+				// if the first line is header
+				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
+					continue;
 				M5Record m5 = new M5Record();
 				m5.setqName(arrs[0]);
 				m5.setqLength(Integer.valueOf(arrs[1]));
@@ -87,7 +77,6 @@ public class M5Reader {
 				m5.setMatchPattern(arrs[17]);
 				m5.settAlignedSeq(arrs[18]);
 				m5List.add(m5);
-				count++;
 			}
 			br.close();
 			fr.close();
@@ -124,32 +113,8 @@ public class M5Reader {
 				}
 			}
 		}
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	public Boolean getIsHeader() {
-		return isHeader;
-	}
-
-	public void setIsHeader(Boolean isHeader) {
-		this.isHeader = isHeader;
-	}
-
-	public List<M5Record> getM5List() {
 		return m5List;
 	}
-
-	public void setM5List(List<M5Record> m5List) {
-		this.m5List = m5List;
-	}
-	
 }
 
 
