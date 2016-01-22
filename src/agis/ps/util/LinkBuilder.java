@@ -41,8 +41,8 @@ public class LinkBuilder {
 			if (m5.gettLength() < LinkBuilder.MIN_CONTIG_LENGTH)
 				continue;
 			int ol_len = m5.gettEnd() - m5.gettStart();
-			double ratio = ol_len / m5.gettLength();
-			if (ol_len < LinkBuilder.MIN_OVERLAP_LENGTH && ratio <= LinkBuilder.MIN_OVERLAP_RATIO)
+			double ratio = (double)ol_len / m5.gettLength();
+			if (ol_len < LinkBuilder.MIN_OVERLAP_LENGTH || ratio <= LinkBuilder.MIN_OVERLAP_RATIO)
 				continue;
 			//String c = m5.gettName() + "==" + m5.getqStart() + ";";
 			if (pSet.containsKey(m5.getqName())) {

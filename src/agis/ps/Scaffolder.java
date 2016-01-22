@@ -30,6 +30,7 @@ import agis.ps.util.DotGraphFileWriter;
 import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
 import agis.ps.util.M5Reader;
+import agis.ps.util.Parameter;
 import agis.ps.util.PathBuilder;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
@@ -44,14 +45,23 @@ public class Scaffolder {
 	private HashMap<String, Object> paras;
 	private String cFilePath;
 	private String aFilePath;
+	private String gFilePath;
+	private String outFolder;
 	private String type;
 	private boolean m5Header;
-	private String gFilePath;
 	private LinkedHashMap<String, DNASequence> contigs;
 	private SamReader samReader;
 	private List<SimplePath> simPaths;
 	private List<PBLink> pbLinks;
 	private List<Edge> edges;
+	
+	public Scaffolder(Parameter paras)
+	{
+		this.cFilePath = paras.getCntFile();
+		this.aFilePath = paras.getAlgFile();
+		this.type = paras.getType();
+		this.outFolder = paras.getOutFolder();
+	}
 	
 	public Scaffolder(String cFilePath, String aFilePath)
 	{
