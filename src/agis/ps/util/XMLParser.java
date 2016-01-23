@@ -65,7 +65,7 @@ public class XMLParser {
 							para.setType("s");
 						} else if (nodeName.equalsIgnoreCase("bam")) {
 							para.setAlgFile(node.getTextContent());
-							para.setType("b");
+							para.setType("s");
 						} else {
 							logger.debug("The XML file contain illeagle elements!");
 							logger.error("The XML file contain illeagle elements!");
@@ -93,12 +93,16 @@ public class XMLParser {
 			if (nodes == null || nodes.getLength() == 0) {
 				logger.debug("The XML file do not contain output elements, it will use default value!");
 				logger.error("The XML file do not contain output elements, it will use default value!");
-				para.setMinContLen(1000);
-				para.setMaxSupLinks(50);
-				para.setMinOLLen(2000);
-				para.setMinOLRatio(0.8);
+				para.setMinContLen(2000);
 				para.setMinPBLen(5000);
+				para.setMinOLLen(1500);
+				para.setMinOLRatio(0.8);
+				para.setMaxOHLen(500);
+				para.setMaxOHRatio(0.1);
+				para.setMaxEndLen(500);
+				para.setMaxEndRatio(0.1);
 				para.setMinSupLinks(3);
+				para.setMaxSupLinks(50);
 			} else {
 				Node parasNode = nodes.item(0);
 				nodes = parasNode.getChildNodes();
@@ -119,9 +123,17 @@ public class XMLParser {
 						para.setMinSupLinks(Integer.valueOf(node.getTextContent()));
 					} else if (nodeName.equalsIgnoreCase("max_supported_links")) {
 						para.setMaxSupLinks(Integer.valueOf(node.getTextContent()));
+					} else if (nodeName.equalsIgnoreCase("max_overhang_length")) {
+						para.setMaxOHLen(Integer.valueOf(node.getTextContent()));
+					} else if (nodeName.equalsIgnoreCase("max_overhang_ratio")) {
+						para.setMaxOHRatio(Double.valueOf(node.getTextContent()));
+					} else if (nodeName.equalsIgnoreCase("max_end_length")) {
+						para.setMaxEndLen(Integer.valueOf(node.getTextContent()));
+					} else if (nodeName.equalsIgnoreCase("max_end_ratio")) {
+						para.setMaxEndRatio(Double.valueOf(node.getTextContent()));
 					} else {
 						logger.debug("The para element contain illeage item " + nodeName + ". it will omit!");
-						logger.error("The para element contain illeage item " + nodeName + ". it will omit!");
+						logger.info("The para element contain illeage item " + nodeName + ". it will omit!");
 					}
 				}
 			}

@@ -17,6 +17,8 @@ public class Edge implements Serializable{
 	private Strand oStrand;
 	private Strand tStrand;
 	private int linkNum;
+	private int distMean;
+	private int distSd;
 
 	public Contig getOrigin() {
 		return origin;
@@ -56,6 +58,28 @@ public class Edge implements Serializable{
 
 	public void settStrand(Strand tStrnad) {
 		this.tStrand = tStrnad;
+	}
+
+	public int getDistMean() {
+		return distMean;
+	}
+
+	public void setDistMean(int distMean) {
+		this.distMean = distMean;
+	}
+
+	public int getDistSd() {
+		return distSd;
+	}
+
+	public void setDistSd(int distSd) {
+		this.distSd = distSd;
+	}
+
+	@Override
+	public String toString() {
+		return "Edge [origin=" + origin.getID() + ", terminus=" + terminus.getID() + ", oStrand=" + oStrand + ", tStrand=" + tStrand
+				+ ", linkNum=" + linkNum + ", distMean=" + distMean + ", distSd=" + distSd + "]";
 	}
 	
 	

@@ -18,9 +18,13 @@ public class Parameter implements Serializable {
 	private Integer minPBLen;
 	private Integer minOLLen;
 	private Double minOLRatio;
+	private Integer maxOHLen;
+	private Double maxOHRatio;
+	private Integer maxEndLen;
+	private Double maxEndRatio;
 	private Integer minSupLinks;
 	private Integer maxSupLinks;
-	private String type; // m for m5, s for sam, b for bam;
+	private String type; // m for m5, s for sam, s for bam;
 
 	public String getType() {
 		return type;
@@ -101,12 +105,46 @@ public class Parameter implements Serializable {
 	public void setMaxSupLinks(Integer maxSupLinks) {
 		this.maxSupLinks = maxSupLinks;
 	}
+	
+	public Integer getMaxOHLen() {
+		return maxOHLen;
+	}
+
+	public void setMaxOHLen(Integer maxOHLen) {
+		this.maxOHLen = maxOHLen;
+	}
+
+	public Double getMaxOHRatio() {
+		return maxOHRatio;
+	}
+
+	public void setMaxOHRatio(Double maxOHRatio) {
+		this.maxOHRatio = maxOHRatio;
+	}
+	
+	public Integer getMaxEndLen() {
+		return maxEndLen;
+	}
+
+	public void setMaxEndLen(Integer maxEndLen) {
+		this.maxEndLen = maxEndLen;
+	}
+
+	public Double getMaxEndRatio() {
+		return maxEndRatio;
+	}
+
+	public void setMaxEndRatio(Double maxEndRatio) {
+		this.maxEndRatio = maxEndRatio;
+	}
 
 	@Override
 	public String toString() {
 		return "Parameter [cntFile=" + cntFile + ", algFile=" + algFile + ", outFolder=" + outFolder + ", minContLen="
 				+ minContLen + ", minPBLen=" + minPBLen + ", minOLLen=" + minOLLen + ", minOLRatio=" + minOLRatio
-				+ ", minSupLinks=" + minSupLinks + ", maxSupLinks=" + maxSupLinks + "]";
+				+ ", maxOHLen=" + maxOHLen + ", maxOHRatio=" + maxOHRatio + ", maxEndLen=" + maxEndLen
+				+ ", maxEndRatio=" + maxEndRatio + ", minSupLinks=" + minSupLinks + ", maxSupLinks=" + maxSupLinks
+				+ ", type=" + type + "]";
 	}
-
+	
 }

@@ -46,6 +46,7 @@ public class Main {
 			CommandLineParser parser = new DefaultParser();
 			CommandLine cl = parser.parse(ops, args);
 			HelpFormatter f = new HelpFormatter();
+			Parameter paras = null;
 			
 			if (cl.hasOption("h")) {
 				f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
@@ -57,7 +58,7 @@ public class Main {
 					logger.info("parse the xml configure, all the other parameters set by command line will dismissed");
 					String xmlFile = cl.getOptionValue("x");
 					XMLParser xmlParser = new XMLParser();
-					Parameter paras = xmlParser.parseXML(xmlFile);
+					paras = xmlParser.parseXML(xmlFile);
 					Scaffolder scaffolder = new Scaffolder(paras);
 					scaffolder.scaffolding();
 				} else {
@@ -84,9 +85,11 @@ public class Main {
 					String aFile = cl.getOptionValue("a");
 					String type = cl.getOptionValue("t");
 
-					HashMap<String, Object> paras = new HashMap<String, Object>();
-					paras.put("CONTIG", cFile);
-					paras.put("ALIGNED", aFile);
+//					HashMap<String, Object> paras = new HashMap<String, Object>();
+//					paras.put("CONTIG", cFile);
+//					paras.put("ALIGNED", aFile);
+					paras.setCntFile(cFile);
+					paras.setAlgFile(aFile);
 
 					if (type != null) {
 						if (!(type.matches("(?i:[ms])"))) {
@@ -94,7 +97,8 @@ public class Main {
 							logger.debug("The type parameter is not valid, setted " + type + ", only accepted s or m!");
 							System.exit(0);
 						}
-						paras.put("TYPE", type);
+						paras.setType(type);
+//						paras.put("TYPE", type);
 //						if (type.equalsIgnoreCase("m")) {
 //							if (cl.hasOption("mh"))
 //								paras.put("M5HEADER", true);
@@ -102,13 +106,16 @@ public class Main {
 //								paras.put("M5HEADER", false);
 //						}
 					} else {
-						paras.put("TYPE", "s");
+						type = "s";
+						paras.setType(type);
+//						paras.put("TYPE", "s");
 					}
 
 //					String dotPath = cl.getOptionValue("g");
 //					paras.put("DOTGRAPH", dotPath);
 					String outPath = cl.getOptionValue("o");
-					paras.put("OUTPUT", outPath);
+//					paras.put("OUTPUT", outPath);
+					paras.setOutFolder(outPath);
 
 					Scaffolder scaffolder = new Scaffolder(paras);
 					scaffolder.scaffolding();

@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.PBLink;
+import agis.ps.link.PBLinkM5;
 import agis.ps.util.Color;
 import agis.ps.util.DotGraphFileWriter;
 import agis.ps.util.EdgeBundler;
@@ -42,7 +43,8 @@ import htsjdk.samtools.ValidationStringency;
 public class Scaffolder {
 	final static Logger logger = LoggerFactory.getLogger(Scaffolder.class);
 	
-	private HashMap<String, Object> paras;
+//	private HashMap<String, Object> paras;
+	private Parameter paras;
 	private String cFilePath;
 	private String aFilePath;
 	private String gFilePath;
@@ -52,32 +54,33 @@ public class Scaffolder {
 	private LinkedHashMap<String, DNASequence> contigs;
 	private SamReader samReader;
 	private List<SimplePath> simPaths;
-	private List<PBLink> pbLinks;
+	private List<PBLinkM5> pbLinks;
 	private List<Edge> edges;
 	
 	public Scaffolder(Parameter paras)
 	{
+		this.paras = paras;
 		this.cFilePath = paras.getCntFile();
 		this.aFilePath = paras.getAlgFile();
 		this.type = paras.getType();
 		this.outFolder = paras.getOutFolder();
 	}
 	
-	public Scaffolder(String cFilePath, String aFilePath)
-	{
-		this.cFilePath = cFilePath;
-		this.aFilePath = aFilePath;
-	}
-	
-	public Scaffolder(HashMap<String, Object> paras)
-	{
-		this.paras = paras;
-		this.cFilePath = (String)paras.get("CONTIG");
-		this.aFilePath = (String)paras.get("ALIGNED");
-		this.type = (String)paras.get("TYPE");
-//		this.gFilePath = (String)paras.get("DOTGRAPH");
-		this.outFolder = (String) paras.get("OUTPUT");
-	}
+//	public Scaffolder(String cFilePath, String aFilePath)
+//	{
+//		this.cFilePath = cFilePath;
+//		this.aFilePath = aFilePath;
+//	}
+//	
+//	public Scaffolder(HashMap<String, Object> paras)
+//	{
+//		this.paras = paras;
+//		this.cFilePath = (String)paras.get("CONTIG");
+//		this.aFilePath = (String)paras.get("ALIGNED");
+//		this.type = (String)paras.get("TYPE");
+////		this.gFilePath = (String)paras.get("DOTGRAPH");
+//		this.outFolder = (String) paras.get("OUTPUT");
+//	}
 	
 	public void scaffolding()
 	{
@@ -89,12 +92,12 @@ public class Scaffolder {
 			if(type.equalsIgnoreCase("m"))
 			{
 				m5Records = readM5Aligned(aFilePath);
-				pbLinks = LinkBuilder.m5Record2Link(m5Records, null);
+				pbLinks = LinkBuilder.m5Record2Link(m5Records, paras);
 			} else
 			{
 				readSAMAligned(aFilePath);
 			}
-			edges = EdgeBundler.pbLinkBundling(pbLinks, null);
+			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
 			logger.debug("edges size: " + edges.size());
 			PathBuilder.buildHamiltonPath(edges);
 			//listContigs();
@@ -109,16 +112,24 @@ public class Scaffolder {
 		} catch(NullPointerException e)
 		{
 			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
 		} catch(MalformedURLException e)
 		{
 			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
 		} catch(FileNotFoundException e)
 		{
-			logger.debug(e.getMessage());
+			logger.debug(e.getMessage());			
+			logger.error(e.getMessage());
 		} catch(IOException e)
 		{
 			logger.debug(e.getMessage());
-		} 
+			logger.error(e.getMessage());
+		} catch(Exception e)
+		{
+			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
+		}
 		
 		System.out.println("Ending....");
 	}
@@ -147,26 +158,19 @@ public class Scaffolder {
 		}
 		M5Reader reader = new M5Reader(aFilePath);	
 		List<M5Record> m5Records = reader.read();
-		HashMap<String, String> pSet = new HashMap<String, String>();
-		
-		for(M5Record m5 : m5Records)
-		{
-			String c = m5.gettName() + "==" + m5.getqStart() + ";";
-			if(pSet.containsKey(m5.getqName()))
-			{
-				pSet.put(m5.getqName(), pSet.get(m5.getqName()) + c);
-			} else
-			{
-				pSet.put(m5.getqName(), c);
-			}
-		}
-
-//		for(String s : pSet.keySet())
+//		HashMap<String, String> pSet = new HashMap<String, String>();
+//		
+//		for(M5Record m5 : m5Records)
 //		{
-//			//logger.debug(s);
-//			logger.debug(s + "\t" + pSet.get(s));
+//			String c = m5.gettName() + "==" + m5.getqStart() + ";";
+//			if(pSet.containsKey(m5.getqName()))
+//			{
+//				pSet.put(m5.getqName(), pSet.get(m5.getqName()) + c);
+//			} else
+//			{
+//				pSet.put(m5.getqName(), c);
+//			}
 //		}
-		//this.m5RecordToSimplePath(pSet);
 		return m5Records;
 	}
 	

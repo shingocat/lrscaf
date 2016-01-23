@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scaffold>
+<!--The input file for scaffolding, including contigs and aligned files (i.e. m5, sam or bam file) -->
+	<input>
+		<contig>E:\Data\Ecoli\ecoli83k.contig</contig>
+		<m5>E:\Data\Ecoli\align_bstn_1_10000.m5</m5>
+	</input>
+	<!-- The output folder for scaffolding -->
+	<output>E:\Data\Ecoli\Scaffolding</output>
+	<!-- the parameters for scaffolding-->
+	<paras>
+		<!--The minimum contig length to be used in scaffolding-->
+		<min_contig_length>2000</min_contig_length>
+		<min_pacbio_length>5000</min_pacbio_length>
+		<min_overlap_length>1500</min_overlap_length>
+		<min_overlap_ratio>0.8</min_overlap_ratio>
+		<max_overhang_length>500</max_overhang_length>
+		<max_overhang_ratio>0.1</max_overhang_ratio>
+		<max_end_length>500</max_end_length>
+		<max_end_ratio>0.1</max_end_ratio>
+		<min_supported_links>3</min_supported_links>
+		<max_supported_links>50</max_supported_links>
+	</paras>
+</scaffold>
