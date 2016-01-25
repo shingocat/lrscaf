@@ -42,8 +42,8 @@ import htsjdk.samtools.ValidationStringency;
 
 public class Scaffolder {
 	final static Logger logger = LoggerFactory.getLogger(Scaffolder.class);
-	
-//	private HashMap<String, Object> paras;
+
+	// private HashMap<String, Object> paras;
 	private Parameter paras;
 	private String cFilePath;
 	private String aFilePath;
@@ -56,88 +56,113 @@ public class Scaffolder {
 	private List<SimplePath> simPaths;
 	private List<PBLinkM5> pbLinks;
 	private List<Edge> edges;
-	
-	public Scaffolder(Parameter paras)
-	{
+
+	public Scaffolder(Parameter paras) {
 		this.paras = paras;
 		this.cFilePath = paras.getCntFile();
 		this.aFilePath = paras.getAlgFile();
 		this.type = paras.getType();
 		this.outFolder = paras.getOutFolder();
 	}
-	
-//	public Scaffolder(String cFilePath, String aFilePath)
-//	{
-//		this.cFilePath = cFilePath;
-//		this.aFilePath = aFilePath;
-//	}
-//	
-//	public Scaffolder(HashMap<String, Object> paras)
-//	{
-//		this.paras = paras;
-//		this.cFilePath = (String)paras.get("CONTIG");
-//		this.aFilePath = (String)paras.get("ALIGNED");
-//		this.type = (String)paras.get("TYPE");
-////		this.gFilePath = (String)paras.get("DOTGRAPH");
-//		this.outFolder = (String) paras.get("OUTPUT");
-//	}
-	
-	public void scaffolding()
-	{
-		System.out.println("Starting....");
-		try
-		{
+
+	// public Scaffolder(String cFilePath, String aFilePath)
+	// {
+	// this.cFilePath = cFilePath;
+	// this.aFilePath = aFilePath;
+	// }
+	//
+	// public Scaffolder(HashMap<String, Object> paras)
+	// {
+	// this.paras = paras;
+	// this.cFilePath = (String)paras.get("CONTIG");
+	// this.aFilePath = (String)paras.get("ALIGNED");
+	// this.type = (String)paras.get("TYPE");
+	//// this.gFilePath = (String)paras.get("DOTGRAPH");
+	// this.outFolder = (String) paras.get("OUTPUT");
+	// }
+
+	public void scaffolding() {
+		logger.info("Starting....");
+		try {
+			buildOutputPath(paras.getOutFolder());
 			readContigs(cFilePath);
 			List<M5Record> m5Records = null;
-			if(type.equalsIgnoreCase("m"))
-			{
+			if (type.equalsIgnoreCase("m")) {
 				m5Records = readM5Aligned(aFilePath);
 				pbLinks = LinkBuilder.m5Record2Link(m5Records, paras);
-			} else
-			{
+			} else {
 				readSAMAligned(aFilePath);
 			}
 			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
+			// write the edges info into file
+			String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges.info";
+			DotGraphFileWriter.writeEdge(edgeFile, edges);
 			logger.debug("edges size: " + edges.size());
-			PathBuilder.buildHamiltonPath(edges);
-			//listContigs();
-			//listAligns();
-//			if(gFilePath != null)
-//			{
-//				DotGraphFileWriter.writePBLink(gFilePath, pbLinks);
-//				DotGraphFileWriter.writeEdge(gFilePath, edges);
-//				DotGraphFileWriter dGFW = new DotGraphFileWriter(gFilePath, simPaths);
-//				dGFW.write();
-//			}
-		} catch(NullPointerException e)
-		{
+//			List<Path> paths = PathBuilder.buildHamiltonPath(edges);
+			List<Path> paths = PathBuilder.buildPath(edges, paras);
+			// write the paths info into file;
+			String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "paths.info";
+			DotGraphFileWriter.writePaths(pathFile, paths);
+			// listContigs();
+			// listAligns();
+			// if(gFilePath != null)
+			// {
+			// DotGraphFileWriter.writePBLink(gFilePath, pbLinks);
+			// DotGraphFileWriter.writeEdge(gFilePath, edges);
+			// DotGraphFileWriter dGFW = new DotGraphFileWriter(gFilePath,
+			// simPaths);
+			// dGFW.write();
+			// }
+		} catch (NullPointerException e) {
 			logger.debug(e.getMessage());
 			logger.error(e.getMessage());
-		} catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			logger.debug(e.getMessage());
 			logger.error(e.getMessage());
-		} catch(FileNotFoundException e)
-		{
-			logger.debug(e.getMessage());			
-			logger.error(e.getMessage());
-		} catch(IOException e)
-		{
+		} catch (FileNotFoundException e) {
 			logger.debug(e.getMessage());
 			logger.error(e.getMessage());
-		} catch(Exception e)
-		{
+		} catch (IOException e) {
+			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
+		} catch (Exception e) {
 			logger.debug(e.getMessage());
 			logger.error(e.getMessage());
 		}
-		
-		System.out.println("Ending....");
+
+		logger.info("Ending....");
 	}
-	
-	public void readContigs(String cFilePath) throws IOException
-	{
-		if(cFilePath == null || cFilePath.length() == 0)
+
+	public void buildOutputPath(String path) {
+		if (path == null || path.length() == 0) {
+			logger.error("The output path was not setted!");
+			logger.debug("The output path was not setted!");
+			return;
+		}
+		try {
+			File output = new File(path);
+			if (output.exists()) {
+				logger.info("Scaffolder: The output folder was exist!");
+				logger.debug("Scaffolder: The output folder was exist!");
+			} else {
+				if(output.mkdirs())
+				{
+					logger.info("Scaffolder: The output folder was created!");
+					logger.debug("Scaffolder: The output folder was created!");
+				}
+			}
+		} catch (SecurityException e)
 		{
+			logger.error("Scaffolder: " + e.getMessage());
+			logger.debug("Scaffolder: " + e.getMessage());
+		} catch (Exception e) {
+			logger.error("Scaffolder: " + e.getMessage());
+			logger.debug("Scaffolder: " + e.getMessage());
+		}
+	}
+
+	public void readContigs(String cFilePath) throws IOException {
+		if (cFilePath == null || cFilePath.length() == 0) {
 			logger.error("The contig file was null or not setted!");
 			logger.debug("The contig file was null or not setted!");
 			logger.info("The contig file was null or not setted!");
@@ -146,106 +171,96 @@ public class Scaffolder {
 		File cFile = new File(cFilePath);
 		setContigs(FastaReaderHelper.readFastaDNASequence(cFile));
 	}
-	
-	public List<M5Record> readM5Aligned(String aFilePath)
-	{
-		if(aFilePath.isEmpty())
-		{	
+
+	public List<M5Record> readM5Aligned(String aFilePath) {
+		if (aFilePath.isEmpty()) {
 			logger.error("The aligned file was null or not setted!");
 			logger.debug("The aligned file was null or not setted!");
 			logger.info("The aligned file was null or not setted!");
 			return null;
 		}
-		M5Reader reader = new M5Reader(aFilePath);	
+		M5Reader reader = new M5Reader(aFilePath);
 		List<M5Record> m5Records = reader.read();
-//		HashMap<String, String> pSet = new HashMap<String, String>();
-//		
-//		for(M5Record m5 : m5Records)
-//		{
-//			String c = m5.gettName() + "==" + m5.getqStart() + ";";
-//			if(pSet.containsKey(m5.getqName()))
-//			{
-//				pSet.put(m5.getqName(), pSet.get(m5.getqName()) + c);
-//			} else
-//			{
-//				pSet.put(m5.getqName(), c);
-//			}
-//		}
+		// HashMap<String, String> pSet = new HashMap<String, String>();
+		//
+		// for(M5Record m5 : m5Records)
+		// {
+		// String c = m5.gettName() + "==" + m5.getqStart() + ";";
+		// if(pSet.containsKey(m5.getqName()))
+		// {
+		// pSet.put(m5.getqName(), pSet.get(m5.getqName()) + c);
+		// } else
+		// {
+		// pSet.put(m5.getqName(), c);
+		// }
+		// }
 		return m5Records;
 	}
-	
-	public void readSAMAligned(String aFilePath) throws NullPointerException, MalformedURLException,IOException
-	{
-		if(aFilePath == null || aFilePath.length() == 0)
-		{
+
+	public void readSAMAligned(String aFilePath) throws NullPointerException, MalformedURLException, IOException {
+		if (aFilePath == null || aFilePath.length() == 0) {
 			logger.debug("The aligned file was null or not setted!");
 			logger.info("The aligned file was null or not setted!");
 			return;
 		}
-		SamReaderFactory factory = SamReaderFactory.makeDefault().enable(SamReaderFactory.Option.INCLUDE_SOURCE_IN_RECORDS, 
-				SamReaderFactory.Option.VALIDATE_CRC_CHECKSUMS).validationStringency(ValidationStringency.LENIENT);
-		SamInputResource resource = SamInputResource.of(new File(aFilePath)); //.index(new URL("http://broadinstitute.org/my.bam.bai"));
+		SamReaderFactory factory = SamReaderFactory.makeDefault()
+				.enable(SamReaderFactory.Option.INCLUDE_SOURCE_IN_RECORDS,
+						SamReaderFactory.Option.VALIDATE_CRC_CHECKSUMS)
+				.validationStringency(ValidationStringency.LENIENT);
+		SamInputResource resource = SamInputResource.of(new File(aFilePath)); // .index(new
+																				// URL("http://broadinstitute.org/my.bam.bai"));
 		samReader = factory.open(resource);
-		if(simPaths != null)
-		{
+		if (simPaths != null) {
 			simPaths.clear();
 		}
 		simPaths = new ArrayList<SimplePath>();
 		Iterator<SAMRecord> it = samReader.iterator();
-//		HashMap<String, HashMap<String, Integer>> pSet = new HashMap<String, HashMap<String, Integer>>();
+		// HashMap<String, HashMap<String, Integer>> pSet = new HashMap<String,
+		// HashMap<String, Integer>>();
 		HashMap<String, String> pSet = new HashMap<String, String>();
-		while(it.hasNext())
-		{
+		while (it.hasNext()) {
 			SAMRecord r = it.next();
-//			logger.debug("Read name:" + r.getReadName() + "\tReference name:" + r.getReferenceName() +
-//					"\tAligned start:" + r.getAlignmentStart() + "\tAligned end:" + r.getAlignmentEnd() +
-//					"\tFLAG:" + r.getFlags());
-			String c =  r.getReferenceName() + "==" +  r.getAlignmentStart() + ";";
-//			HashMap<String, Integer> cSet = new HashMap<String,Integer>();
-//			cSet.put(r.getReferenceName(), r.getReadPositionAtReferencePosition(r.getAlignmentStart()));
-			if(pSet.containsKey(r.getReadName()))
-			{
+			// logger.debug("Read name:" + r.getReadName() + "\tReference name:"
+			// + r.getReferenceName() +
+			// "\tAligned start:" + r.getAlignmentStart() + "\tAligned end:" +
+			// r.getAlignmentEnd() +
+			// "\tFLAG:" + r.getFlags());
+			String c = r.getReferenceName() + "==" + r.getAlignmentStart() + ";";
+			// HashMap<String, Integer> cSet = new HashMap<String,Integer>();
+			// cSet.put(r.getReferenceName(),
+			// r.getReadPositionAtReferencePosition(r.getAlignmentStart()));
+			if (pSet.containsKey(r.getReadName())) {
 				pSet.put(r.getReadName(), pSet.get(r.getReadName()) + c);
-			} else
-			{
+			} else {
 				pSet.put(r.getReadName(), c);
 			}
-			
+
 		}
-		for(String s : pSet.keySet())
-		{
-			//logger.debug(s);
+		for (String s : pSet.keySet()) {
+			// logger.debug(s);
 			logger.debug(s + "\t" + pSet.get(s));
 		}
 	}
-	
-	public void m5RecordToSimplePath(Map<String, String> pSet)
-	{
-		if(simPaths != null)
-		{
+
+	public void m5RecordToSimplePath(Map<String, String> pSet) {
+		if (simPaths != null) {
 			simPaths.clear();
-		} else
-		{
+		} else {
 			simPaths = new ArrayList<SimplePath>();
 		}
-		for(String s : pSet.keySet())
-		{
-			String [] arrs = pSet.get(s).split(";");
-			if(arrs.length >= 2)
-			{
-				for(int i = 0; i < arrs.length - 1; i++)
-				{
+		for (String s : pSet.keySet()) {
+			String[] arrs = pSet.get(s).split(";");
+			if (arrs.length >= 2) {
+				for (int i = 0; i < arrs.length - 1; i++) {
 					SimplePath sp = new SimplePath();
-					String [] ar1 = arrs[i].split("==");
-					String [] ar2 = arrs[i + 1].split("==");
-					if(Integer.valueOf(ar1[1]) <= Integer.valueOf(ar2[1]))
-					{
+					String[] ar1 = arrs[i].split("==");
+					String[] ar2 = arrs[i + 1].split("==");
+					if (Integer.valueOf(ar1[1]) <= Integer.valueOf(ar2[1])) {
 						sp.setStart(ar1[0]);
 						sp.setEnd(ar2[0]);
 						sp.setLabel(ar1[1] + ":" + ar2[1]);
 						sp.setColor(Color.BLUE);
-					} else
-					{
+					} else {
 						sp.setStart(ar2[0]);
 						sp.setEnd(ar1[0]);
 						sp.setLabel(ar2[1] + ":" + ar1[1]);
@@ -256,25 +271,20 @@ public class Scaffolder {
 			}
 		}
 	}
-	
-	public void listContigs()
-	{
-		if(contigs == null || contigs.isEmpty())
-		{
+
+	public void listContigs() {
+		if (contigs == null || contigs.isEmpty()) {
 			return;
 		}
-		for(String id : contigs.keySet())
-		{
+		for (String id : contigs.keySet()) {
 			System.out.println("Id is:\t" + id);
 		}
 	}
-	
-	public void listAligns()
-	{
-		if(samReader == null)
+
+	public void listAligns() {
+		if (samReader == null)
 			return;
-		for(SAMRecord sr : samReader)
-		{
+		for (SAMRecord sr : samReader) {
 			System.out.println("Read Name:\t" + sr.getReadName());
 			System.out.println("Aligned Name:\t" + sr.getReferenceName());
 		}
@@ -303,9 +313,5 @@ public class Scaffolder {
 	public void setContigs(LinkedHashMap<String, DNASequence> contigs) {
 		this.contigs = contigs;
 	}
-	
-	
 
 }
-
-

@@ -25,8 +25,8 @@ public class EdgeBundler {
 	private static int MIN_LINK_NUM = 3;
 	static final Logger logger = LoggerFactory.getLogger(EdgeBundler.class);
 
-	public static List<Edge> pbLinkM5Bundling(List<PBLinkM5> links, Parameter paras){
-		if(links == null || links.size() == 0)
+	public static List<Edge> pbLinkM5Bundling(List<PBLinkM5> links, Parameter paras) {
+		if (links == null || links.size() == 0)
 			throw new IllegalArgumentException("The Links is empty when passed to EdgeBundler");
 		List<Edge> edges = new Vector<Edge>();
 		// storing all the same origin and terminus to a hash map;
@@ -47,7 +47,8 @@ public class EdgeBundler {
 		// build the edge for fitted for criterion;
 		int count = 0;
 		for (String s : temp.keySet()) {
-			// if the support links less than minimum and larger than maximum support links, it will omitted;
+			// if the support links less than minimum and larger than maximum
+			// support links, it will omitted;
 			if (temp.get(s).size() >= paras.getMinSupLinks() && temp.get(s).size() <= paras.getMaxSupLinks()) {
 				count += 1;
 				// statistical analysis contig pairs distance
@@ -58,13 +59,12 @@ public class EdgeBundler {
 				}
 				int mean = 0;
 				int sd = 0;
-				try{
-				mean = MathTool.mean(dists);
-				sd = MathTool.sd(dists);
-				} catch (Exception e)
-				{
-					logger.debug("Edge Bundler: " +e.getMessage());
-					logger.info("Edge Bundler: " +e.getMessage());
+				try {
+					mean = MathTool.mean(dists);
+					sd = MathTool.sd(dists);
+				} catch (Exception e) {
+					logger.debug("Edge Bundler: " + e.getMessage());
+					logger.info("Edge Bundler: " + e.getMessage());
 					continue;
 				}
 				int upper = mean + 2 * sd;
@@ -87,7 +87,8 @@ public class EdgeBundler {
 					logger.error(e.getMessage());
 					continue;
 				}
-				// checking the most frequencies contig pair type, and retain the most pair type;
+				// checking the most frequencies contig pair type, and retain
+				// the most pair type;
 				int typeA = 0; // + +;
 				int typeB = 0; // + -;
 				int typeC = 0; // - -;
@@ -114,15 +115,15 @@ public class EdgeBundler {
 				Edge edge = new Edge();
 				Contig origin = new Contig();
 				Contig terminus = new Contig();
-				String [] arr = s.split(":->:");
+				String[] arr = s.split(":->:");
 				origin.setID(arr[0]);
 				terminus.setID(arr[1]);
 				edge.setOrigin(origin);
 				edge.setTerminus(terminus);
 				edge.setDistMean(mean);
 				edge.setDistSd(sd);
-//				edge.setOrigin(temp.get(s).get(0).getOrigin());
-//				edge.setTerminus(temp.get(s).get(0).getTerminus());
+				// edge.setOrigin(temp.get(s).get(0).getOrigin());
+				// edge.setTerminus(temp.get(s).get(0).getTerminus());
 				if (max == typeA) {
 					edge.setoStrand(Strand.FORWARD);
 					edge.settStrand(Strand.FORWARD);
@@ -176,13 +177,12 @@ public class EdgeBundler {
 				}
 				int mean = 0;
 				int sd = 0;
-				try{
+				try {
 					mean = MathTool.mean(dists);
 					sd = MathTool.sd(dists);
-				} catch(Exception e)
-				{
-					logger.debug("Edge Bundler: " +e.getMessage());
-					logger.info("Edge Bundler: " +e.getMessage());
+				} catch (Exception e) {
+					logger.debug("Edge Bundler: " + e.getMessage());
+					logger.info("Edge Bundler: " + e.getMessage());
 					continue;
 				}
 				int upper = mean + 2 * sd;

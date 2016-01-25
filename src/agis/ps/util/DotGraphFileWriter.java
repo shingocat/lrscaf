@@ -116,8 +116,8 @@ public class DotGraphFileWriter {
 				else if(e.getoStrand().equals(Strand.REVERSE) && e.gettStrand().equals(Strand.FORWARD))
 					color = "yellow";
 				bw.write(e.getOrigin().getID() + " -> " + e.getTerminus().getID() + " [label=\"" +
-						 e.getoStrand().toString() + e.gettStrand().toString()+ ":" + e.getLinkNum() + ":" +  
-						 "\",color=" + color + "];\n");
+						 e.getoStrand().toString() + " " + e.gettStrand().toString()+ ":" + e.getLinkNum() + ":" +  
+						 e.getDistMean() + ":" + e.getDistSd() + "\",color=" + color + "];\n");
 			}
 			bw.write("}");
 		} catch (IOException e) {
