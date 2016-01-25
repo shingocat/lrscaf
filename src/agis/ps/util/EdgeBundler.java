@@ -25,7 +25,7 @@ public class EdgeBundler {
 	private static int MIN_LINK_NUM = 3;
 	static final Logger logger = LoggerFactory.getLogger(EdgeBundler.class);
 
-	public static List<Edge> pbLinkM5Bundling(List<PBLinkM5> links, Parameter paras) {
+	public static List<Edge> pbLinkM5Bundling(List<PBLinkM5> links, Parameter paras){
 		if(links == null || links.size() == 0)
 			throw new IllegalArgumentException("The Links is empty when passed to EdgeBundler");
 		List<Edge> edges = new Vector<Edge>();
@@ -56,8 +56,17 @@ public class EdgeBundler {
 				for (PBLinkM5 pb : tlinks) {
 					dists.add(pb.getDistance());
 				}
-				int mean = MathTool.mean(dists);
-				int sd = MathTool.sd(dists);
+				int mean = 0;
+				int sd = 0;
+				try{
+				mean = MathTool.mean(dists);
+				sd = MathTool.sd(dists);
+				} catch (Exception e)
+				{
+					logger.debug("Edge Bundler: " +e.getMessage());
+					logger.info("Edge Bundler: " +e.getMessage());
+					continue;
+				}
 				int upper = mean + 2 * sd;
 				int low = mean - 2 * sd;
 				// if the distance larger than mean + 2 * sd, then remove;
@@ -76,6 +85,7 @@ public class EdgeBundler {
 					logger.debug("Error on EdgeBundler, when on " + String.valueOf(count) + " iteration!");
 					logger.debug(e.getMessage());
 					logger.error(e.getMessage());
+					continue;
 				}
 				// checking the most frequencies contig pair type, and retain the most pair type;
 				int typeA = 0; // + +;
@@ -106,7 +116,7 @@ public class EdgeBundler {
 				Contig terminus = new Contig();
 				String [] arr = s.split(":->:");
 				origin.setID(arr[0]);
-				terminus.setID(arr[2]);
+				terminus.setID(arr[1]);
 				edge.setOrigin(origin);
 				edge.setTerminus(terminus);
 				edge.setDistMean(mean);
@@ -139,7 +149,7 @@ public class EdgeBundler {
 		return edges;
 	}
 
-	public static List<Edge> pbLinkBundling(List<PBLink> links, Map<String, String> paras) {
+	public static List<Edge> pbLinkBundling(List<PBLink> links, Map<String, String> paras) throws Exception {
 		List<Edge> edges = new Vector<Edge>();
 		// storing all the same origin and terminus to a hash map;
 		Map<String, List<PBLink>> temp = new HashMap<String, List<PBLink>>();
@@ -164,8 +174,17 @@ public class EdgeBundler {
 				for (PBLink pb : tlinks) {
 					dists.add(pb.getDistance());
 				}
-				int mean = MathTool.mean(dists);
-				int sd = MathTool.sd(dists);
+				int mean = 0;
+				int sd = 0;
+				try{
+					mean = MathTool.mean(dists);
+					sd = MathTool.sd(dists);
+				} catch(Exception e)
+				{
+					logger.debug("Edge Bundler: " +e.getMessage());
+					logger.info("Edge Bundler: " +e.getMessage());
+					continue;
+				}
 				int upper = mean + 2 * sd;
 				int low = mean - 2 * sd;
 				// if the distance larger than mean + 2 * sd, then remove;
@@ -184,6 +203,7 @@ public class EdgeBundler {
 					logger.debug(String.valueOf(count));
 					logger.debug(e.getMessage());
 					logger.error(e.getMessage());
+					continue;
 				}
 				// checking the most frequencies contig pair type
 				int typeA = 0; // + +;

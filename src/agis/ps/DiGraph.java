@@ -368,7 +368,7 @@ public class DiGraph {
 	}
 
 	// return edges info in this graph
-	public LinkedHashMap<String, Integer> getEdgesStatistics() {
+	public LinkedHashMap<String, Integer> getEdgesStatistics() throws Exception {
 		LinkedHashMap<String, Integer> values = new LinkedHashMap<String, Integer>();
 		int mean = 0; // mean of support number of each edge;
 		int sd = 0; // sd of support number of each edge;
@@ -383,8 +383,14 @@ public class DiGraph {
 		for (int i = 0; i < edges.size(); i++) {
 			supNums.add(edges.get(i).getLinkNum());
 		}
-		mean = MathTool.mean(supNums);
-		sd = MathTool.sd(supNums);
+		try{
+			mean = MathTool.mean(supNums);
+			sd = MathTool.sd(supNums);
+		} catch(Exception e)
+		{
+			logger.debug("DiGraph: " +e.getMessage());
+			logger.info("DiGraph: " +e.getMessage());
+		}
 		edgesNum = supNums.size();
 		min = Collections.min(supNums);
 		max = Collections.max(supNums);

@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import agis.ps.M5Record;
 import agis.ps.SimplePath;
 import agis.ps.link.Contig;
@@ -22,6 +25,8 @@ import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM5;
 
 public class LinkBuilder {
+	private static Logger logger = LoggerFactory.getLogger(LinkBuilder.class);
+	
 	// method to change valid m5record to link two contigs;
 	public static List<PBLinkM5> m5Record2Link(List<M5Record> m5Records, Parameter paras) {
 		Integer minPBLen = paras.getMinPBLen();
@@ -130,6 +135,7 @@ public class LinkBuilder {
 				}
 			}
 			// put all valid records to a hashmap by key as the read id;
+//			logger.debug(m5.getqName());
 			if (pSet.containsKey(m5.getqName())) {
 				pSet.get(m5.getqName()).add(m5);
 			} else {
@@ -138,10 +144,12 @@ public class LinkBuilder {
 				pSet.put(m5.getqName(), records);
 			}
 		}
+		logger.debug("valid link " + pSet.size());
 		// transform valid M5Record to Pacbio link
 		for (String s : pSet.keySet()) {
 			List<M5Record> contig_pairs = pSet.get(s);
 			int cpSize = contig_pairs.size();
+			logger.debug("contig pairs size " + cpSize);
 //			at least having two contigs under the same pacbio read;
 			if (cpSize >= 2) {
 				// sorting the contig_pairs;

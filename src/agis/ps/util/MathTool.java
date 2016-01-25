@@ -11,15 +11,17 @@ import java.util.List;
 
 public class MathTool {
 	
-	public static Integer mean(List<Integer> nums)
+	public static Integer mean(List<Integer> nums) throws Exception
 	{
 		return MathTool.mean(nums.toArray(new Integer[nums.size()]));
 	}
 	
-	public static Integer mean(Integer [] nums)
+	public static Integer mean(Integer [] nums) throws Exception
 	{
 		int sum = 0;
 		int size = nums.length;
+		if(size == 0)
+			 throw new Exception("The arrays could not be empty when computed mean!");
 		for(int i = 0; i < size; i++)
 		{
 			sum += nums[i];
@@ -27,12 +29,12 @@ public class MathTool {
 		return Math.round(sum / size);
 	}
 	
-	public static Integer sd(List<Integer> nums)
+	public static Integer sd(List<Integer> nums) throws Exception
 	{
 		return MathTool.sd(nums.toArray(new Integer[nums.size()]));
 	}
 	
-	public static Integer sd(Integer [] nums)
+	public static Integer sd(Integer [] nums) throws Exception
 	{
 		int mean = MathTool.mean(nums);
 		int size = nums.length;

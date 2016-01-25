@@ -80,7 +80,7 @@ public class PathBuilder {
 				logger.debug(s + ":" + eStat.get(s));
 			}
 			// remove the support links less than 10
-			diGraph.removeEdge(10);
+			diGraph.removeEdge(1);
 			// logger.debug("After process less than 4");
 			// aE = diGraph.getEdges();
 			// for (Edge e : aE) {
@@ -193,6 +193,12 @@ public class PathBuilder {
 						DiGraph.selectedVertices.add(id);
 						if (isReverse)
 							isReverse = false;
+					}
+					// if empty after remove edge, than put the path into paths
+					if(diGraph.isEdgesEmpty())
+					{
+						paths.add(path);
+						break;
 					}
 				}
 			}
