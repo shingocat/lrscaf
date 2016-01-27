@@ -103,6 +103,7 @@ public class XMLParser {
 				para.setMaxEndRatio(0.1);
 				para.setMinSupLinks(3);
 				para.setMaxSupLinks(50);
+				para.setIdentity(0.8);
 			} else {
 				Node parasNode = nodes.item(0);
 				nodes = parasNode.getChildNodes();
@@ -131,7 +132,9 @@ public class XMLParser {
 						para.setMaxEndLen(Integer.valueOf(node.getTextContent()));
 					} else if (nodeName.equalsIgnoreCase("max_end_ratio")) {
 						para.setMaxEndRatio(Double.valueOf(node.getTextContent()));
-					} else {
+					} else if (nodeName.equalsIgnoreCase("identity")){
+						para.setIdentity(Double.valueOf(node.getTextContent()));
+					}else {
 						logger.debug("The para element contain illeage item " + nodeName + ". it will omit!");
 						logger.info("The para element contain illeage item " + nodeName + ". it will omit!");
 					}

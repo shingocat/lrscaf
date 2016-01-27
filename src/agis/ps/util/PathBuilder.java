@@ -386,11 +386,12 @@ public class PathBuilder {
 		}
 	}
 
-	private void findNextVertex() {
-
-	}
-
-	private void findPreviousVertex() {
-
+//	untangling the digraph, remove the self-connected, parallel links, repeat links;
+	public static DiGraph untangle(DiGraph diGraph)
+	{
+		// finding the self-connected edges;
+		
+		
+		return diGraph;
 	}
 }

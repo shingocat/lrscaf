@@ -13,6 +13,7 @@
 		 <!--The minimum contig length to be used in scaffolding-->
          <min_contig_length>1000</min_contig_length>
          <min_pacbio_length>3000</min_pacbio_length>
+		 <identity>0.8</identity>
          <min_overlap_length>500</min_overlap_length>
          <min_overlap_ratio>0.3</min_overlap_ratio>
          <max_overhang_length>3000</max_overhang_length>
