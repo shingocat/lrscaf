@@ -22,8 +22,8 @@ public class Parameter implements Serializable {
 	private Double maxOHRatio = 0.1d; // maximum overhang ratio, if contig_legnth * ratio > default maxOHLen, then the overhang length should be less than default maxOHLen, else using the length * ratio; 
 	private Integer maxEndLen = 500; // maximum Ending length 500 bp for defining the the contig is inner or outer;
 	private Double maxEndRatio = 0.1d; // maximum ending ratio, if pacbio_length * ratio > maxEndLen, the the ending length should not be larger than maxEndLen, else using the length*ratio;
-	private Integer minSupLinks;
-	private Integer maxSupLinks;
+	private Integer minSupLinks = 3; // minimum supported links number: 3;
+	private Integer maxSupLinks = 70; // maximum supported links number: 70;
 	private String type; // m for m5, s for sam, s for bam;
 	private Double identity = 0.8d; // compute the identity between contig and pacbio, formula as: match / (match + mismatch + numsIn + numsDel); 
 	

@@ -98,7 +98,7 @@ public class Scaffolder {
 			String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges.info";
 			DotGraphFileWriter.writeEdge(edgeFile, edges);
 			logger.debug("edges size: " + edges.size());
-//			List<Path> paths = PathBuilder.buildHamiltonPath(edges);
+			// List<Path> paths = PathBuilder.buildHamiltonPath(edges);
 			List<Path> paths = PathBuilder.buildPath(edges, paras);
 			// write the paths info into file;
 			String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "paths.info";
@@ -145,14 +145,12 @@ public class Scaffolder {
 				logger.info("Scaffolder: The output folder was exist!");
 				logger.debug("Scaffolder: The output folder was exist!");
 			} else {
-				if(output.mkdirs())
-				{
+				if (output.mkdirs()) {
 					logger.info("Scaffolder: The output folder was created!");
 					logger.debug("Scaffolder: The output folder was created!");
 				}
 			}
-		} catch (SecurityException e)
-		{
+		} catch (SecurityException e) {
 			logger.error("Scaffolder: " + e.getMessage());
 			logger.debug("Scaffolder: " + e.getMessage());
 		} catch (Exception e) {

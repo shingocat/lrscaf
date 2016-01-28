@@ -37,6 +37,7 @@ public class LinkBuilder {
 		Double maxOHRatio = paras.getMaxOHRatio();
 		Integer maxEndLen = paras.getMaxEndLen();
 		Double maxEndRatio = paras.getMaxEndRatio();
+		Double identity = paras.getIdentity();
 //		List<PBLink> pbLinks = new Vector<PBLink>();
 		List<PBLinkM5> pbLinks = new Vector<PBLinkM5>();
 		HashMap<String, List<M5Record>> pSet = new HashMap<String, List<M5Record>>();
@@ -44,16 +45,19 @@ public class LinkBuilder {
 		for (M5Record m5 : m5Records) {
 			int pbLen = m5.getqLength();
 			int pbStart = m5.getqStart();
-			int pbEnd = m5.getqEnd();
+			int pbEnd = m5.getqEnd() - 1;
 			int contLen = m5.gettLength();
 			int contStart = m5.gettStart();
-			int contEnd = m5.gettEnd();
-
+			int contEnd = m5.gettEnd() - 1;
+			
 			// pacbio length less than specified value, next;
 			if (pbLen < minPBLen.intValue())
 				continue;
 			// contig length less than specified value, next;
 			if (contLen < minContLen.intValue())
+				continue;
+			// if the contig and pacbio identity less than specified value, next;
+			if (m5.getIdentity() < identity)
 				continue;
 			// check the contig inner or outer of PacBio read, four points
 			// values defined it;
@@ -92,14 +96,14 @@ public class LinkBuilder {
 			// if(pbEnd < (pbLen - 1 - maxEndLen))
 			// isInner = true;
 			// }
-			if (pbStart > maxEndLen && pbStart < (pbLen - maxEndLen)) {
-				if (pbEnd < (pbLen - maxEndLen))
+			if (pbStart >= maxEndLen && pbStart <= (pbLen - maxEndLen)) {
+				if (pbEnd <= (pbLen - maxEndLen))
 					isInner = true;
 			}
-			int ol_len = pbEnd - pbStart;
+			int ol_len = pbEnd - pbStart + 1;
 			double ratio = (double) ol_len / contLen;
 			int contLeftLen = contStart;
-			int contRigthLen = contLen - contEnd;
+			int contRigthLen = contLen - contEnd - 1;
 			int ohDefLen = (int) Math.round(contLen * maxOHRatio);
 			if (ohDefLen < maxOHLen)
 				maxOHLen = ohDefLen;
@@ -115,19 +119,19 @@ public class LinkBuilder {
 				if (contLeftLen > maxOHLen || contRigthLen > maxOHLen)
 					continue;
 			} else {
-				if (pbStart < maxEndLen && pbEnd < (pbLen - maxEndLen)) {
-					// for left side
+				if (pbStart <= maxEndLen && pbEnd <= (pbLen - maxEndLen)) {
+					// for left side, p1-p2 and p2-p3
 					if (ol_len < minOLLen)
 						continue;
 					if (contRigthLen > maxOHLen)
 						continue;
-				} else if (pbStart < maxEndLen && pbEnd > (pbLen - maxEndLen)) { 
+				} else if (pbStart <= maxEndLen && pbEnd >= (pbLen - maxEndLen)) { 
 					// for p1-p2 and p3-p4 outer case!
 					if (ol_len < minOLLen)
 						continue;
-				} else if (pbStart > maxEndLen && pbEnd > (pbLen - maxEndLen)) 
+				} else if (pbStart >= maxEndLen && pbEnd >= (pbLen - maxEndLen)) 
 				{
-					// for right side
+					// for right side, p2-p3 and p3-p4
 					if (ol_len < minOLLen)
 						continue;
 					if (contLeftLen > maxOHLen)

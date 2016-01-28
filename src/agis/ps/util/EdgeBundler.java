@@ -111,6 +111,28 @@ public class EdgeBundler {
 					}
 				}
 				int max = MathTool.max(typeA, typeB, typeC, typeD);
+				// recompute the mean and sd after remove outlier
+				for (PBLinkM5 pb : tlinks) {
+					dists.add(pb.getDistance());
+				}
+				// if the distance larger than mean + 2 * sd, then remove;
+				try {
+					// This will show iteration error when remove element
+					// for (PBLink pb : tlinks) {
+					// if (pb.getDistance() > upper || pb.getDistance() < low)
+					// tlinks.remove(pb);
+					// }
+					for (int i = 0; i < tlinks.size(); i++) {
+						PBLinkM5 pb = tlinks.get(i);
+						if (pb.getDistance() > upper || pb.getDistance() < low)
+							tlinks.remove(pb);
+					}
+				} catch (Exception e) {
+					logger.debug("Error on EdgeBundler, when on " + String.valueOf(count) + " iteration!");
+					logger.debug(e.getMessage());
+					logger.error(e.getMessage());
+					continue;
+				}
 				// initiated the edge;
 				Edge edge = new Edge();
 				Contig origin = new Contig();

@@ -7,6 +7,7 @@
 package agis.ps;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 import agis.ps.util.Strand;
 
@@ -36,7 +37,7 @@ public class M5Record implements Serializable {
 	
 	public M5Record()
 	{
-		
+		// do not thing
 	}
 
 	public String getqName() {
@@ -189,6 +190,15 @@ public class M5Record implements Serializable {
 
 	public void settAlignedSeq(String tAlignedSeq) {
 		this.tAlignedSeq = tAlignedSeq;
+	}
+	
+	public Double getIdentity()
+	{
+		int sum = this.getNumMatch() + this.getNumMismatch() + this.getNumIns() + this.getNumDel();
+		double value = (double)this.getNumMatch() / sum;
+//		DecimalFormat df = new DecimalFormat("0.00");
+//		value = Double.valueOf(df.format(value));
+		return value;
 	}
 
 	@Override
