@@ -96,7 +96,7 @@ public class PathBuilder {
 					System.getProperty("user.dir") + System.getProperty("file.separator") + "removeLessThan10.txt",
 					diGraph.getEdges());
 			// check each contig sorted indegree and outdegree
-			List<ContInOut> values = diGraph.getCandiVertices();
+			List<ContInOut> values = diGraph.getCandVertices();
 			for (ContInOut c : values) {
 				logger.debug(c.toString());
 			}
@@ -224,49 +224,28 @@ public class PathBuilder {
 			Map<String, Integer> eStat = diGraph.getEdgesStatistics();
 			int lower = eStat.get("SUPPORT_LINKS_LOWER");
 			int upper = eStat.get("SUPPORT_LINKS_UPPER");
-			logger.debug("lower : " + lower);
-			logger.debug("upper : " + upper);
+			logger.debug("PathBuilder lower : " + lower);
+			logger.debug("PathBuilder upper : " + upper);
+			//original edges statistics 
 			for (String s : eStat.keySet()) {
 				logger.debug(s + ":" + eStat.get(s));
 			}
-			// simplest graph by remove lower and upper links number
-			// edges former;
-			// logger.debug("Before remove");
-			// List<Edge> oE = diGraph.getEdges();
-			// for (Edge e : oE) {
-			// logger.debug("B: " + e.getOrigin().getID() + "->" +
-			// e.getTerminus().getID() + " : " + e.getLinkNum());
-			// }
+			// remove outlier edges;
 			diGraph.removeEdge(lower, upper);
-			// logger.debug("After process");
-			// List<Edge> aE = diGraph.getEdges();
-			// for (Edge e : aE) {
-			// logger.debug("A: " + e.getOrigin().getID() + "->" +
-			// e.getTerminus().getID() + " : " + e.getLinkNum());
-			// }
 			eStat = diGraph.getEdgesStatistics();
 			for (String s : eStat.keySet()) {
 				logger.debug(s + ":" + eStat.get(s));
 			}
-			// remove the support links less than 10
-			// diGraph.removeEdge(1);
-			// logger.debug("After process less than 4");
-			// aE = diGraph.getEdges();
-			// for (Edge e : aE) {
-			// logger.debug("A: " + e.getOrigin().getID() + "->" +
-			// e.getTerminus().getID() + " : " + e.getLinkNum());
-			// }
-			// eStat = diGraph.getEdgesStatistics();
-			// for (String s : eStat.keySet()) {
-			// logger.debug(s + ":" + eStat.get(s));
-			// }
-			// logger.debug(System.getProperty("user.dir"));
-			// DotGraphFileWriter.writeEdge(
-			// System.getProperty("user.dir") +
-			// System.getProperty("file.separator") + "removeLessThan10.txt",
-			// diGraph.getEdges());
+			// remove the edges by user specified value;
+			lower = paras.getMinSupLinks();
+			upper = paras.getMaxSupLinks();
+			diGraph.removeEdge(lower, upper);
+			eStat = diGraph.getEdgesStatistics();
+			for (String s : eStat.keySet()) {
+				logger.debug(s + ":" + eStat.get(s));
+			}
 			// check each contig sorted indegree and outdegree
-			List<ContInOut> values = diGraph.getCandiVertices();
+			List<ContInOut> values = diGraph.getCandVertices();
 			for (ContInOut c : values) {
 				logger.debug(c.toString());
 			}

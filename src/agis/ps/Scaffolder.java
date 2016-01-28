@@ -94,15 +94,11 @@ public class Scaffolder {
 				readSAMAligned(aFilePath);
 			}
 			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
-			// write the edges info into file
-			String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges.info";
-			DotGraphFileWriter.writeEdge(edgeFile, edges);
+			this.writeEdgesInfo(edges);
 			logger.debug("edges size: " + edges.size());
 			// List<Path> paths = PathBuilder.buildHamiltonPath(edges);
 			List<Path> paths = PathBuilder.buildPath(edges, paras);
-			// write the paths info into file;
-			String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "paths.info";
-			DotGraphFileWriter.writePaths(pathFile, paths);
+			this.writePathsInfo(paths);
 			// listContigs();
 			// listAligns();
 			// if(gFilePath != null)
@@ -131,6 +127,18 @@ public class Scaffolder {
 		}
 
 		logger.info("Ending....");
+	}
+
+	public void writePathsInfo(List<Path> paths) {
+		// write the paths info into file;
+		String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "paths.info";
+		DotGraphFileWriter.writePaths(pathFile, paths);
+	}
+
+	public void writeEdgesInfo(List<Edge> edges) {
+		// write the edges info into file
+		String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges.info";
+		DotGraphFileWriter.writeEdge(edgeFile, edges);
 	}
 
 	public void buildOutputPath(String path) {

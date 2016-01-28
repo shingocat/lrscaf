@@ -88,12 +88,14 @@ public class EdgeBundler {
 					continue;
 				}
 				// checking the most frequencies contig pair type, and retain
-				// the most pair type;
+				// the most pair type; and recompute the mean and sd after remove outlier
 				int typeA = 0; // + +;
 				int typeB = 0; // + -;
 				int typeC = 0; // - -;
 				int typeD = 0; // - +;
+				dists.clear();
 				for (PBLinkM5 pb : tlinks) {
+					dists.add(pb.getDistance());
 					Strand oStrand = pb.getOrigin().gettStrand();
 					Strand tStrand = pb.getTerminus().gettStrand();
 					if (oStrand.equals(Strand.FORWARD)) {
@@ -112,25 +114,16 @@ public class EdgeBundler {
 				}
 				int max = MathTool.max(typeA, typeB, typeC, typeD);
 				// recompute the mean and sd after remove outlier
-				for (PBLinkM5 pb : tlinks) {
-					dists.add(pb.getDistance());
-				}
-				// if the distance larger than mean + 2 * sd, then remove;
+//				dists.clear();
+//				for (PBLinkM5 pb : tlinks) {
+//					dists.add(pb.getDistance());
+//				}
 				try {
-					// This will show iteration error when remove element
-					// for (PBLink pb : tlinks) {
-					// if (pb.getDistance() > upper || pb.getDistance() < low)
-					// tlinks.remove(pb);
-					// }
-					for (int i = 0; i < tlinks.size(); i++) {
-						PBLinkM5 pb = tlinks.get(i);
-						if (pb.getDistance() > upper || pb.getDistance() < low)
-							tlinks.remove(pb);
-					}
+					mean = MathTool.mean(dists);
+					sd = MathTool.sd(dists);
 				} catch (Exception e) {
-					logger.debug("Error on EdgeBundler, when on " + String.valueOf(count) + " iteration!");
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
+					logger.debug("Edge Bundler: " + e.getMessage());
+					logger.info("Edge Bundler: " + e.getMessage());
 					continue;
 				}
 				// initiated the edge;

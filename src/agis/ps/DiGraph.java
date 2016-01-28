@@ -59,7 +59,7 @@ public class DiGraph {
 		updateGraph();
 	}
 	// return all the vertices list based on indegree and outdegree increasing order
-	public List<ContInOut> getCandiVertices()
+	public List<ContInOut> getCandVertices()
 	{
 		if(candiVertices == null)
 			candiVertices = Collections.synchronizedList(new LinkedList<ContInOut>());
@@ -184,7 +184,7 @@ public class DiGraph {
 	public String getVertexByOrdering()
 	{
 		String value = "";
-		List<ContInOut> cins = getCandiVertices();
+		List<ContInOut> cins = getCandVertices();
 		for(ContInOut c : cins)
 		{
 			if(selectedVertices.contains(c.getId()))
