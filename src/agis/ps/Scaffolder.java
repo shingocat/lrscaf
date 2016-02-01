@@ -89,16 +89,23 @@ public class Scaffolder {
 			List<M5Record> m5Records = null;
 			if (type.equalsIgnoreCase("m")) {
 				m5Records = readM5Aligned(aFilePath);
-				pbLinks = LinkBuilder.m5Record2Link(m5Records, paras);
+//				pbLinks = LinkBuilder.m5Record2Link(m5Records, paras);
+				LinkBuilder linkBuilder = new LinkBuilder(m5Records, paras);
+				pbLinks = linkBuilder.m5Record2Link();
 			} else {
 				readSAMAligned(aFilePath);
 			}
-			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
+			EdgeBundler edgeBundler = new EdgeBundler(pbLinks, paras);
+			edges = edgeBundler.pbLinkM5Bundling();
+//			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
 			this.writeEdgesInfo(edges);
 			logger.debug("edges size: " + edges.size());
 			// List<Path> paths = PathBuilder.buildHamiltonPath(edges);
-			List<Path> paths = PathBuilder.buildPath(edges, paras);
+//			List<Path> paths = PathBuilder.buildPath(edges, paras);
+			PathBuilder pathBuilder = new PathBuilder(edges, paras);
+			List<Path> paths = pathBuilder.buildPath();
 			this.writePathsInfo(paths);
+			
 			// listContigs();
 			// listAligns();
 			// if(gFilePath != null)
@@ -128,7 +135,12 @@ public class Scaffolder {
 
 		logger.info("Ending....");
 	}
-
+	
+	public void writeScaffolds(List<Path> paths)
+	{
+		
+	}
+	
 	public void writePathsInfo(List<Path> paths) {
 		// write the paths info into file;
 		String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "paths.info";

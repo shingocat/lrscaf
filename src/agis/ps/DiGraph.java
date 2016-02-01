@@ -8,6 +8,7 @@ package agis.ps;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -24,106 +25,129 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.ContInOut;
+import agis.ps.link.Contig;
 import agis.ps.util.MathTool;
+import agis.ps.util.Strand;
 
 //Directed Graph
-public class DiGraph {
-	public static List<String> selectedVertices = new Vector<String>();
+public class DiGraph implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static Logger logger = LoggerFactory.getLogger(DiGraph.class);
+	private Collection<String> sletVerts = Collections.synchronizedCollection(new HashSet<String>());
+	private Collection<String> unSletVerts = Collections.synchronizedCollection(new HashSet<String>());
 	private int verNum; // number of vertices in this directed graph;
 	private int edgNum; // number of edges in this directed graph;
-	private HashSet<String> verticesId; // the id of vertices;
-	private List<ContInOut> candiVertices; // the id of vertices for candidate graph travel 
-	private LinkedHashMap<String, List<Edge>> pTMap; // outdegree, adjacency list for
+	// private HashSet<String> verticesId; // the id of vertices;
+	private List<ContInOut> candiVertices; // the id of vertices for candidate
+											// graph travel
+	private Map<String, List<Edge>> pTMap; // outdegree, adjacency
+														// list for
 														// vertex v point to;
-	private LinkedHashMap<String, List<Edge>> pFMap; // indegree, map of vertex v point
+	private Map<String, List<Edge>> pFMap; // indegree, map of vertex
+														// v point
 														// from;
 	private List<Edge> edges; // the edges list in this graph;
-
-	public DiGraph(int verNum) {
-		if (verNum < 0)
-			throw new IllegalArgumentException("Number of vertices in a digraph must be nonnegative!");
-		this.verNum = verNum;
-	}
-
-	public DiGraph(int verNum, int edgNum) {
-		this(verNum);
-		this.edgNum = edgNum;
-	}
+	private int validEdgeNums = 0;
 
 	public DiGraph(List<Edge> edges) {
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("The parametes edges were empty for constructed Graph instance!");
 		this.edges = edges;
-		getVerticesId();
+		// getVerticesId();
 		updateGraph();
 	}
-	// return all the vertices list based on indegree and outdegree increasing order
-	public List<ContInOut> getCandVertices()
+
+	// initiated UnSelected Vertices;
+	private void initUnSletVerts() {
+		// initiated the vertex id
+		if (unSletVerts == null)
+			unSletVerts = Collections.synchronizedCollection(new HashSet<String>());
+		unSletVerts.clear();
+
+		// initiated the above indegree and outdegree map;
+		for (int i = 0; i < edges.size(); i++) {
+			Edge e = edges.get(i);
+			String oId = e.getOrigin().getID();
+			String tId = e.getTerminus().getID();
+			// add vertices id to hashset;
+			unSletVerts.add(oId);
+			unSletVerts.add(tId);
+		}
+	}
+	
+	// initiated valid edges numbers
+	private void initEdgeNums()
 	{
-		if(candiVertices == null)
+		if(validEdgeNums != 0)
+			validEdgeNums = 0;
+		for(Edge e : edges)
+		{
+			if(e.isValid())
+				validEdgeNums += 1;
+		}
+	}
+
+	// return all the vertices list based on indegree and outdegree increasing
+	// order
+	public List<ContInOut> getCandVertices() {
+		if (candiVertices == null)
 			candiVertices = Collections.synchronizedList(new LinkedList<ContInOut>());
 		Map<String, Integer> indegrees = indegrees();
 		Map<String, Integer> outdegrees = outdegrees();
 		ContInOut cin = null;
-		// build a map 
+		// build a map
 		Map<String, Integer[]> values = new HashMap<String, Integer[]>();
-		for(String s : indegrees.keySet())
-		{
-			Integer [] value = new Integer[2];
+		for (String s : indegrees.keySet()) {
+			Integer[] value = new Integer[2];
 			value[0] = indegrees.get(s);
 			value[1] = 0;
 			values.put(s, value);
 		}
-		for(String s : outdegrees.keySet())
-		{
-			if(values.containsKey(s))
-			{
-				Integer [] value = values.get(s);
+		for (String s : outdegrees.keySet()) {
+			if (values.containsKey(s)) {
+				Integer[] value = values.get(s);
 				value[1] = outdegrees.get(s);
-			} else
-			{
-				Integer [] value = new Integer[2];
+			} else {
+				Integer[] value = new Integer[2];
 				value[0] = 0;
 				value[1] = outdegrees.get(s);
 				values.put(s, value);
 			}
 		}
 		// initiated the linkedlist
-		for(String s : values.keySet())
-		{
+		for (String s : values.keySet()) {
 			cin = new ContInOut();
 			cin.setId(s);
-			Integer [] value = values.get(s);
+			Integer[] value = values.get(s);
 			cin.setIndegrees(value[0]);
 			cin.setOutdegrees(value[1]);
 			candiVertices.add(cin);
 		}
 		// sorted linked list by indegree and outdegree increasing order;
-		Collections.sort(candiVertices, new Comparator<ContInOut>()
-				{
-					@Override
-					public int compare(ContInOut o1, ContInOut o2) {
-							Integer o1I = o1.getIndegrees();
-							Integer o2I = o2.getIndegrees();
-							Integer o1O = o1.getOutdegrees();
-							Integer o2O = o2.getOutdegrees();
-							
-							int icomp = o1I.compareTo(o2I);
-							if(icomp != 0)
-							{
-								return icomp;
-							} else
-							{
-								return o1O.compareTo(o2O);
-							}
-					}
-				});;
+		Collections.sort(candiVertices, new Comparator<ContInOut>() {
+			@Override
+			public int compare(ContInOut o1, ContInOut o2) {
+				Integer o1I = o1.getIndegrees();
+				Integer o2I = o2.getIndegrees();
+				Integer o1O = o1.getOutdegrees();
+				Integer o2O = o2.getOutdegrees();
+
+				int icomp = o1I.compareTo(o2I);
+				if (icomp != 0) {
+					return icomp;
+				} else {
+					return o1O.compareTo(o2O);
+				}
+			}
+		});
+		;
 		return candiVertices;
 	}
 
 	// update the graph when initiated or modification
 	private void updateGraph() {
+		initUnSletVerts();
+		initEdgeNums();
 		this.getpFMap();
 		this.getpTMap();
 		verNum = pTMap.size();
@@ -154,47 +178,61 @@ public class DiGraph {
 		this.setEdges(values);
 		updateGraph();
 	}
-	
-	// remove edges by criterion of support link less or larger than the specify value;
-	public void removeEdge(int lower, int upper)
-	{
+
+	// remove edges by criterion of support link less or larger than the specify
+	// value;
+	public void removeEdge(int lower, int upper) {
 		List<Edge> values = new Vector<Edge>(); // storing the valid values;
-		for(int i = 0; i < edges.size(); i++)
-		{
+		for (int i = 0; i < edges.size(); i++) {
 			Edge edge = edges.get(i);
 			int linkNum = edge.getLinkNum();
-			if(linkNum >= lower && linkNum <= upper)
-			{
+			if (linkNum >= lower && linkNum <= upper) {
 				values.add(edge);
-			} 
+			}
 		}
 		this.setEdges(values);
 		updateGraph();
 	}
 
 	// return random vertex id;
-	public String getOneRandomVertex() {
-		int random = new Random().nextInt(verNum);
-		String[] ss = pTMap.keySet().toArray(new String[pTMap.size()]);
+	public String getOneRandomVertex(){
+//		int random = new Random().nextInt(verNum);
+//		String[] ss = pTMap.keySet().toArray(new String[pTMap.size()]);
+//		String s = ss[random];
+//		return s;
+		if(unSletVerts.size() <= 0)
+			throw new IllegalStateException("There are not more unselected vertices!");
+		int random = new Random().nextInt(unSletVerts.size());
+		String [] ss = unSletVerts.toArray(new String[unSletVerts.size()]);
 		String s = ss[random];
 		return s;
 	}
-	
+
 	// return vertex by their indegree or outdegree order
-	public String getVertexByOrdering()
-	{
+	public String getVertexByOrdering() {
 		String value = "";
 		List<ContInOut> cins = getCandVertices();
-		for(ContInOut c : cins)
-		{
-			if(selectedVertices.contains(c.getId()))
-			{
+		for (ContInOut c : cins) {
+			if (sletVerts.contains(c.getId())) {
 				continue;
-			} else
-			{
+			} else {
 				value = c.getId();
 				break;
 			}
+		}
+		return value;
+	}
+
+	// add vertex id into sletVerts if used
+	public boolean addId2SletVerts(String id) {
+		boolean value = sletVerts.add(id);
+		// delete vertex id from unSletVertx set if used
+		if (value) {
+			if (unSletVerts.contains(id))
+				unSletVerts.remove(id);
+		} else {
+			if (sletVerts.contains(id))
+				unSletVerts.remove(id);
 		}
 		return value;
 	}
@@ -258,32 +296,43 @@ public class DiGraph {
 		this.edgNum = edgNum;
 	}
 
-	public HashSet<String> getVerticesId() {
-		// initiated the vertex id
-		if (verticesId == null)
-			verticesId = new HashSet<String>();
-		verticesId.clear();
-
-		// initiated the above indegree and outdegree map;
-		for (int i = 0; i < edges.size(); i++) {
-			Edge e = edges.get(i);
-			String oId = e.getOrigin().getID();
-			String tId = e.getTerminus().getID();
-			// add vertices id to hashset;
-			verticesId.add(oId);
-			verticesId.add(tId);
-		}
-		return verticesId;
+	// original vertices list;
+	// public HashSet<String> getVerticesId() {
+	// // initiated the vertex id
+	// if (verticesId == null)
+	// verticesId = new HashSet<String>();
+	// verticesId.clear();
+	//
+	// // initiated the above indegree and outdegree map;
+	// for (int i = 0; i < edges.size(); i++) {
+	// Edge e = edges.get(i);
+	// String oId = e.getOrigin().getID();
+	// String tId = e.getTerminus().getID();
+	// // add vertices id to hashset;
+	// verticesId.add(oId);
+	// verticesId.add(tId);
+	// }
+	// return verticesId;
+	// }
+	// the new method for getting all vertices id, sum of selected and
+	// unselected vertices
+	public Collection<String> getVerticesId() {
+		Collection<String> values = Collections.synchronizedCollection(new HashSet<String>());
+		if (!unSletVerts.isEmpty())
+			values.addAll(unSletVerts);
+		if (!sletVerts.isEmpty())
+			values.addAll(sletVerts);
+		return values;
 	}
 
-	public void setVerticesId(HashSet<String> verticesId) {
-		this.verticesId = verticesId;
-	}
+//	public void setVerticesId(HashSet<String> verticesId) {
+//		this.verticesId = verticesId;
+//	}
 
-	public LinkedHashMap<String, List<Edge>> getpTMap() {
+	public Map<String, List<Edge>> getpTMap() {
 		// initiated the vertex point to where
 		if (pTMap == null)
-			pTMap = new LinkedHashMap<String, List<Edge>>();
+			pTMap = Collections.synchronizedMap(new LinkedHashMap<String, List<Edge>>());
 		pTMap.clear();
 		// initiated the above indegree and outdegree map;
 		for (int i = 0; i < edges.size(); i++) {
@@ -308,10 +357,10 @@ public class DiGraph {
 		this.pTMap = pTMap;
 	}
 
-	public LinkedHashMap<String, List<Edge>> getpFMap() {
+	public Map<String, List<Edge>> getpFMap() {
 		// initiated the vertex point from where
 		if (pFMap == null)
-			pFMap = new LinkedHashMap<String, List<Edge>>();
+			pFMap = Collections.synchronizedMap(new LinkedHashMap<String, List<Edge>>());
 		pFMap.clear();
 		// initiated the above indegree and outdegree map;
 		for (int i = 0; i < edges.size(); i++) {
@@ -337,32 +386,37 @@ public class DiGraph {
 	}
 
 	// return all adjacency vertices over each vertex;
-	public LinkedHashMap<String, List<Edge>> getAdjs() {
+	public Map<String, List<Edge>> getAdjs() {
 		return pTMap;
 	}
 
-	// outdegree, return all adjacency vertices over the specific vertex id point to;
+	// outdegree, return all adjacency vertices over the specific vertex id
+	// point to;
 	public LinkedHashMap<String, List<Edge>> getAdjsPT(String id) {
-		if (!verticesId.contains(id)) {
+//		if (!verticesId.contains(id)) {
+//			throw new IllegalArgumentException("ID of vertices in a Digraph was not exists!");
+//		}
+		if(!sletVerts.contains(id) && !unSletVerts.contains(id))
 			throw new IllegalArgumentException("ID of vertices in a Digraph was not exists!");
-		}
 		LinkedHashMap<String, List<Edge>> values = new LinkedHashMap<String, List<Edge>>();
 		List<Edge> edges = getpTMap().get(id);
 		values.put(id, edges);
 		return values;
 	}
-	
-	// indegere, return all adjacency vertices over the specific vertex id point from other vertex;
-	public LinkedHashMap<String, List<Edge>> getAdjsPF(String id)
-	{
-		if(!verticesId.contains(id))
+
+	// indegere, return all adjacency vertices over the specific vertex id point
+	// from other vertex;
+	public LinkedHashMap<String, List<Edge>> getAdjsPF(String id) {
+//		if (!verticesId.contains(id))
+//			throw new IllegalArgumentException("Id of vertex in a digraph was not exists!");
+		if(!sletVerts.contains(id) && !unSletVerts.contains(id))
 			throw new IllegalArgumentException("Id of vertex in a digraph was not exists!");
 		LinkedHashMap<String, List<Edge>> values = new LinkedHashMap<String, List<Edge>>();
 		List<Edge> edges = getpFMap().get(id);
 		values.put(id, edges);
 		return values;
 	}
-	
+
 	public void setAdjs(LinkedHashMap<String, List<Edge>> adjs) {
 		this.pTMap = adjs;
 	}
@@ -383,13 +437,12 @@ public class DiGraph {
 		for (int i = 0; i < edges.size(); i++) {
 			supNums.add(edges.get(i).getLinkNum());
 		}
-		try{
+		try {
 			mean = MathTool.mean(supNums);
 			sd = MathTool.sd(supNums);
-		} catch(Exception e)
-		{
-			logger.debug("DiGraph: " +e.getMessage());
-			logger.info("DiGraph: " +e.getMessage());
+		} catch (Exception e) {
+			logger.debug("DiGraph: " + e.getMessage());
+			logger.info("DiGraph: " + e.getMessage());
 		}
 		edgesNum = supNums.size();
 		min = Collections.min(supNums);
@@ -413,34 +466,165 @@ public class DiGraph {
 	public void setEdges(List<Edge> edges) {
 		this.edges = edges;
 	}
-	
-	public boolean isEdgesEmpty()
-	{
-		//if the edges in the digraph is empty, return true;
-		if(this.getEdges().isEmpty())
+
+	public boolean isEdgesEmpty() {
+		// if the edges in the digraph is empty, return true;
+		if (this.getEdges().isEmpty())
 			return true;
 		return false;
 	}
+
 	// return true or false whether the specified id had edges
-	public boolean hasEdges(String id)
-	{
-		if(!verticesId.contains(id))
+	public boolean hasEdges(String id) {
+//		if (!verticesId.contains(id))
+//			throw new IllegalArgumentException("The specified id do not exist in graph!");
+		if (!sletVerts.contains(id) && !unSletVerts.contains(id))
 			throw new IllegalArgumentException("The specified id do not exist in graph!");
 		boolean value = false;
-		if(getAdjsPT(id).size() > 0)
+		if (getAdjsPT(id).size() > 0)
 			return true;
 		return value;
 	}
-	
+
 	// return list of edges origin from the specified id
-	public List<Edge> getEdgesBySpecifiedId(String id)
-	{
-		if(!verticesId.contains(id))
+	public List<Edge> getEdgesBySpecifiedId(String id) {
+//		if (!verticesId.contains(id))
+//			throw new IllegalArgumentException("The specified id do not exist in graph!");
+		if (!sletVerts.contains(id) && !unSletVerts.contains(id))
 			throw new IllegalArgumentException("The specified id do not exist in graph!");
 		List<Edge> values = new Vector<Edge>();
 		values = getpTMap().get(id);
-		if(values == null)
+		if (values == null)
 			return new Vector<Edge>();
+		return values;
+	}
+
+	// checking the DiGraph has self connected edge or not;
+	public boolean hasSelfConnected() {
+		for (int i = 0; i < edges.size(); i++) {
+			Contig origin = edges.get(i).getOrigin();
+			Contig terminus = edges.get(i).getTerminus();
+			if (origin.equals(terminus)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// return all the self connected edges
+	public List<Edge> getSelfConnected() {
+		List<Edge> edges = new Vector<Edge>();
+		for (int i = 0; i < edges.size(); i++) {
+			Contig origin = edges.get(i).getOrigin();
+			Contig terminus = edges.get(i).getTerminus();
+			if (origin.equals(terminus))
+				edges.add(edges.get(i));
+		}
+		if (edges.size() == 0)
+			return null;
+		return edges;
+	}
+
+	// need to improve the implement!
+	public boolean hasValidEdges() {
+		for (int i = 0; i < edges.size(); i++) {
+			if (edges.get(i).isValid())
+				return true;
+		}
+		return false;
+	}
+
+	public List<Edge> getPTValidEdgesById(String id) {
+//		if (!verticesId.contains(id))
+//			throw new IllegalArgumentException("The specified id do not exist in graph!");
+		if(!sletVerts.contains(id) && !unSletVerts.contains(id))
+			throw new IllegalArgumentException("The specified id do not exist in graph!");
+		List<Edge> values = new Vector<Edge>();
+		values = getpTMap().get(id);
+		// remove the unvalid edges
+		List<Edge> reValues = new Vector<Edge>();
+		for (Edge e : values) {
+			if (e.isValid())
+				reValues.add(e);
+		}
+		return reValues;
+	}
+
+	public List<Edge> getPFValidEdgesById(String id) {
+//		if (!verticesId.contains(id))
+//			throw new IllegalArgumentException("The specified id do not exist in graph!");
+		if(!sletVerts.contains(id) && !unSletVerts.contains(id))
+			throw new IllegalArgumentException("The specified id do not exist in graph!");
+		List<Edge> values = new Vector<Edge>();
+		values = getpFMap().get(id);
+		// remove the unvalid edges;
+		List<Edge> reValues = new Vector<Edge>();
+		for (Edge e : values) {
+			if (e.isValid())
+				reValues.add(e);
+		}
+		return reValues;
+	}
+
+	public int getValidEdgeNums() {
+		return validEdgeNums;
+	}
+
+	public void setValidEdgeNums(int validEdgeNums) {
+		this.validEdgeNums = validEdgeNums;
+	}
+	
+	public void setEdgeUnValid(Edge e)
+	{
+		if(!edges.contains(e))
+			throw new IllegalArgumentException("DiGraph: The argument edge was not exists!");
+		int index = edges.indexOf(e);
+		edges.get(index).setValid(false);
+		validEdgeNums = validEdgeNums - 1;
+	}
+	
+	// adding pesudo edges for two contigs, when this digraph having only one direction edges;
+	// it need to run after instance a DiGraph
+	public List<Edge> addPesudoEdges()
+	{
+		List<Edge> values = Collections.synchronizedList(new Vector<Edge>());
+		for(int i = 0; i < edges.size(); i++)
+		{
+			Edge e1 = edges.get(i); // the exist edge in the graph
+			Edge e = new Edge(); // the pesudo edge, only turn over the origin and terminus contig
+			e.setOrigin(e1.getTerminus());
+			e.setTerminus(e1.getOrigin());
+			if(!edges.contains(e))
+			{
+				e.setDistMean(e1.getDistMean());
+				e.setDistSd(e1.getDistSd());
+				e.setLinkNum(e1.getLinkNum());
+				e.setOL(e1.isOL());
+				e.setValid(e1.isValid());
+				if(e1.getoStrand().equals(Strand.FORWARD) && e1.gettStrand().equals(Strand.REVERSE))
+				{
+					e.setoStrand(Strand.REVERSE);
+					e.settStrand(Strand.REVERSE);
+				} else if(e1.getoStrand().equals(Strand.FORWARD) && e1.gettStrand().equals(Strand.REVERSE))
+				{
+					e.setoStrand(Strand.FORWARD);
+					e.settStrand(Strand.REVERSE);
+				} else if(e1.getoStrand().equals(Strand.REVERSE) && e1.gettStrand().equals(Strand.FORWARD))
+				{
+					e.setoStrand(Strand.REVERSE);
+					e.settStrand(Strand.FORWARD);
+				} else if(e1.getoStrand().equals(Strand.REVERSE) && e1.gettStrand().equals(Strand.REVERSE))
+				{
+					e.setoStrand(Strand.FORWARD);
+					e.settStrand(Strand.FORWARD);
+				}
+				e.setFake(true);
+				values.add(e);
+			} 
+			values.add(e1);
+		}
+		edges = values;
+		this.updateGraph();
 		return values;
 	}
 }

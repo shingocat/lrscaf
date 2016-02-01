@@ -22,18 +22,40 @@ import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM5;
 
 public class EdgeBundler {
-	private static int MIN_LINK_NUM = 3;
+//	private static int MIN_LINK_NUM = 3;
 	static final Logger logger = LoggerFactory.getLogger(EdgeBundler.class);
-
-	public static List<Edge> pbLinkM5Bundling(List<PBLinkM5> links, Parameter paras) {
+	private List<PBLinkM5> links;
+	private Parameter paras;
+	
+	public EdgeBundler()
+	{
+		// do nothing;
+	}
+	
+	public EdgeBundler(List<PBLinkM5> links, Parameter paras)
+	{
+		this.links = links;
+		this.paras = paras;
+	}
+	
+	public List<Edge> pbLinkM5Bundling()
+	{
+		if(links == null || links.size() == 0)
+			throw new IllegalArgumentException("EdgeBundler : The PBLinkM5 could not be empty!");
+		return this.pbLinkM5Bundling(links, paras);
+	}
+	
+	public List<Edge> pbLinkM5Bundling(List<PBLinkM5> links, Parameter paras) {
 		if (links == null || links.size() == 0)
 			throw new IllegalArgumentException("The Links is empty when passed to EdgeBundler");
+		boolean isUseOLLink = paras.isUseOLLink();
 		List<Edge> edges = new Vector<Edge>();
 		// storing all the same origin and terminus to a hash map;
 		Map<String, List<PBLinkM5>> temp = new HashMap<String, List<PBLinkM5>>();
 		for (PBLinkM5 pb : links) {
-			if (pb.isOverLap())
-				continue;
+			// not include overlap links 
+//			if (pb.isOverLap())
+//				continue;
 			String id = pb.getOrigin().gettName() + ":->:" + pb.getTerminus().gettName();
 			if (temp.containsKey(id)) {
 				temp.get(id).add(pb);
@@ -137,6 +159,14 @@ public class EdgeBundler {
 				edge.setTerminus(terminus);
 				edge.setDistMean(mean);
 				edge.setDistSd(sd);
+				edge.setFake(false);
+				// if the mean is minus, it means that edge is overlap, set it to be overlap and not valid;
+				if(mean < 0)
+					edge.setOL(true);
+				if(isUseOLLink)
+					edge.setValid(true);
+				else
+					edge.setValid(false);
 				// edge.setOrigin(temp.get(s).get(0).getOrigin());
 				// edge.setTerminus(temp.get(s).get(0).getTerminus());
 				if (max == typeA) {
@@ -165,7 +195,7 @@ public class EdgeBundler {
 		return edges;
 	}
 
-	public static List<Edge> pbLinkBundling(List<PBLink> links, Map<String, String> paras) throws Exception {
+	public  List<Edge> pbLinkBundling(List<PBLink> links, Map<String, String> paras) throws Exception {
 		List<Edge> edges = new Vector<Edge>();
 		// storing all the same origin and terminus to a hash map;
 		Map<String, List<PBLink>> temp = new HashMap<String, List<PBLink>>();
@@ -182,7 +212,8 @@ public class EdgeBundler {
 		// build the edge for fitted for criterion;
 		int count = 0;
 		for (String s : temp.keySet()) {
-			if (temp.get(s).size() >= EdgeBundler.MIN_LINK_NUM) {
+//			if (temp.get(s).size() >= EdgeBundler.MIN_LINK_NUM) {
+			if (temp.get(s).size() >= Integer.valueOf(paras.get("MIN_LINK_NUM"))) {
 				count += 1;
 				// statistical analysis contig pairs distance
 				List<PBLink> tlinks = temp.get(s);
@@ -272,4 +303,6 @@ public class EdgeBundler {
 		// not implemented now
 		return edges;
 	}
+	
+	
 }

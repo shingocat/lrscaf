@@ -115,6 +115,8 @@ public class DotGraphFileWriter {
 					color = "blue";
 				else if(e.getoStrand().equals(Strand.REVERSE) && e.gettStrand().equals(Strand.FORWARD))
 					color = "yellow";
+				else if(e.isFake())
+					color = "gray";
 				bw.write(e.getOrigin().getID() + " -> " + e.getTerminus().getID() + " [label=\"" +
 						 e.getoStrand().toString() + " " + e.gettStrand().toString()+ ":" + e.getLinkNum() + ":" +  
 						 e.getDistMean() + ":" + e.getDistSd() + "\",color=" + color + "];\n");

@@ -23,6 +23,8 @@ public class PBLinkM5 implements ILink {
 		return isOverLap;
 	}
 	
+	// distance = terminus_pacbio_start - terminus_contig_start -
+	//				(origin_pacbio_end + origin_contig_length - origin_contig_end)
 	@Override
 	public int getDistance() {
 		int oPBEnd = origin.getqEnd();

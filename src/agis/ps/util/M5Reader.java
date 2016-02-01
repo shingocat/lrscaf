@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class M5Reader {
 			br = new BufferedReader(fr);
 			String line = null;
 			String [] arrs = null;
-			m5List = new ArrayList<M5Record>();
+			m5List = new Vector<M5Record>();
 			while((line = br.readLine()) != null)
 			{
 				arrs = line.split("\\s+");

@@ -3,8 +3,8 @@
 <!--The input file for scaffolding, including contigs and aligned files (i.e. m5, sam or bam file) -->
 	<input>
 		<contig>E:\Data\Ecoli\ecoli83k.contig</contig>
-		<m5>E:\Data\Ecoli\align_10000.m5</m5>
-		<!--<m5>E:\Data\Ecoli\mock.dat</m5>-->
+		<!--<m5>E:\Data\Ecoli\align_10000.m5</m5>-->
+		<m5>E:\Data\Ecoli\mock.dat</m5>
 		<!--<m5>E:\Data\Ecoli\align_bstn_1_10000.m5</m5>-->
 	</input>
 	<!-- The output folder for scaffolding -->
@@ -23,7 +23,8 @@
          <max_end_ratio>0.5</max_end_ratio>
          <min_supported_links>2</min_supported_links>
          <max_supported_links>70</max_supported_links>
-
+		 <tips_size>1</tips_size>
+		 <use_overlap_link>true</use_overlap_link>
 		<!--The minimum contig length to be used in scaffolding-->
 		<!--
 		<min_contig_length>2000</min_contig_length>

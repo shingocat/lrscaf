@@ -26,7 +26,16 @@ public class Parameter implements Serializable {
 	private Integer maxSupLinks = 70; // maximum supported links number: 70;
 	private String type; // m for m5, s for sam, s for bam;
 	private Double identity = 0.8d; // compute the identity between contig and pacbio, formula as: match / (match + mismatch + numsIn + numsDel); 
+	private boolean isUseOLLink = false; // use overlap link into build edges;
 	
+	public boolean isUseOLLink() {
+		return isUseOLLink;
+	}
+
+	public void setUseOLLink(boolean isUseOLLink) {
+		this.isUseOLLink = isUseOLLink;
+	}
+
 	public Double getIdentity() {
 		return identity;
 	}

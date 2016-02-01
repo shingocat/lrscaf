@@ -8,6 +8,8 @@ package agis.ps.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -104,6 +106,7 @@ public class XMLParser {
 				para.setMinSupLinks(3);
 				para.setMaxSupLinks(50);
 				para.setIdentity(0.8);
+				para.setUseOLLink(false);
 			} else {
 				Node parasNode = nodes.item(0);
 				nodes = parasNode.getChildNodes();
@@ -132,9 +135,16 @@ public class XMLParser {
 						para.setMaxEndLen(Integer.valueOf(node.getTextContent()));
 					} else if (nodeName.equalsIgnoreCase("max_end_ratio")) {
 						para.setMaxEndRatio(Double.valueOf(node.getTextContent()));
-					} else if (nodeName.equalsIgnoreCase("identity")){
+					} else if (nodeName.equalsIgnoreCase("identity")) {
 						para.setIdentity(Double.valueOf(node.getTextContent()));
-					}else {
+					} else if (nodeName.equalsIgnoreCase("use_overlap_link")) {
+						Pattern pat = Pattern.compile("^T", Pattern.CASE_INSENSITIVE);
+						Matcher mat = pat.matcher(node.getTextContent());
+						if(mat.find())
+							para.setUseOLLink(true);
+						else 
+							para.setUseOLLink(false);
+					} else {
 						logger.debug("The para element contain illeage item " + nodeName + ". it will omit!");
 						logger.info("The para element contain illeage item " + nodeName + ". it will omit!");
 					}

@@ -26,9 +26,29 @@ import agis.ps.link.PBLinkM5;
 
 public class LinkBuilder {
 	private static Logger logger = LoggerFactory.getLogger(LinkBuilder.class);
+	private List<M5Record> m5s;
+	private Parameter paras;
+	
+	public LinkBuilder()
+	{
+		// do nothing;
+	}
+	
+	public LinkBuilder(List<M5Record> m5s, Parameter paras)
+	{
+		this.m5s = m5s;
+		this.paras = paras;
+	}
+	
+	public List<PBLinkM5> m5Record2Link()
+	{
+		if(m5s == null || m5s.size() == 0)
+			throw new IllegalArgumentException("LinkBuilder: The M5Records could not be empty!");
+		return this.m5Record2Link(m5s, paras);
+	}
 	
 	// method to change valid m5record to link two contigs;
-	public static List<PBLinkM5> m5Record2Link(List<M5Record> m5Records, Parameter paras) {
+	public List<PBLinkM5> m5Record2Link(List<M5Record> m5Records, Parameter paras) {
 		Integer minPBLen = paras.getMinPBLen();
 		Integer minContLen = paras.getMinContLen();
 		Integer minOLLen = paras.getMinOLLen();
@@ -148,12 +168,12 @@ public class LinkBuilder {
 				pSet.put(m5.getqName(), records);
 			}
 		}
-		logger.debug("valid link " + pSet.size());
+		logger.debug("LinkBuilder: valid link " + pSet.size());
 		// transform valid M5Record to Pacbio link
 		for (String s : pSet.keySet()) {
 			List<M5Record> contig_pairs = pSet.get(s);
 			int cpSize = contig_pairs.size();
-			logger.debug("contig pairs size " + cpSize);
+			logger.debug("LinkBuilder: contig pairs size " + cpSize);
 //			at least having two contigs under the same pacbio read;
 			if (cpSize >= 2) {
 				// sorting the contig_pairs;
@@ -217,6 +237,22 @@ public class LinkBuilder {
 		return pbLinks;
 	}
 
+	public List<M5Record> getM5s() {
+		return m5s;
+	}
+
+	public void setM5s(List<M5Record> m5s) {
+		this.m5s = m5s;
+	}
+
+	public Parameter getParas() {
+		return paras;
+	}
+
+	public void setParas(Parameter paras) {
+		this.paras = paras;
+	}
+	
 }
 
 class ByLocOrderComparator implements Comparator<Object> {
