@@ -103,8 +103,8 @@ public class Scaffolder {
 			// List<Path> paths = PathBuilder.buildHamiltonPath(edges);
 //			List<Path> paths = PathBuilder.buildPath(edges, paras);
 			PathBuilder pathBuilder = new PathBuilder(edges, paras);
-			List<Path> paths = pathBuilder.buildPath();
-			this.writePathsInfo(paths);
+			//List<Path> paths = pathBuilder.buildPath();
+			//this.writePathsInfo(paths);
 			
 			// listContigs();
 			// listAligns();
