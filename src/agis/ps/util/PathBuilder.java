@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import agis.ps.DiGraph;
 import agis.ps.Edge;
 import agis.ps.Path;
+import agis.ps.graph.DirectedGraph;
+import agis.ps.graph.Graph;
 import agis.ps.link.ContInOut;
 import agis.ps.link.Contig;
 
@@ -249,7 +251,37 @@ public class PathBuilder {
 		return this.buildPath(edges, paras);
 	}
 	
-	public List<Path> buildPath(List<Edge> edges, Parameter paras) {
+	public List<Path> buildPath(List<Edge> edges, Parameter paras)
+	{
+		if(edges == null || edges.size() == 0)
+			throw new IllegalArgumentException("PathBuilder: The Edges could not be empty!");
+		List<Path> paths = new Vector<Path>();
+		try{
+			Graph diGraph = new DirectedGraph(edges);
+			// travel the graph, random start
+			while(diGraph.isExistUnSelectedVertices())
+			{
+				Contig cnt = diGraph.getRandomVertex();
+				// if the return conting is null and the isExistUnSelectedVertices equal false 
+				// then break;
+				if(cnt == null)
+					break;
+				// the outdegree(od) and indegree(id) of contig;
+				// od == 0 and id == 0, orphan vertex;
+				// od == 0 and id == [1,2], normal;
+				// od == 0 and id > 2, abnormal;
+				// od == 1 and id == 0; 
+			}
+		} catch(Exception e)
+		{
+			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
+			paths = null;
+		}
+		return paths;
+	}
+	
+	/*public List<Path> buildPath(List<Edge> edges, Parameter paras) {
 		try {
 			diGraph = new DiGraph(edges);
 			Map<String, Integer> eStat = diGraph.getEdgesStatistics();
@@ -441,7 +473,7 @@ public class PathBuilder {
 			logger.error(e.getMessage());
 			return null;
 		}
-	}
+	}*/
 
 	// untangling the digraph, remove the self-connected, parallel links, repeat
 	// links;
