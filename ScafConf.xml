@@ -3,8 +3,8 @@
 <!--The input file for scaffolding, including contigs and aligned files (i.e. m5, sam or bam file) -->
 	<input>
 		<contig>E:\Data\Ecoli\ecoli83k.contig</contig>
-		<!--<m5>E:\Data\Ecoli\align_10000.m5</m5>-->
-		<m5>E:\Data\Ecoli\mock.dat</m5>
+		<m5>E:\Data\Ecoli\align_10000.m5</m5>
+		<!--<m5>E:\Data\Ecoli\mock.dat</m5>-->
 		<!--<m5>E:\Data\Ecoli\align_bstn_1_10000.m5</m5>-->
 	</input>
 	<!-- The output folder for scaffolding -->

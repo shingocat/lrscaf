@@ -24,6 +24,7 @@ import org.biojava.nbio.core.sequence.DNASequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.link.Contig;
 import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM5;
 import agis.ps.path.NodePath;
@@ -34,6 +35,7 @@ import agis.ps.util.LinkBuilder;
 import agis.ps.util.M5Reader;
 import agis.ps.util.Parameter;
 import agis.ps.util.PathBuilder;
+import agis.ps.util.ScaffoldWriter;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamInputResource;
@@ -106,6 +108,7 @@ public class Scaffolder {
 			PathBuilder pathBuilder = new PathBuilder(edges, paras);
 			List<NodePath> paths = pathBuilder.buildPath();
 			this.writeNodePathInfo(paths);
+			writeScaffolds(paths, contigs);
 			//List<Path> paths = pathBuilder.buildPath();
 			//this.writePathsInfo(paths);
 			
@@ -139,9 +142,11 @@ public class Scaffolder {
 		logger.info("Ending....");
 	}
 	
-	public void writeScaffolds(List<Path> paths)
+	public void writeScaffolds(List<NodePath> paths, Map<String, DNASequence> cnts)
 	{
-		
+		String filePath = paras.getOutFolder() + System.getProperty("file.separator") + "scaffolds.fasta";
+		ScaffoldWriter sw = new ScaffoldWriter(paths, cnts, filePath);
+		sw.write();
 	}
 	
 	public void writePathsInfo(List<Path> paths) {
