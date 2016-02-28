@@ -25,7 +25,7 @@ import agis.ps.Edge;
 import agis.ps.link.Contig;
 import agis.ps.util.MathTool;
 
-public class Graph implements Serializable {
+public abstract class Graph implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = LoggerFactory.getLogger(Graph.class);
@@ -37,8 +37,8 @@ public class Graph implements Serializable {
 	public Graph(List<Edge> edges) {
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("Graph: The edges could not be null or empty when constructed graph!");
-		if (edges != null)
-			edges = new Vector<Edge>();
+		if (this.edges != null)
+			this.edges = new Vector<Edge>();
 		this.edges = edges;
 		unselectedVertices = this.getVertices();
 	}
@@ -128,7 +128,8 @@ public class Graph implements Serializable {
 			selectedVertices = new Vector<Contig>();
 		if (unselectedVertices.contains(cnt))
 			unselectedVertices.remove(cnt);
-		selectedVertices.add(cnt);
+		if(!selectedVertices.contains(cnt))
+			selectedVertices.add(cnt);
 	}
 
 	// return random vertex from graph
@@ -138,4 +139,18 @@ public class Graph implements Serializable {
 			cnt = unselectedVertices.get(0);
 		return cnt;
 	}
+	
+	// return all the adjacent vertices to or from this contig;
+	public abstract List<Contig> getAdjVertices(Contig cnt);
+	
+	// return the next vertex from the current vertex and former vertex;
+	public abstract Contig getNextVertex(Contig current, Contig former);
+	
+	// return the vertex by specified id;
+	public abstract Contig getVertex(String id);
+	
+	// return edge info between these two contigs
+	public abstract List<Edge> getEdgesInfo(Contig start, Contig end);
+	
+
 }

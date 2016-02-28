@@ -22,20 +22,20 @@ import agis.ps.graph.DirectedGraph;
 import agis.ps.graph.Graph;
 import agis.ps.link.ContInOut;
 import agis.ps.link.Contig;
+import agis.ps.path.Node;
+import agis.ps.path.NodePath;
 
 public class PathBuilder {
 	public static Logger logger = LoggerFactory.getLogger(PathBuilder.class);
 	private List<Edge> edges;
 	private Parameter paras;
 	private DiGraph diGraph;
-	
-	public PathBuilder()
-	{
+
+	public PathBuilder() {
 		// do nothing;
 	}
-	
-	public PathBuilder(List<Edge> edges, Parameter paras)
-	{
+
+	public PathBuilder(List<Edge> edges, Parameter paras) {
 		this.edges = edges;
 		this.paras = paras;
 	}
@@ -43,14 +43,13 @@ public class PathBuilder {
 	public List<Path> buildEulerPath(List<Edge> edges) {
 		return null;
 	}
-	
-	public List<Path> buildHamiltonPath()
-	{
-		if(edges == null || edges.size() == 0)
+
+	public List<Path> buildHamiltonPath() {
+		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder : The Edges could not be empty!");
 		return this.buildHamiltonPath(edges);
 	}
-	
+
 	public List<Path> buildHamiltonPath(List<Edge> edges) {
 		try {
 			DiGraph diGraph = new DiGraph(edges);
@@ -126,7 +125,7 @@ public class PathBuilder {
 			// go go go through the graph
 			// for random start;
 			String id = diGraph.getVertexByOrdering();
-//			DiGraph.selectedVertices.add(id);
+			// DiGraph.selectedVertices.add(id);
 			diGraph.addId2SletVerts(id);
 			logger.debug("id: " + id);
 			// String id = "1709";
@@ -162,7 +161,7 @@ public class PathBuilder {
 					logger.debug("id: " + id);
 					if (id == null || id.length() == 0)
 						break;
-//					DiGraph.selectedVertices.add(id);
+					// DiGraph.selectedVertices.add(id);
 					diGraph.addId2SletVerts(id);
 					if (isReverse)
 						isReverse = false;
@@ -215,7 +214,7 @@ public class PathBuilder {
 						logger.debug("id: " + id);
 						if (id == null || id.length() == 0)
 							break;
-//						DiGraph.selectedVertices.add(id);
+						// DiGraph.selectedVertices.add(id);
 						diGraph.addId2SletVerts(id);
 						if (isReverse)
 							isReverse = false;
@@ -244,236 +243,250 @@ public class PathBuilder {
 		}
 	}
 
-	public List<Path> buildPath()
-	{
-		if(edges == null || edges.size() == 0)
+	public List<NodePath> buildPath() {
+		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder ： The Edges could not be empty!");
 		return this.buildPath(edges, paras);
 	}
-	
-	public List<Path> buildPath(List<Edge> edges, Parameter paras)
-	{
-		if(edges == null || edges.size() == 0)
+
+	public List<NodePath> buildPath(List<Edge> edges, Parameter paras) {
+		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder: The Edges could not be empty!");
-		List<Path> paths = new Vector<Path>();
-		try{
-			Graph diGraph = new DirectedGraph(edges);
-			// travel the graph, random start
-			while(diGraph.isExistUnSelectedVertices())
-			{
-				Contig cnt = diGraph.getRandomVertex();
-				// if the return conting is null and the isExistUnSelectedVertices equal false 
-				// then break;
-				if(cnt == null)
-					break;
-				// the outdegree(od) and indegree(id) of contig;
-				// od == 0 and id == 0, orphan vertex;
-				// od == 0 and id == [1,2], normal;
-				// od == 0 and id > 2, abnormal;
-				// od == 1 and id == 0; 
-			}
-		} catch(Exception e)
-		{
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
-			paths = null;
-		}
-		return paths;
-	}
-	
-	/*public List<Path> buildPath(List<Edge> edges, Parameter paras) {
+		List<NodePath> paths = new Vector<NodePath>();
 		try {
-			diGraph = new DiGraph(edges);
-			Map<String, Integer> eStat = diGraph.getEdgesStatistics();
-			int lower = eStat.get("SUPPORT_LINKS_LOWER");
-			int upper = eStat.get("SUPPORT_LINKS_UPPER");
-			logger.debug("PathBuilder lower : " + lower);
-			logger.debug("PathBuilder upper : " + upper);
-			// original edges statistics
-			for (String s : eStat.keySet()) {
-				logger.debug(s + ":" + eStat.get(s));
-			}
-			// remove outlier edges;
-			diGraph.removeEdge(lower, upper);
-			eStat = diGraph.getEdgesStatistics();
-			for (String s : eStat.keySet()) {
-				logger.debug(s + ":" + eStat.get(s));
-			}
-			// remove the edges by user specified value;
-			lower = paras.getMinSupLinks();
-			upper = paras.getMaxSupLinks();
-			diGraph.removeEdge(lower, upper);
-			eStat = diGraph.getEdgesStatistics();
-			for (String s : eStat.keySet()) {
-				logger.debug(s + ":" + eStat.get(s));
-			}
-			// pesudo edges;
-			diGraph.addPesudoEdges();
-			
-			// check each contig sorted indegree and outdegree
-			List<ContInOut> values = diGraph.getCandVertices();
-			for (ContInOut c : values) {
-				logger.debug(c.toString());
-			}
-			diGraph = untangle(diGraph);
-			// go through the graph
-			// for random start;
-			// String id = diGraph.getVertexByOrdering();
-			String id = diGraph.getOneRandomVertex();
-//			DiGraph.selectedVertices.add(id);
-			diGraph.addId2SletVerts(id);
-			logger.debug("id: " + id);
-			// String id = "1709";
-			String startId = id;
-			boolean isReverse = false;
-			List<Path> paths = new Vector<Path>();
-			Path path = new Path();
-			Strand strandStatus = Strand.FORWARD;
-			// need to rethink implement for fast define valid edges;
-			while(diGraph.getValidEdgeNums() >= 0)
-			{
-				List<Edge> pTEdges = diGraph.getPTValidEdgesById(id);
-				if(pTEdges.size() == 0)
-				{
-					List<Edge> pFEdges = diGraph.getPFValidEdgesById(id);
-					if(pFEdges.size() == 0)
-					{
-						diGraph.addId2SletVerts(id);
-						id = diGraph.getOneRandomVertex();
-						continue;
-					} else if(pFEdges.size() ==  1)
-					{
-						Edge e = pFEdges.get(0);
-						Contig o = e.getOrigin();
-						Contig t = e.getTerminus();
-						path.push(o);
-						path.push(t);
-						path.pushStrand(e.getoStrand());
-						path.pushStrand(e.gettStrand());
-						
-					} else if(pFEdges.size() == 2)
-					{
-						
-					} else if(pFEdges.size() >2)
-					{
-						
+			Graph diGraph = new DirectedGraph(edges);
+			NodePath path = null;
+			// travel the graph, random start
+			while (diGraph.isExistUnSelectedVertices()) {
+				Contig cnt = diGraph.getRandomVertex();
+//				Contig cnt = diGraph.getVertex("C3");
+				// if the return conting is null and the
+				// isExistUnSelectedVertices equal false
+				// then break;
+				if (cnt == null)
+					break;
+				// checking the adjacent set of the specified contig;
+				// if adjacent size == 0, it is orphan contig;
+				// if adjacent size <= 2, it is normal start point;
+				// if adjacent size >= 3, it is abnormal start point, next loop;
+				int adjSetSize = diGraph.getAdjVertices(cnt).size();
+				if (adjSetSize == 0) {
+					// orphan contig
+					path = new NodePath();
+					Node node = new Node();
+					node.setCnt(cnt);
+					node.setStrand(null);
+					node.setMeanDist2Next(0);
+					node.setSdDist2Next(0);
+					node.setSupportLinkNum(0);
+					node.setOrphan(true);
+					path.push(node);
+					paths.add(path);
+					diGraph.setVertexAsSelected(cnt);
+				} else if (adjSetSize == 1) {
+					// normal start point
+					path = new NodePath();
+					Contig next = diGraph.getNextVertex(cnt, null);
+					Strand tempStrand = null;
+					int count = 0;
+					Contig startPoint = cnt;
+					while (next != null) {
+						Node node = new Node();
+						List<Edge> eInfo = diGraph.getEdgesInfo(cnt, next);
+						int meanSum = 0;
+						int sdSum = 0;
+						int slSum = 0;
+						Strand strand = null;
+						if (eInfo.size() == 1) {
+							meanSum = eInfo.get(0).getDistMean();
+							sdSum = eInfo.get(0).getDistSd();
+							slSum = eInfo.get(0).getLinkNum();
+							// strand = eInfo.get(0).getoStrand();
+						} else if (eInfo.size() == 2) {
+							Edge e1 = eInfo.get(0);
+							Edge e2 = eInfo.get(1);
+							meanSum = MathTool.mean(new Integer[] { e1.getDistMean(), e2.getDistMean() });
+							sdSum = MathTool.sd(new Integer[] { e1.getDistSd(), e2.getDistSd() });
+							slSum = e1.getLinkNum() + e2.getLinkNum();
+						}
+						node.setCnt(cnt);
+						node.setMeanDist2Next(meanSum);
+						node.setSdDist2Next(sdSum);
+						node.setOrphan(false);
+						node.setSupportLinkNum(slSum);
+						diGraph.setVertexAsSelected(cnt);
+						path.push(node);
+						Contig temp = cnt;
+						cnt = next;
+						next = diGraph.getNextVertex(cnt, temp);
+						if(path.isNextExist(cnt, 0) && path.isNextExist(next, 0))
+					//	if(path.isNextExist(next, -2) || ( count == 1 && path.isNextExist(next, -1)))
+						{
+							paths.add(path);
+							break;
+						}
+						if(next.equals(startPoint))
+							count = count + 1;
 					}
+				} else if (adjSetSize == 2) {
+					// normal start point
+					path = new NodePath();
+					Contig startPoint = cnt;
+					int count = 0;
+					boolean isReverse = false;
+					Contig next = diGraph.getNextVertex(cnt, null);
+					while (next != null) {
+						Node node = new Node();
+						List<Edge> eInfo = diGraph.getEdgesInfo(cnt, next);
+						int meanSum = 0;
+						int sdSum = 0;
+						int slSum = 0;
+						Strand strand = null;
+						if (eInfo.size() == 1) {
+							meanSum = eInfo.get(0).getDistMean();
+							sdSum = eInfo.get(0).getDistSd();
+							slSum = eInfo.get(0).getLinkNum();
+							// strand = eInfo.get(0).getoStrand();
+						} else if (eInfo.size() == 2) {
+							Edge e1 = eInfo.get(0);
+							Edge e2 = eInfo.get(1);
+							meanSum = MathTool.mean(new Integer[] { e1.getDistMean(), e2.getDistMean() });
+							sdSum = MathTool.sd(new Integer[] { e1.getDistSd(), e2.getDistSd() });
+							slSum = e1.getLinkNum() + e2.getLinkNum();
+						}
+						node.setCnt(cnt);
+						node.setMeanDist2Next(meanSum);
+						node.setSdDist2Next(sdSum);
+						node.setOrphan(false);
+						node.setSupportLinkNum(slSum);
+						diGraph.setVertexAsSelected(cnt);
+						if(!path.isNextExist(cnt, 0))
+						{
+							if(isReverse)
+								path.unshift(node);
+							else
+								path.push(node);
+						}
 						
-				} else if(pTEdges.size() == 1)
-				{
-					
-				} else if(pTEdges.size() == 2)
-				{
-					
-				} else if(pTEdges.size() > 2)
-				{
-					
+//						if (count == 0 && !path.isNextExist(cnt, 0))
+//							path.push(node);
+//						else if (count != 0 && !path.isNextExist(cnt, 0) )
+//							path.unshift(node);
+						Contig temp = cnt;
+						cnt = next;
+						next = diGraph.getNextVertex(cnt, temp);
+						if (next.equals(startPoint))
+							count += 1;
+						if (cnt.equals(startPoint))
+							isReverse = true;
+						if (cnt.equals(startPoint) && count == 2) {
+							paths.add(path);
+							break;
+						}
+					}
+				} else if (adjSetSize >= 3) {
+					// abnormal start point, next loop;
+					diGraph.setVertexAsSelected(cnt);
+					continue;
 				}
 			}
-//			while (!diGraph.isEdgesEmpty()) {
-//				List<Edge> pTEdges = diGraph.getEdgesBySpecifiedId(id);
-//				// remove the reverse edge if in the path;
-//				if (!path.isEmpty()) {
-//					if (pTEdges.size() > 1) {
-//						for (int i = 0; i < pTEdges.size(); i++) {
-//							Edge e = pTEdges.get(i);
-//							if (path.isExistReverseEdge(e)) {
-//								pTEdges.remove(e);
-//								continue;
-//							}
-//							if (path.isExistEdge(e)) {
-//								pTEdges.remove(e);
-//								continue;
-//							}
-//						}
-//					}
-//				}
-//				if (pTEdges.isEmpty()) {
-//					if (!path.isEmpty())
-//						paths.add(path);
-//					path = new Path();
-//					// id = diGraph.getOneRandomVertex();
-//					id = diGraph.getVertexByOrdering();
-//					logger.debug("id: " + id);
-//					if (id == null || id.length() == 0)
-//						break;
-//					DiGraph.selectedVertices.add(id);
-//					if (isReverse)
-//						isReverse = false;
-//				} else {
-//					// define the selected edge
-//					Edge selectedE = null;
-//					for (Edge e : pTEdges) {
-//						if (selectedE == null) {
-//							selectedE = e;
-//							continue;
-//						} else if (e.getLinkNum() > selectedE.getLinkNum() && e.getoStrand().equals(strandStatus)) {
-//							selectedE = e;
-//							continue;
-//						}
-//					}
-//					// push or unshift vertex and Strand into Path
-//					Contig origin = selectedE.getOrigin();
-//					Contig terminus = selectedE.getTerminus();
-//
-//					if (path.isEmpty()) {
-//						path.push(origin);
-//						path.pushStrand(selectedE.getoStrand());
-//						path.push(terminus);
-//						path.pushStrand(selectedE.gettStrand());
-//					} else {
-//						int oIndex = path.containVertex(origin);
-//						int tIndex = path.containVertex(terminus);
-//						if (oIndex == 0 && tIndex == -1) {
-//							if (!isReverse)
-//								isReverse = true;
-//							path.unshift(terminus);
-//							path.unshiftStrand(selectedE.gettStrand());
-//						} else if (oIndex == path.getSize() - 1 && tIndex == -1) {
-//							path.push(terminus);
-//							path.pushStrand(selectedE.gettStrand());
-//						}
-//					}
-//					// storing the terminus Strand status;
-//					strandStatus = selectedE.gettStrand();
-//					// remove edge in the digraph after push or unshift in the
-//					// path
-//					diGraph.removeEdge(origin.getID(), terminus.getID());
-//					id = terminus.getID();
-//					if (startId.equals(terminus.getID()) && isReverse) {
-//						if (!path.isEmpty())
-//							paths.add(path);
-//						path = new Path();
-//						// id = diGraph.getOneRandomVertex();
-//						id = diGraph.getVertexByOrdering();
-//						logger.debug("id: " + id);
-//						if (id == null || id.length() == 0)
-//							break;
-//						DiGraph.selectedVertices.add(id);
-//						if (isReverse)
-//							isReverse = false;
-//					}
-//					// if empty after remove edge, than put the path into paths
-//					if (diGraph.isEdgesEmpty()) {
-//						paths.add(path);
-//						break;
-//					}
-//				}
-//			}
-//
-			logger.debug("Contain " + paths.size() + " Paths!");
-			int count = 0;
-			for (Path p : paths) {
-				logger.debug("Path " + count + ": " + p.toString());
-				count++;
-			}
-			return paths;
 		} catch (Exception e) {
 			logger.debug(e.getMessage());
 			logger.error(e.getMessage());
-			return null;
+			// paths = null;
 		}
-	}*/
+		return paths;
+	}
+
+	/*
+	 * public List<Path> buildPath(List<Edge> edges, Parameter paras) { try {
+	 * diGraph = new DiGraph(edges); Map<String, Integer> eStat =
+	 * diGraph.getEdgesStatistics(); int lower =
+	 * eStat.get("SUPPORT_LINKS_LOWER"); int upper =
+	 * eStat.get("SUPPORT_LINKS_UPPER"); logger.debug("PathBuilder lower : " +
+	 * lower); logger.debug("PathBuilder upper : " + upper); // original edges
+	 * statistics for (String s : eStat.keySet()) { logger.debug(s + ":" +
+	 * eStat.get(s)); } // remove outlier edges; diGraph.removeEdge(lower,
+	 * upper); eStat = diGraph.getEdgesStatistics(); for (String s :
+	 * eStat.keySet()) { logger.debug(s + ":" + eStat.get(s)); } // remove the
+	 * edges by user specified value; lower = paras.getMinSupLinks(); upper =
+	 * paras.getMaxSupLinks(); diGraph.removeEdge(lower, upper); eStat =
+	 * diGraph.getEdgesStatistics(); for (String s : eStat.keySet()) {
+	 * logger.debug(s + ":" + eStat.get(s)); } // pesudo edges;
+	 * diGraph.addPesudoEdges();
+	 * 
+	 * // check each contig sorted indegree and outdegree List<ContInOut> values
+	 * = diGraph.getCandVertices(); for (ContInOut c : values) {
+	 * logger.debug(c.toString()); } diGraph = untangle(diGraph); // go through
+	 * the graph // for random start; // String id =
+	 * diGraph.getVertexByOrdering(); String id = diGraph.getOneRandomVertex();
+	 * // DiGraph.selectedVertices.add(id); diGraph.addId2SletVerts(id);
+	 * logger.debug("id: " + id); // String id = "1709"; String startId = id;
+	 * boolean isReverse = false; List<Path> paths = new Vector<Path>(); Path
+	 * path = new Path(); Strand strandStatus = Strand.FORWARD; // need to
+	 * rethink implement for fast define valid edges;
+	 * while(diGraph.getValidEdgeNums() >= 0) { List<Edge> pTEdges =
+	 * diGraph.getPTValidEdgesById(id); if(pTEdges.size() == 0) { List<Edge>
+	 * pFEdges = diGraph.getPFValidEdgesById(id); if(pFEdges.size() == 0) {
+	 * diGraph.addId2SletVerts(id); id = diGraph.getOneRandomVertex(); continue;
+	 * } else if(pFEdges.size() == 1) { Edge e = pFEdges.get(0); Contig o =
+	 * e.getOrigin(); Contig t = e.getTerminus(); path.push(o); path.push(t);
+	 * path.pushStrand(e.getoStrand()); path.pushStrand(e.gettStrand());
+	 * 
+	 * } else if(pFEdges.size() == 2) {
+	 * 
+	 * } else if(pFEdges.size() >2) {
+	 * 
+	 * }
+	 * 
+	 * } else if(pTEdges.size() == 1) {
+	 * 
+	 * } else if(pTEdges.size() == 2) {
+	 * 
+	 * } else if(pTEdges.size() > 2) {
+	 * 
+	 * } } // while (!diGraph.isEdgesEmpty()) { // List<Edge> pTEdges =
+	 * diGraph.getEdgesBySpecifiedId(id); // // remove the reverse edge if in
+	 * the path; // if (!path.isEmpty()) { // if (pTEdges.size() > 1) { // for
+	 * (int i = 0; i < pTEdges.size(); i++) { // Edge e = pTEdges.get(i); // if
+	 * (path.isExistReverseEdge(e)) { // pTEdges.remove(e); // continue; // } //
+	 * if (path.isExistEdge(e)) { // pTEdges.remove(e); // continue; // } // }
+	 * // } // } // if (pTEdges.isEmpty()) { // if (!path.isEmpty()) //
+	 * paths.add(path); // path = new Path(); // // id =
+	 * diGraph.getOneRandomVertex(); // id = diGraph.getVertexByOrdering(); //
+	 * logger.debug("id: " + id); // if (id == null || id.length() == 0) //
+	 * break; // DiGraph.selectedVertices.add(id); // if (isReverse) //
+	 * isReverse = false; // } else { // // define the selected edge // Edge
+	 * selectedE = null; // for (Edge e : pTEdges) { // if (selectedE == null) {
+	 * // selectedE = e; // continue; // } else if (e.getLinkNum() >
+	 * selectedE.getLinkNum() && e.getoStrand().equals(strandStatus)) { //
+	 * selectedE = e; // continue; // } // } // // push or unshift vertex and
+	 * Strand into Path // Contig origin = selectedE.getOrigin(); // Contig
+	 * terminus = selectedE.getTerminus(); // // if (path.isEmpty()) { //
+	 * path.push(origin); // path.pushStrand(selectedE.getoStrand()); //
+	 * path.push(terminus); // path.pushStrand(selectedE.gettStrand()); // }
+	 * else { // int oIndex = path.containVertex(origin); // int tIndex =
+	 * path.containVertex(terminus); // if (oIndex == 0 && tIndex == -1) { // if
+	 * (!isReverse) // isReverse = true; // path.unshift(terminus); //
+	 * path.unshiftStrand(selectedE.gettStrand()); // } else if (oIndex ==
+	 * path.getSize() - 1 && tIndex == -1) { // path.push(terminus); //
+	 * path.pushStrand(selectedE.gettStrand()); // } // } // // storing the
+	 * terminus Strand status; // strandStatus = selectedE.gettStrand(); // //
+	 * remove edge in the digraph after push or unshift in the // // path //
+	 * diGraph.removeEdge(origin.getID(), terminus.getID()); // id =
+	 * terminus.getID(); // if (startId.equals(terminus.getID()) && isReverse) {
+	 * // if (!path.isEmpty()) // paths.add(path); // path = new Path(); // //
+	 * id = diGraph.getOneRandomVertex(); // id = diGraph.getVertexByOrdering();
+	 * // logger.debug("id: " + id); // if (id == null || id.length() == 0) //
+	 * break; // DiGraph.selectedVertices.add(id); // if (isReverse) //
+	 * isReverse = false; // } // // if empty after remove edge, than put the
+	 * path into paths // if (diGraph.isEdgesEmpty()) { // paths.add(path); //
+	 * break; // } // } // } // logger.debug("Contain " + paths.size() +
+	 * " Paths!"); int count = 0; for (Path p : paths) { logger.debug("Path " +
+	 * count + ": " + p.toString()); count++; } return paths; } catch (Exception
+	 * e) { logger.debug(e.getMessage()); logger.error(e.getMessage()); return
+	 * null; } }
+	 */
 
 	// untangling the digraph, remove the self-connected, parallel links, repeat
 	// links;
@@ -482,7 +495,7 @@ public class PathBuilder {
 		diGraph = removeSelfConnected(diGraph);
 		return diGraph;
 	}
-	
+
 	// remove the self connected edges;
 	public static DiGraph removeSelfConnected(DiGraph diGraph) {
 		// finding the self-connected edges;
@@ -501,8 +514,8 @@ public class PathBuilder {
 
 		return diGraph;
 	}
-	
-	// remove tips 
+
+	// remove tips
 
 	public DiGraph getDiGraph() {
 		return diGraph;
@@ -512,5 +525,4 @@ public class PathBuilder {
 		this.diGraph = diGraph;
 	}
 
-	
 }

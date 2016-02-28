@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM5;
+import agis.ps.path.NodePath;
 import agis.ps.util.Color;
 import agis.ps.util.DotGraphFileWriter;
 import agis.ps.util.EdgeBundler;
@@ -103,6 +104,8 @@ public class Scaffolder {
 			// List<Path> paths = PathBuilder.buildHamiltonPath(edges);
 //			List<Path> paths = PathBuilder.buildPath(edges, paras);
 			PathBuilder pathBuilder = new PathBuilder(edges, paras);
+			List<NodePath> paths = pathBuilder.buildPath();
+			this.writeNodePathInfo(paths);
 			//List<Path> paths = pathBuilder.buildPath();
 			//this.writePathsInfo(paths);
 			
@@ -145,6 +148,12 @@ public class Scaffolder {
 		// write the paths info into file;
 		String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "paths.info";
 		DotGraphFileWriter.writePaths(pathFile, paths);
+	}
+	
+	public void writeNodePathInfo(List<NodePath> paths)
+	{
+		String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "NodePaths.info";
+		DotGraphFileWriter.writeNodePaths(pathFile, paths);
 	}
 
 	public void writeEdgesInfo(List<Edge> edges) {

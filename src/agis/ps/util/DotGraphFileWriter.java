@@ -20,6 +20,7 @@ import agis.ps.Edge;
 import agis.ps.Path;
 import agis.ps.SimplePath;
 import agis.ps.link.PBLink;
+import agis.ps.path.NodePath;
 
 public class DotGraphFileWriter {
 
@@ -219,6 +220,47 @@ public class DotGraphFileWriter {
 				}
 		}
 
+	}
+
+	public static void writeNodePaths(String filePath, List<NodePath> paths) {
+		// TODO Auto-generated method stub
+		if(filePath == null)
+			return;
+		File out = null;
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try {
+			out = new File(filePath);
+			if (out.exists()) {
+				logger.debug("The output file of dot graph is exist!");
+				logger.info("The output file of dot graph is exist!");
+				return;
+			}
+			out.createNewFile();
+			fw = new FileWriter(out);
+			bw = new BufferedWriter(fw);
+			int count = 0;
+			for(NodePath p : paths)
+			{
+				bw.write("digraph G" + count + "{\n");
+				bw.write(p.toString() + ";\n");
+				bw.write("}\n");
+				count++;
+			}
+			
+		} catch (IOException e) {
+			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
+		} finally
+		{
+			if(bw != null)
+				try {
+					bw.close();
+				} catch (IOException e) {
+					logger.debug(e.getMessage());
+					logger.error(e.getMessage());;
+				}
+		}
 	}
 
 }
