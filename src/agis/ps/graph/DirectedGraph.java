@@ -124,7 +124,13 @@ public class DirectedGraph extends Graph implements Serializable {
 		if(pFCnts != null)
 			adjs.addAll(pFCnts);
 		List<Contig> cnts = new Vector<Contig>();
-		cnts = Arrays.asList(adjs.toArray(new Contig[adjs.size()]));
+		for(Contig c :adjs)
+		{
+			if(!cnts.contains(c))
+				cnts.add(c);
+		}
+		
+//		cnts = Arrays.asList(adjs.toArray(new Contig[adjs.size()]));
 		return cnts;
 	}
 	

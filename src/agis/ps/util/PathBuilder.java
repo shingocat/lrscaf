@@ -258,8 +258,8 @@ public class PathBuilder {
 			NodePath path = null;
 			// travel the graph, random start
 			while (diGraph.isExistUnSelectedVertices()) {
-				Contig cnt = diGraph.getRandomVertex();
-//				Contig cnt = diGraph.getVertex("C3");
+//				Contig cnt = diGraph.getRandomVertex();
+				Contig cnt = diGraph.getVertex("1413");
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false
 				// then break;

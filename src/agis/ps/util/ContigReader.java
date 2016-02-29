@@ -15,15 +15,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.M5Record;
+import agis.ps.link.Contig;
 
 public class ContigReader {
 	
 	public static Logger logger = LoggerFactory.getLogger(ContigReader.class);
-	public Map<String, String> cnts = new HashMap<String, String>();
+	public Map<String, Contig> cnts = new HashMap<String, Contig>();
 	private String filePath;
 	
 	public ContigReader(String filePath)
@@ -31,10 +33,10 @@ public class ContigReader {
 		this.filePath = filePath;
 	}
 	
-	public Map<String, String> read()
+	public Map<String, Contig> read()
 	{
 		if(cnts == null)
-			cnts = new HashMap<String, String>();
+			cnts = new HashMap<String, Contig>();
 		cnts.clear();
 		FileReader fr = null;
 		BufferedReader br = null;
@@ -64,7 +66,11 @@ public class ContigReader {
 						continue;
 					} else
 					{
-						cnts.put(id, sb.toString());
+						id = id.replaceFirst("^>","");
+						id = id.split("\\s")[0];
+						Contig cnt = new Contig(sb.toString());
+						cnt.setID(id);
+						cnts.put(id, cnt);
 						sb = new StringBuilder();
 						id = line;
 					}
@@ -84,6 +90,9 @@ public class ContigReader {
 			logger.error(e.getMessage());
 		} catch(IOException e)
 		{
+			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
+		} catch (CompoundNotFoundException e) {
 			logger.debug(e.getMessage());
 			logger.error(e.getMessage());
 		} finally

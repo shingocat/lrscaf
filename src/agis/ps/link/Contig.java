@@ -6,6 +6,7 @@
 */
 package agis.ps.link;
 
+import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;
 
 public class Contig extends DNASequence {
@@ -15,6 +16,11 @@ public class Contig extends DNASequence {
 	public Contig()
 	{
 		this.setDNAType(DNAType.CHROMOSOME);
+	}
+	
+	public Contig(String seq) throws CompoundNotFoundException
+	{
+		super(seq);
 	}
 
 	public String getID() {

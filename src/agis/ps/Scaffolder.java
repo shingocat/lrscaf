@@ -29,6 +29,7 @@ import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM5;
 import agis.ps.path.NodePath;
 import agis.ps.util.Color;
+import agis.ps.util.ContigReader;
 import agis.ps.util.DotGraphFileWriter;
 import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
@@ -54,7 +55,8 @@ public class Scaffolder {
 	private String outFolder;
 	private String type;
 	private boolean m5Header;
-	private LinkedHashMap<String, DNASequence> contigs;
+//	private LinkedHashMap<String, DNASequence> contigs;
+	private Map<String, Contig> contigs;
 	private SamReader samReader;
 	private List<SimplePath> simPaths;
 	private List<PBLinkM5> pbLinks;
@@ -142,7 +144,7 @@ public class Scaffolder {
 		logger.info("Ending....");
 	}
 	
-	public void writeScaffolds(List<NodePath> paths, Map<String, DNASequence> cnts)
+	public void writeScaffolds(List<NodePath> paths, Map<String, Contig> cnts)
 	{
 		String filePath = paras.getOutFolder() + System.getProperty("file.separator") + "scaffolds.fasta";
 		ScaffoldWriter sw = new ScaffoldWriter(paths, cnts, filePath);
@@ -194,14 +196,17 @@ public class Scaffolder {
 	}
 
 	public void readContigs(String cFilePath) throws IOException {
-		if (cFilePath == null || cFilePath.length() == 0) {
-			logger.error("The contig file was null or not setted!");
-			logger.debug("The contig file was null or not setted!");
-			logger.info("The contig file was null or not setted!");
-			return;
-		}
-		File cFile = new File(cFilePath);
-		setContigs(FastaReaderHelper.readFastaDNASequence(cFile));
+//		if (cFilePath == null || cFilePath.length() == 0) {
+//			logger.error("The contig file was null or not setted!");
+//			logger.debug("The contig file was null or not setted!");
+//			logger.info("The contig file was null or not setted!");
+//			return;
+//		}
+//		File cFile = new File(cFilePath);
+//		setContigs(FastaReaderHelper.readFastaDNASequence(cFile));
+		ContigReader cr = new ContigReader(cFilePath);
+//		setContigs(cr.read());
+		contigs = cr.read();
 	}
 
 	public List<M5Record> readM5Aligned(String aFilePath) {
@@ -338,12 +343,12 @@ public class Scaffolder {
 		this.aFilePath = aFilePath;
 	}
 
-	public LinkedHashMap<String, DNASequence> getContigs() {
-		return contigs;
-	}
-
-	public void setContigs(LinkedHashMap<String, DNASequence> contigs) {
-		this.contigs = contigs;
-	}
+//	public LinkedHashMap<String, DNASequence> getContigs() {
+//		return contigs;
+//	}
+//
+//	public void setContigs(LinkedHashMap<String, DNASequence> contigs) {
+//		this.contigs = contigs;
+//	}
 
 }

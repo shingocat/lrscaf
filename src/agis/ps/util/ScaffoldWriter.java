@@ -18,17 +18,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.Path;
+import agis.ps.link.Contig;
 import agis.ps.path.Node;
 import agis.ps.path.NodePath;
 
 public class ScaffoldWriter {
-	
+
 	public static Logger logger = LoggerFactory.getLogger(ScaffoldWriter.class);
 	private List<NodePath> paths;
-	private Map<String, DNASequence> cnts;
+	// private Map<String, DNASequence> cnts;
+	private Map<String, Contig> cnts;
 	private String filePath;
-	
-	public ScaffoldWriter(List<NodePath> paths, Map<String, DNASequence> cnts, String filePath) {
+
+	// public ScaffoldWriter(List<NodePath> paths, Map<String, DNASequence>
+	// cnts, String filePath) {
+	// // TODO Auto-generated constructor stub
+	// this.paths = paths;
+	// this.cnts = cnts;
+	// this.filePath = filePath;
+	// }
+
+	public ScaffoldWriter(List<NodePath> paths, Map<String, Contig> cnts, String filePath) {
 		// TODO Auto-generated constructor stub
 		this.paths = paths;
 		this.cnts = cnts;
@@ -37,7 +47,7 @@ public class ScaffoldWriter {
 
 	public void write() {
 		// TODO Auto-generated method stub
-		if(filePath == null)
+		if (filePath == null)
 			return;
 		File out = null;
 		FileWriter fw = null;
@@ -53,51 +63,65 @@ public class ScaffoldWriter {
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);
 			int count = 0;
-			for(NodePath p : paths)
-			{
+			for (NodePath p : paths) {
 				bw.write(">scaffolds_" + count + "\n");
-				for(int i = 0; i < p.getPathSize(); i++)
-				{
+				for (int i = 0; i < p.getPathSize(); i++) {
 					Node node = p.getElement(i);
 					String id = node.getCnt().getID();
-					bw.write(cnts.get(id).getSequenceAsString());
+					String seq = cnts.get(id).getSequenceAsString();
+					bw.write(seq);
 					int nLen = node.getMeanDist2Next();
-					bw.write(repeatString("N", nLen));
+					if (i != p.getPathSize() - 1) {
+						if (nLen < 0)
+							bw.write(repeatString("M", nLen));
+						else
+							bw.write(repeatString("N", nLen));
+					}
 				}
 				bw.write("\n");
 				count++;
 			}
-			
+
+		} catch (IllegalArgumentException e) {
+			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
 		} catch (IOException e) {
 			logger.debug(e.getMessage());
 			logger.error(e.getMessage());
-		} finally
-		{
-			if(bw != null)
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
+			logger.error(e.getMessage());
+		} finally {
+			if (bw != null)
 				try {
 					bw.close();
 				} catch (IOException e) {
 					logger.debug(e.getMessage());
-					logger.error(e.getMessage());;
+					logger.error(e.getMessage());
+					;
 				}
 		}
 
 	}
-	
-	private String repeatString(String str, int times)
-	{
-		if(str == null)
+
+	// if times larger than or equal to 0, used N indicated
+	// else times less than 0, used M indicated;
+	private String repeatString(String str, int times) {
+		if (str == null)
 			throw new IllegalArgumentException("ScaffoldWriter: The string could not be null!");
-		if(times < 0)
-			throw new IllegalArgumentException("ScaffoldWriter: The repeat times could not be negative!");
+		// if(times < 0)
+		// throw new IllegalArgumentException("ScaffoldWriter: The repeat times
+		// could not be negative!");
 		StringBuilder sb = new StringBuilder(str);
-		for(int i = 1; i <= times; i++)
-		{
-			sb.append(str);
+		if (times < 0) {
+			times = 0 - times;
+			for (int i = 0; i <= times; i++)
+				sb.append(str);
+		} else {
+			for (int i = 1; i <= times; i++)
+				sb.append(str);
 		}
 		return sb.toString();
 	}
 
 }
-
-
