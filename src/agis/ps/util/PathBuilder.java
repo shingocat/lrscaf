@@ -253,13 +253,14 @@ public class PathBuilder {
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder: The Edges could not be empty!");
 		List<NodePath> paths = new Vector<NodePath>();
+		Graph diGraph = null;
 		try {
-			Graph diGraph = new DirectedGraph(edges);
+			diGraph = new DirectedGraph(edges);
 			NodePath path = null;
 			// travel the graph, random start
 			while (diGraph.isExistUnSelectedVertices()) {
 				Contig cnt = diGraph.getRandomVertex();
-//				Contig cnt = diGraph.getVertex("1413");
+				// Contig cnt = diGraph.getVertex("1413");
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false
 				// then break;
@@ -319,13 +320,14 @@ public class PathBuilder {
 						Contig temp = cnt;
 						cnt = next;
 						next = diGraph.getNextVertex(cnt, temp);
-						if(path.isNextExist(cnt, 0) && path.isNextExist(next, 0))
-					//	if(path.isNextExist(next, -2) || ( count == 1 && path.isNextExist(next, -1)))
+						if (path.isNextExist(cnt, 0) && path.isNextExist(next, 0))
+						// if(path.isNextExist(next, -2) || ( count == 1 &&
+						// path.isNextExist(next, -1)))
 						{
 							paths.add(path);
 							break;
 						}
-						if(next.equals(startPoint))
+						if (next.equals(startPoint))
 							count = count + 1;
 					}
 				} else if (adjSetSize == 2) {
@@ -360,18 +362,17 @@ public class PathBuilder {
 						node.setOrphan(false);
 						node.setSupportLinkNum(slSum);
 						diGraph.setVertexAsSelected(cnt);
-						if(!path.isNextExist(cnt, 0))
-						{
-							if(isReverse)
+						if (!path.isNextExist(cnt, 0)) {
+							if (isReverse)
 								path.unshift(node);
 							else
 								path.push(node);
 						}
-						
-//						if (count == 0 && !path.isNextExist(cnt, 0))
-//							path.push(node);
-//						else if (count != 0 && !path.isNextExist(cnt, 0) )
-//							path.unshift(node);
+
+						// if (count == 0 && !path.isNextExist(cnt, 0))
+						// path.push(node);
+						// else if (count != 0 && !path.isNextExist(cnt, 0) )
+						// path.unshift(node);
 						Contig temp = cnt;
 						cnt = next;
 						next = diGraph.getNextVertex(cnt, temp);
@@ -394,6 +395,80 @@ public class PathBuilder {
 			logger.debug(e.getMessage());
 			logger.error(e.getMessage());
 			// paths = null;
+		}
+		// orientation contig in the paths;
+		// define the first element in path is forward;
+		Strand previousStrand = null;
+		for (NodePath np : paths) {
+			int pathSize = np.getPathSize();
+			if (pathSize == 1) {
+				Node previous = np.getElement(0);
+				previous.setStrand(Strand.FORWARD);
+			} else if (pathSize == 2) {
+				Node previous = np.getElement(0);
+				Node following = np.getElement(1);
+				List<Edge> eInfo = diGraph.getEdgesInfo(previous.getCnt(), following.getCnt());
+				Edge e = eInfo.get(0);
+				if (e.getOrigin().equals(previous.getCnt())) {
+					previous.setStrand(e.getoStrand());
+					following.setStrand(e.gettStrand());
+				} else {
+					// for the previous point
+					if (e.gettStrand().equals(Strand.FORWARD))
+						previous.setStrand(Strand.REVERSE);
+					else
+						previous.setStrand(Strand.FORWARD);
+					// for the following point
+					if (e.getoStrand().equals(Strand.FORWARD))
+						following.setStrand(Strand.REVERSE);
+					else
+						following.setStrand(Strand.FORWARD);
+				}
+			} else {
+				for (int i = 0; i < pathSize - 1; i++) {
+					Node previous = np.getElement(i);
+					Node following = np.getElement(i + 1);
+					List<Edge> eInfo = diGraph.getEdgesInfo(previous.getCnt(), following.getCnt());
+					Edge e = eInfo.get(0);
+					if (e.getOrigin().equals(previous.getCnt())) {
+						if (previous.getStrand() == null) {
+							previous.setStrand(e.getoStrand());
+							following.setStrand(e.gettStrand());
+						} else {
+							if (e.getoStrand().equals(previous.getStrand())) {
+								following.setStrand(e.gettStrand());
+							} else {
+								// do some check, since the orientation is wrong in path!
+							}
+						}
+					} else {
+						if(previous.getStrand() == null)
+						{
+							if(e.gettStrand().equals(Strand.FORWARD))
+								previous.setStrand(Strand.REVERSE);
+							else
+								previous.setStrand(Strand.FORWARD);
+							if(e.getoStrand().equals(Strand.FORWARD))
+								following.setStrand(Strand.REVERSE);
+							else
+								following.setStrand(Strand.FORWARD);
+						} else
+						{
+							if(!e.gettStrand().equals(previous.getStrand()))
+							{
+								if(e.getoStrand().equals(Strand.FORWARD))
+									following.setStrand(Strand.REVERSE);
+								else
+									following.setStrand(Strand.FORWARD);
+							} else
+							{
+								// do some check, since the orientation is wrong in path!
+							}
+						}
+					}
+
+				}
+			}
 		}
 		return paths;
 	}

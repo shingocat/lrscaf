@@ -68,7 +68,11 @@ public class ScaffoldWriter {
 				for (int i = 0; i < p.getPathSize(); i++) {
 					Node node = p.getElement(i);
 					String id = node.getCnt().getID();
-					String seq = cnts.get(id).getSequenceAsString();
+					String seq = "";
+					if(node.getStrand().equals(Strand.FORWARD))
+						seq = cnts.get(id).getSequenceAsString();
+					else 
+						seq = cnts.get(id).getReverseComplementSeq();
 					bw.write(seq);
 					int nLen = node.getMeanDist2Next();
 					if (i != p.getPathSize() - 1) {
@@ -123,5 +127,5 @@ public class ScaffoldWriter {
 		}
 		return sb.toString();
 	}
-
+	
 }
