@@ -14,7 +14,7 @@ import agis.ps.link.Contig;
 
 
 public class NodePath implements Serializable{
-		
+	private static final long serialVersionUID = 1L;
 	private LinkedList<Node> path = new LinkedList<Node>();
 	
 	public void push(Node node)

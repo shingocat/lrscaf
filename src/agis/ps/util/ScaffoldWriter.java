@@ -63,9 +63,14 @@ public class ScaffoldWriter {
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);
 			int count = 0;
+			StringBuilder sb = null; 
+			boolean isAdded = false;
 			for (NodePath p : paths) {
+				sb = new StringBuilder();
 				bw.write(">scaffolds_" + count + "\n");
 				for (int i = 0; i < p.getPathSize(); i++) {
+					if(i == p.getPathSize() - 1 && isAdded)
+						continue;
 					Node node = p.getElement(i);
 					String id = node.getCnt().getID();
 					String seq = "";
@@ -73,36 +78,74 @@ public class ScaffoldWriter {
 						seq = cnts.get(id).getSequenceAsString();
 					else 
 						seq = cnts.get(id).getReverseComplementSeq();
-					bw.write(seq);
 					int nLen = node.getMeanDist2Next();
-					if (i != p.getPathSize() - 1) {
-						if (nLen < 0)
-							bw.write(repeatString("M", nLen));
+					int sdLen = node.getSdDist2Next();
+					if(nLen < 0){
+						Node nNode = p.getElement(i + 1);
+						String nId = nNode.getCnt().getID();
+						String nSeq = "";
+						if(nNode.getStrand().equals(Strand.FORWARD))
+							nSeq = cnts.get(nId).getSequenceAsString();
 						else
-							bw.write(repeatString("N", nLen));
+							nSeq = cnts.get(nId).getReverseComplementSeq();
+						if(isAdded){
+							String temp = concatenate(sb.toString(), nSeq, nLen, sdLen);
+							sb.append(temp);
+							isAdded = true;
+						} else {
+							String temp = concatenate(seq, nSeq, nLen, sdLen);
+							sb.append(temp);
+							isAdded = true;
+						}
+					} else {
+						if(!isAdded)
+							sb.append(seq);
+						if(i != p.getPathSize() - 1)
+							sb.append(repeatString("N", nLen));
+						isAdded = false;
 					}
+//					if (i != p.getPathSize() - 1) {
+//						if (nLen < 0){
+//							int len = nLen + sdLen;
+//							// get next element;
+//							Node nNode = p.getElement(i + 1);
+//							String nId = nNode.getCnt().getID();
+//							String nSeq = "";
+//							if(nNode.getStrand().equals(Strand.FORWARD))
+//								nSeq = cnts.get(nId).getSequenceAsString();
+//							else
+//								nSeq = cnts.get(id).getReverseComplementSeq();
+//							String cSeq = concatenate(seq, nSeq, nLen, sdLen);
+//							bw.write(cSeq);
+////							bw.write(repeatString("M", nLen));
+//						} else{
+//							bw.write(seq);
+//							bw.write(repeatString("N", nLen));
+//						}
+//					}
 				}
+				bw.write(sb.toString());
 				bw.write("\n");
+				isAdded = false;
 				count++;
 			}
 
 		} catch (IllegalArgumentException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (IOException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (Exception e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} finally {
 			if (bw != null)
 				try {
 					bw.close();
 				} catch (IOException e) {
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
-					;
+					logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+					logger.error(this.getClass().getName() + "\t" + e.getMessage());
 				}
 		}
 
@@ -128,4 +171,25 @@ public class ScaffoldWriter {
 		return sb.toString();
 	}
 	
+	private String concatenate(String seq1, String seq2, int len, int sd)
+	{
+		int range = Math.abs(len) + Math.abs(sd);
+		String t1 = null;
+		String t2 = null;
+		if(seq1.length() <= range)
+			t1 = seq1;
+		else
+			t1 = seq1.substring(seq1.length() - range);
+		if(seq2.length() <= range)
+			t2 = seq2;
+		else 
+			t2 = seq2.substring(0, range);
+		Consensusser cs = new Consensusser();
+		String value = cs.getConsensus(t1, t2, "nw");
+		StringBuilder sb = new StringBuilder();
+		sb.append(seq1.substring(0, seq1.length() - range));
+		sb.append(value);
+		sb.append(seq2.substring(range));
+		return sb.toString();
+	}
 }
