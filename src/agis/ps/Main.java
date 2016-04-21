@@ -122,17 +122,17 @@ public class Main {
 				}
 			}
 		} catch (MissingArgumentException e) {
-			logger.error(e.getMessage());
-			logger.debug(e.getMessage());
-			logger.info(e.getMessage());
+			logger.error("Main: " + e.getMessage());
+			logger.debug("Main: " + e.getMessage());
+			logger.info("Main: " + e.getMessage());
 		} catch (ParseException e) {
-			logger.error(e.getMessage());
-			logger.debug(e.getMessage());
-			logger.info(e.getMessage());
+			logger.error("Main: " + e.getMessage());
+			logger.debug("Main: " + e.getMessage());
+			logger.info("Main: " + e.getMessage());
 		} catch (Exception e) {
-			logger.error(e.getMessage());
-			logger.debug(e.getMessage());
-			logger.info(e.getMessage());
+			logger.error("Main: " + e.getMessage());
+			logger.debug("Main: " + e.getMessage());
+			logger.info("Main: " + e.getMessage());
 		}
 	}
 }

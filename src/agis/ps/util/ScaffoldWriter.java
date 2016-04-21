@@ -64,23 +64,63 @@ public class ScaffoldWriter {
 			bw = new BufferedWriter(fw);
 			int count = 0;
 			StringBuilder sb = null; 
-			boolean isAdded = false;
-			for (NodePath p : paths) {
+//			boolean isAdded = false;
+			boolean isNextUsed = false;
+			for (NodePath p : paths)
+			{
 				sb = new StringBuilder();
-				bw.write(">scaffolds_" + count + "\n");
-				for (int i = 0; i < p.getPathSize(); i++) {
-					if(i == p.getPathSize() - 1 && isAdded)
+				bw.write(">scaffolds_" + count);
+				bw.newLine();
+				// if the path size equal to 1, 
+				if(p.getPathSize() == 1)
+				{
+					Node node = p.getElement(0);
+					String id = node.getCnt().getID();
+					String seq = "";
+					if(node.getStrand().equals(Strand.FORWARD))
+						seq = cnts.get(id).getSequenceAsString();
+					else
+						seq = cnts.get(id).getReverseComplementSeq();
+					bw.write(seq);
+					continue;
+				}
+				// else the path size large than 1;
+				for(int i = 0 ; i < p.getPathSize(); i++)
+				{
+					if(i == p.getPathSize() - 1 && isNextUsed)
+					{
+						if(sb.length() != 0)
+						{
+							bw.write(sb.toString());
+							sb = new StringBuilder();
+						}
+						isNextUsed = false;
 						continue;
+					}
+					if(i == p.getPathSize() - 1 && !isNextUsed)
+					{
+						Node node = p.getElement(i);
+						String id = node.getCnt().getID();
+						String seq = "";
+						if(node.getStrand().equals(Strand.FORWARD))
+							seq = cnts.get(id).getSequenceAsString();
+						else
+							seq = cnts.get(id).getReverseComplementSeq();
+						bw.write(seq);
+						isNextUsed = false;
+						continue;
+					}
 					Node node = p.getElement(i);
 					String id = node.getCnt().getID();
 					String seq = "";
 					if(node.getStrand().equals(Strand.FORWARD))
 						seq = cnts.get(id).getSequenceAsString();
-					else 
+					else
 						seq = cnts.get(id).getReverseComplementSeq();
 					int nLen = node.getMeanDist2Next();
 					int sdLen = node.getSdDist2Next();
-					if(nLen < 0){
+					if(nLen < 0)
+					{
 						Node nNode = p.getElement(i + 1);
 						String nId = nNode.getCnt().getID();
 						String nSeq = "";
@@ -88,47 +128,101 @@ public class ScaffoldWriter {
 							nSeq = cnts.get(nId).getSequenceAsString();
 						else
 							nSeq = cnts.get(nId).getReverseComplementSeq();
-						if(isAdded){
+						if(isNextUsed)
+						{
 							String temp = concatenate(sb.toString(), nSeq, nLen, sdLen);
 							sb.append(temp);
-							isAdded = true;
-						} else {
+							isNextUsed = true;
+						} else
+						{
 							String temp = concatenate(seq, nSeq, nLen, sdLen);
 							sb.append(temp);
-							isAdded = true;
+							isNextUsed = true;
 						}
-					} else {
-						if(!isAdded)
-							sb.append(seq);
+					} else
+					{
+						if(sb.length() != 0)
+						{
+							bw.write(sb.toString());
+							sb = new StringBuilder();
+						} else
+						{
+							bw.write(seq);
+						}
+						// if not the last element, write the N
 						if(i != p.getPathSize() - 1)
-							sb.append(repeatString("N", nLen));
-						isAdded = false;
+							bw.write(repeatString("N", nLen));
+						isNextUsed = false;
 					}
-//					if (i != p.getPathSize() - 1) {
-//						if (nLen < 0){
-//							int len = nLen + sdLen;
-//							// get next element;
-//							Node nNode = p.getElement(i + 1);
-//							String nId = nNode.getCnt().getID();
-//							String nSeq = "";
-//							if(nNode.getStrand().equals(Strand.FORWARD))
-//								nSeq = cnts.get(nId).getSequenceAsString();
-//							else
-//								nSeq = cnts.get(id).getReverseComplementSeq();
-//							String cSeq = concatenate(seq, nSeq, nLen, sdLen);
-//							bw.write(cSeq);
-////							bw.write(repeatString("M", nLen));
-//						} else{
-//							bw.write(seq);
-//							bw.write(repeatString("N", nLen));
-//						}
-//					}
 				}
-				bw.write(sb.toString());
-				bw.write("\n");
-				isAdded = false;
+				isNextUsed = false;
+				bw.newLine();
 				count++;
 			}
+//			for (NodePath p : paths) {
+//				sb = new StringBuilder();
+//				bw.write(">scaffolds_" + count + "\n");
+//				for (int i = 0; i < p.getPathSize(); i++) {
+//					if(i == p.getPathSize() - 1 && isAdded)
+//						continue;
+//					Node node = p.getElement(i);
+//					String id = node.getCnt().getID();
+//					String seq = "";
+//					if(node.getStrand().equals(Strand.FORWARD))
+//						seq = cnts.get(id).getSequenceAsString();
+//					else 
+//						seq = cnts.get(id).getReverseComplementSeq();
+//					int nLen = node.getMeanDist2Next();
+//					int sdLen = node.getSdDist2Next();
+//					if(nLen < 0){
+//						Node nNode = p.getElement(i + 1);
+//						String nId = nNode.getCnt().getID();
+//						String nSeq = "";
+//						if(nNode.getStrand().equals(Strand.FORWARD))
+//							nSeq = cnts.get(nId).getSequenceAsString();
+//						else
+//							nSeq = cnts.get(nId).getReverseComplementSeq();
+//						if(isAdded){
+//							String temp = concatenate(sb.toString(), nSeq, nLen, sdLen);
+//							sb.append(temp);
+//							isAdded = true;
+//						} else {
+//							String temp = concatenate(seq, nSeq, nLen, sdLen);
+//							sb.append(temp);
+//							isAdded = true;
+//						}
+//					} else {
+//						if(!isAdded)
+//							sb.append(seq);
+//						if(i != p.getPathSize() - 1)
+//							sb.append(repeatString("N", nLen));
+//						isAdded = false;
+//					}
+////					if (i != p.getPathSize() - 1) {
+////						if (nLen < 0){
+////							int len = nLen + sdLen;
+////							// get next element;
+////							Node nNode = p.getElement(i + 1);
+////							String nId = nNode.getCnt().getID();
+////							String nSeq = "";
+////							if(nNode.getStrand().equals(Strand.FORWARD))
+////								nSeq = cnts.get(nId).getSequenceAsString();
+////							else
+////								nSeq = cnts.get(id).getReverseComplementSeq();
+////							String cSeq = concatenate(seq, nSeq, nLen, sdLen);
+////							bw.write(cSeq);
+//////							bw.write(repeatString("M", nLen));
+////						} else{
+////							bw.write(seq);
+////							bw.write(repeatString("N", nLen));
+////						}
+////					}
+//				}
+//				bw.write(sb.toString());
+//				bw.write("\n");
+//				isAdded = false;
+//				count++;
+//			}
 
 		} catch (IllegalArgumentException e) {
 			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
