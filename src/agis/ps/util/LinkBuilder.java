@@ -173,7 +173,7 @@ public class LinkBuilder {
 		for (String s : pSet.keySet()) {
 			List<M5Record> contig_pairs = pSet.get(s);
 			int cpSize = contig_pairs.size();
-			logger.debug("LinkBuilder: contig pairs size " + cpSize);
+//			logger.debug("LinkBuilder: contig pairs size " + cpSize);
 //			at least having two contigs under the same pacbio read;
 			if (cpSize >= 2) {
 				// sorting the contig_pairs;
