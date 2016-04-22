@@ -84,11 +84,15 @@ public class ScaffoldWriter {
 				sb = new StringBuilder();
 				bw.write(">scaffolds_" + count);
 				bw.newLine();
+				if(count == 28)
+					System.out.println(">scaffolds_" + count);
 				// if the path size equal to 1, 
 				if(p.getPathSize() == 1)
 				{
 					node = p.getElement(0);
 					id = node.getCnt().getID();
+					if(count == 28)
+						System.out.println("node id " + id);
 					seq = "";
 					if(node.getStrand().equals(Strand.FORWARD))
 						seq = cnts.get(id).getSequenceAsString();
@@ -130,6 +134,8 @@ public class ScaffoldWriter {
 					}
 					node = p.getElement(i);
 					id = node.getCnt().getID();
+					if(count == 28)
+						System.out.println("node id " + id);
 					seq = "";
 					if(node.getStrand().equals(Strand.FORWARD))
 						seq = cnts.get(id).getSequenceAsString();
