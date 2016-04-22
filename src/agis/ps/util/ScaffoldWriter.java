@@ -80,6 +80,7 @@ public class ScaffoldWriter {
 			String nSeq = null;
 			for (NodePath p : paths)
 			{
+//				System.out.println(count + " path");
 				sb = new StringBuilder();
 				bw.write(">scaffolds_" + count);
 				bw.newLine();
@@ -97,6 +98,7 @@ public class ScaffoldWriter {
 					node = null;
 					id = null;
 					seq = null;
+					count++;
 					continue;
 				}
 				// else the path size large than 1;
