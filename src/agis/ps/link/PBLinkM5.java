@@ -67,6 +67,14 @@ public class PBLinkM5 implements ILink {
 		this.terminus = terminus;
 	}
 	
+	public boolean isSelfLink()
+	{
+		boolean isSelfLink = false;
+		if(this.origin.gettName().equalsIgnoreCase(this.terminus.gettName()))
+			isSelfLink = true;
+		return isSelfLink;
+	}
+	
 }
 
 

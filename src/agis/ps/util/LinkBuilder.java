@@ -179,10 +179,14 @@ public class LinkBuilder {
 				// sorting the contig_pairs;
 				Collections.sort(contig_pairs, new ByLocOrderComparator());
 				for (int i = 0; i < cpSize - 1; i++) {
+					// remove the link which link itself
 					PBLinkM5 pl = new PBLinkM5();
 					pl.setId(s);
 					pl.setOrigin(contig_pairs.get(i));
 					pl.setTerminus(contig_pairs.get(i + 1));
+					// remove the link which link itself
+					if(pl.isSelfLink())
+						continue;
 					pbLinks.add(pl);
 //					PBLink pl = new PBLink();
 //					M5Record ar1 = (M5Record) contig_pairs.get(i);
