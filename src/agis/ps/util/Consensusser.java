@@ -9,6 +9,7 @@ package agis.ps.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 
 // if indicator equal to nw, specific the global alignment, abbreviation of Needleman-Wunsch; 
 // else indicator equal to sw, specific the local alignment, abbreviation of Smith-Waterman; 
@@ -21,7 +22,7 @@ public class Consensusser {
 	public String getConsensus(String seq1, String seq2, String indicator)
 	{
 		if(indicator.equalsIgnoreCase("nw"))
-			return nw(seq1, seq2);
+			return nw_2(seq1, seq2);
 		else
 			return sw(seq1, seq2);
 	}
@@ -105,14 +106,16 @@ public class Consensusser {
 		int j = len2;
 		// System.out.println("seq 1 ===" + seq1);
 		// System.out.println("seq 2 ===" + seq2);
+		Pointers ps = null;
+		Pointer p = null;
 		while(true) {
 			if(i == 0 && j == 0) {
 				break;
 			}
 			// System.out.println("i = " + i);
 			// System.out.println("j = " + j);
-			Pointers ps = indexMatrix[i][j];
-			Pointer p = ps.getPointer(0);
+			ps = indexMatrix[i][j];
+			p = ps.getPointer(0);
 			int row = p.getRow();
 			int col = p.getCol();
 			// System.out.println("row = " + row);
@@ -154,7 +157,185 @@ public class Consensusser {
 				i--;
 			}
 		}
-		return consesus(algSeq1, algPtn, algSeq2);
+		String temp = consesus(algSeq1, algPtn, algSeq2);
+		indexMatrix = null;
+		scores = null;
+		ps = null;
+		p = null;
+		System.gc();
+		return temp;
+	}
+	
+	private String nw_2(String seq1, String seq2)
+	{
+		int len1 = seq1.length();
+		int len2 = seq2.length();
+		// initiate the scores matrix
+		int [][] scores = new int[len1 + 1][len2 + 1];
+		//Pointers [][] indexMatrix = new Pointers[len1 + 1][len2 + 1];
+		for(int i = 0; i <= len1; i++) {
+			for(int j = 0; j <= len2; j++) {
+				//Pointers ps = new Pointers();
+				if(i == 0) {
+					scores[i][j] = 0;
+					//Pointer p = new Pointer(i, j);
+					//ps.addPointer(p);
+					//indexMatrix[i][j] = ps;
+					continue;
+				}
+				if(j == 0) {
+					scores[i][j] = 0;
+					//Pointer p = new Pointer(i, j);
+					//ps.addPointer(p);
+					//indexMatrix[i][j] = ps;
+					continue;
+				}
+
+				int left = scores[i][j - 1];
+				int upper = scores[i - 1][j];
+				int diagonal = scores[i - 1][j - 1];
+				// for the diagonal value;
+				if(seq1.charAt(i - 1) == seq2.charAt(j - 1))
+					diagonal += match;
+				else
+					diagonal += mismatch;
+				// the above value of gap
+				upper += gap;
+				// the left value of gap
+				left += gap;
+				// compute the maximum;
+				int max = upper >= left ?
+				          (upper >= diagonal ? upper : diagonal) :
+					          (left >= diagonal ? left : diagonal);
+				scores[i][j] = max;
+				/* if(max == upper) {
+					Pointer p = new Pointer();
+					p.setRow(i - 1);
+					p.setCol(j);
+					ps.addPointer(p);
+				}
+				if(max == left) {
+					Pointer p = new Pointer();
+					p.setRow(i);
+					p.setCol(j - 1);
+					ps.addPointer(p);
+				}
+				if(max == diagonal) {
+					Pointer p = new Pointer();
+					p.setRow(i - 1);
+					p.setCol(j - 1);
+					ps.addPointer(p);
+				}
+				indexMatrix[i][j] = ps; */
+			}
+		}
+		// print the matrix
+//		System.out.println("Aligned Matrix:");
+//		for(int i = 0; i <= len1; i++) {
+//			System.out.println(Arrays.toString(scores[i]));
+//		}
+		//System.out.println(Arrays.deepToString(scores));
+
+		// traceback the matrix by pointer;
+		String algSeq1 = "";
+		String algSeq2 = "";
+		String algPtn = "";
+		int i = len1;
+		int j = len2;
+		// System.out.println("seq 1 ===" + seq1);
+		// System.out.println("seq 2 ===" + seq2);
+		while(true) {
+			if(i == 0 && j == 0) {
+				break;
+			}
+			// System.out.println("i = " + i);
+			// System.out.println("j = " + j);
+			/* Pointers ps = indexMatrix[i][j];
+			Pointer p = ps.getPointer(0);
+			int row = p.getRow();
+			int col = p.getCol(); */
+			// System.out.println("row = " + row);
+			// System.out.println("col = " + col);
+			if(i == 0 && j !=0) {
+				algSeq1 += "_";
+				algSeq2 += seq2.charAt(j - 1);
+				algPtn += "*";
+				j--;
+				continue;
+			} else if (i != 0 && j == 0) {
+				algSeq1 += seq1.charAt(i - 1);
+				algSeq2 += "_";
+				algPtn += "*";
+				i--;
+				continue;
+			} else
+			{
+				if(seq1.charAt(i-1) == (seq2.charAt(j-1)))
+				{
+					algSeq1 += seq1.charAt(i-1);
+					algSeq2 += seq2.charAt(j-1);
+					algPtn += "|";
+					i--;
+					j--;
+				} else
+				{
+					int lScore = scores[i][j-1];
+					int uScore = scores[i - 1][j];
+					int dScore = scores[i - 1][j - 1];
+					int max = uScore >= lScore ?
+				          (uScore >= dScore ? uScore : dScore) :
+					          (lScore >= dScore ? lScore : dScore);
+					if(max == dScore)
+					{
+						algSeq1 += seq1.charAt(i-1);
+						algSeq2 += seq2.charAt(j-1);
+						algPtn += "*";
+						i--;
+						j--;
+					} else if(max == uScore)
+					{
+						algSeq1 += seq1.charAt(i-1);
+						algSeq2 += "_";
+						algPtn += "*";
+						i--;
+					} else{
+						algSeq1 += "_";
+						algSeq2 += seq2.charAt(j-1);
+						algPtn += "*";
+						j--;
+					}
+				}
+			}
+			
+			/* if(row == i - 1 && col == j - 1) {
+				if(scores[i][j] == scores[row][col] + match) {
+					algSeq1 += seq1.charAt(i - 1);
+					algSeq2 += seq2.charAt(j - 1);
+					algPtn += "|";
+				} else {
+					algSeq1 += seq1.charAt(i - 1);
+					algSeq2 += seq2.charAt(j - 1);
+					algPtn += "*";
+				}
+				i--;
+				j--;
+			} else if(row == i && col == j - 1) {
+				algSeq1 += "_";
+				algSeq2 += seq2.charAt(j - 1);
+				algPtn += "*";
+				j--;
+			} else if(row == i - 1 && col == j) {
+				algSeq1 += seq1.charAt(i - 1);
+				algSeq2 += "_";
+				algPtn += "*";
+				i--;
+			} */
+		}
+		
+		String temp = consesus(algSeq1, algPtn, algSeq2);
+		scores = null;
+		System.gc();
+		return temp;
 	}
 	
 	// local alignment
@@ -227,10 +408,10 @@ public class Consensusser {
 			}
 		}
 		// print the matrix
-		System.out.println("Aligned Matrix:");
-		for(int i = 0; i <= len1; i++) {
-			System.out.println(Arrays.toString(scores[i]));
-		}
+//		System.out.println("Aligned Matrix:");
+//		for(int i = 0; i <= len1; i++) {
+//			System.out.println(Arrays.toString(scores[i]));
+//		}
 
 		// traceback the matrix by pointer;
 		String algSeq1 = "";
@@ -326,11 +507,14 @@ public class Consensusser {
 				}
 			}
 		}
-		return sb.reverse().toString();
+		String temp = sb.reverse().toString();
+		sb = null;
+		return temp;
 	}
 
 	class Pointers {
-		private List<Pointer> list = new ArrayList<Pointer>();
+//		private List<Pointer> list = new ArrayList<Pointer>();
+		private List<Pointer> list = new Vector<Pointer>();
 		Pointers() {
 			super();
 		}
