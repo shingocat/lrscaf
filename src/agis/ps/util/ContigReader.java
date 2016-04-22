@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.slf4j.Logger;
@@ -23,101 +26,108 @@ import agis.ps.M5Record;
 import agis.ps.link.Contig;
 
 public class ContigReader {
-	
+
 	public static Logger logger = LoggerFactory.getLogger(ContigReader.class);
 	public Map<String, Contig> cnts = new HashMap<String, Contig>();
 	private String filePath;
-	
-	public ContigReader(String filePath)
-	{
+
+	public ContigReader(String filePath) {
 		this.filePath = filePath;
 	}
-	
-	public Map<String, Contig> read()
-	{
-		if(cnts == null)
+
+	public Map<String, Contig> read() {
+		if (cnts == null)
 			cnts = new HashMap<String, Contig>();
 		cnts.clear();
 		FileReader fr = null;
 		BufferedReader br = null;
-		try
-		{
+		try {
 			File cntFile = new File(filePath);
-			if(!cntFile.exists())
-			{
-				logger.debug("The contig file, " + filePath + ", do not exist!");
-				logger.error("The contig file, " + filePath + ", do not exist!");
+			if (!cntFile.exists()) {
+				logger.debug(this.getClass().getName() + "\t" + "The contig file " + filePath + " do not exist!");
+				logger.error(this.getClass().getName() + "\t" + "The contig file " + filePath + " do not exist!");
 				return null;
 			}
-			
+
 			fr = new FileReader(cntFile);
 			br = new BufferedReader(fr);
 			String line = null;
 			String id = null;
-			StringBuilder sb = new StringBuilder();
-			while((line = br.readLine()) != null)
-			{
-				line.replaceAll("\\s", "");
-				if(line.startsWith(">"))
-				{
-					if(sb.length() == 0)
-					{	
-						id = line;
-						continue;
-					} else
+			StringBuffer sb = new StringBuffer();
+			while ((line = br.readLine()) != null) {
+				line = line.trim();
+				line = line.replaceAll(System.getProperty("line.separator"), "");
+				if (line.startsWith(">")) {
+					String temp = id;
+					id = line;
+					if(temp != null && sb.length() != 0)
 					{
-						id = id.replaceFirst("^>","");
-						id = id.split("\\s")[0];
+						temp = temp.replaceFirst("^>", "");
+						temp = temp.split("\\s")[0];
 						Contig cnt = new Contig(sb.toString());
-						cnt.setID(id);
-						cnts.put(id, cnt);
-						sb = new StringBuilder();
-						id = line;
+						cnt.setID(temp);
+						cnts.put(temp, cnt);
+						sb = null;
+						cnt = null;
+						temp = null;
+						sb = new StringBuffer();
 					}
 				} else {
 					sb.append(line);
 				}
 			}
-			br.close();
-			fr.close();
-		} catch(ArrayIndexOutOfBoundsException e)
-		{
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
-		} catch(FileNotFoundException e)
-		{
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
-		} catch(IOException e)
-		{
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+
+			// while((line = br.readLine()) != null)
+			// {
+			// line.replaceAll("\\s", "");
+			// if(line.startsWith(">"))
+			// {
+			// if(sb.length() == 0)
+			// {
+			// id = line;
+			// continue;
+			// } else
+			// {
+			// id = id.replaceFirst("^>","");
+			// id = id.split("\\s")[0];
+			// Contig cnt = new Contig(sb.toString());
+			// cnt.setID(id);
+			// cnts.put(id, cnt);
+			// sb = new StringBuffer();
+			// id = line;
+			// }
+			// } else {
+			// sb.append(line);
+			// }
+			// }
+
+		} catch (ArrayIndexOutOfBoundsException e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (FileNotFoundException e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (IOException e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (CompoundNotFoundException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
-		} finally
-		{
-			if(br != null)
-			{
-				try {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (PatternSyntaxException e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (Exception e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} finally {
+			try {
+				if (br != null)
 					br.close();
-				} catch (IOException e) {
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
-				}
-			} 
-			if(fr != null)
-			{
-				try {
-					fr.close();
-				} catch (IOException e) {
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
-				}
+			} catch (IOException e) {
+				logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}
 		return cnts;
 	}
 }
-
-
