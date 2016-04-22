@@ -135,10 +135,12 @@ public class ScaffoldWriter {
 					node = p.getElement(i);
 					id = node.getCnt().getID();
 					seq = "";
+					System.out.println("id : " + id);
 					if(node.getStrand().equals(Strand.FORWARD))
 						seq = cnts.get(id).getSequenceAsString();
 					else
 						seq = cnts.get(id).getReverseComplementSeq();
+					System.out.println("seq " + seq);
 					int nLen = node.getMeanDist2Next();
 					int sdLen = node.getSdDist2Next();
 					if(count == 28)
@@ -271,6 +273,12 @@ public class ScaffoldWriter {
 		} catch (IOException e) {
 			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "IOException.");
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "IOException.");
+		} catch (ClassCastException e){
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "ClassCastException.");
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "ClassCastException.");
+		} catch (NullPointerException e){
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "NullPointerException.");
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "NullPointerException.");
 		} catch (Exception e) {
 			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "Exception.");
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "Exception.");
