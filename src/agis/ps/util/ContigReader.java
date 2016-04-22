@@ -64,6 +64,8 @@ public class ContigReader {
 					{
 						temp = temp.replaceFirst("^>", "");
 						temp = temp.split("\\s")[0];
+						if(temp.equalsIgnoreCase("1867"))
+							System.out.println(sb.toString());
 						Contig cnt = new Contig(sb.toString());
 						cnt.setID(temp);
 						cnts.put(temp, cnt);
