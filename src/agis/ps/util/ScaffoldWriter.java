@@ -255,14 +255,14 @@ public class ScaffoldWriter {
 //			}
 
 		} catch (IllegalArgumentException e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "IllegalArgumentException.");
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "IllegalArgumentException.");
 		} catch (IOException e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "IOException.");
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "IOException.");
 		} catch (Exception e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "Exception.");
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + "Exception.");
 		} finally {
 			if (bw != null)
 				try {
