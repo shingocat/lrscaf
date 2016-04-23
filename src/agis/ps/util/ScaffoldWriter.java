@@ -91,8 +91,6 @@ public class ScaffoldWriter {
 				{
 					node = p.getElement(0);
 					id = node.getCnt().getID();
-					if(count == 28)
-						System.out.println("node id " + id);
 					seq = "";
 					if(node.getStrand().equals(Strand.FORWARD))
 						seq = cnts.get(id).getSequenceAsString();
@@ -135,23 +133,12 @@ public class ScaffoldWriter {
 					node = p.getElement(i);
 					id = node.getCnt().getID();
 					seq = "";
-					if(count == 28)
-						System.out.println("id : " + id);
 					if(node.getStrand().equals(Strand.FORWARD))
 						seq = cnts.get(id).getSequenceAsString();
 					else
 						seq = cnts.get(id).getReverseComplementSeq();
-					if(count == 28)
-						System.out.println("seq " + seq);
 					int nLen = node.getMeanDist2Next();
 					int sdLen = node.getSdDist2Next();
-					if(count == 28)
-					{
-						System.out.println("node id " + id);
-						System.out.println("seq " + seq);
-						System.out.println("len " + nLen);
-						System.out.println("sd " + sdLen);
-					}
 					if(nLen < 0)
 					{
 						nNode = p.getElement(i + 1);
