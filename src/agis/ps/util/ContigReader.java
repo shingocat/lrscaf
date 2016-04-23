@@ -62,6 +62,9 @@ public class ContigReader {
 					if(id != null && sb.length() != 0)
 					{
 						Contig cnt = new Contig(sb.toString());
+						id = id.replaceAll("^>", "");
+						id = id.split("\\s")[0];
+						id = id.trim();
 						cnt.setID(id);
 						cnts.put(id, cnt);
 						logger.debug("ContigReader: " + id);
