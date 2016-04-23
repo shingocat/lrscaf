@@ -54,11 +54,27 @@ public class ContigReader {
 			String line = null;
 			String id = null;
 			StringBuffer sb = new StringBuffer();
-			while ((line = br.readLine()) != null) {
+			String temp;
+			while (true) {
+				line = br.readLine();
+				if(line == null)
+				{
+					if(id != null && sb.length() != 0)
+					{
+						Contig cnt = new Contig(sb.toString());
+						cnt.setID(id);
+						cnts.put(id, cnt);
+						cnt = null;
+					}
+					sb = null;
+					temp = null;
+					id = null;
+					break;
+				}
 				line = line.trim();
 				line = line.replaceAll(System.getProperty("line.separator"), "");
 				if (line.startsWith(">")) {
-					String temp = id;
+					temp = id;
 					id = line;
 					if(temp != null && sb.length() != 0)
 					{
