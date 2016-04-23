@@ -64,6 +64,8 @@ public class ContigReader {
 						Contig cnt = new Contig(sb.toString());
 						cnt.setID(id);
 						cnts.put(id, cnt);
+						logger.debug("ContigReader: " + id);
+						logger.debug("ContigReader: " + sb.toString());
 						cnt = null;
 					}
 					sb = null;
@@ -82,7 +84,7 @@ public class ContigReader {
 						temp = temp.split("\\s")[0];
 						temp = temp.trim();
 						if(temp.equalsIgnoreCase("1867"))
-							System.out.println(sb.toString());
+							logger.debug("ContigReader: " + sb.toString());
 						Contig cnt = new Contig(sb.toString());
 						cnt.setID(temp);
 						cnts.put(temp, cnt);
