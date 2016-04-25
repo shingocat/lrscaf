@@ -37,6 +37,11 @@ public class ScaffoldWriter {
 	// this.cnts = cnts;
 	// this.filePath = filePath;
 	// }
+	
+	public ScaffoldWriter()
+	{
+		super();
+	}
 
 	public ScaffoldWriter(List<NodePath> paths, Map<String, Contig> cnts, String filePath) {
 		// TODO Auto-generated constructor stub
@@ -293,38 +298,80 @@ public class ScaffoldWriter {
 		// if(times < 0)
 		// throw new IllegalArgumentException("ScaffoldWriter: The repeat times
 		// could not be negative!");
-		StringBuilder sb = new StringBuilder(str);
-		if (times < 0) {
-			times = 0 - times;
-			for (int i = 0; i <= times; i++)
-				sb.append(str);
-		} else {
-			for (int i = 1; i <= times; i++)
-				sb.append(str);
-		}
-		return sb.toString();
+//		StringBuffer sb = new StringBuffer(str);
+//		if (times < 0) {
+//			times = 0 - times;
+//			for (int i = 0; i < times; i++)
+//				sb.append(str);
+//		} else {
+//			for (int i = 1; i < times; i++)
+//				sb.append(str);
+//		}
+//		return sb.toString();
+		return new String(new char[times]).replace("\0", str);
 	}
 	
-	private String concatenate(String seq1, String seq2, int len, int sd)
+	public String concatenate(String seq1, String seq2, int len, int sd)
 	{
 		int range = Math.abs(len) + Math.abs(sd);
 		String t1 = null;
 		String t2 = null;
-		if(seq1.length() <= range)
-			t1 = seq1;
-		else
-			t1 = seq1.substring(seq1.length() - range);
-		if(seq2.length() <= range)
-			t2 = seq2;
-		else 
-			t2 = seq2.substring(0, range);
 		Consensusser cs = new Consensusser();
-		String value = cs.getConsensus(t1, t2, "nw");
-		cs = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append(seq1.substring(0, seq1.length() - range));
-		sb.append(value);
-		sb.append(seq2.substring(range));
-		return sb.toString();
+		// four different status;
+		if(seq1.length() <= range)
+		{
+			t1 = seq1;
+			if(seq2.length() <= range)
+			{
+				// seq1 and seq2 less than range;
+				// return consensus directly;
+				t2 = seq2;
+				String value = cs.getConsensus(t1, t2, "nw");
+				return value;
+			} else 
+			{
+				// seq1 less than range, but seq2 large than range;
+				// return consensus + seq2 remainder;
+				t2 = seq2.substring(0, range);
+				String value = cs.getConsensus(t1, t2, "nw");
+				StringBuffer sb = new StringBuffer();
+				sb.append(value);
+				sb.append(seq2.substring(range));
+				return sb.toString();
+			}
+		} else {
+			t1 = seq1.substring(seq1.length() - range);
+			if(seq2.length() <= range)
+			{
+				// seq1 large than range, but seq2 less than range;
+				// return seq1 remainder + consensus;
+				t2 = seq2;
+				String value = cs.getConsensus(t1, t2, "nw");
+				StringBuffer sb = new StringBuffer();
+				sb.append(seq1.substring(0, seq1.length() - range));
+				sb.append(value);
+				return sb.toString();
+			} else 
+			{
+				// seq1 and seq2 large than range;
+				// return seq1 remainder + consensus + seq2 remainder;
+				t2 = seq2.substring(0, range);
+				String value = cs.getConsensus(t1, t2, "nw");
+				StringBuffer sb = new StringBuffer();
+				sb.append(seq1.substring(0, seq1.length() - range));
+				sb.append(value);
+				sb.append(seq2.substring(range));
+				return sb.toString();
+			}
+		}
+		
+//		Consensusser cs = new Consensusser();
+//		String value = cs.getConsensus(t1, t2, "nw");
+//		cs = null;
+//		StringBuffer sb = new StringBuffer();
+//		sb.append(seq1.substring(0, seq1.length() - range));
+//		sb.append(value);
+//		sb.append(seq2.substring(range));
+//		return sb.toString();
 	}
 }
