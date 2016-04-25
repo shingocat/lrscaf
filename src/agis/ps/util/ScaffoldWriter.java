@@ -69,7 +69,7 @@ public class ScaffoldWriter {
 			bw = new BufferedWriter(fw);
 			int count = 0; // scaffolds number;
 			int sLen = 0; // scaffolds length;
-			StringBuilder sb = null; 
+			StringBuffer sb = null; 
 //			boolean isAdded = false;
 			boolean isNextUsed = false;
 			Node node = null;
@@ -81,11 +81,9 @@ public class ScaffoldWriter {
 			for (NodePath p : paths)
 			{
 //				System.out.println(count + " path");
-				sb = new StringBuilder();
+				sb = new StringBuffer();
 				bw.write(">scaffolds_" + count);
 				bw.newLine();
-				if(count == 28)
-					System.out.println(">scaffolds_" + count);
 				// if the path size equal to 1, 
 				if(p.getPathSize() == 1)
 				{
@@ -137,6 +135,7 @@ public class ScaffoldWriter {
 						seq = cnts.get(id).getSequenceAsString();
 					else
 						seq = cnts.get(id).getReverseComplementSeq();
+//					System.out.println(id + "seq :\t" + seq);
 					int nLen = node.getMeanDist2Next();
 					int sdLen = node.getSdDist2Next();
 					if(nLen < 0)
@@ -148,9 +147,11 @@ public class ScaffoldWriter {
 							nSeq = cnts.get(nId).getSequenceAsString();
 						else
 							nSeq = cnts.get(nId).getReverseComplementSeq();
+//						System.out.println(nId + "nseq :\t" + nSeq);
 						if(isNextUsed)
 						{
 							String temp = concatenate(sb.toString(), nSeq, nLen, sdLen);
+//							System.out.println(id + "\t" + nId + "merge seq :\t" + temp);
 							sb.append(temp);
 							nNode = null;
 							nId = null;
@@ -160,6 +161,7 @@ public class ScaffoldWriter {
 						} else
 						{
 							String temp = concatenate(seq, nSeq, nLen, sdLen);
+//							System.out.println(id + "\t" + nId + " merge seq :\t" + temp);
 							sb.append(temp);
 							nNode = null;
 							nId = null;
@@ -173,7 +175,7 @@ public class ScaffoldWriter {
 						{
 							bw.write(sb.toString());
 							sb = null;
-							sb = new StringBuilder();
+							sb = new StringBuffer();
 						} else
 						{
 							bw.write(seq);
