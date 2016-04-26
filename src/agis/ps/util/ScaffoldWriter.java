@@ -88,6 +88,8 @@ public class ScaffoldWriter {
 //				System.out.println(count + " path");
 				sb = new StringBuffer();
 				bw.write(">scaffolds_" + count);
+//				logger.debug(">scaffolds_" + count); 
+//				System.out.println(">scaffolds_" + count);
 				bw.newLine();
 				// if the path size equal to 1, 
 				if(p.getPathSize() == 1)
@@ -100,6 +102,8 @@ public class ScaffoldWriter {
 					else
 						seq = cnts.get(id).getReverseComplementSeq();
 					bw.write(seq);
+//					logger.debug(">" + id + "\n" +seq);
+//					System.out.println(">" + id + "\n" +seq);
 					node = null;
 					id = null;
 					seq = null;
@@ -113,6 +117,8 @@ public class ScaffoldWriter {
 					{
 						if(sb.length() != 0)
 							bw.write(sb.toString());
+//						logger.debug(sb.toString());
+//						System.out.println(sb.toString());
 						isNextUsed = false;
 						sb = null;
 						break;
@@ -127,6 +133,8 @@ public class ScaffoldWriter {
 						else
 							seq = cnts.get(id).getReverseComplementSeq();
 						bw.write(seq);
+//						logger.debug(">" + id + "\n" +seq);
+//						System.out.println(">" + id + "\n" +seq);
 						node = null;
 						id = null;
 						seq = null;
@@ -140,7 +148,8 @@ public class ScaffoldWriter {
 						seq = cnts.get(id).getSequenceAsString();
 					else
 						seq = cnts.get(id).getReverseComplementSeq();
-//					System.out.println(id + "seq :\t" + seq);
+//					logger.debug(seq);
+//					System.out.println(">" + id + "\n" +seq);
 					int nLen = node.getMeanDist2Next();
 					int sdLen = node.getSdDist2Next();
 					if(nLen < 0)
@@ -152,12 +161,16 @@ public class ScaffoldWriter {
 							nSeq = cnts.get(nId).getSequenceAsString();
 						else
 							nSeq = cnts.get(nId).getReverseComplementSeq();
-//						System.out.println(nId + "nseq :\t" + nSeq);
+//						logger.debug(nSeq);
+//						System.out.println(">" + nId + "\n" + nSeq);
 						if(isNextUsed)
 						{
 							String temp = concatenate(sb.toString(), nSeq, nLen, sdLen);
 //							System.out.println(id + "\t" + nId + "merge seq :\t" + temp);
+							sb.delete(0, sb.length());
 							sb.append(temp);
+//							logger.debug(temp);
+//							System.out.println(">" + id + "_" + nId + "\n" + temp);
 							nNode = null;
 							nId = null;
 							nSeq = null;
@@ -168,6 +181,8 @@ public class ScaffoldWriter {
 							String temp = concatenate(seq, nSeq, nLen, sdLen);
 //							System.out.println(id + "\t" + nId + " merge seq :\t" + temp);
 							sb.append(temp);
+//							logger.debug(temp);
+//							System.out.println(">" + id + "_" + nId + "\n" + temp);
 							nNode = null;
 							nId = null;
 							nSeq = null;
@@ -179,16 +194,22 @@ public class ScaffoldWriter {
 						if(sb.length() != 0)
 						{
 							bw.write(sb.toString());
+//							logger.debug(sb.toString());
+//							System.out.println(">length" + sb.length() + "\n" + sb.toString());
 							sb = null;
 							sb = new StringBuffer();
 						} else
 						{
 							bw.write(seq);
+//							logger.debug(seq);
+//							System.out.println(seq);
 							seq = null;
 						}
 						// if not the last element, write the N
 						if(i != p.getPathSize() - 1)
 							bw.write(repeatString("N", nLen));
+//						logger.debug(repeatString("N", nLen));
+//						System.out.println(repeatString("N", nLen));
 						isNextUsed = false;
 					}
 				}
@@ -313,7 +334,8 @@ public class ScaffoldWriter {
 	
 	public String concatenate(String seq1, String seq2, int len, int sd)
 	{
-		int range = Math.abs(len) + Math.abs(sd);
+		// 99% region
+		int range = Math.abs(len) + 3 * Math.abs(sd);
 		String t1 = null;
 		String t2 = null;
 		Consensusser cs = new Consensusser();
@@ -337,6 +359,7 @@ public class ScaffoldWriter {
 				StringBuffer sb = new StringBuffer();
 				sb.append(value);
 				sb.append(seq2.substring(range));
+				logger.debug(sb.toString());
 				return sb.toString();
 			}
 		} else {
@@ -350,6 +373,7 @@ public class ScaffoldWriter {
 				StringBuffer sb = new StringBuffer();
 				sb.append(seq1.substring(0, seq1.length() - range));
 				sb.append(value);
+				logger.debug(sb.toString());
 				return sb.toString();
 			} else 
 			{
@@ -361,6 +385,7 @@ public class ScaffoldWriter {
 				sb.append(seq1.substring(0, seq1.length() - range));
 				sb.append(value);
 				sb.append(seq2.substring(range));
+				logger.debug(sb.toString());
 				return sb.toString();
 			}
 		}

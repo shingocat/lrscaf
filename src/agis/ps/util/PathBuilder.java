@@ -249,6 +249,7 @@ public class PathBuilder {
 		return this.buildPath(edges, paras);
 	}
 
+	@SuppressWarnings("unused")
 	public List<NodePath> buildPath(List<Edge> edges, Parameter paras) {
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder: The Edges could not be empty!");
@@ -276,10 +277,10 @@ public class PathBuilder {
 					path = new NodePath();
 					Node node = new Node();
 					node.setCnt(cnt);
-//					node.setStrand(null);
-//					node.setMeanDist2Next(0);
-//					node.setSdDist2Next(0);
-//					node.setSupportLinkNum(0);
+					// node.setStrand(null);
+					// node.setMeanDist2Next(0);
+					// node.setSdDist2Next(0);
+					// node.setSupportLinkNum(0);
 					node.setOrphan(true);
 					path.push(node);
 					paths.add(path);
@@ -293,28 +294,30 @@ public class PathBuilder {
 					Contig startPoint = cnt;
 					while (next != null) {
 						Node node = new Node();
-//						List<Edge> eInfo = diGraph.getEdgesInfo(cnt, next);
-//						int meanSum = 0;
-//						int sdSum = 0;
-//						int slSum = 0;
-//						Strand strand = null;
-//						if (eInfo.size() == 1) {
-//							meanSum = eInfo.get(0).getDistMean();
-//							sdSum = eInfo.get(0).getDistSd();
-//							slSum = eInfo.get(0).getLinkNum();
-							// strand = eInfo.get(0).getoStrand();
-//						} else if (eInfo.size() == 2) {
-//							Edge e1 = eInfo.get(0);
-//							Edge e2 = eInfo.get(1);
-//							meanSum = MathTool.mean(new Integer[] { e1.getDistMean(), e2.getDistMean() });
-//							sdSum = MathTool.sd(new Integer[] { e1.getDistSd(), e2.getDistSd() });
-//							slSum = e1.getLinkNum() + e2.getLinkNum();
-//						}
+						// List<Edge> eInfo = diGraph.getEdgesInfo(cnt, next);
+						// int meanSum = 0;
+						// int sdSum = 0;
+						// int slSum = 0;
+						// Strand strand = null;
+						// if (eInfo.size() == 1) {
+						// meanSum = eInfo.get(0).getDistMean();
+						// sdSum = eInfo.get(0).getDistSd();
+						// slSum = eInfo.get(0).getLinkNum();
+						// strand = eInfo.get(0).getoStrand();
+						// } else if (eInfo.size() == 2) {
+						// Edge e1 = eInfo.get(0);
+						// Edge e2 = eInfo.get(1);
+						// meanSum = MathTool.mean(new Integer[] {
+						// e1.getDistMean(), e2.getDistMean() });
+						// sdSum = MathTool.sd(new Integer[] { e1.getDistSd(),
+						// e2.getDistSd() });
+						// slSum = e1.getLinkNum() + e2.getLinkNum();
+						// }
 						node.setCnt(cnt);
-//						node.setMeanDist2Next(meanSum);
-//						node.setSdDist2Next(sdSum);
+						// node.setMeanDist2Next(meanSum);
+						// node.setSdDist2Next(sdSum);
 						node.setOrphan(false);
-//						node.setSupportLinkNum(slSum);
+						// node.setSupportLinkNum(slSum);
 						diGraph.setVertexAsSelected(cnt);
 						path.push(node);
 						Contig temp = cnt;
@@ -339,28 +342,30 @@ public class PathBuilder {
 					Contig next = diGraph.getNextVertex(cnt, null);
 					while (next != null) {
 						Node node = new Node();
-//						List<Edge> eInfo = diGraph.getEdgesInfo(cnt, next);
-//						int meanSum = 0;
-//						int sdSum = 0;
-//						int slSum = 0;
-//						Strand strand = null;
-//						if (eInfo.size() == 1) {
-//							meanSum = eInfo.get(0).getDistMean();
-//							sdSum = eInfo.get(0).getDistSd();
-//							slSum = eInfo.get(0).getLinkNum();
-							// strand = eInfo.get(0).getoStrand();
-//						} else if (eInfo.size() == 2) {
-//							Edge e1 = eInfo.get(0);
-//							Edge e2 = eInfo.get(1);
-//							meanSum = MathTool.mean(new Integer[] { e1.getDistMean(), e2.getDistMean() });
-//							sdSum = MathTool.sd(new Integer[] { e1.getDistSd(), e2.getDistSd() });
-//							slSum = e1.getLinkNum() + e2.getLinkNum();
-//						}
+						// List<Edge> eInfo = diGraph.getEdgesInfo(cnt, next);
+						// int meanSum = 0;
+						// int sdSum = 0;
+						// int slSum = 0;
+						// Strand strand = null;
+						// if (eInfo.size() == 1) {
+						// meanSum = eInfo.get(0).getDistMean();
+						// sdSum = eInfo.get(0).getDistSd();
+						// slSum = eInfo.get(0).getLinkNum();
+						// strand = eInfo.get(0).getoStrand();
+						// } else if (eInfo.size() == 2) {
+						// Edge e1 = eInfo.get(0);
+						// Edge e2 = eInfo.get(1);
+						// meanSum = MathTool.mean(new Integer[] {
+						// e1.getDistMean(), e2.getDistMean() });
+						// sdSum = MathTool.sd(new Integer[] { e1.getDistSd(),
+						// e2.getDistSd() });
+						// slSum = e1.getLinkNum() + e2.getLinkNum();
+						// }
 						node.setCnt(cnt);
-//						node.setMeanDist2Next(meanSum);
-//						node.setSdDist2Next(sdSum);
+						// node.setMeanDist2Next(meanSum);
+						// node.setSdDist2Next(sdSum);
 						node.setOrphan(false);
-//						node.setSupportLinkNum(slSum);
+						// node.setSupportLinkNum(slSum);
 						diGraph.setVertexAsSelected(cnt);
 						if (!path.isNextExist(cnt, 0)) {
 							if (isReverse)
@@ -399,109 +404,44 @@ public class PathBuilder {
 		// orientation contig in the paths;
 		// define the first element in path is forward;
 		Strand previousStrand = null;
-		try{
-		for (NodePath np : paths) {
-			int pathSize = np.getPathSize();
-			if (pathSize == 1) {
-				Node previous = np.getElement(0);
-				previous.setStrand(Strand.FORWARD);
-				previous.setMeanDist2Next(0);
-				previous.setSdDist2Next(0);
-				previous.setSupportLinkNum(0);
-			} else if (pathSize == 2) {
-				Node previous = np.getElement(0);
-				Node following = np.getElement(1);
-				List<Edge> eInfo = diGraph.getEdgesInfo(previous.getCnt(), following.getCnt());
-				Edge e1 = eInfo.get(0);
-				if (e1.getOrigin().equals(previous.getCnt())) {
-					previous.setStrand(e1.getoStrand());
-					following.setStrand(e1.gettStrand());
-				} else {
-					// for the previous point
-					if (e1.gettStrand().equals(Strand.FORWARD))
-						previous.setStrand(Strand.REVERSE);
-					else
-						previous.setStrand(Strand.FORWARD);
-					// for the following point
-					if (e1.getoStrand().equals(Strand.FORWARD))
-						following.setStrand(Strand.REVERSE);
-					else
-						following.setStrand(Strand.FORWARD);
-				}
-				// for the distance, sd and support links
-				int meanSum = 0;
-				int sdSum = 0;
-				int slSum = 0;
-				if(eInfo.size() == 1)
-				{
-					meanSum = eInfo.get(0).getDistMean();
-					sdSum = eInfo.get(0).getDistSd();
-					slSum = eInfo.get(0).getLinkNum();
-				} else
-				{
-					Edge e2 = eInfo.get(1);
-					meanSum = MathTool.mean(new Integer[] { e1.getDistMean(), e2.getDistMean() });
-					sdSum = MathTool.mean(new Integer[] { e1.getDistSd(), e2.getDistSd() });
-					slSum = e1.getLinkNum() + e2.getLinkNum();
-				}
-				previous.setMeanDist2Next(meanSum);
-				previous.setSdDist2Next(sdSum);
-				previous.setSupportLinkNum(slSum);
-			} else {
-				for (int i = 0; i < pathSize - 1; i++) {
-					Node previous = np.getElement(i);
-					Node following = np.getElement(i + 1);
+		try {
+			for (NodePath np : paths) {
+				int pathSize = np.getPathSize();
+				if (pathSize == 1) {
+					Node previous = np.getElement(0);
+					previous.setStrand(Strand.FORWARD);
+					previous.setMeanDist2Next(0);
+					previous.setSdDist2Next(0);
+					previous.setSupportLinkNum(0);
+				} else if (pathSize == 2) {
+					Node previous = np.getElement(0);
+					Node following = np.getElement(1);
 					List<Edge> eInfo = diGraph.getEdgesInfo(previous.getCnt(), following.getCnt());
 					Edge e1 = eInfo.get(0);
 					if (e1.getOrigin().equals(previous.getCnt())) {
-						if (previous.getStrand() == null) {
-							previous.setStrand(e1.getoStrand());
-							following.setStrand(e1.gettStrand());
-						} else {
-							if (e1.getoStrand().equals(previous.getStrand())) {
-								following.setStrand(e1.gettStrand());
-							} else {
-								// do some check, since the orientation is wrong in path!
-							}
-						}
+						previous.setStrand(e1.getoStrand());
+						following.setStrand(e1.gettStrand());
 					} else {
-						if(previous.getStrand() == null)
-						{
-							if(e1.gettStrand().equals(Strand.FORWARD))
-								previous.setStrand(Strand.REVERSE);
-							else
-								previous.setStrand(Strand.FORWARD);
-							if(e1.getoStrand().equals(Strand.FORWARD))
-								following.setStrand(Strand.REVERSE);
-							else
-								following.setStrand(Strand.FORWARD);
-						} else
-						{
-							if(!e1.gettStrand().equals(previous.getStrand()))
-							{
-								if(e1.getoStrand().equals(Strand.FORWARD))
-									following.setStrand(Strand.REVERSE);
-								else
-									following.setStrand(Strand.FORWARD);
-							} else
-							{
-								// do some check, since the orientation is wrong in path!
-								// it need to implemented!
-							}
-						}
+						// for the previous point
+						if (e1.gettStrand().equals(Strand.FORWARD))
+							previous.setStrand(Strand.REVERSE);
+						else
+							previous.setStrand(Strand.FORWARD);
+						// for the following point
+						if (e1.getoStrand().equals(Strand.FORWARD))
+							following.setStrand(Strand.REVERSE);
+						else
+							following.setStrand(Strand.FORWARD);
 					}
-					
-					// distance, sd and supported link
+					// for the distance, sd and support links
 					int meanSum = 0;
 					int sdSum = 0;
 					int slSum = 0;
-					if(eInfo.size() == 1)
-					{
+					if (eInfo.size() == 1) {
 						meanSum = eInfo.get(0).getDistMean();
 						sdSum = eInfo.get(0).getDistSd();
 						slSum = eInfo.get(0).getLinkNum();
-					} else
-					{
+					} else {
 						Edge e2 = eInfo.get(1);
 						meanSum = MathTool.mean(new Integer[] { e1.getDistMean(), e2.getDistMean() });
 						sdSum = MathTool.mean(new Integer[] { e1.getDistSd(), e2.getDistSd() });
@@ -510,11 +450,69 @@ public class PathBuilder {
 					previous.setMeanDist2Next(meanSum);
 					previous.setSdDist2Next(sdSum);
 					previous.setSupportLinkNum(slSum);
+				} else {
+					for (int i = 0; i < pathSize - 1; i++) {
+						Node previous = np.getElement(i);
+						Node following = np.getElement(i + 1);
+						List<Edge> eInfo = diGraph.getEdgesInfo(previous.getCnt(), following.getCnt());
+						Edge e1 = eInfo.get(0);
+						if (e1.getOrigin().equals(previous.getCnt())) {
+							if (previous.getStrand() == null) {
+								previous.setStrand(e1.getoStrand());
+								following.setStrand(e1.gettStrand());
+							} else {
+								if (e1.getoStrand().equals(previous.getStrand())) {
+									following.setStrand(e1.gettStrand());
+								} else {
+									// do some check, since the orientation is
+									// wrong in path!
+								}
+							}
+						} else {
+							if (previous.getStrand() == null) {
+								if (e1.gettStrand().equals(Strand.FORWARD))
+									previous.setStrand(Strand.REVERSE);
+								else
+									previous.setStrand(Strand.FORWARD);
+								if (e1.getoStrand().equals(Strand.FORWARD))
+									following.setStrand(Strand.REVERSE);
+								else
+									following.setStrand(Strand.FORWARD);
+							} else {
+								if (!e1.gettStrand().equals(previous.getStrand())) {
+									if (e1.getoStrand().equals(Strand.FORWARD))
+										following.setStrand(Strand.REVERSE);
+									else
+										following.setStrand(Strand.FORWARD);
+								} else {
+									// do some check, since the orientation is
+									// wrong in path!
+									// it need to implemented!
+								}
+							}
+						}
+
+						// distance, sd and supported link
+						int meanSum = 0;
+						int sdSum = 0;
+						int slSum = 0;
+						if (eInfo.size() == 1) {
+							meanSum = eInfo.get(0).getDistMean();
+							sdSum = eInfo.get(0).getDistSd();
+							slSum = eInfo.get(0).getLinkNum();
+						} else {
+							Edge e2 = eInfo.get(1);
+							meanSum = MathTool.mean(new Integer[] { e1.getDistMean(), e2.getDistMean() });
+							sdSum = MathTool.mean(new Integer[] { e1.getDistSd(), e2.getDistSd() });
+							slSum = e1.getLinkNum() + e2.getLinkNum();
+						}
+						previous.setMeanDist2Next(meanSum);
+						previous.setSdDist2Next(sdSum);
+						previous.setSupportLinkNum(slSum);
+					}
 				}
 			}
-		}
-		} catch(Exception e)
-		{
+		} catch (Exception e) {
 			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
