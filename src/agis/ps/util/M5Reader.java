@@ -24,13 +24,40 @@ public class M5Reader {
 	
 	private final static Logger logger = LoggerFactory.getLogger(M5Reader.class);
 	
+	private Parameter paras;
 	private String path;
 	private List<M5Record> m5List;
+	private int minPBLen = 5000; // minimum pacbio read length
+	private int minCNTLen = 3000; // minimum contig length;
+	private double identity = 0.8;
 	
 	public M5Reader(String path)
 	{
 		this.path = path;
 	}
+	
+	public M5Reader(String path, int minPBLen)
+	{
+		this.path = path;
+		this.minPBLen = minPBLen;
+	}
+	
+	public M5Reader(String path, int minPBLen, int minCNTLen)
+	{
+		this.path = path;
+		this.minPBLen = minPBLen;
+		this.minCNTLen = minCNTLen;
+	}
+	
+	public M5Reader(Parameter paras)
+	{
+		this.paras = paras;
+		this.path = paras.getAlgFile();
+		this.minPBLen = paras.getMinPBLen();
+		this.minCNTLen = paras.getMinContLen();
+		this.identity = paras.getIdentity();
+	}
+	
 	
 	public List<M5Record> read()
 	{
@@ -41,8 +68,8 @@ public class M5Reader {
 			File m5File = new File(path);
 			if(!m5File.exists())
 			{
-				logger.debug("The m5 file do not exist!");
-				logger.error("The m5 file do not exist!");
+				logger.debug(this.getClass().getName() + "The m5 file do not exist!");
+				logger.error(this.getClass().getName() + "The m5 file do not exist!");
 				return null;
 			}
 			
@@ -53,10 +80,27 @@ public class M5Reader {
 			m5List = new Vector<M5Record>();
 			while((line = br.readLine()) != null)
 			{
+				line = line.trim();
+				line = line.replaceAll(System.getProperty("line.separator"), "");
 				arrs = line.split("\\s+");
-				// if the first line is header
 				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
 					continue;
+				// if the first line is header
+//				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
+//					continue;
+				// if less than minimum pacbio length
+				if(Integer.valueOf(arrs[1]) < minPBLen)
+					continue;
+				// if less tan minimum contig length
+				if(Integer.valueOf(arrs[6]) < minCNTLen)
+					continue;
+				// if the identity less than specified value;
+				double sum = Double.valueOf(arrs[11]) + Double.valueOf(arrs[12]) + Double.valueOf(arrs[13]) + Double.valueOf(arrs[14]);
+				double value = Double.valueOf(arrs[11]) / sum;
+				if(value < identity)
+					continue;
+//				int sum = this.getNumMatch() + this.getNumMismatch() + this.getNumIns() + this.getNumDel();
+//				double value = (double)this.getNumMatch() / sum;
 				M5Record m5 = new M5Record();
 				m5.setqName(arrs[0]);
 				m5.setqLength(Integer.valueOf(arrs[1]));
@@ -80,38 +124,36 @@ public class M5Reader {
 				m5List.add(m5);
 			}
 			br.close();
-			fr.close();
 		} catch(ArrayIndexOutOfBoundsException e)
 		{
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			m5List = null;
 		} catch(FileNotFoundException e)
 		{
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			m5List = null;
 		} catch(IOException e)
 		{
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			m5List = null;
+		} catch(Exception e){
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			m5List = null;
 		} finally
 		{
-			if(br != null)
+			try
 			{
-				try {
+				if( br != null)
 					br.close();
-				} catch (IOException e) {
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
-				}
-			} 
-			if(fr != null)
+			} catch(IOException e)
 			{
-				try {
-					fr.close();
-				} catch (IOException e) {
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
-				}
+				logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+				logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+				m5List = null;
 			}
 		}
 		return m5List;

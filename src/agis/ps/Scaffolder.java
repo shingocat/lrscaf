@@ -89,16 +89,31 @@ public class Scaffolder {
 	public void scaffolding() {
 		logger.info("Starting....");
 		try {
-			buildOutputPath(paras.getOutFolder());
-			readContigs(cFilePath);
+			// if could not build the output folder;
+			// return;
+			if(!buildOutputPath(paras.getOutFolder()))
+				return;
+			// if could not read the contigs file;
+			// return;
+			if(!(readContigs(cFilePath, paras.getMinContLen())))
+				return;
 			List<M5Record> m5Records = null;
 			if (type.equalsIgnoreCase("m")) {
-				m5Records = readM5Aligned(aFilePath);
+//				m5Records = readM5Aligned(aFilePath, paras.getMinPBLen(), paras.getMinContLen());
+				m5Records = readM5Aligned(paras);
+				// if there are some problem to return m5 records
+				if(m5Records == null)
+					return;
 //				pbLinks = LinkBuilder.m5Record2Link(m5Records, paras);
 				LinkBuilder linkBuilder = new LinkBuilder(m5Records, paras);
 				pbLinks = linkBuilder.m5Record2Link();
-			} else {
+			} else if(type.equalsIgnoreCase("sam") || type.equalsIgnoreCase("bam")) {
 				readSAMAligned(aFilePath);
+			} else
+			{
+				logger.debug(this.getClass().getName() + "The aligned parameter do not set! only <m>, <sam> or <bam>");
+				logger.debug(this.getClass().getName() + "The aligned parameter do not set! only <m>, <sam> or <bam>");
+				return;
 			}
 			EdgeBundler edgeBundler = new EdgeBundler(pbLinks, paras);
 			edges = edgeBundler.pbLinkM5Bundling();
@@ -125,20 +140,20 @@ public class Scaffolder {
 			// dGFW.write();
 			// }
 		} catch (NullPointerException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (MalformedURLException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (FileNotFoundException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (IOException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (Exception e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		}
 
 		logger.info("Ending....");
@@ -169,33 +184,37 @@ public class Scaffolder {
 		DotGraphFileWriter.writeEdge(edgeFile, edges);
 	}
 
-	public void buildOutputPath(String path) {
+	public boolean buildOutputPath(String path) {
+		boolean isValid = false;
 		if (path == null || path.length() == 0) {
-			logger.error("The output path was not setted!");
-			logger.debug("The output path was not setted!");
-			return;
+			logger.error(this.getClass().getName() + "The output path was not setted!");
+			logger.debug(this.getClass().getName() + "The output path was not setted!");
+			return isValid;
 		}
 		try {
 			File output = new File(path);
 			if (output.exists()) {
-				logger.info("Scaffolder: The output folder was exist!");
-				logger.debug("Scaffolder: The output folder was exist!");
+				logger.info(this.getClass().getName() + "The output folder was exist!");
+				logger.debug(this.getClass().getName() + "The output folder was exist!");
+				isValid = true;
 			} else {
 				if (output.mkdirs()) {
-					logger.info("Scaffolder: The output folder was created!");
-					logger.debug("Scaffolder: The output folder was created!");
+					logger.info(this.getClass().getName() + "The output folder was created!");
+					logger.debug(this.getClass().getName() + "The output folder was created!");
+					isValid = true;
 				}
 			}
 		} catch (SecurityException e) {
-			logger.error("Scaffolder: " + e.getMessage());
-			logger.debug("Scaffolder: " + e.getMessage());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (Exception e) {
-			logger.error("Scaffolder: " + e.getMessage());
-			logger.debug("Scaffolder: " + e.getMessage());
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		}
+		return isValid;
 	}
 
-	public void readContigs(String cFilePath) throws IOException {
+	public boolean readContigs(String cFilePath, int cntLen) throws IOException {
 //		if (cFilePath == null || cFilePath.length() == 0) {
 //			logger.error("The contig file was null or not setted!");
 //			logger.debug("The contig file was null or not setted!");
@@ -204,19 +223,29 @@ public class Scaffolder {
 //		}
 //		File cFile = new File(cFilePath);
 //		setContigs(FastaReaderHelper.readFastaDNASequence(cFile));
-		ContigReader cr = new ContigReader(cFilePath);
+		ContigReader cr = new ContigReader(cFilePath, cntLen);
 //		setContigs(cr.read());
 		contigs = cr.read();
+		if(contigs == null)
+			return false;
+		else
+			return true;
+	}
+	
+	public List<M5Record> readM5Aligned(Parameter paras)
+	{
+		M5Reader reader = new M5Reader(paras);
+		return reader.read();
 	}
 
-	public List<M5Record> readM5Aligned(String aFilePath) {
+	public List<M5Record> readM5Aligned(String aFilePath, int minPBLen, int minCNTLen) {
 		if (aFilePath.isEmpty()) {
-			logger.error("The aligned file was null or not setted!");
-			logger.debug("The aligned file was null or not setted!");
-			logger.info("The aligned file was null or not setted!");
+			logger.error(this.getClass().getName() + "The aligned file was null or not setted!");
+			logger.debug(this.getClass().getName() + "The aligned file was null or not setted!");
+			logger.info(this.getClass().getName() + "The aligned file was null or not setted!");
 			return null;
 		}
-		M5Reader reader = new M5Reader(aFilePath);
+		M5Reader reader = new M5Reader(aFilePath, minPBLen, minCNTLen);
 		List<M5Record> m5Records = reader.read();
 		// HashMap<String, String> pSet = new HashMap<String, String>();
 		//

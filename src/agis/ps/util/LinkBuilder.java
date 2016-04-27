@@ -70,15 +70,16 @@ public class LinkBuilder {
 			int contStart = m5.gettStart();
 			int contEnd = m5.gettEnd() - 1;
 			
+			// all the basic test condition is implemented in M5Reader class with PB and CNT length and identity
 			// pacbio length less than specified value, next;
-			if (pbLen < minPBLen.intValue())
-				continue;
-			// contig length less than specified value, next;
-			if (contLen < minContLen.intValue())
-				continue;
-			// if the contig and pacbio identity less than specified value, next;
-			if (m5.getIdentity() < identity)
-				continue;
+//			if (pbLen < minPBLen.intValue())
+//				continue;
+//			// contig length less than specified value, next;
+//			if (contLen < minContLen.intValue())
+//				continue;
+//			// if the contig and pacbio identity less than specified value, next;
+//			if (m5.getIdentity() < identity)
+//				continue;
 			// check the contig inner or outer of PacBio read, four points
 			// values defined it;
 			// pb read model: p1----p2-------p3----p4,

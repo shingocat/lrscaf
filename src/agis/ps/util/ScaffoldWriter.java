@@ -359,7 +359,7 @@ public class ScaffoldWriter {
 				StringBuffer sb = new StringBuffer();
 				sb.append(value);
 				sb.append(seq2.substring(range));
-				logger.debug(sb.toString());
+//				logger.debug(sb.toString());
 				return sb.toString();
 			}
 		} else {
@@ -373,7 +373,7 @@ public class ScaffoldWriter {
 				StringBuffer sb = new StringBuffer();
 				sb.append(seq1.substring(0, seq1.length() - range));
 				sb.append(value);
-				logger.debug(sb.toString());
+//				logger.debug(sb.toString());
 				return sb.toString();
 			} else 
 			{
@@ -385,7 +385,7 @@ public class ScaffoldWriter {
 				sb.append(seq1.substring(0, seq1.length() - range));
 				sb.append(value);
 				sb.append(seq2.substring(range));
-				logger.debug(sb.toString());
+//				logger.debug(sb.toString());
 				return sb.toString();
 			}
 		}

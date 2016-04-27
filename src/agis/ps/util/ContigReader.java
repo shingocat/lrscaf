@@ -30,9 +30,16 @@ public class ContigReader {
 	public static Logger logger = LoggerFactory.getLogger(ContigReader.class);
 	public Map<String, Contig> cnts = new HashMap<String, Contig>();
 	private String filePath;
+	private int cntLen = 3000; // default large than 3000 bp;
 
 	public ContigReader(String filePath) {
 		this.filePath = filePath;
+	}
+	
+	public ContigReader(String filePath, int cntLen)
+	{
+		this.filePath = filePath;
+		this.cntLen = cntLen;
 	}
 
 	public Map<String, Contig> read() {
@@ -59,7 +66,7 @@ public class ContigReader {
 				line = br.readLine();
 				if(line == null)
 				{
-					if(id != null && sb.length() != 0)
+					if(id != null && sb.length() >= cntLen)
 					{
 						Contig cnt = new Contig(sb.toString());
 						id = id.replaceAll("^>", "");
@@ -81,7 +88,7 @@ public class ContigReader {
 				if (line.startsWith(">")) {
 					temp = id;
 					id = line;
-					if(temp != null && sb.length() != 0)
+					if(temp != null && sb.length() >= cntLen)
 					{
 						temp = temp.replaceFirst("^>", "");
 						temp = temp.split("\\s")[0];
