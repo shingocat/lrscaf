@@ -32,7 +32,13 @@ public class Contig extends DNASequence {
 	}
 
 	public int getLength() {
-		return length;
+//		if(getSequenceAsString() == null)
+//			return 0;
+//		int seqLen = getSequenceAsString().length();
+//		if (seqLen != length)
+//			return seqLen;
+//		else
+			return length;
 	}
 
 	public void setLength(int length) {

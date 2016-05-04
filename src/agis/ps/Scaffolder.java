@@ -107,6 +107,7 @@ public class Scaffolder {
 //				pbLinks = LinkBuilder.m5Record2Link(m5Records, paras);
 				LinkBuilder linkBuilder = new LinkBuilder(m5Records, paras);
 				pbLinks = linkBuilder.m5Record2Link();
+				linkBuilder = null;
 			} else if(type.equalsIgnoreCase("sam") || type.equalsIgnoreCase("bam")) {
 				readSAMAligned(aFilePath);
 			} else
@@ -117,9 +118,17 @@ public class Scaffolder {
 			}
 			EdgeBundler edgeBundler = new EdgeBundler(pbLinks, paras);
 			edges = edgeBundler.pbLinkM5Bundling();
+			if(edges == null)
+				return;
 //			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
-			this.writeEdgesInfo(edges);
-			logger.debug("edges size: " + edges.size());
+			this.writeEdgesInfo(edges, false);
+			logger.debug("Edges size: " + edges.size());
+			logger.debug("Pesudo edging: ");
+			edges = null;
+			edges = edgeBundler.pesudoEdging();
+			this.writeEdgesInfo(edges, true);
+			logger.debug("Edges size after pesudo edging :" + edges.size());
+			edgeBundler = null;
 			// List<Path> paths = PathBuilder.buildHamiltonPath(edges);
 //			List<Path> paths = PathBuilder.buildPath(edges, paras);
 			PathBuilder pathBuilder = new PathBuilder(edges, paras);
@@ -178,9 +187,13 @@ public class Scaffolder {
 		DotGraphFileWriter.writeNodePaths(pathFile, paths);
 	}
 
-	public void writeEdgesInfo(List<Edge> edges) {
-		// write the edges info into file
-		String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges.info";
+	public void writeEdgesInfo(List<Edge> edges, boolean isPesudo) {
+		// write the edges info into file.
+		String edgeFile = "";
+		if(isPesudo)
+			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_pesudo.info";
+		else
+			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges.info";
 		DotGraphFileWriter.writeEdge(edgeFile, edges);
 	}
 

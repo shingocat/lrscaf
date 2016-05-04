@@ -257,6 +257,10 @@ public class PathBuilder {
 		Graph diGraph = null;
 		try {
 			diGraph = new DirectedGraph(edges);
+			diGraph.transitiveReducting();
+			List<Edge> tempEdges = diGraph.getEdges();
+			String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_tr.info";
+			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
 			NodePath path = null;
 			// travel the graph, random start
 			while (diGraph.isExistUnSelectedVertices()) {

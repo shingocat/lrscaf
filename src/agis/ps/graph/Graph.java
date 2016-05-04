@@ -25,11 +25,11 @@ import agis.ps.Edge;
 import agis.ps.link.Contig;
 import agis.ps.util.MathTool;
 
-public abstract class Graph implements Serializable {
+public abstract class Graph implements Serializable,IUntangler {
 
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = LoggerFactory.getLogger(Graph.class);
-	private List<Edge> edges = new Vector<Edge>();
+	protected List<Edge> edges = new Vector<Edge>();
 	private List<Contig> vertices = new Vector<Contig>();
 	private List<Contig> selectedVertices = new Vector<Contig>();
 	private List<Contig> unselectedVertices = new Vector<Contig>();
@@ -56,6 +56,8 @@ public abstract class Graph implements Serializable {
 	}
 
 	public List<Contig> getVertices() {
+		if(vertices != null)
+			vertices = null;
 		if (vertices == null)
 			vertices = new Vector<Contig>();
 		for (Edge e : edges) {
@@ -87,8 +89,8 @@ public abstract class Graph implements Serializable {
 			mean = MathTool.mean(supNums);
 			sd = MathTool.sd(supNums);
 		} catch (Exception e) {
-			logger.debug("Graph: " + e.getMessage());
-			logger.info("Graph: " + e.getMessage());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		edgesNum = supNums.size();
 		min = Collections.min(supNums);
@@ -152,5 +154,6 @@ public abstract class Graph implements Serializable {
 	// return edge info between these two contigs
 	public abstract List<Edge> getEdgesInfo(Contig start, Contig end);
 	
-
+	// remove an edge 
+	public abstract boolean removeEdge(Edge e);
 }

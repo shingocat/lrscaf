@@ -11,6 +11,16 @@ import java.util.List;
 
 public class MathTool {
 	
+	public static Integer sum(List<Integer> nums)
+	{
+		int sum = 0;
+		for(int i = 0; i < nums.size(); i++)
+		{
+			sum += nums.get(i);
+		}
+		return sum;
+	}
+	
 	public static Integer mean(List<Integer> nums) throws Exception
 	{
 		return MathTool.mean(nums.toArray(new Integer[nums.size()]));
@@ -45,6 +55,17 @@ public class MathTool {
 		}
 		
 		return (int) Math.round(Math.sqrt(diff/(size - 1)));
+	}
+	
+	public static Integer avgSd(List<Integer> sds)
+	{
+		int sum = 0;
+		for(int i = 0; i < sds.size(); i++)
+		{
+			sum += Math.pow(sds.get(i), 2);
+		}
+		int sd = (int) Math.sqrt(sum);
+		return sd;
 	}
 
 	public static int max(int typeA, int typeB, int typeC, int typeD) {

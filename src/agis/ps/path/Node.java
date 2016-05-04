@@ -67,6 +67,12 @@ public class Node implements Serializable {
 	public void setOrphan(boolean isOrphan) {
 		this.isOrphan = isOrphan;
 	}
+	
+	@Override
+	public String toString() {
+		return "Node [cnt=" + cnt + ", strand=" + strand + ", meanDist2Next=" + meanDist2Next + ", sdDist2Next="
+				+ sdDist2Next + ", supportLinkNum=" + supportLinkNum + ", isOrphan=" + isOrphan + "]";
+	}
 }
 
 

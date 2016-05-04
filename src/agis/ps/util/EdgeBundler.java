@@ -26,6 +26,7 @@ public class EdgeBundler {
 	static final Logger logger = LoggerFactory.getLogger(EdgeBundler.class);
 	private List<PBLinkM5> links;
 	private Parameter paras;
+	private List<Edge> edges = null;
 	
 	public EdgeBundler()
 	{
@@ -41,15 +42,18 @@ public class EdgeBundler {
 	public List<Edge> pbLinkM5Bundling()
 	{
 		if(links == null || links.size() == 0)
-			throw new IllegalArgumentException("EdgeBundler : The PBLinkM5 could not be empty!");
+			throw new IllegalArgumentException(this.getClass().getName() + "The PBLinkM5 could not be empty!");
 		return this.pbLinkM5Bundling(links, paras);
 	}
 	
 	public List<Edge> pbLinkM5Bundling(List<PBLinkM5> links, Parameter paras) {
 		if (links == null || links.size() == 0)
-			throw new IllegalArgumentException("The Links is empty when passed to EdgeBundler");
+			throw new IllegalArgumentException(this.getClass().getName() + "The Links is empty when passed to EdgeBundler");
 		boolean isUseOLLink = paras.isUseOLLink();
-		List<Edge> edges = new Vector<Edge>();
+		if(edges != null)
+			edges = null;
+		// setting default size of vector is 200 elements;
+		edges = new Vector<Edge>(200);
 		// storing all the same origin and terminus to a hash map;
 		Map<String, List<PBLinkM5>> temp = new HashMap<String, List<PBLinkM5>>();
 		for (PBLinkM5 pb : links) {
@@ -85,8 +89,9 @@ public class EdgeBundler {
 					mean = MathTool.mean(dists);
 					sd = MathTool.sd(dists);
 				} catch (Exception e) {
-					logger.debug("Edge Bundler: " + e.getMessage());
-					logger.info("Edge Bundler: " + e.getMessage());
+					logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 					continue;
 				}
 				int upper = mean + 2 * sd;
@@ -105,8 +110,9 @@ public class EdgeBundler {
 					}
 				} catch (Exception e) {
 					logger.debug("Error on EdgeBundler, when on " + String.valueOf(count) + " iteration!");
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
+					logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 					continue;
 				}
 				// checking the most frequencies contig pair type, and retain
@@ -116,8 +122,14 @@ public class EdgeBundler {
 				int typeC = 0; // - -;
 				int typeD = 0; // - +;
 				dists.clear();
+				Integer oLen = null; // original contig length;
+				Integer tLen = null; // terminus contig length;
 				for (PBLinkM5 pb : tlinks) {
 					dists.add(pb.getDistance());
+					if(oLen == null)
+						oLen = pb.getOrigin().gettLength();
+					if(tLen == null)
+						tLen = pb.getTerminus().gettLength();
 					Strand oStrand = pb.getOrigin().gettStrand();
 					Strand tStrand = pb.getTerminus().gettStrand();
 					if (oStrand.equals(Strand.FORWARD)) {
@@ -144,8 +156,9 @@ public class EdgeBundler {
 					mean = MathTool.mean(dists);
 					sd = MathTool.sd(dists);
 				} catch (Exception e) {
-					logger.debug("Edge Bundler: " + e.getMessage());
-					logger.info("Edge Bundler: " + e.getMessage());
+					logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 					continue;
 				}
 				// initiated the edge;
@@ -154,7 +167,9 @@ public class EdgeBundler {
 				Contig terminus = new Contig();
 				String[] arr = s.split(":->:");
 				origin.setID(arr[0]);
+				origin.setLength(oLen);
 				terminus.setID(arr[1]);
+				terminus.setLength(tLen);
 				edge.setOrigin(origin);
 				edge.setTerminus(terminus);
 				edge.setDistMean(mean);
@@ -196,7 +211,9 @@ public class EdgeBundler {
 	}
 
 	public  List<Edge> pbLinkBundling(List<PBLink> links, Map<String, String> paras) throws Exception {
-		List<Edge> edges = new Vector<Edge>();
+		if(edges != null)
+			edges = null;
+		edges = new Vector<Edge>();
 		// storing all the same origin and terminus to a hash map;
 		Map<String, List<PBLink>> temp = new HashMap<String, List<PBLink>>();
 		for (PBLink pb : links) {
@@ -227,8 +244,9 @@ public class EdgeBundler {
 					mean = MathTool.mean(dists);
 					sd = MathTool.sd(dists);
 				} catch (Exception e) {
-					logger.debug("Edge Bundler: " + e.getMessage());
-					logger.info("Edge Bundler: " + e.getMessage());
+					logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 					continue;
 				}
 				int upper = mean + 2 * sd;
@@ -247,8 +265,9 @@ public class EdgeBundler {
 					}
 				} catch (Exception e) {
 					logger.debug(String.valueOf(count));
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
+					logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+					logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 					continue;
 				}
 				// checking the most frequencies contig pair type
@@ -304,5 +323,37 @@ public class EdgeBundler {
 		return edges;
 	}
 	
-	
+	public List<Edge> pesudoEdging()
+	{
+		if(edges == null || edges.size() == 0)
+			throw new IllegalArgumentException(this.getClass().getName() + "The Edges is empty, could not be pesudo edging!");
+		// define the original size of new Edge list is to be 1.5 folds;
+		List<Edge> values = new Vector<Edge>(edges.size() / 2 + edges.size());
+		for(Edge e : edges)
+		{
+			values.add(e);
+			Edge tEdge = new Edge();
+			tEdge.setOrigin(e.getTerminus());
+			tEdge.setTerminus(e.getOrigin());
+			if(!edges.contains(tEdge))
+			{
+				tEdge.setFake(true);
+				tEdge.setDistMean(e.getDistMean());
+				tEdge.setDistSd(e.getDistSd());
+				tEdge.setLinkNum(e.getLinkNum());
+				tEdge.setOL(e.isOL());
+				tEdge.setValid(e.isValid());
+				if(e.getoStrand().equals(Strand.FORWARD))
+					tEdge.settStrand(Strand.REVERSE);
+				else
+					tEdge.settStrand(Strand.FORWARD);
+				if(e.gettStrand().equals(Strand.FORWARD))
+					tEdge.setoStrand(Strand.REVERSE);
+				else
+					tEdge.setoStrand(Strand.FORWARD);
+				values.add(tEdge);
+			}
+		}
+		return values;
+	}
 }
