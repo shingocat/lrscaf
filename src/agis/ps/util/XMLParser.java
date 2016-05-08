@@ -35,20 +35,20 @@ public class XMLParser {
 			para = new Parameter();
 			// root element
 			Element rootElm = doc.getDocumentElement();
-			logger.debug(rootElm.getTagName());
+			logger.debug(this.getClass().getName() + "\t" + rootElm.getTagName());
 
 			NodeList nodes = rootElm.getChildNodes();
 			if (nodes == null || nodes.getLength() == 0) {
-				logger.debug("The XML file do not contain any elements!");
-				logger.error("The XML file do not contain any elements!");
+				logger.debug(this.getClass().getName() + "\t" + "The XML file do not contain any elements!");
+				logger.error(this.getClass().getName() + "\t" + "The XML file do not contain any elements!");
 				return null;
 			}
 
 			// traverse child input elements
 			nodes = rootElm.getElementsByTagName("input");
 			if (nodes == null || nodes.getLength() == 0) {
-				logger.debug("The XML file do not contain input elements!");
-				logger.error("The XML file do not contain input elements!");
+				logger.debug(this.getClass().getName() + "\t" + "The XML file do not contain input elements!");
+				logger.error(this.getClass().getName() + "\t" + "The XML file do not contain input elements!");
 				return null;
 			} else {
 				Node input = nodes.item(0);
@@ -58,19 +58,19 @@ public class XMLParser {
 					if (node.getNodeType() == Node.ELEMENT_NODE) {
 						String nodeName = ((Element) node).getNodeName();
 						if (nodeName.equalsIgnoreCase("contig")) {
-							para.setCntFile(node.getTextContent());
+							para.setCntFile(node.getTextContent().trim());
 						} else if (nodeName.equalsIgnoreCase("m5")) {
-							para.setAlgFile(node.getTextContent());
+							para.setAlgFile(node.getTextContent().trim());
 							para.setType("m");
 						} else if (nodeName.equalsIgnoreCase("sam")) {
-							para.setAlgFile(node.getTextContent());
+							para.setAlgFile(node.getTextContent().trim());
 							para.setType("s");
 						} else if (nodeName.equalsIgnoreCase("bam")) {
-							para.setAlgFile(node.getTextContent());
+							para.setAlgFile(node.getTextContent().trim());
 							para.setType("s");
 						} else {
-							logger.debug("The XML file contain illeagle elements!");
-							logger.error("The XML file contain illeagle elements!");
+							logger.debug(this.getClass().getName() + "\t" + "The XML file contain illeagle elements!");
+							logger.error(this.getClass().getName() + "\t" + "The XML file contain illeagle elements!");
 							return null;
 						}
 					}
@@ -80,21 +80,21 @@ public class XMLParser {
 			// traverse child output elements
 			nodes = rootElm.getElementsByTagName("output");
 			if (nodes == null || nodes.getLength() == 0) {
-				logger.debug("The XML file do not contain output elements, it will use "
+				logger.debug(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use "
 						+ System.getProperty("user.dir") + "!");
-				logger.error("The XML file do not contain output elements, it will use "
+				logger.error(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use "
 						+ System.getProperty("user.dir") + "!");
 				para.setOutFolder(System.getProperty("user.dir"));
 			} else {
 				Node node = nodes.item(0);
-				para.setOutFolder(node.getTextContent());
+				para.setOutFolder(node.getTextContent().trim());
 			}
 
 			// traverse child paras elements
 			nodes = rootElm.getElementsByTagName("paras");
 			if (nodes == null || nodes.getLength() == 0) {
-				logger.debug("The XML file do not contain output elements, it will use default value!");
-				logger.error("The XML file do not contain output elements, it will use default value!");
+				logger.debug(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use default value!");
+				logger.error(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use default value!");
 				para.setMinContLen(2000);
 				para.setMinPBLen(5000);
 				para.setMinOLLen(1500);
@@ -116,51 +116,56 @@ public class XMLParser {
 						continue;
 					String nodeName = node.getNodeName();
 					if (nodeName.equalsIgnoreCase("min_contig_length")) {
-						para.setMinContLen(Integer.valueOf(node.getTextContent()));
+						para.setMinContLen(Integer.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("min_pacbio_length")) {
-						para.setMinPBLen(Integer.valueOf(node.getTextContent()));
+						para.setMinPBLen(Integer.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("min_overlap_length")) {
-						para.setMinOLLen(Integer.valueOf(node.getTextContent()));
+						para.setMinOLLen(Integer.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("min_overlap_ratio")) {
-						para.setMinOLRatio(Double.valueOf(node.getTextContent()));
+						para.setMinOLRatio(Double.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("min_supported_links")) {
-						para.setMinSupLinks(Integer.valueOf(node.getTextContent()));
+						para.setMinSupLinks(Integer.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("max_supported_links")) {
-						para.setMaxSupLinks(Integer.valueOf(node.getTextContent()));
+						para.setMaxSupLinks(Integer.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("max_overhang_length")) {
-						para.setMaxOHLen(Integer.valueOf(node.getTextContent()));
+						para.setMaxOHLen(Integer.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("max_overhang_ratio")) {
-						para.setMaxOHRatio(Double.valueOf(node.getTextContent()));
+						para.setMaxOHRatio(Double.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("max_end_length")) {
-						para.setMaxEndLen(Integer.valueOf(node.getTextContent()));
+						para.setMaxEndLen(Integer.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("max_end_ratio")) {
-						para.setMaxEndRatio(Double.valueOf(node.getTextContent()));
+						para.setMaxEndRatio(Double.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("identity")) {
-						para.setIdentity(Double.valueOf(node.getTextContent()));
+						para.setIdentity(Double.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("use_overlap_link")) {
-						Pattern pat = Pattern.compile("^T", Pattern.CASE_INSENSITIVE);
-						Matcher mat = pat.matcher(node.getTextContent());
-						if(mat.find())
+						String temp = node.getTextContent().trim();
+						if(temp.startsWith("t") || temp.startsWith("T"))
 							para.setUseOLLink(true);
 						else 
 							para.setUseOLLink(false);
+//						Pattern pat = Pattern.compile("^T", Pattern.CASE_INSENSITIVE);
+//						Matcher mat = pat.matcher(node.getTextContent());
+//						if(mat.find())
+//							para.setUseOLLink(true);
+//						else 
+//							para.setUseOLLink(false);
 					} else {
-						logger.debug("The para element contain illeage item " + nodeName + ". it will omit!");
-						logger.info("The para element contain illeage item " + nodeName + ". it will omit!");
+						logger.debug(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");
+						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");
 					}
 				}
 			}
 
 		} catch (ParserConfigurationException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (SAXException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		return para;
 	}

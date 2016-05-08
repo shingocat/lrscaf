@@ -116,14 +116,13 @@ public class Scaffolder {
 				logger.debug(this.getClass().getName() + "The aligned parameter do not set! only <m>, <sam> or <bam>");
 				return;
 			}
-			EdgeBundler edgeBundler = new EdgeBundler(pbLinks, paras);
+			EdgeBundler edgeBundler = new EdgeBundler(pbLinks, paras,contigs);
 			edges = edgeBundler.pbLinkM5Bundling();
 			if(edges == null)
 				return;
 //			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
 			this.writeEdgesInfo(edges, false);
 			logger.debug("Edges size: " + edges.size());
-			logger.debug("Pesudo edging: ");
 			edges = null;
 			edges = edgeBundler.pesudoEdging();
 			this.writeEdgesInfo(edges, true);
@@ -149,20 +148,20 @@ public class Scaffolder {
 			// dGFW.write();
 			// }
 		} catch (NullPointerException e) {
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (MalformedURLException e) {
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (FileNotFoundException e) {
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (IOException e) {
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (Exception e) {
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
 
 		logger.info("Ending....");
@@ -227,7 +226,7 @@ public class Scaffolder {
 		return isValid;
 	}
 
-	public boolean readContigs(String cFilePath, int cntLen) throws IOException {
+	public boolean readContigs(String cFilePath, int cntLen) {
 //		if (cFilePath == null || cFilePath.length() == 0) {
 //			logger.error("The contig file was null or not setted!");
 //			logger.debug("The contig file was null or not setted!");

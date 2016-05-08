@@ -63,6 +63,7 @@ public class M5Reader {
 	{
 		FileReader fr = null;
 		BufferedReader br = null;
+		int count = 0;
 		try
 		{
 			File m5File = new File(path);
@@ -85,6 +86,7 @@ public class M5Reader {
 				arrs = line.split("\\s+");
 				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
 					continue;
+				count++;
 				// if the first line is header
 //				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
 //					continue;
@@ -156,6 +158,8 @@ public class M5Reader {
 				m5List = null;
 			}
 		}
+		logger.debug(this.getClass().getName() + "\tAligned records: " + count);
+		logger.debug(this.getClass().getName() + "\tRecords after filtered: " + m5List.size());
 		return m5List;
 	}
 }

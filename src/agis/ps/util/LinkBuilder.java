@@ -49,20 +49,18 @@ public class LinkBuilder {
 	
 	// method to change valid m5record to link two contigs;
 	public List<PBLinkM5> m5Record2Link(List<M5Record> m5Records, Parameter paras) {
-		Integer minPBLen = paras.getMinPBLen();
-		Integer minContLen = paras.getMinContLen();
-		Integer minOLLen = paras.getMinOLLen();
-		Double minOLRatio = paras.getMinOLRatio();
-		Integer maxOHLen = paras.getMaxOHLen();
-		Double maxOHRatio = paras.getMaxOHRatio();
-		Integer maxEndLen = paras.getMaxEndLen();
-		Double maxEndRatio = paras.getMaxEndRatio();
-		Double identity = paras.getIdentity();
-//		List<PBLink> pbLinks = new Vector<PBLink>();
 		List<PBLinkM5> pbLinks = new Vector<PBLinkM5>();
 		HashMap<String, List<M5Record>> pSet = new HashMap<String, List<M5Record>>();
-		// get all valid M5Record, and storing in a hashmap by the pacbio read id;
+		// get all valid M5Record, and storing in a hash map by the pacbio read id;
 		for (M5Record m5 : m5Records) {
+			int minOLLen = paras.getMinOLLen();
+			double minOLRatio = paras.getMinOLRatio();
+			int maxOHLen = paras.getMaxOHLen();
+			double maxOHRatio = paras.getMaxOHRatio();
+			int maxEndLen = paras.getMaxEndLen();
+			double maxEndRatio = paras.getMaxEndRatio();
+			
+			
 			int pbLen = m5.getqLength();
 			int pbStart = m5.getqStart();
 			int pbEnd = m5.getqEnd() - 1;
@@ -103,26 +101,17 @@ public class LinkBuilder {
 			// defined contig is outer;
 			boolean isInner = false;
 			int endDefLen = (int) Math.round(pbLen * maxEndRatio);
-			// if max end length larger than the endDefLen, used the endDefLen
-			// as threshold
+			// if max end length larger than the endDefLen, used the endDefLen as threshold
 			if (endDefLen < maxEndLen)
 				maxEndLen = endDefLen;
-			// defined inner or not
-			// if(pbStart < maxEndLen){
-			// if(pbEnd > (pbLen - 1 - maxEndLen))
-			// isInner = true;
-			// } else if(pbStart > maxEndLen && pbStart < (pbLen - 1 -
-			// maxEndLen))
-			// {
-			// if(pbEnd < (pbLen - 1 - maxEndLen))
-			// isInner = true;
-			// }
 			if (pbStart >= maxEndLen && pbStart <= (pbLen - maxEndLen)) {
 				if (pbEnd <= (pbLen - maxEndLen))
 					isInner = true;
 			}
-			int ol_len = pbEnd - pbStart + 1;
+			// the overlap length of contig
+			int ol_len = contEnd - contStart + 1;
 			double ratio = (double) ol_len / contLen;
+			// the overhang length
 			int contLeftLen = contStart;
 			int contRigthLen = contLen - contEnd - 1;
 			int ohDefLen = (int) Math.round(contLen * maxOHRatio);
@@ -130,29 +119,32 @@ public class LinkBuilder {
 				maxOHLen = ohDefLen;
 			if (isInner) {
 				// the overlap length less than specified value, next;
-				if (ol_len < minOLLen.intValue())
+				if (ol_len < minOLLen)
 					continue;
 				// if the overlap length enough for specified value, the ratio
 				// is less than specified value, also next;
-				if (ratio <= minOLRatio.doubleValue())
+				if (ratio < minOLRatio)
 					continue;
 				// for two end length of contig not allow larger than maxOHLen
 				if (contLeftLen > maxOHLen || contRigthLen > maxOHLen)
 					continue;
 			} else {
 				if (pbStart <= maxEndLen && pbEnd <= (pbLen - maxEndLen)) {
-					// for left side, p1-p2 and p2-p3
+					// check right side, for the end point in p1-p2 and p2-p3
 					if (ol_len < minOLLen)
 						continue;
 					if (contRigthLen > maxOHLen)
 						continue;
 				} else if (pbStart <= maxEndLen && pbEnd >= (pbLen - maxEndLen)) { 
-					// for p1-p2 and p3-p4 outer case!
-					if (ol_len < minOLLen)
-						continue;
+					// for start point in p1-p2 and end point in p3-p4, outer case!
+					// do no afford info, next directly;
+//					if (ol_len < minOLLen)
+//						continue;
+					continue;
 				} else if (pbStart >= maxEndLen && pbEnd >= (pbLen - maxEndLen)) 
 				{
-					// for right side, p2-p3 and p3-p4
+					// check left side, for start point in p2-p3 and end point in p3-p4, 
+					// and start point in p3-p4 and end point in p3-p4;
 					if (ol_len < minOLLen)
 						continue;
 					if (contLeftLen > maxOHLen)
@@ -160,104 +152,104 @@ public class LinkBuilder {
 				}
 			}
 			// put all valid records to a hashmap by key as the read id;
-//			logger.debug(m5.getqName());
 			if (pSet.containsKey(m5.getqName())) {
 				pSet.get(m5.getqName()).add(m5);
 			} else {
 				List<M5Record> records = new Vector<M5Record>();
 				records.add(m5);
 				pSet.put(m5.getqName(), records);
+				records = null;
 			}
 		}
-		logger.debug("LinkBuilder: valid link " + pSet.size());
-		// transform valid M5Record to Pacbio link
+		logger.debug(this.getClass().getName() + "\t"+ "Valid link: " + pSet.size());
+		// transform valid M5Record to Pacbio links
+//		String [] repeats = new String[]{"1035","1045","1049","1059"};
+		List<String> repeats = new Vector<String>(4);
+		repeats.add("1035");
+		repeats.add("1045");
+		repeats.add("1049");
+		repeats.add("1059");
+		repeats.add("1025");
+		repeats.add("1027");
+		repeats.add("1037");
+		repeats.add("1013");
+		repeats.add("1015");
+		repeats.add("1019");
+		int count = 0;
 		for (String s : pSet.keySet()) {
+			count++;
 			List<M5Record> contig_pairs = pSet.get(s);
+			List<M5Record> temp = new Vector<M5Record>(contig_pairs.size()); 
+			// remove the repeats
+			try{
+			for(M5Record m : contig_pairs)
+			{
+				String cName = m.gettName();
+				if(!repeats.contains(cName))
+					temp.add(m);
+			}
+			} catch(Exception e)
+			{
+				logger.debug(this.getClass().getName() + "\t" + count + e.getMessage() + "\t" + e.getClass().getName());
+			}
+			contig_pairs = null;
+			contig_pairs = temp;
+			temp = null;
 			int cpSize = contig_pairs.size();
-//			logger.debug("LinkBuilder: contig pairs size " + cpSize);
+		
 //			at least having two contigs under the same pacbio read;
-			if (cpSize >= 2) {
+			if (cpSize > 1) {
 				// sorting the contig_pairs;
 				Collections.sort(contig_pairs, new ByLocOrderComparator());
-				for (int i = 0; i < cpSize - 1; i++) {
-					// remove the link which link itself
-					PBLinkM5 pl = new PBLinkM5();
-					pl.setId(s);
-					pl.setOrigin(contig_pairs.get(i));
-					pl.setTerminus(contig_pairs.get(i + 1));
-					// remove the link which link itself
-					if(pl.isSelfLink())
+				// build only the successive link; A->B->C, it will build A->B and B->C, omitted A->C
+				for(int i = 0; i <= cpSize - 2; i++)
+				{
+					M5Record m1 = contig_pairs.get(i);
+					M5Record m2 = contig_pairs.get(i + 1);
+					if(m1.gettName().equalsIgnoreCase(m2.gettName()))
+					{
+						m1 = null; 
+						m2 = null;
 						continue;
-					pbLinks.add(pl);
-//					PBLink pl = new PBLink();
-//					M5Record ar1 = (M5Record) contig_pairs.get(i);
-//					M5Record ar2 = (M5Record) contig_pairs.get(i + 1);
-//					Contig origin = new Contig();
-//					Contig terminus = new Contig();
-//					origin.setID(ar1.gettName());
-//					origin.setLength(ar1.gettLength());
-//					terminus.setID(ar2.gettName());
-//					terminus.setLength(ar2.gettLength());
-//					pl.setID(s);
-//					pl.setOrigin(origin);
-//					pl.setTerminus(terminus);
-//					pl.setoStartLoc(ar1.getqStart());
-//					pl.setoEndLoc(ar1.getqEnd());
-//					pl.setoStrand(ar1.gettStrand());
-//					pl.settStartLoc(ar2.getqStart());
-//					pl.settEndLoc(ar2.getqEnd());
-//					pl.settStrand(ar2.gettStrand());
-//					pbLinks.add(pl);
+					}
+					PBLinkM5 p = new PBLinkM5();
+					p.setOrigin(m1);
+					p.setTerminus(m2);
+					p.setId(s);
+					pbLinks.add(p);
+					p = null;
+					m1 = null;
+					m2 = null;
 				}
+				// build all the combination link;
+				/*for(int i = 0; i <= cpSize - 2; i++)
+				{
+					for(int j = i + 1 ; j <= cpSize - 1; j++)
+					{
+						M5Record m1 = contig_pairs.get(i);
+						M5Record m2 = contig_pairs.get(j);
+						if(m1.gettName().equalsIgnoreCase(m2.gettName()))
+						{
+							m1 = null;
+							m2 = null;
+							continue;
+						}
+						PBLinkM5 p = new PBLinkM5();
+						p.setOrigin(m1);
+						p.setTerminus(m2);
+						p.setId(s);
+						pbLinks.add(p);
+						p = null;
+						m1 = null;
+						m2 = null;
+					}
+				}*/
 			}
 		}
-
-		// original code on Scaffolder;
-		// List<SimplePath> simPaths = new ArrayList<SimplePath>();
-		// if (simPaths != null) {
-		// simPaths.clear();
-		// }
-		// for (String s : pSet.keySet()) {
-		// String[] arrs = pSet.get(s).split(";");
-		// if (arrs.length >= 2) {
-		// for (int i = 0; i < arrs.length - 1; i++) {
-		// SimplePath sp = new SimplePath();
-		// String[] ar1 = arrs[i].split("==");
-		// String[] ar2 = arrs[i + 1].split("==");
-		// if (Integer.valueOf(ar1[1]) <= Integer.valueOf(ar2[1])) {
-		// sp.setStart(ar1[0]);
-		// sp.setEnd(ar2[0]);
-		// sp.setLabel(ar1[1] + ":" + ar2[1]);
-		// sp.setColor(Color.BLUE);
-		// } else {
-		// sp.setStart(ar2[0]);
-		// sp.setEnd(ar1[0]);
-		// sp.setLabel(ar2[1] + ":" + ar1[1]);
-		// sp.setColor(Color.BLUE);
-		// }
-		// simPaths.add(sp);
-		// }
-		// }
-		// }
+		pSet = null;
 		return pbLinks;
 	}
 
-	public List<M5Record> getM5s() {
-		return m5s;
-	}
-
-	public void setM5s(List<M5Record> m5s) {
-		this.m5s = m5s;
-	}
-
-	public Parameter getParas() {
-		return paras;
-	}
-
-	public void setParas(Parameter paras) {
-		this.paras = paras;
-	}
-	
 }
 
 class ByLocOrderComparator implements Comparator<Object> {

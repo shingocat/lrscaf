@@ -74,7 +74,12 @@ public class PBLinkM5 implements ILink {
 			isSelfLink = true;
 		return isSelfLink;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "PBLinkM5 [id=" + id + ", origin=" + origin + ", terminus=" + terminus + ", isOverLap=" + isOverLap
+				+ "]";
+	}
 }
 
 

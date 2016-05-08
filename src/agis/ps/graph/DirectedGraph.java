@@ -47,11 +47,8 @@ public class DirectedGraph extends Graph implements Serializable {
 
 	private void initAdjTos() {
 		// initiated the vertex point to where
-		if (adjTos != null)
-			adjTos = null;
-		if (adjTos == null)
-			adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
-		adjTos.clear();
+		adjTos = null;
+		adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
 		for (int i = 0; i < getEdges().size(); i++) {
 			Edge e = getEdges().get(i);
 			String oId = e.getOrigin().getID();
@@ -70,11 +67,8 @@ public class DirectedGraph extends Graph implements Serializable {
 
 	private void initAdjFroms() {
 		// initiated the vertex point from where
-		if (adjFroms != null)
-			adjFroms = null;
-		if (adjFroms == null)
-			adjFroms = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
-		adjFroms.clear();
+		adjFroms = null;
+		adjFroms = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
 		for (int i = 0; i < getEdges().size(); i++) {
 			Edge e = getEdges().get(i);
 			String tId = e.getTerminus().getID();
@@ -160,33 +154,27 @@ public class DirectedGraph extends Graph implements Serializable {
 		Contig next = null;
 		List<Contig> adjs = this.getAdjVertices(current);
 		if (former == null) {
-			if (adjs.size() == 1) { // normal case, only one adjacent vertex
+			if (adjs.size() == 1) { 
+				// normal case, only one adjacent vertex
 				next = adjs.get(0);
-			} else if (adjs.size() == 2) { // normal case, two adjacent vertex;
-											// two temporary contigs variables
+			} else if (adjs.size() == 2) { 
+				// normal case, two adjacent vertex; two temporary contigs variables, return the more supported links vertex
 				Contig tCnt1 = adjs.get(0);
 				Contig tCnt2 = adjs.get(1);
 				List<Edge> tEdg1 = getEdgesInfo(current, tCnt1);
 				List<Edge> tEdg2 = getEdgesInfo(current, tCnt2);
-				// according to the supported link number to decide
-				// which contig will be the next;
-				int tEdgSL1 = 0;
-				int tEdgSL2 = 0;
-				if (!tEdg1.isEmpty()) {
-					for (Edge e : tEdg1)
-						tEdgSL1 += tEdgSL1 + e.getLinkNum();
-				}
-				if (!tEdg2.isEmpty()) {
-					for (Edge e : tEdg2)
-						tEdgSL2 += tEdgSL2 + e.getLinkNum();
-				}
+				// according to the supported link number to decide which contig will be the next;
+				int tEdgSL1 = tEdg1.get(0).getLinkNum();
+				int tEdgSL2 = tEdg2.get(0).getLinkNum();
+				
 				if (tEdgSL1 > tEdgSL2)
 					next = tCnt1;
 				else
 					next = tCnt2;
+				tEdg1 = null;
+				tEdg2 = null;
 			} else {
-				// abnormal case, larger than two vertices
-				// return null;
+				// abnormal case, larger than two vertices return null;
 				next = null;
 			}
 		} else // former not null
@@ -198,14 +186,16 @@ public class DirectedGraph extends Graph implements Serializable {
 					throw new IllegalArgumentException(
 							"DirectedGraph: The former vertex was not equal to next vertex when "
 									+ "the adjacent vertex of the current was only one!");
-			} else if (adjs.size() == 2) { // normal case, return the not
-											// selected vertex
+			} else if (adjs.size() == 2) { 
+				// normal case, return the not selected vertex
 				for (Contig c : adjs) {
 					if (!c.equals(former))
 						next = c;
 				}
-			} else { // abnormal case, return the former
-				next = former;
+			} else { 
+				// abnormal case, return the former
+//				next = former;
+				next = null;
 			}
 		}
 		return next;
@@ -359,32 +349,16 @@ inner:				while(nexts != null)
 					Contig next = p.get(i + 1);
 					List<Edge> temp = this.getEdgesInfo(current, next);
 					alEs.addAll(temp);
-					List<Integer> tDist = new Vector<Integer>(temp.size());
-					List<Integer> tSd = new Vector<Integer>(temp.size());
-					for(Edge e : temp)
-					{
-						tDist.add(e.getDistMean()); 
-						tSd.add(e.getDistSd());
-					}
-					try{
-						alDists.add(MathTool.mean(tDist));
-						alSds.add(MathTool.avgSd(tSd));
-					} catch(Exception e)
-					{
-						logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-						logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-					}
+					
+					alDists.add(temp.get(0).getDistMean());
+					alSds.add(temp.get(0).getDistSd());
+					
 					if(i != 0)
 						alDists.add(current.getLength());
 				}
-				try{
-					alDist = MathTool.mean(alDists);
-					alSd = MathTool.avgSd(alSds);
-				} catch(Exception e)
-				{
-					logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-					logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-				}
+				
+				alDist = MathTool.sum(alDists);
+				alSd = MathTool.avgSd(alSds);
 			} else
 			{
 				p.addLast(cnt);
@@ -397,55 +371,22 @@ inner:				while(nexts != null)
 					Contig next = p.get(i - 1);
 					List<Edge> temp = this.getEdgesInfo(current, next);
 					alEs.addAll(temp);
-					List<Integer> tDist = new Vector<Integer>(temp.size());
-					List<Integer> tSd = new Vector<Integer>(temp.size());
-					for(Edge e : temp)
-					{
-						tDist.add(e.getDistMean()); 
-						tSd.add(e.getDistSd());
-					}
-					try{
-						alDists.add(MathTool.mean(tDist));
-						alSds.add(MathTool.avgSd(tSd));
-					} catch(Exception e)
-					{
-						logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-						logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-					}
+					
+					alDists.add(temp.get(0).getDistMean());
+					alSds.add(temp.get(0).getDistSd());
+					
 					if(i != p.size() - 1)
 						alDists.add(current.getLength());
 				}
-				try{
-					alDist = MathTool.mean(alDists);
-					alSd = MathTool.avgSd(alSds);
-				} catch(Exception e)
-				{
-					logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-					logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-				}
+			
+				alDist = MathTool.sum(alDists);
+				alSd = MathTool.avgSd(alSds);
 			}
-			List<Integer> trDists = new Vector<Integer>(trEs.size());
-			List<Integer> trSds = new Vector<Integer>(trEs.size());
-			List<Integer> trSLs = new Vector<Integer>(trEs.size());
-			for(Edge e : trEs)
-			{
-				trDists.add(e.getDistMean());
-				trSds.add(e.getDistSd());
-				trSLs.add(e.getLinkNum());
-			}
-			int trDist = 0;
-			int trSd = 0;
-			int trSL = 0;
-			try
-			{
-				trDist = MathTool.mean(trDists);
-				trSd = MathTool.avgSd(trSds);
-				trSL = MathTool.mean(trSLs);
-			} catch(Exception e)
-			{
-				logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-				logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-			}
+
+
+			int trDist = trEs.get(0).getDistMean();
+			int trSd = trEs.get(0).getDistSd();
+			int trSL = trEs.get(0).getLinkNum();
 			
 			int sd = trSd >= alSd ? trSd : alSd;
 			int diff = trDist - alDist;
@@ -461,88 +402,7 @@ inner:				while(nexts != null)
 						Edge e = alEs.get(i);
 						e.setLinkNum(e.getLinkNum() + trSL);
 					}
-					
 				}
-				
-//			List<Edge> e1s = this.getEdgesInfo(p.getFirst(), p.getLast());
-//			List<Integer> e1Dists = new Vector<Integer>(2);
-//			List<Integer> e1Sds = new Vector<Integer>(2);
-//			for(Edge e: e1s)
-//			{
-//				e1Dists.add(e.getDistMean());
-//				e1Sds.add(e.getDistSd());
-//			}
-//			int e1Dist = 0;
-//			int e1Sd = 0; // square_root(sum(square(sd)));
-//			try {
-//				e1Dist = MathTool.mean(e1Dists);
-//				e1Sd = MathTool.avgSd(e1Sds);
-//			} catch (Exception e) {
-//				logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-//				logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-//			}
-//			
-//			List<Integer> e2Dists = new Vector<Integer>(p.size());
-//			List<Integer> e2Sds = new Vector<Integer>(p.size());
-//			int e2Dist = 0;
-//			int e2Sd = 0;
-//			// bug, need to fix
-//			for(int i = 0; i < p.size() - 1; i++)
-//			{
-//				Contig current = p.get(i);
-//				Contig next = p.get(i + 1);
-//				List<Edge> e2s = this.getEdgesInfo(current, next);
-//				List<Integer> tDists = new Vector<Integer>(e2s.size());
-//				for(Edge e : e2s)
-//				{
-////					e2Dists.add(e.getDistMean());
-//					tDists.add(e.getDistMean());
-//					e2Sds.add(e.getDistSd());
-//				}
-//				int mean = 0;
-//				try{
-//					mean = MathTool.mean(tDists);
-//					e2Dists.add(mean);
-//				} catch (Exception e)
-//				{
-//					logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-//					logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-//				}
-//				if(i != 0)
-//					e2Dists.add(current.getLength());
-//			}
-//			try{
-////				e2Dist = MathTool.mean(e2Dists);
-//				e2Dist = MathTool.sum(e2Dists);
-//				e2Sd = MathTool.avgSd(e2Sds);
-//			} catch(Exception e)
-//			{
-//				logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-//				logger.info(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-//			}
-//			int sd = e1Sd >= e2Sd ? e1Sd : e2Sd;
-//			int diff = e1Dist - e2Dist;
-//			int range = 10 * sd;
-//			if(diff >= -range && diff <= range)
-//			{
-//				for(Edge e: e1s)
-//				{
-//					this.edges.remove(e);
-//				}
-//				for(int i = 0; i < p.size() - 1; i++)
-//				{
-//					Contig current = p.get(i);
-//					Contig next = p.get(i + 1);
-//					for(Edge e : edges)
-//					{
-//						if(e.getOrigin().equals(current) && e.getTerminus().equals(next))
-//							e.setLinkNum(e.getLinkNum() + 1);
-//						else if(e.getOrigin().equals(next) && e.getTerminus().equals(current))
-//							e.setLinkNum(e.getLinkNum() + 1);
-//					}
-//				}
-//				
-//			}
 		}
 		
 		updateGraph();

@@ -86,4 +86,9 @@ public class Contig extends DNASequence {
 		}
 		return sb.toString();
 	}
+
+	@Override
+	public String toString() {
+		return "Contig [ID=" + ID + ", length=" + length + "]";
+	}
 }
