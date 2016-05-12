@@ -210,6 +210,8 @@ public class M5Record implements Serializable {
 				+ ", matchPattern=" + matchPattern + ", tAlignedSeq=" + tAlignedSeq + "]";
 	}*/
 	
+	
+	
 	@Override
 	public String toString()
 	{
@@ -217,6 +219,37 @@ public class M5Record implements Serializable {
 				+ ", qStrand=" + qStrand + ", tName=" + tName + ", tLength=" + tLength + ", tStart=" + tStart
 				+ ", tEnd=" + tEnd + ", tStrand=" + tStrand + ", score=" + score + ", numMismatch=" + numMismatch
 				+ ", numIns=" + numIns + ", numDel=" + numDel + ", mapQV=" + mapQV + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((qName == null) ? 0 : qName.hashCode());
+		result = prime * result + ((tName == null) ? 0 : tName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		M5Record other = (M5Record) obj;
+		if (qName == null) {
+			if (other.qName != null)
+				return false;
+		} else if (!qName.equals(other.qName))
+			return false;
+		if (tName == null) {
+			if (other.tName != null)
+				return false;
+		} else if (!tName.equals(other.tName))
+			return false;
+		return true;
 	}
 	
 }

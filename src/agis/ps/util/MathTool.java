@@ -22,6 +22,37 @@ public class MathTool {
 		}
 		return sum;
 	}
+	
+	public static Integer median(List<Integer> nums)
+	{
+		return MathTool.median(nums.toArray(new Integer[nums.size()]));
+	}
+	
+	public static Integer median(Integer [] nums)
+	{
+		int median = 0;
+		int len = nums.length;
+		if(len == 1)
+			return median = nums[0];
+		int [] data = new int[len];
+		for(int i = 0; i < len; i ++)
+		{
+			data[i] = nums[i];
+		}
+		Arrays.sort(data);
+		if((len % 2) == 1)
+		{
+			int index = len / 2;
+			median = data[index];
+		} else
+		{
+			int n = len/2;
+			int f = n - 1;
+			int sum = data[n] + data[f];
+			median = sum / 2;
+		}
+		return median;
+	}
 
 	public static Integer mean(List<Integer> nums) {
 		return MathTool.mean(nums.toArray(new Integer[nums.size()]));

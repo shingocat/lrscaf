@@ -51,6 +51,9 @@ public class LinkBuilder {
 		// get all valid M5Record, and storing in a hash map by the pacbio read
 		// id;
 		for (M5Record m5 : m5Records) {
+			if(m5.gettName().equals("1025"))
+				System.out.println(m5.toString());
+			
 			int minOLLen = paras.getMinOLLen();
 			double minOLRatio = paras.getMinOLRatio();
 			int maxOHLen = paras.getMaxOHLen();
@@ -172,19 +175,21 @@ public class LinkBuilder {
 		}
 
 		logger.debug(this.getClass().getName() + "\t" + "Valid link: " + pSet.size());
+		RepeatFinder rf = new RepeatFinder();
+		List<String> repeats =  rf.findRepeat(pSet);
 		// transform valid M5Record to Pacbio links
 		// String [] repeats = new String[]{"1035","1045","1049","1059"};
-		List<String> repeats = new Vector<String>(4);
-		repeats.add("1035");
-		repeats.add("1045");
-		repeats.add("1049");
+//		List<String> repeats = new Vector<String>(4);
+//		repeats.add("1035");
+//		repeats.add("1045");
+//		repeats.add("1049");
 //		repeats.add("1059");
-		repeats.add("1025");
-		repeats.add("1027");
-		repeats.add("1037");
-		repeats.add("1013");
-		repeats.add("1015");
-		repeats.add("1019");
+//		repeats.add("1025");
+//		repeats.add("1027");
+//		repeats.add("1037");
+//		repeats.add("1013");
+//		repeats.add("1015");
+//		repeats.add("1019");
 		int count = 0;
 		for (String s : pSet.keySet()) {
 			count++;
@@ -194,8 +199,11 @@ public class LinkBuilder {
 			// remove the repeats
 			try {
 				for (M5Record m : contig_pairs) {
+//					String cName = m.gettName();
+//					if (!repeats.contains(cName))
+//						temp.add(m);
 					String cName = m.gettName();
-					if (!repeats.contains(cName))
+					if(!repeats.contains(cName))
 						temp.add(m);
 				}
 			} catch (Exception e) {
