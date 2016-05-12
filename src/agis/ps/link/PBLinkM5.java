@@ -7,6 +7,7 @@
 package agis.ps.link;
 
 import agis.ps.M5Record;
+import agis.ps.util.Strand;
 
 public class PBLinkM5 implements ILink {
 	private String id; // pacbiio read id;
@@ -25,15 +26,48 @@ public class PBLinkM5 implements ILink {
 	
 	// distance = terminus_pacbio_start - terminus_contig_start -
 	//				(origin_pacbio_end + origin_contig_length - origin_contig_end)
+	// distance should be according to origin and terminus strand;
 	@Override
 	public int getDistance() {
-		int oPBEnd = origin.getqEnd();
-		int oCtLen = origin.gettLength();
-		int oCtRightLen = oCtLen - origin.gettEnd();
-		int tPBStart = terminus.getqStart();
-		int tCtLen = terminus.gettLength();
-		int tCtLeftLen = terminus.gettStart();
-		int dist = tPBStart - tCtLeftLen - (oPBEnd + oCtRightLen);
+		int dist = 0;
+		int oPBS = origin.getqStart(); // origin pacbio start point;
+		int oCntS = origin.gettStart(); // origin contig start point;
+		int oPBE = origin.getqEnd(); // origin pacbio end point;
+		int oCntE = origin.gettEnd(); // origin contig end point;
+		int tPBS = terminus.getqStart(); // terminus pacbio start point;
+		int tCntS = terminus.gettStart(); // terminus contig start point;
+		int tPBE = terminus.getqEnd(); // terminus pacbio end point;
+		int tCntE = terminus.gettEnd(); // terminus contig end point;
+		int oCntLen = origin.gettLength();// origin contig length;
+		int tCntLen = terminus.gettLength(); // terminus contig length
+		if(origin.gettStrand().equals(Strand.FORWARD) && terminus.gettStrand().equals(Strand.FORWARD))
+		{ // + +
+			int oRightLen = oCntLen - oCntE;
+			int tLeftLen = tCntS;
+			dist = tPBS - oPBE - oRightLen - tLeftLen;
+		} else if(origin.gettStrand().equals(Strand.REVERSE) && terminus.gettStrand().equals(Strand.REVERSE))
+		{ // - -
+			int oLeftLen = oCntS;
+			int tRightLen = tCntLen -tCntE;
+			dist = tPBS - oPBE - oLeftLen - tRightLen;
+		} else if(origin.gettStrand().equals(Strand.FORWARD) && terminus.gettStrand().equals(Strand.REVERSE))
+		{ // + -
+			int oRightLen = oCntLen - oCntE;
+			int tRightLen = tCntLen -tCntE;
+			dist = tPBS - oPBE - oRightLen - tRightLen;
+		} else if(origin.gettStrand().equals(Strand.REVERSE) && terminus.gettStrand().equals(Strand.FORWARD))
+		{ // - +
+			int oLeftLen = oCntS;
+			int tLeftLen = tCntS;
+			dist = tPBS - oPBE - oLeftLen - tLeftLen;
+		}
+//		int oPBEnd = origin.getqEnd();
+//		int oCtLen = origin.gettLength();
+//		int oCtRightLen = oCtLen - origin.gettEnd();
+//		int tPBStart = terminus.getqStart();
+//		int tCtLen = terminus.gettLength();
+//		int tCtLeftLen = terminus.gettStart();
+//		dist = tPBStart - tCtLeftLen - (oPBEnd + oCtRightLen);
 		return dist;
 	}
 

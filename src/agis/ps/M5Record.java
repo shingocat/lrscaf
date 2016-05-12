@@ -201,15 +201,23 @@ public class M5Record implements Serializable {
 		return value;
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		return "M5Record [qName=" + qName + ", qLength=" + qLength + ", qStart=" + qStart + ", qEnd=" + qEnd
 				+ ", qStrand=" + qStrand + ", tName=" + tName + ", tLength=" + tLength + ", tStart=" + tStart
 				+ ", tEnd=" + tEnd + ", tStrand=" + tStrand + ", score=" + score + ", numMismatch=" + numMismatch
 				+ ", numIns=" + numIns + ", numDel=" + numDel + ", mapQV=" + mapQV + ", qAlignedSeq=" + qAlignedSeq
 				+ ", matchPattern=" + matchPattern + ", tAlignedSeq=" + tAlignedSeq + "]";
-	}
+	}*/
 	
+	@Override
+	public String toString()
+	{
+		return "M5Record [qName=" + qName + ", qLength=" + qLength + ", qStart=" + qStart + ", qEnd=" + qEnd
+				+ ", qStrand=" + qStrand + ", tName=" + tName + ", tLength=" + tLength + ", tStart=" + tStart
+				+ ", tEnd=" + tEnd + ", tStrand=" + tStrand + ", score=" + score + ", numMismatch=" + numMismatch
+				+ ", numIns=" + numIns + ", numDel=" + numDel + ", mapQV=" + mapQV + "]";
+	}
 	
 }
 

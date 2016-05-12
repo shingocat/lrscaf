@@ -363,6 +363,14 @@ public class PathBuilder {
 					{
 						if(next != null)
 						{
+							if(next.equals(startPoint))
+							{
+								node = new Node();
+								node.setCnt(current);
+								path.unshift(node);
+								diGraph.setVertexAsSelected(current);
+								break;
+							}
 							if(next.equals(previous))
 							{
 								node = new Node();
@@ -386,6 +394,11 @@ public class PathBuilder {
 					}
 					// for c2 direction; using c1 as previous point; checking whether c2 is valid point;
 					// all the valid element push into path;
+					if(!diGraph.isExistUnSelectedVertices())
+					{
+						paths.add(path);
+						break;
+					}
 					previous = startPoint;
 					current = c2;
 					next = diGraph.getNextVertex(current, previous);
@@ -393,6 +406,14 @@ public class PathBuilder {
 					{
 						if(next != null)
 						{
+							if(next.equals(startPoint))
+							{
+								node = new Node();
+								node.setCnt(current);
+								path.unshift(node);
+								diGraph.setVertexAsSelected(current);
+								break;
+							}
 							if(next.equals(previous))
 							{
 								node = new Node();
