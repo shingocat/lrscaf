@@ -20,10 +20,11 @@ import agis.ps.link.Contig;
 public class RepeatFinder {
 	
 	public static Logger logger = LoggerFactory.getLogger(RepeatFinder.class);
+	private Parameter paras;
 	
-	public RepeatFinder()
+	public RepeatFinder(Parameter paras)
 	{
-		
+		this.paras = paras;
 	}
 	
 	public List<String> findRepeat(Map<String, List<M5Record>> args)
@@ -39,6 +40,19 @@ public class RepeatFinder {
 				if(cntCounts.containsKey(m.gettName()))
 				{
 					List<String> temp = cntCounts.get(m.gettName());
+					int tLen = m.gettLength();
+					int tStart = m.gettStart();
+					int tEnd = m.gettEnd();
+					int tLeftLen = tStart;
+					int tRightLen = tLen - tEnd;
+					int maxOHLen = paras.getMaxOHLen();
+					int defOHLen = (int) (tLen * paras.getMaxOHRatio());
+					if(maxOHLen <= defOHLen)
+						defOHLen = maxOHLen;
+					if(tLeftLen > defOHLen )
+						continue;
+					if(tRightLen > defOHLen)
+						continue;
 					if(!temp.contains(s))
 						temp.add(s);
 				} else
@@ -49,8 +63,8 @@ public class RepeatFinder {
 					int tEnd = m.gettEnd();
 					int tLeftLen = tStart;
 					int tRightLen = tLen - tEnd;
-					int maxOHLen = 1000;
-					int defOHLen = (int) (tLen * 0.2);
+					int maxOHLen = paras.getMaxOHLen();
+					int defOHLen = (int) (tLen * paras.getMaxOHRatio());
 					if(maxOHLen <= defOHLen)
 						defOHLen = maxOHLen;
 					if(tLeftLen > defOHLen )
@@ -92,6 +106,8 @@ public class RepeatFinder {
 			}
 		}
 		logger.debug("Repeat count: " + repeats.size());
+		ContigCoverageWriter ccw = new ContigCoverageWriter(paras, cntCounts);
+		ccw.write();;
 		return repeats;
 	}
 }

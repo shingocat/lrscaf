@@ -175,7 +175,7 @@ public class LinkBuilder {
 		}
 
 		logger.debug(this.getClass().getName() + "\t" + "Valid link: " + pSet.size());
-		RepeatFinder rf = new RepeatFinder();
+		RepeatFinder rf = new RepeatFinder(paras);
 		List<String> repeats =  rf.findRepeat(pSet);
 		// transform valid M5Record to Pacbio links
 		// String [] repeats = new String[]{"1035","1045","1049","1059"};
