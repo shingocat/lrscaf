@@ -4,7 +4,7 @@
 *Email: mqin@ymail.com
 *Date: 2016年1月22日
 */
-package agis.ps.util;
+package agis.ps.file;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +22,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import agis.ps.util.Parameter;
 
 public class XMLParser {
 	private static Logger logger = LoggerFactory.getLogger(XMLParser.class);
@@ -107,6 +109,7 @@ public class XMLParser {
 				para.setMaxSupLinks(50);
 				para.setIdentity(0.8);
 				para.setUseOLLink(false);
+				para.setRatio(0.3);
 			} else {
 				Node parasNode = nodes.item(0);
 				nodes = parasNode.getChildNodes();
@@ -149,6 +152,8 @@ public class XMLParser {
 //							para.setUseOLLink(true);
 //						else 
 //							para.setUseOLLink(false);
+					} else if (nodeName.equalsIgnoreCase("ratio")){
+						para.setRatio(Double.valueOf(node.getTextContent().trim()));
 					} else {
 						logger.debug(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");
 						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");

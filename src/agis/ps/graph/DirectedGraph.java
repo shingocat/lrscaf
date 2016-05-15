@@ -44,6 +44,8 @@ public class DirectedGraph extends Graph implements Serializable {
 		// initAdjTos();
 		// initAdjFroms();
 	}
+	
+	
 
 	private void initAdjTos() {
 		// initiated the vertex point to where
@@ -140,15 +142,47 @@ public class DirectedGraph extends Graph implements Serializable {
 		List<Contig> adjs = adjTos.get(current.getID());
 		if (adjs == null || adjs.isEmpty())
 			return null;
-		nexts = new Vector<Contig>();
+		nexts = new Vector<Contig>(5);
 		for (Contig c : adjs) {
 			if (!c.equals(former))
 				nexts.add(c);
 		}
 		return nexts;
 	}
-
+	
 	// return the next vertex by the specified current and former contig;
+	// including return divergence vertex; and former could not be null for triad requirement
+	public Contig getNextVertex2(Contig current, Contig former)
+	{
+		Contig next = null;
+		List<Contig> adjs = this.getAdjVertices(current);
+		if (former == null) {
+			throw new IllegalArgumentException(this.getClass().getName() + "\t" + "The former vertex could not be null!");
+		}
+		
+		if (adjs.size() == 1) {
+			next = adjs.get(0);
+			// checking whether the former vertex equal to next
+			if (!next.equals(former))
+				throw new IllegalArgumentException(
+						"DirectedGraph: The former vertex was not equal to next vertex when "
+								+ "the adjacent vertex of the current was only one!");
+		} else if (adjs.size() == 2) { 
+			// normal case, return the not selected vertex
+			for (Contig c : adjs) {
+				if (!c.equals(former))
+					next = c;
+			}
+		} else { 
+			// abnormal case, return the former
+			//				next = former;
+			next = null;
+		}
+		return next;
+	}
+	
+	// return the next vertex by the specified current and former contig;
+	// excluding return divergence vertex;
 	@Override
 	public Contig getNextVertex(Contig current, Contig former) {
 		Contig next = null;
@@ -409,6 +443,49 @@ inner:				while(nexts != null)
 	}
 
 	@Override
+	public void delErrorProneEdge(double ratio) {
+		// TODO Auto-generated method stub
+		if(adjTos == null || adjTos.size() == 0)
+			initAdjTos();
+		List<Edge> rmEdges = new Vector<Edge>(100);
+		for(String id : adjTos.keySet())
+		{
+			List<Contig> adjs = adjTos.get(id);
+			int adjCount = adjs.size();
+			// by far only considering three adjacent statement;
+			if(adjCount >= 3)
+			{
+				Contig cnt = new Contig();
+				cnt.setID(id);
+				int [] sls = new int[adjCount];
+				for(int i = 0; i < adjCount; i++)
+				{
+					Contig c = adjs.get(i);
+					List<Edge> es = this.getEdgesInfo(cnt, c);
+					sls[i] = es.get(0).getLinkNum();
+				}
+				Arrays.sort(sls);
+				int max = sls[adjCount - 1];
+				for(int i = 0; i < adjCount; i++)
+				{
+					Contig c = adjs.get(i);
+					List<Edge> es = this.getEdgesInfo(cnt, c);
+					int sl = es.get(0).getLinkNum();
+					double r = (double)sl/max;
+					if(r <= ratio)
+					{
+//						this.edges.removeAll(es);
+						rmEdges.addAll(es);
+					}
+				}
+			}
+		}
+		logger.debug(this.getClass().getName() + "\tDelete error prone edges:" + rmEdges.size());
+		this.edges.removeAll(rmEdges);
+		updateGraph();
+	}
+
+	@Override
 	public void linearMergin() {
 		// TODO Auto-generated method stub
 
@@ -422,6 +499,7 @@ inner:				while(nexts != null)
 			isRemove = true;
 		return false;
 	}
+	
 
 	public void updateGraph() {
 		initAdjTos();

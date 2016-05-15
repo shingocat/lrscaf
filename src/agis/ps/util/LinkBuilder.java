@@ -20,9 +20,11 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.M5Record;
 import agis.ps.SimplePath;
+import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.Contig;
 import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM5;
+import agis.ps.link.TriadLink;
 
 public class LinkBuilder {
 	private static Logger logger = LoggerFactory.getLogger(LinkBuilder.class);
@@ -51,9 +53,6 @@ public class LinkBuilder {
 		// get all valid M5Record, and storing in a hash map by the pacbio read
 		// id;
 		for (M5Record m5 : m5Records) {
-			if(m5.gettName().equals("1025"))
-				System.out.println(m5.toString());
-			
 			int minOLLen = paras.getMinOLLen();
 			double minOLRatio = paras.getMinOLRatio();
 			int maxOHLen = paras.getMaxOHLen();
@@ -191,12 +190,13 @@ public class LinkBuilder {
 //		repeats.add("1015");
 //		repeats.add("1019");
 		int count = 0;
+//		Map<TriadLink, Integer> triads = new HashMap<TriadLink, Integer>();
+		List<TriadLink> triads = new Vector<TriadLink>();
 		for (String s : pSet.keySet()) {
 			count++;
 			List<M5Record> contig_pairs = pSet.get(s);
-
-			List<M5Record> temp = new Vector<M5Record>(contig_pairs.size());
 			// remove the repeats
+			List<M5Record> temp = new Vector<M5Record>(contig_pairs.size());
 			try {
 				for (M5Record m : contig_pairs) {
 //					String cName = m.gettName();
@@ -239,6 +239,51 @@ public class LinkBuilder {
 					m1 = null;
 					m2 = null;
 				}
+				// build TriadLink
+				if(cpSize >= 3)
+				{
+					for(int i = 0; i <= cpSize - 3; i++)
+					{
+						M5Record m1 = contig_pairs.get(i);
+						M5Record m2 = contig_pairs.get(i + 1);
+						M5Record m3 = contig_pairs.get(i + 2);
+						Contig pre = new Contig();
+						pre.setID(m1.gettName());
+						pre.setLength(m1.gettLength());
+						Contig mid = new Contig();
+						mid.setID(m2.gettName());
+						mid.setLength(m2.gettLength());
+						Contig lst = new Contig();
+						lst.setID(m3.gettName());
+						lst.setLength(m3.gettLength());
+						TriadLink tl = new TriadLink(pre, mid, lst);
+						tl.setSupLinks(1);
+						if(triads.contains(tl))
+						{
+							int index = triads.indexOf(tl);
+							int supLink = triads.get(index).getSupLinks();
+							supLink += 1;
+							triads.get(index).setSupLinks(supLink);
+							m1 = null;
+							m2 = null;
+							m3 = null;
+							pre = null;
+							mid = null;
+							lst = null;
+							tl = null;
+						} else
+						{
+							triads.add(tl);
+							m1 = null;
+							m2 = null;
+							m3 = null;
+							pre = null;
+							mid = null;
+							lst = null;
+							tl = null;
+						}
+					}
+				}
 				// build all the combination link;
 				/*
 				 * for(int i = 0; i <= cpSize - 2; i++) { for(int j = i + 1 ; j
@@ -251,6 +296,8 @@ public class LinkBuilder {
 				 */
 			}
 		}
+		TriadLinkWriter tlw = new TriadLinkWriter(paras, triads);
+		tlw.write();
 		pSet = null;
 		return pbLinks;
 	}

@@ -27,6 +27,7 @@ public class Parameter implements Serializable {
 	private String type; // m for m5, s for sam, s for bam;
 	private Double identity = 0.8d; // compute the identity between contig and pacbio, formula as: match / (match + mismatch + numsIn + numsDel); 
 	private boolean isUseOLLink = false; // use overlap link into build edges;
+	private Double ratio = 0.3; // use this ratio to delete edge by supported link ratio 
 	
 	public boolean isUseOLLink() {
 		return isUseOLLink;
@@ -155,6 +156,14 @@ public class Parameter implements Serializable {
 	public void setMaxEndRatio(Double maxEndRatio) {
 		this.maxEndRatio = maxEndRatio;
 	}
+	
+	public Double getRatio() {
+		return ratio;
+	}
+
+	public void setRatio(Double ratio) {
+		this.ratio = ratio;
+	}
 
 	@Override
 	public String toString() {
@@ -162,7 +171,8 @@ public class Parameter implements Serializable {
 				+ minContLen + ", minPBLen=" + minPBLen + ", minOLLen=" + minOLLen + ", minOLRatio=" + minOLRatio
 				+ ", maxOHLen=" + maxOHLen + ", maxOHRatio=" + maxOHRatio + ", maxEndLen=" + maxEndLen
 				+ ", maxEndRatio=" + maxEndRatio + ", minSupLinks=" + minSupLinks + ", maxSupLinks=" + maxSupLinks
-				+ ", type=" + type + "]";
+				+ ", type=" + type + ", identity=" + identity + ", isUseOLLink=" + isUseOLLink + ", ratio=" + ratio
+				+ "]";
 	}
 	
 }

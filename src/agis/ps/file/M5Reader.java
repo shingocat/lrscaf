@@ -4,7 +4,7 @@
 *Email: mqin@ymail.com
 *Date: 2015年12月28日
 */
-package agis.ps.util;
+package agis.ps.file;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.M5Record;
+import agis.ps.util.Parameter;
+import agis.ps.util.Strand;
 
 public class M5Reader {
 	

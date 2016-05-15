@@ -23,8 +23,8 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.file.XMLParser;
 import agis.ps.util.Parameter;
-import agis.ps.util.XMLParser;
 
 public class Main {
 

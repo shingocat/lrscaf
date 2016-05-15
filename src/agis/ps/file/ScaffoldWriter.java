@@ -4,7 +4,7 @@
 *Email: mqin@ymail.com
 *Date: 2016年2月28日
 */
-package agis.ps.util;
+package agis.ps.file;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,6 +21,8 @@ import agis.ps.Path;
 import agis.ps.link.Contig;
 import agis.ps.path.Node;
 import agis.ps.path.NodePath;
+import agis.ps.util.Consensusser;
+import agis.ps.util.Strand;
 
 public class ScaffoldWriter {
 

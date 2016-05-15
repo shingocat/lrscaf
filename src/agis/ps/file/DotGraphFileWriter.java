@@ -4,7 +4,7 @@
 *Email: mqin@ymail.com
 *Date: 2015年12月28日
 */
-package agis.ps.util;
+package agis.ps.file;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,6 +21,7 @@ import agis.ps.Path;
 import agis.ps.SimplePath;
 import agis.ps.link.PBLink;
 import agis.ps.path.NodePath;
+import agis.ps.util.Strand;
 
 public class DotGraphFileWriter {
 

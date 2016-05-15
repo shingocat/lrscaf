@@ -4,7 +4,7 @@
 *Email: mqin@ymail.com
 *Date: 2016年2月28日
 */
-package agis.ps.util;
+package agis.ps.file;
 
 import java.io.BufferedReader;
 import java.io.File;

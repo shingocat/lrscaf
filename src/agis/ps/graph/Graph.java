@@ -148,6 +148,9 @@ public abstract class Graph implements Serializable,IUntangler {
 	// return the next vertex from the current vertex and former vertex;
 	public abstract Contig getNextVertex(Contig current, Contig former);
 	
+	// return the next vertex from the current vertex and former vertex;
+	public abstract Contig getNextVertex2(Contig current, Contig former);
+	
 	// return the vertex by specified id;
 	public abstract Contig getVertex(String id);
 	
