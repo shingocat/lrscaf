@@ -28,7 +28,17 @@ public class Parameter implements Serializable {
 	private Double identity = 0.8d; // compute the identity between contig and pacbio, formula as: match / (match + mismatch + numsIn + numsDel); 
 	private boolean isUseOLLink = false; // use overlap link into build edges;
 	private Double ratio = 0.3; // use this ratio to delete edge by supported link ratio 
+	private boolean isRepMask = false; // whether repeat is mask;
 	
+	
+	public boolean isRepMask() {
+		return isRepMask;
+	}
+
+	public void setRepMask(boolean isRepMask) {
+		this.isRepMask = isRepMask;
+	}
+
 	public boolean isUseOLLink() {
 		return isUseOLLink;
 	}
@@ -172,7 +182,7 @@ public class Parameter implements Serializable {
 				+ ", maxOHLen=" + maxOHLen + ", maxOHRatio=" + maxOHRatio + ", maxEndLen=" + maxEndLen
 				+ ", maxEndRatio=" + maxEndRatio + ", minSupLinks=" + minSupLinks + ", maxSupLinks=" + maxSupLinks
 				+ ", type=" + type + ", identity=" + identity + ", isUseOLLink=" + isUseOLLink + ", ratio=" + ratio
-				+ "]";
+				+ ", isRepMask=" + isRepMask + "]";
 	}
 	
 }

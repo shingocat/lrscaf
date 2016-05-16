@@ -25,6 +25,8 @@
          <max_supported_links>70</max_supported_links>
 		 <tips_size>1</tips_size>
 		 <use_overlap_link>true</use_overlap_link>
+		 <ratio>0.3</ratio>
+		 <repeat_mask>true</repeat_mask>
 		<!--The minimum contig length to be used in scaffolding-->
 		<!--
 		<min_contig_length>2000</min_contig_length>

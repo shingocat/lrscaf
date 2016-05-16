@@ -174,8 +174,12 @@ public class LinkBuilder {
 		}
 
 		logger.debug(this.getClass().getName() + "\t" + "Valid link: " + pSet.size());
-		RepeatFinder rf = new RepeatFinder(paras);
-		List<String> repeats =  rf.findRepeat(pSet);
+		List<String> repeats = null;
+		if(paras.isRepMask())
+		{
+			RepeatFinder rf = new RepeatFinder(paras);
+			repeats =  rf.findRepeat(pSet);
+		}
 		// transform valid M5Record to Pacbio links
 		// String [] repeats = new String[]{"1035","1045","1049","1059"};
 //		List<String> repeats = new Vector<String>(4);
@@ -196,23 +200,25 @@ public class LinkBuilder {
 			count++;
 			List<M5Record> contig_pairs = pSet.get(s);
 			// remove the repeats
-			List<M5Record> temp = new Vector<M5Record>(contig_pairs.size());
-			try {
-				for (M5Record m : contig_pairs) {
-//					String cName = m.gettName();
-//					if (!repeats.contains(cName))
-//						temp.add(m);
-					String cName = m.gettName();
-					if(!repeats.contains(cName))
-						temp.add(m);
+			if(paras.isRepMask())
+			{
+				List<M5Record> temp = new Vector<M5Record>(contig_pairs.size());
+				try {
+					for (M5Record m : contig_pairs) {
+	//					String cName = m.gettName();
+	//					if (!repeats.contains(cName))
+	//						temp.add(m);
+						String cName = m.gettName();
+						if(!repeats.contains(cName))
+							temp.add(m);
+					}
+				} catch (Exception e) {
+					logger.debug(this.getClass().getName() + "\t" + count + e.getMessage() + "\t" + e.getClass().getName());
 				}
-			} catch (Exception e) {
-				logger.debug(this.getClass().getName() + "\t" + count + e.getMessage() + "\t" + e.getClass().getName());
+				contig_pairs = null;
+				contig_pairs = temp;
+				temp = null;
 			}
-			contig_pairs = null;
-			contig_pairs = temp;
-			temp = null;
-
 			int cpSize = contig_pairs.size();
 
 			// at least having two contigs under the same pacbio read;

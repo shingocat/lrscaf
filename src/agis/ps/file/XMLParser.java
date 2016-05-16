@@ -110,6 +110,7 @@ public class XMLParser {
 				para.setIdentity(0.8);
 				para.setUseOLLink(false);
 				para.setRatio(0.3);
+				para.setRepMask(false);
 			} else {
 				Node parasNode = nodes.item(0);
 				nodes = parasNode.getChildNodes();
@@ -154,6 +155,12 @@ public class XMLParser {
 //							para.setUseOLLink(false);
 					} else if (nodeName.equalsIgnoreCase("ratio")){
 						para.setRatio(Double.valueOf(node.getTextContent().trim()));
+					} else if (nodeName.equalsIgnoreCase("repeat_mask")){
+						String temp = node.getTextContent().trim();
+						if(temp.startsWith("t") || temp.startsWith("T"))
+							para.setRepMask(true);
+						else 
+							para.setRepMask(false);
 					} else {
 						logger.debug(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");
 						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");
