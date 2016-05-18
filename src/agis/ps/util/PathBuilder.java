@@ -275,11 +275,15 @@ public class PathBuilder {
 			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dep.info";
 			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
 			NodePath path = null;
-			TriadLinkReader tlr = new TriadLinkReader(paras);
-			List<TriadLink> triads = tlr.read();
+			int count = 0;
+//			TriadLinkReader tlr = new TriadLinkReader(paras);
+//			List<TriadLink> triads = tlr.read();
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
+				count = count + 1;
+//				if(count == 35)
+//					logger.debug("count " + count);
 				Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false then break;
@@ -319,6 +323,14 @@ public class PathBuilder {
 						if(next == null)
 						{ // for the divergence point
 							next = getTriadLinkNext(current, previous);
+							// checking next is not null statement,
+							// but the next will be not the adjacent vertex 
+							if(next != null)
+							{
+								List<Contig> tAdjs = diGraph.getAdjVertices(current);
+								if(!tAdjs.contains(next))
+									next = null;
+							}
 							if(next == null){
 								next = null;
 								current = null;
@@ -390,6 +402,14 @@ public class PathBuilder {
 						} else
 						{
 							next = getTriadLinkNext(current, previous);
+							// checking next is not null statement,
+							// but the next will be not the adjacent vertex 
+							if(next != null)
+							{
+								List<Contig> tAdjs = diGraph.getAdjVertices(current);
+								if(!tAdjs.contains(next))
+									next = null;
+							}
 							if(next == null)
 							{
 								diGraph.setVertexAsSelected(current);
@@ -415,7 +435,7 @@ public class PathBuilder {
 							{
 								node = new Node();
 								node.setCnt(current);
-								path.unshift(node);
+								path.push(node);
 								diGraph.setVertexAsSelected(current);
 								break;
 							}
@@ -437,6 +457,14 @@ public class PathBuilder {
 						} else
 						{
 							next = getTriadLinkNext(current, previous);
+							// checking next is not null statement,
+							// but the next will be not the adjacent vertex 
+							if(next != null)
+							{
+								List<Contig> tAdjs = diGraph.getAdjVertices(current);
+								if(!tAdjs.contains(next))
+									next = null;
+							}
 							if(next == null)
 							{
 								diGraph.setVertexAsSelected(current);
