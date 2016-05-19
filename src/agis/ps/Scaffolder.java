@@ -210,11 +210,21 @@ public class Scaffolder {
 				logger.debug(this.getClass().getName() + "The output folder was exist!");
 				isValid = true;
 			} else {
-				if (output.mkdirs()) {
-					logger.info(this.getClass().getName() + "The output folder was created!");
-					logger.debug(this.getClass().getName() + "The output folder was created!");
-					isValid = true;
+				isValid = output.mkdirs();
+				if(isValid)
+				{
+					logger.info(this.getClass().getName() + "\t" + "Build output folder successfully!");
+					logger.debug(this.getClass().getName() + "\t" + "Build output folder successfully!");
+				} else
+				{
+					logger.info(this.getClass().getName() + "\t" + "Build output folder failed!");
+					logger.debug(this.getClass().getName() + "\t" + "Build output folder failed!");
 				}
+//				if (output.mkdirs()) {
+//					logger.info(this.getClass().getName() + "The output folder was created!");
+//					logger.debug(this.getClass().getName() + "The output folder was created!");
+//					isValid = true;
+//				}
 			}
 		} catch (SecurityException e) {
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
