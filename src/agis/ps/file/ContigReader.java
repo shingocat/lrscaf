@@ -22,8 +22,8 @@ import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.M5Record;
 import agis.ps.link.Contig;
+import agis.ps.link.M5Record;
 
 public class ContigReader {
 

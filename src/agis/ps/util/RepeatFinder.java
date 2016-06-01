@@ -14,9 +14,10 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.M5Record;
 import agis.ps.file.ContigCoverageWriter;
 import agis.ps.link.Contig;
+import agis.ps.link.M5Record;
+import agis.ps.link.MRecord;
 
 public class RepeatFinder {
 	
@@ -28,15 +29,15 @@ public class RepeatFinder {
 		this.paras = paras;
 	}
 	
-	public List<String> findRepeat(Map<String, List<M5Record>> args)
+	public List<String> findRepeat(Map<String, List<MRecord>> args)
 	{
 		List<String> repeats = new Vector<String>(30);
 		// contig id and pacbio id in List<String> 
 		Map<String, List<String>> cntCounts = new HashMap<String, List<String>>();
 		for(String s : args.keySet())
 		{
-			List<M5Record> cnts = args.get(s);
-			for(M5Record m : cnts)
+			List<MRecord> cnts = args.get(s);
+			for(MRecord m : cnts)
 			{
 				if(cntCounts.containsKey(m.gettName()))
 				{

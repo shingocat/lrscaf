@@ -4,11 +4,10 @@
 *Email: mqin@ymail.com
 *Date: 2015年12月28日
 */
-package agis.ps;
+package agis.ps.link;
 
 import java.io.Serializable;
 
-import agis.ps.link.Contig;
 import agis.ps.util.Strand;
 
 public class Edge implements Serializable{

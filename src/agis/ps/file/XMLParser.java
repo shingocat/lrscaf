@@ -63,8 +63,11 @@ public class XMLParser {
 							para.setCntFile(node.getTextContent().trim());
 						} else if (nodeName.equalsIgnoreCase("m5")) {
 							para.setAlgFile(node.getTextContent().trim());
-							para.setType("m");
-						} else if (nodeName.equalsIgnoreCase("sam")) {
+							para.setType("m5");
+						} else if (nodeName.equalsIgnoreCase("m4")){
+							para.setAlgFile(node.getTextContent().trim());
+							para.setType("m4");
+						}else if (nodeName.equalsIgnoreCase("sam")) {
 							para.setAlgFile(node.getTextContent().trim());
 							para.setType("s");
 						} else if (nodeName.equalsIgnoreCase("bam")) {

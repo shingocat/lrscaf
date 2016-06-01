@@ -6,13 +6,12 @@
 */
 package agis.ps.link;
 
-import agis.ps.M5Record;
 import agis.ps.util.Strand;
 
-public class PBLinkM5 implements ILink {
+public class PBLinkM implements ILink {
 	private String id; // pacbiio read id;
-	private M5Record origin; // The origin point in the link;
-	private M5Record terminus; // the terminus point in the link;
+	private MRecord origin; // The origin point in the link;
+	private MRecord terminus; // the terminus point in the link;
 	private Boolean isOverLap; // according to the distance between two contigs, if dist is minus as overlap, else having gap;
 	
 	// according to the dist value;
@@ -82,22 +81,22 @@ public class PBLinkM5 implements ILink {
 	}
 
 
-	public M5Record getOrigin() {
+	public MRecord getOrigin() {
 		return origin;
 	}
 
 
-	public void setOrigin(M5Record origin) {
+	public void setOrigin(MRecord origin) {
 		this.origin = origin;
 	}
 
 
-	public M5Record getTerminus() {
+	public MRecord getTerminus() {
 		return terminus;
 	}
 
 
-	public void setTerminus(M5Record terminus) {
+	public void setTerminus(MRecord terminus) {
 		this.terminus = terminus;
 	}
 	

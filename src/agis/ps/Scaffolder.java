@@ -26,11 +26,15 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.file.ContigReader;
 import agis.ps.file.DotGraphFileWriter;
+import agis.ps.file.M4Reader;
 import agis.ps.file.M5Reader;
 import agis.ps.file.ScaffoldWriter;
 import agis.ps.link.Contig;
+import agis.ps.link.Edge;
+import agis.ps.link.M5Record;
+import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
-import agis.ps.link.PBLinkM5;
+import agis.ps.link.PBLinkM;
 import agis.ps.path.NodePath;
 import agis.ps.util.Color;
 import agis.ps.util.EdgeBundler;
@@ -59,7 +63,7 @@ public class Scaffolder {
 	private Map<String, Contig> contigs;
 	private SamReader samReader;
 	private List<SimplePath> simPaths;
-	private List<PBLinkM5> pbLinks;
+	private List<PBLinkM> pbLinks;
 	private List<Edge> edges;
 
 	public Scaffolder(Parameter paras) {
@@ -97,16 +101,23 @@ public class Scaffolder {
 			// return;
 			if(!(readContigs(cFilePath, paras.getMinContLen())))
 				return;
-			List<M5Record> m5Records = null;
-			if (type.equalsIgnoreCase("m")) {
+			List<MRecord> mRecords = null;
+			if (type.equalsIgnoreCase("m5")) {
 //				m5Records = readM5Aligned(aFilePath, paras.getMinPBLen(), paras.getMinContLen());
-				m5Records = readM5Aligned(paras);
+				mRecords = readM5Aligned(paras);
 				// if there are some problem to return m5 records
-				if(m5Records == null)
+				if(mRecords == null)
 					return;
 //				pbLinks = LinkBuilder.m5Record2Link(m5Records, paras);
-				LinkBuilder linkBuilder = new LinkBuilder(m5Records, paras);
-				pbLinks = linkBuilder.m5Record2Link();
+				LinkBuilder linkBuilder = new LinkBuilder(mRecords, paras);
+				pbLinks = linkBuilder.mRecord2Link();
+				linkBuilder = null;
+			} else if(type.equalsIgnoreCase("m4")){
+				mRecords = readM4Alingned(paras);
+				if(mRecords == null)
+					return;
+				LinkBuilder linkBuilder = new LinkBuilder(mRecords, paras);
+				pbLinks = linkBuilder.mRecord2Link();
 				linkBuilder = null;
 			} else if(type.equalsIgnoreCase("sam") || type.equalsIgnoreCase("bam")) {
 				readSAMAligned(aFilePath);
@@ -254,13 +265,19 @@ public class Scaffolder {
 			return true;
 	}
 	
-	public List<M5Record> readM5Aligned(Parameter paras)
+	public List<MRecord> readM5Aligned(Parameter paras)
 	{
 		M5Reader reader = new M5Reader(paras);
 		return reader.read();
 	}
+	
+	public List<MRecord> readM4Alingned(Parameter paras)
+	{
+		M4Reader reader = new M4Reader(paras);
+		return reader.read();
+	}
 
-	public List<M5Record> readM5Aligned(String aFilePath, int minPBLen, int minCNTLen) {
+	public List<MRecord> readM5Aligned(String aFilePath, int minPBLen, int minCNTLen) {
 		if (aFilePath.isEmpty()) {
 			logger.error(this.getClass().getName() + "The aligned file was null or not setted!");
 			logger.debug(this.getClass().getName() + "The aligned file was null or not setted!");
@@ -268,20 +285,7 @@ public class Scaffolder {
 			return null;
 		}
 		M5Reader reader = new M5Reader(aFilePath, minPBLen, minCNTLen);
-		List<M5Record> m5Records = reader.read();
-		// HashMap<String, String> pSet = new HashMap<String, String>();
-		//
-		// for(M5Record m5 : m5Records)
-		// {
-		// String c = m5.gettName() + "==" + m5.getqStart() + ";";
-		// if(pSet.containsKey(m5.getqName()))
-		// {
-		// pSet.put(m5.getqName(), pSet.get(m5.getqName()) + c);
-		// } else
-		// {
-		// pSet.put(m5.getqName(), c);
-		// }
-		// }
+		List<MRecord> m5Records = reader.read();
 		return m5Records;
 	}
 

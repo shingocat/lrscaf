@@ -12,8 +12,8 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.Edge;
 import agis.ps.link.Contig;
+import agis.ps.link.Edge;
 
 public interface IUntangler {
 	final static Logger logger = LoggerFactory.getLogger(IUntangler.class);

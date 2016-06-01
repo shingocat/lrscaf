@@ -18,41 +18,42 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.M5Record;
 import agis.ps.SimplePath;
 import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.Contig;
+import agis.ps.link.M5Record;
+import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
-import agis.ps.link.PBLinkM5;
+import agis.ps.link.PBLinkM;
 import agis.ps.link.TriadLink;
 
 public class LinkBuilder {
 	private static Logger logger = LoggerFactory.getLogger(LinkBuilder.class);
-	private List<M5Record> m5s;
+	private List<MRecord> ms;
 	private Parameter paras;
 
 	public LinkBuilder() {
 		// do nothing;
 	}
 
-	public LinkBuilder(List<M5Record> m5s, Parameter paras) {
-		this.m5s = m5s;
+	public LinkBuilder(List<MRecord> ms, Parameter paras) {
+		this.ms = ms;
 		this.paras = paras;
 	}
 
-	public List<PBLinkM5> m5Record2Link() {
-		if (m5s == null || m5s.size() == 0)
-			throw new IllegalArgumentException("LinkBuilder: The M5Records could not be empty!");
-		return this.m5Record2Link(m5s, paras);
+	public List<PBLinkM> mRecord2Link() {
+		if (ms == null || ms.size() == 0)
+			throw new IllegalArgumentException("LinkBuilder: The MRecords could not be empty!");
+		return this.mRecord2Link(ms, paras);
 	}
 
 	// method to change valid m5record to link two contigs;
-	public List<PBLinkM5> m5Record2Link(List<M5Record> m5Records, Parameter paras) {
-		List<PBLinkM5> pbLinks = new Vector<PBLinkM5>();
-		HashMap<String, List<M5Record>> pSet = new HashMap<String, List<M5Record>>();
+	public List<PBLinkM> mRecord2Link(List<MRecord> mRecords, Parameter paras) {
+		List<PBLinkM> pbLinks = new Vector<PBLinkM>();
+		HashMap<String, List<MRecord>> pSet = new HashMap<String, List<MRecord>>();
 		// get all valid M5Record, and storing in a hash map by the pacbio read
 		// id;
-		for (M5Record m5 : m5Records) {
+		for (MRecord m : mRecords) {
 			int minOLLen = paras.getMinOLLen();
 			double minOLRatio = paras.getMinOLRatio();
 			int maxOHLen = paras.getMaxOHLen();
@@ -60,13 +61,13 @@ public class LinkBuilder {
 			int maxEndLen = paras.getMaxEndLen();
 			double maxEndRatio = paras.getMaxEndRatio();
 
-			int pbLen = m5.getqLength();
-			int pbStart = m5.getqStart();
-			int pbEnd = m5.getqEnd() - 1;
-			int contLen = m5.gettLength();
-			int contStart = m5.gettStart();
-			int contEnd = m5.gettEnd() - 1;
-			Strand tStrand = m5.gettStrand();
+			int pbLen = m.getqLength();
+			int pbStart = m.getqStart();
+			int pbEnd = m.getqEnd() - 1;
+			int contLen = m.gettLength();
+			int contStart = m.gettStart();
+			int contEnd = m.gettEnd() - 1;
+			Strand tStrand = m.gettStrand();
 
 			// all the basic test condition is implemented in M5Reader class
 			// with PB and CNT length and identity
@@ -163,12 +164,12 @@ public class LinkBuilder {
 				}
 			}
 			// put all valid records to a hashmap by key as the read id;
-			if (pSet.containsKey(m5.getqName())) {
-				pSet.get(m5.getqName()).add(m5);
+			if (pSet.containsKey(m.getqName())) {
+				pSet.get(m.getqName()).add(m);
 			} else {
-				List<M5Record> records = new Vector<M5Record>();
-				records.add(m5);
-				pSet.put(m5.getqName(), records);
+				List<MRecord> records = new Vector<MRecord>();
+				records.add(m);
+				pSet.put(m.getqName(), records);
 				records = null;
 			}
 		}
@@ -198,13 +199,13 @@ public class LinkBuilder {
 		List<TriadLink> triads = new Vector<TriadLink>();
 		for (String s : pSet.keySet()) {
 			count++;
-			List<M5Record> contig_pairs = pSet.get(s);
+			List<MRecord> contig_pairs = pSet.get(s);
 			// remove the repeats
 			if(paras.isRepMask())
 			{
-				List<M5Record> temp = new Vector<M5Record>(contig_pairs.size());
+				List<MRecord> temp = new Vector<MRecord>(contig_pairs.size());
 				try {
-					for (M5Record m : contig_pairs) {
+					for (MRecord m : contig_pairs) {
 	//					String cName = m.gettName();
 	//					if (!repeats.contains(cName))
 	//						temp.add(m);
@@ -228,15 +229,15 @@ public class LinkBuilder {
 				// build only the successive link; A->B->C, it will build A->B
 				// and B->C, omitted A->C
 				for (int i = 0; i <= cpSize - 2; i++) {
-					M5Record m1 = contig_pairs.get(i);
-					M5Record m2 = contig_pairs.get(i + 1);
+					MRecord m1 = contig_pairs.get(i);
+					MRecord m2 = contig_pairs.get(i + 1);
 
 					if (m1.gettName().equalsIgnoreCase(m2.gettName())) {
 						m1 = null;
 						m2 = null;
 						continue;
 					}
-					PBLinkM5 p = new PBLinkM5();
+					PBLinkM p = new PBLinkM();
 					p.setOrigin(m1);
 					p.setTerminus(m2);
 					p.setId(s);
@@ -250,9 +251,9 @@ public class LinkBuilder {
 				{
 					for(int i = 0; i <= cpSize - 3; i++)
 					{
-						M5Record m1 = contig_pairs.get(i);
-						M5Record m2 = contig_pairs.get(i + 1);
-						M5Record m3 = contig_pairs.get(i + 2);
+						MRecord m1 = contig_pairs.get(i);
+						MRecord m2 = contig_pairs.get(i + 1);
+						MRecord m3 = contig_pairs.get(i + 2);
 						Contig pre = new Contig();
 						pre.setID(m1.gettName());
 						pre.setLength(m1.gettLength());
@@ -313,8 +314,8 @@ public class LinkBuilder {
 class ByLocOrderComparator implements Comparator<Object> {
 	@Override
 	public int compare(Object cFirst, Object cSecond) {
-		M5Record m1 = (M5Record) cFirst;
-		M5Record m2 = (M5Record) cSecond;
+		MRecord m1 = (MRecord) cFirst;
+		MRecord m2 = (MRecord) cSecond;
 		int diff = Integer.valueOf(m1.getqStart()) - Integer.valueOf(m2.getqStart());
 		if (diff > 0)
 			return 1;

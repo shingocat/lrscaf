@@ -16,15 +16,15 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.Edge;
 import agis.ps.link.Contig;
+import agis.ps.link.Edge;
 import agis.ps.link.PBLink;
-import agis.ps.link.PBLinkM5;
+import agis.ps.link.PBLinkM;
 
 public class EdgeBundler {
 	// private static int MIN_LINK_NUM = 3;
 	static final Logger logger = LoggerFactory.getLogger(EdgeBundler.class);
-	private List<PBLinkM5> links;
+	private List<PBLinkM> links;
 	private Parameter paras;
 	private List<Edge> edges = null;
 	private Map<String, Contig> contigs = null;
@@ -33,12 +33,12 @@ public class EdgeBundler {
 		// do nothing;
 	}
 
-	public EdgeBundler(List<PBLinkM5> links, Parameter paras) {
+	public EdgeBundler(List<PBLinkM> links, Parameter paras) {
 		this.links = links;
 		this.paras = paras;
 	}
 	
-	public EdgeBundler(List<PBLinkM5> links, Parameter paras, Map<String, Contig> contigs)
+	public EdgeBundler(List<PBLinkM> links, Parameter paras, Map<String, Contig> contigs)
 	{
 		this(links, paras);
 		this.contigs = contigs;
@@ -51,7 +51,7 @@ public class EdgeBundler {
 	}
 	
 	// the second implemented
-	public List<Edge> pbLinkM5Bundling2(List<PBLinkM5> links, Parameter paras)
+	public List<Edge> pbLinkM5Bundling2(List<PBLinkM> links, Parameter paras)
 	{
 		if(links == null || links.size() == 0)
 			throw new IllegalArgumentException(
@@ -65,8 +65,8 @@ public class EdgeBundler {
 		logger.debug(this.getClass().getName() + "\tUsed overlap link:" + isUseOLLink);
 		// the all the same origin and terminus to a hash map;
 		// both direction
-		Map<String, List<PBLinkM5>> temp = new HashMap<String, List<PBLinkM5>>();
-		for(PBLinkM5 pb : links)
+		Map<String, List<PBLinkM>> temp = new HashMap<String, List<PBLinkM>>();
+		for(PBLinkM pb : links)
 		{
 			String id1 = pb.getOrigin().gettName() + ":->:" + pb.getTerminus().gettName();
 			String id2 = pb.getTerminus().gettName() + ":->:" + pb.getOrigin().gettName();
@@ -84,7 +84,7 @@ public class EdgeBundler {
 				pb = null;
 			} else
 			{
-				List<PBLinkM5> lins = new Vector<PBLinkM5>(10);
+				List<PBLinkM> lins = new Vector<PBLinkM>(10);
 				lins.add(pb);
 				temp.put(id1, lins);
 				lins = null;
@@ -98,11 +98,11 @@ public class EdgeBundler {
 		for(String s : temp.keySet())
 		{
 			// divide into two set, i.e. A->B; B->A
-			List<PBLinkM5> all = temp.get(s);
-			List<PBLinkM5> s1 = new Vector<PBLinkM5>(10);
-			List<PBLinkM5> s2 = new Vector<PBLinkM5>(10);
+			List<PBLinkM> all = temp.get(s);
+			List<PBLinkM> s1 = new Vector<PBLinkM>(10);
+			List<PBLinkM> s2 = new Vector<PBLinkM>(10);
 			String [] ids = s.split(":->:");
-			for(PBLinkM5 p : all)
+			for(PBLinkM p : all)
 			{
 				if(ids[0].equalsIgnoreCase(p.getOrigin().gettName()))
 					s1.add(p);
@@ -113,11 +113,11 @@ public class EdgeBundler {
 			// compute the most type in s1 and s2;
 			// A for + +; B for + -; C for - -; D for - +;
 			// FOR S1 SET 
-			List<PBLinkM5> s1As = new Vector<PBLinkM5>(10);
-			List<PBLinkM5> s1Bs = new Vector<PBLinkM5>(10);
-			List<PBLinkM5> s1Cs = new Vector<PBLinkM5>(10);
-			List<PBLinkM5> s1Ds = new Vector<PBLinkM5>(10);
-			for(PBLinkM5 p : s1)
+			List<PBLinkM> s1As = new Vector<PBLinkM>(10);
+			List<PBLinkM> s1Bs = new Vector<PBLinkM>(10);
+			List<PBLinkM> s1Cs = new Vector<PBLinkM>(10);
+			List<PBLinkM> s1Ds = new Vector<PBLinkM>(10);
+			for(PBLinkM p : s1)
 			{
 				Strand oStrand = p.getOrigin().gettStrand();
 				Strand tStrand = p.getTerminus().gettStrand();
@@ -138,11 +138,11 @@ public class EdgeBundler {
 				tStrand = null;
 			}
 //			FOR S2 SET
-			List<PBLinkM5> s2As = new Vector<PBLinkM5>(10);
-			List<PBLinkM5> s2Bs = new Vector<PBLinkM5>(10);
-			List<PBLinkM5> s2Cs = new Vector<PBLinkM5>(10);
-			List<PBLinkM5> s2Ds = new Vector<PBLinkM5>(10);
-			for(PBLinkM5 p : s2)
+			List<PBLinkM> s2As = new Vector<PBLinkM>(10);
+			List<PBLinkM> s2Bs = new Vector<PBLinkM>(10);
+			List<PBLinkM> s2Cs = new Vector<PBLinkM>(10);
+			List<PBLinkM> s2Ds = new Vector<PBLinkM>(10);
+			for(PBLinkM p : s2)
 			{
 				Strand oStrand = p.getOrigin().gettStrand();
 				Strand tStrand = p.getTerminus().gettStrand();
@@ -172,9 +172,9 @@ public class EdgeBundler {
 			if(max == sA) // for the A statement;
 			{
 				List<Integer> dists = new Vector<Integer>(10);
-				for(PBLinkM5 p : s1As)
+				for(PBLinkM p : s1As)
 					dists.add(p.getDistance());
-				for(PBLinkM5 p : s2Cs)
+				for(PBLinkM p : s2Cs)
 					dists.add(p.getDistance());
 				int mean = MathTool.mean(dists);
 				int sd = MathTool.sd(dists);
@@ -183,12 +183,12 @@ public class EdgeBundler {
 				// if the distance larger than mean + 3 * sd, then remove;
 				try {
 					for (int i = 0; i < s1As.size(); i++) {
-						PBLinkM5 pb = s1As.get(i);
+						PBLinkM pb = s1As.get(i);
 						if (pb.getDistance() > upper || pb.getDistance() < low)
 							s1As.remove(pb);
 					}
 					for (int i = 0; i < s2Cs.size(); i++) {
-						PBLinkM5 pb = s2Cs.get(i);
+						PBLinkM pb = s2Cs.get(i);
 						if (pb.getDistance() > upper || pb.getDistance() < low)
 							s2Cs.remove(pb);
 					}
@@ -206,9 +206,9 @@ public class EdgeBundler {
 				// recompute mean and sd;
 				dists = null;
 				dists = new Vector<Integer>();
-				for(PBLinkM5 p : s1As)
+				for(PBLinkM p : s1As)
 					dists.add(p.getDistance());
-				for(PBLinkM5 p : s2Cs)
+				for(PBLinkM p : s2Cs)
 					dists.add(p.getDistance());
 				mean = MathTool.mean(dists);
 				sd = MathTool.sd(dists);
@@ -275,9 +275,9 @@ public class EdgeBundler {
 			} else if(max == sB) // for the B statement
 			{
 				List<Integer> dists = new Vector<Integer>(10);
-				for(PBLinkM5 p : s1Bs)
+				for(PBLinkM p : s1Bs)
 					dists.add(p.getDistance());
-				for(PBLinkM5 p : s2Bs)
+				for(PBLinkM p : s2Bs)
 					dists.add(p.getDistance());
 				int mean = MathTool.mean(dists);
 				int sd = MathTool.sd(dists);
@@ -286,12 +286,12 @@ public class EdgeBundler {
 				// if the distance larger than mean + 3 * sd, then remove;
 				try {
 					for (int i = 0; i < s1Bs.size(); i++) {
-						PBLinkM5 pb = s1Bs.get(i);
+						PBLinkM pb = s1Bs.get(i);
 						if (pb.getDistance() > upper || pb.getDistance() < low)
 							s1Bs.remove(pb);
 					}
 					for (int i = 0; i < s2Bs.size(); i++) {
-						PBLinkM5 pb = s2Bs.get(i);
+						PBLinkM pb = s2Bs.get(i);
 						if (pb.getDistance() > upper || pb.getDistance() < low)
 							s2Bs.remove(pb);
 					}
@@ -309,9 +309,9 @@ public class EdgeBundler {
 				// recompute mean and sd;
 				dists = null;
 				dists = new Vector<Integer>();
-				for(PBLinkM5 p : s1Bs)
+				for(PBLinkM p : s1Bs)
 					dists.add(p.getDistance());
-				for(PBLinkM5 p : s2Bs)
+				for(PBLinkM p : s2Bs)
 					dists.add(p.getDistance());
 				mean = MathTool.mean(dists);
 				sd = MathTool.sd(dists);
@@ -378,9 +378,9 @@ public class EdgeBundler {
 			} else if(max == sC) // for the C statement
 			{
 				List<Integer> dists = new Vector<Integer>(10);
-				for(PBLinkM5 p : s1Cs)
+				for(PBLinkM p : s1Cs)
 					dists.add(p.getDistance());
-				for(PBLinkM5 p : s2As)
+				for(PBLinkM p : s2As)
 					dists.add(p.getDistance());
 				int mean = MathTool.mean(dists);
 				int sd = MathTool.sd(dists);
@@ -389,12 +389,12 @@ public class EdgeBundler {
 				// if the distance larger than mean + 3 * sd, then remove;
 				try {
 					for (int i = 0; i < s1Cs.size(); i++) {
-						PBLinkM5 pb = s1Cs.get(i);
+						PBLinkM pb = s1Cs.get(i);
 						if (pb.getDistance() > upper || pb.getDistance() < low)
 							s1Cs.remove(pb);
 					}
 					for (int i = 0; i < s2As.size(); i++) {
-						PBLinkM5 pb = s2As.get(i);
+						PBLinkM pb = s2As.get(i);
 						if (pb.getDistance() > upper || pb.getDistance() < low)
 							s2As.remove(pb);
 					}
@@ -412,9 +412,9 @@ public class EdgeBundler {
 				// recompute mean and sd;
 				dists = null;
 				dists = new Vector<Integer>();
-				for(PBLinkM5 p : s1Cs)
+				for(PBLinkM p : s1Cs)
 					dists.add(p.getDistance());
-				for(PBLinkM5 p : s2As)
+				for(PBLinkM p : s2As)
 					dists.add(p.getDistance());
 				mean = MathTool.mean(dists);
 				sd = MathTool.sd(dists);
@@ -480,9 +480,9 @@ public class EdgeBundler {
 			} else if(max == sD) // for the D statement
 			{
 				List<Integer> dists = new Vector<Integer>(10);
-				for(PBLinkM5 p : s1Ds)
+				for(PBLinkM p : s1Ds)
 					dists.add(p.getDistance());
-				for(PBLinkM5 p : s2Ds)
+				for(PBLinkM p : s2Ds)
 					dists.add(p.getDistance());
 				int mean = MathTool.mean(dists);
 				int sd = MathTool.sd(dists);
@@ -491,12 +491,12 @@ public class EdgeBundler {
 				// if the distance larger than mean + 3 * sd, then remove;
 				try {
 					for (int i = 0; i < s1Ds.size(); i++) {
-						PBLinkM5 pb = s1Ds.get(i);
+						PBLinkM pb = s1Ds.get(i);
 						if (pb.getDistance() > upper || pb.getDistance() < low)
 							s1Ds.remove(pb);
 					}
 					for (int i = 0; i < s2Ds.size(); i++) {
-						PBLinkM5 pb = s2Ds.get(i);
+						PBLinkM pb = s2Ds.get(i);
 						if (pb.getDistance() > upper || pb.getDistance() < low)
 							s2Ds.remove(pb);
 					}
@@ -514,9 +514,9 @@ public class EdgeBundler {
 				// recompute mean and sd;
 				dists = null;
 				dists = new Vector<Integer>();
-				for(PBLinkM5 p : s1Ds)
+				for(PBLinkM p : s1Ds)
 					dists.add(p.getDistance());
-				for(PBLinkM5 p : s2Ds)
+				for(PBLinkM p : s2Ds)
 					dists.add(p.getDistance());
 				mean = MathTool.mean(dists);
 				sd = MathTool.sd(dists);
@@ -599,7 +599,7 @@ public class EdgeBundler {
 	}
 	
 
-	public List<Edge> pbLinkM5Bundling(List<PBLinkM5> links, Parameter paras) {
+	public List<Edge> pbLinkM5Bundling(List<PBLinkM> links, Parameter paras) {
 		if (links == null || links.size() == 0)
 			throw new IllegalArgumentException(
 					this.getClass().getName() + "The Links is empty when passed to EdgeBundler");
@@ -609,8 +609,8 @@ public class EdgeBundler {
 		// setting default size of vector is 200 elements;
 		edges = new Vector<Edge>(200);
 		// storing all the same origin and terminus to a hash map;
-		Map<String, List<PBLinkM5>> temp = new HashMap<String, List<PBLinkM5>>();
-		for (PBLinkM5 pb : links) {
+		Map<String, List<PBLinkM>> temp = new HashMap<String, List<PBLinkM>>();
+		for (PBLinkM pb : links) {
 			// not include overlap links
 			// if (pb.isOverLap())
 			// continue;
@@ -620,7 +620,7 @@ public class EdgeBundler {
 				id = null;
 				pb = null;
 			} else {
-				List<PBLinkM5> tLinks = new Vector<PBLinkM5>();
+				List<PBLinkM> tLinks = new Vector<PBLinkM>();
 				tLinks.add(pb);
 				temp.put(id, tLinks);
 				tLinks = null;
@@ -638,7 +638,7 @@ public class EdgeBundler {
 			if (numLinks >= paras.getMinSupLinks() && numLinks <= paras.getMaxSupLinks()) {
 				count += 1;
 				// statistical analysis contig pairs distance
-				List<PBLinkM5> tlinks = temp.get(s);
+				List<PBLinkM> tlinks = temp.get(s);
 //				List<Integer> dists = new Vector<Integer>();
 //				for (PBLinkM5 pb : tlinks) {
 //					dists.add(pb.getDistance());
@@ -673,22 +673,22 @@ public class EdgeBundler {
 				// remove outlier
 				int typeA = 0; // + +;
 				List<Integer> typeADists = new Vector<Integer>(10);
-				List<PBLinkM5> typeALinks = new Vector<PBLinkM5>(10);
+				List<PBLinkM> typeALinks = new Vector<PBLinkM>(10);
 				int typeB = 0; // + -;
 				List<Integer> typeBDists = new Vector<Integer>(10); 
-				List<PBLinkM5> typeBLinks = new Vector<PBLinkM5>(10);
+				List<PBLinkM> typeBLinks = new Vector<PBLinkM>(10);
 				int typeC = 0; // - -;
 				List<Integer> typeCDists = new Vector<Integer>(10);
-				List<PBLinkM5> typeCLinks = new Vector<PBLinkM5>(10);
+				List<PBLinkM> typeCLinks = new Vector<PBLinkM>(10);
 				int typeD = 0; // - +;
 				List<Integer> typeDDists = new Vector<Integer>(10);
-				List<PBLinkM5> typeDLinks = new Vector<PBLinkM5>(10);
+				List<PBLinkM> typeDLinks = new Vector<PBLinkM>(10);
 
 //				dists = null;
 //				dists = new Vector<Integer>();
 				Integer oLen = null; // original contig length;
 				Integer tLen = null; // terminus contig length;
-				for (PBLinkM5 pb : tlinks) {
+				for (PBLinkM pb : tlinks) {
 //					dists.add(pb.getDistance());
 					if (oLen == null)
 						oLen = pb.getOrigin().gettLength();
@@ -741,7 +741,7 @@ public class EdgeBundler {
 						// tlinks.remove(pb);
 						// }
 						for (int i = 0; i < typeALinks.size(); i++) {
-							PBLinkM5 pb = typeALinks.get(i);
+							PBLinkM pb = typeALinks.get(i);
 							if (pb.getDistance() > upper || pb.getDistance() < low)
 								typeALinks.remove(pb);
 						}
@@ -755,7 +755,7 @@ public class EdgeBundler {
 					// recompute mean and sd
 					typeADists = null;
 					typeADists = new Vector<Integer>(10);
-					for(PBLinkM5 p : typeALinks)
+					for(PBLinkM p : typeALinks)
 					{
 						typeADists.add(p.getDistance());
 					}
@@ -803,7 +803,7 @@ public class EdgeBundler {
 						// tlinks.remove(pb);
 						// }
 						for (int i = 0; i < typeBLinks.size(); i++) {
-							PBLinkM5 pb = typeBLinks.get(i);
+							PBLinkM pb = typeBLinks.get(i);
 							if (pb.getDistance() > upper || pb.getDistance() < low)
 								typeBLinks.remove(pb);
 						}
@@ -816,7 +816,7 @@ public class EdgeBundler {
 					// recompute mean and sd
 					typeBDists = null;
 					typeBDists = new Vector<Integer>(10);
-					for(PBLinkM5 p : typeBLinks)
+					for(PBLinkM p : typeBLinks)
 					{
 						typeBDists.add(p.getDistance());
 					}
@@ -864,7 +864,7 @@ public class EdgeBundler {
 						// tlinks.remove(pb);
 						// }
 						for (int i = 0; i < typeCLinks.size(); i++) {
-							PBLinkM5 pb = typeCLinks.get(i);
+							PBLinkM pb = typeCLinks.get(i);
 							if (pb.getDistance() > upper || pb.getDistance() < low)
 								typeCLinks.remove(pb);
 						}
@@ -877,7 +877,7 @@ public class EdgeBundler {
 					// recompute mean and sd
 					typeCDists = null;
 					typeCDists = new Vector<Integer>(10);
-					for(PBLinkM5 p : typeCLinks)
+					for(PBLinkM p : typeCLinks)
 					{
 						typeCDists.add(p.getDistance());
 					}
@@ -925,7 +925,7 @@ public class EdgeBundler {
 						// tlinks.remove(pb);
 						// }
 						for (int i = 0; i < typeDLinks.size(); i++) {
-							PBLinkM5 pb = typeDLinks.get(i);
+							PBLinkM pb = typeDLinks.get(i);
 							if (pb.getDistance() > upper || pb.getDistance() < low)
 								typeDLinks.remove(pb);
 						}
@@ -938,7 +938,7 @@ public class EdgeBundler {
 					// recompute mean and sd
 					typeDDists = null;
 					typeDDists = new Vector<Integer>(10);
-					for(PBLinkM5 p : typeDLinks)
+					for(PBLinkM p : typeDLinks)
 					{
 						typeDDists.add(p.getDistance());
 					}

@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.DiGraph;
-import agis.ps.Edge;
 import agis.ps.Path;
 import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.TriadLinkReader;
@@ -26,6 +25,7 @@ import agis.ps.graph.DirectedGraph;
 import agis.ps.graph.Graph;
 import agis.ps.link.ContInOut;
 import agis.ps.link.Contig;
+import agis.ps.link.Edge;
 import agis.ps.link.TriadLink;
 import agis.ps.link.TriadLinkComparator;
 import agis.ps.path.Node;

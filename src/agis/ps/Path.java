@@ -9,6 +9,7 @@ package agis.ps;
 import java.util.LinkedList;
 
 import agis.ps.link.Contig;
+import agis.ps.link.Edge;
 import agis.ps.util.Strand;
 
 public class Path {
