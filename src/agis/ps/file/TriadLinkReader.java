@@ -49,22 +49,30 @@ public class TriadLinkReader {
 			while((line = br.readLine()) != null)
 			{
 				String [] strs = line.split(",");
-				String [] pres = strs[0].split("\\(length=");
 				Contig pre = new Contig();
-				pre.setID(pres[0]);
-				pre.setLength(Integer.valueOf(pres[1].substring(0, pres[1].length() - 1)));
-				String [] mids = strs[1].split("\\(length=");
+				pre.setID(strs[0]);
 				Contig mid = new Contig();
-				mid.setID(mids[0]);
-				mid.setLength(Integer.valueOf(mids[1].substring(0, mids[1].length() - 1)));
-				String [] lsts = strs[2].split("\\(length=");
+				mid.setID(strs[1]);
 				Contig lst = new Contig();
-				lst.setID(lsts[0]);
-				lst.setLength(Integer.valueOf(lsts[1].substring(0, lsts[1].length() - 1)));
-				String [] sls = strs[3].split("=");
-				int sl = Integer.valueOf(sls[1]);
+				lst.setID(strs[2]);
 				TriadLink tl = new TriadLink(pre, mid, lst);
-				tl.setSupLinks(sl);
+				tl.setSupLinks(Integer.valueOf(strs[3]));
+//				String [] pres = strs[0].split("\\(length=");
+//				Contig pre = new Contig();
+//				pre.setID(pres[0]);
+//				pre.setLength(Integer.valueOf(pres[1].substring(0, pres[1].length() - 1)));
+//				String [] mids = strs[1].split("\\(length=");
+//				Contig mid = new Contig();
+//				mid.setID(mids[0]);
+//				mid.setLength(Integer.valueOf(mids[1].substring(0, mids[1].length() - 1)));
+//				String [] lsts = strs[2].split("\\(length=");
+//				Contig lst = new Contig();
+//				lst.setID(lsts[0]);
+//				lst.setLength(Integer.valueOf(lsts[1].substring(0, lsts[1].length() - 1)));
+//				String [] sls = strs[3].split("=");
+//				int sl = Integer.valueOf(sls[1]);
+//				TriadLink tl = new TriadLink(pre, mid, lst);
+//				tl.setSupLinks(sl);
 				triads.add(tl);
 			}
 			

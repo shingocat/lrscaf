@@ -95,12 +95,16 @@ public class Scaffolder {
 		try {
 			// if could not build the output folder;
 			// return;
-			if(!buildOutputPath(paras.getOutFolder()))
+			if(!buildOutputPath(paras))
 				return;
+//			if(!buildOutputPath(paras.getOutFolder()))
+//				return;
 			// if could not read the contigs file;
 			// return;
-			if(!(readContigs(cFilePath, paras.getMinContLen())))
+			if(!(readContigs(paras)))
 				return;
+//			if(!(readContigs(cFilePath, paras.getMinContLen())))
+//				return;
 			List<MRecord> mRecords = null;
 			if (type.equalsIgnoreCase("m5")) {
 //				m5Records = readM5Aligned(aFilePath, paras.getMinPBLen(), paras.getMinContLen());
@@ -109,36 +113,42 @@ public class Scaffolder {
 				if(mRecords == null)
 					return;
 //				pbLinks = LinkBuilder.m5Record2Link(m5Records, paras);
-				LinkBuilder linkBuilder = new LinkBuilder(mRecords, paras);
-				pbLinks = linkBuilder.mRecord2Link();
-				linkBuilder = null;
+//				LinkBuilder linkBuilder = new LinkBuilder(mRecords, paras);
+//				pbLinks = linkBuilder.mRecord2Link();
+//				linkBuilder = null;
 			} else if(type.equalsIgnoreCase("m4")){
 				mRecords = readM4Alingned(paras);
 				if(mRecords == null)
 					return;
-				LinkBuilder linkBuilder = new LinkBuilder(mRecords, paras);
-				pbLinks = linkBuilder.mRecord2Link();
-				linkBuilder = null;
+//				LinkBuilder linkBuilder = new LinkBuilder(mRecords, paras);
+//				pbLinks = linkBuilder.mRecord2Link();
+//				linkBuilder = null;
 			} else if(type.equalsIgnoreCase("sam") || type.equalsIgnoreCase("bam")) {
 				readSAMAligned(aFilePath);
 			} else
 			{
-				logger.debug(this.getClass().getName() + "The aligned parameter do not set! only <m>, <sam> or <bam>");
-				logger.debug(this.getClass().getName() + "The aligned parameter do not set! only <m>, <sam> or <bam>");
+				logger.debug(this.getClass().getName() + "The aligned parameter do not set! only <m5>, <m4>, <sam> or <bam>");
+				logger.debug(this.getClass().getName() + "The aligned parameter do not set! only <m5>, <m4>, <sam> or <bam>");
 				return;
 			}
-			EdgeBundler edgeBundler = new EdgeBundler(pbLinks, paras,contigs);
+			// links building
+			LinkBuilder linkBuilder = new LinkBuilder(mRecords, paras);
+			pbLinks = linkBuilder.mRecord2Link();
+			linkBuilder = null;
+			// edges building
+			EdgeBundler edgeBundler = new EdgeBundler(pbLinks, paras, contigs);
 			edges = edgeBundler.pbLinkM5Bundling();
 			if(edges == null)
 				return;
 //			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
 			this.writeEdgesInfo(edges, false);
 			logger.debug("Edges size: " + edges.size());
-			edges = null;
-			edges = edgeBundler.pesudoEdging();
-			this.writeEdgesInfo(edges, true);
-			logger.debug("Edges size after pesudo edging :" + edges.size());
-			edgeBundler = null;
+			// do not need to build pesudo edges;
+//			edges = null;
+//			edges = edgeBundler.pesudoEdging();
+//			this.writeEdgesInfo(edges, true);
+//			logger.debug("Edges size after pesudo edging :" + edges.size());
+//			edgeBundler = null;
 			// List<Path> paths = PathBuilder.buildHamiltonPath(edges);
 //			List<Path> paths = PathBuilder.buildPath(edges, paras);
 			PathBuilder pathBuilder = new PathBuilder(edges, paras);
@@ -213,6 +223,49 @@ public class Scaffolder {
 			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges.info";
 		DotGraphFileWriter.writeEdge(edgeFile, edges);
 	}
+	
+	public boolean buildOutputPath(Parameter paras)
+	{
+		String path = paras.getOutFolder();
+		boolean isValid = false;
+		if (path == null || path.length() == 0) {
+			logger.error(this.getClass().getName() + "The output path was not setted!");
+			logger.debug(this.getClass().getName() + "The output path was not setted!");
+			return isValid;
+		}
+		try {
+			File output = new File(path);
+			if (output.exists()) {
+				logger.info(this.getClass().getName() + "The output folder was exist!");
+				logger.debug(this.getClass().getName() + "The output folder was exist!");
+				isValid = true;
+			} else {
+				isValid = output.mkdirs();
+				if(isValid)
+				{
+					logger.info(this.getClass().getName() + "\t" + "Build output folder successfully!");
+					logger.debug(this.getClass().getName() + "\t" + "Build output folder successfully!");
+				} else
+				{
+					logger.info(this.getClass().getName() + "\t" + "Build output folder failed!");
+					logger.debug(this.getClass().getName() + "\t" + "Build output folder failed!");
+				}
+//				if (output.mkdirs()) {
+//					logger.info(this.getClass().getName() + "The output folder was created!");
+//					logger.debug(this.getClass().getName() + "The output folder was created!");
+//					isValid = true;
+//				}
+			}
+		} catch (SecurityException e) {
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (Exception e) {
+			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+		}
+		return isValid;
+		
+	}
 
 	public boolean buildOutputPath(String path) {
 		boolean isValid = false;
@@ -252,6 +305,16 @@ public class Scaffolder {
 			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		return isValid;
+	}
+	
+	public boolean readContigs(Parameter paras)
+	{
+		ContigReader cr = new ContigReader(paras);
+		contigs = cr.read();
+		if(contigs == null)
+			return false;
+		else
+			return true;
 	}
 
 	public boolean readContigs(String cFilePath, int cntLen) {

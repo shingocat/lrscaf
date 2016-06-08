@@ -256,13 +256,13 @@ public class LinkBuilder {
 						MRecord m3 = contig_pairs.get(i + 2);
 						Contig pre = new Contig();
 						pre.setID(m1.gettName());
-						pre.setLength(m1.gettLength());
+//						pre.setLength(m1.gettLength());
 						Contig mid = new Contig();
 						mid.setID(m2.gettName());
-						mid.setLength(m2.gettLength());
+//						mid.setLength(m2.gettLength());
 						Contig lst = new Contig();
 						lst.setID(m3.gettName());
-						lst.setLength(m3.gettLength());
+//						lst.setLength(m3.gettLength());
 						TriadLink tl = new TriadLink(pre, mid, lst);
 						tl.setSupLinks(1);
 						if(triads.contains(tl))

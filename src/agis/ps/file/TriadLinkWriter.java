@@ -43,14 +43,14 @@ public class TriadLinkWriter {
 		{
 			file = new File(fileName);
 			if (file.exists()) {
-				logger.debug("The output file of scaffold is exist! It will not be overwrited!");
-				logger.info("The output file of scaffold is exist! It will not be overwrited!");
+				logger.debug(this.getClass().getName() + " The output file " + fileName + " is exist! It will not be overwrited!");
+				logger.info(this.getClass().getName() + " The output file " + fileName + " is exist! It will not be overwrited!");
 				return;
 			}
 			if(!file.createNewFile())
 			{
-				logger.debug("ScaffoldWriter: The output file of scaffolds could not create!");
-				logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
+				logger.debug(this.getClass().getName() + " The output file " + fileName + " could not be created!");
+				logger.info(this.getClass().getName() + " The output file " + fileName + " could not be created!");
 				return;
 			}
 			fw = new FileWriter(file);
@@ -60,10 +60,11 @@ public class TriadLinkWriter {
 				Contig pre = tl.getPrevious();
 				Contig mid = tl.getMiddle();
 				Contig lst = tl.getLast();
-				bw.write(pre.getID() + "(length=" + pre.getLength() + ")," + 
-						mid.getID() + "(length=" + mid.getLength() + ")," + 
-						lst.getID() + "(length=" + lst.getLength() + ")," +
-						"supLinks=" + tl.getSupLinks());
+				bw.write(pre.getID() + "," + mid.getID() + "," + lst.getID() + "," + tl.getSupLinks());
+//				bw.write(pre.getID() + "(length=" + pre.getLength() + ")," + 
+//						mid.getID() + "(length=" + mid.getLength() + ")," + 
+//						lst.getID() + "(length=" + lst.getLength() + ")," +
+//						"supLinks=" + tl.getSupLinks());
 				bw.newLine();
 			}
 			bw.flush();

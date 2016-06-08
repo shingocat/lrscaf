@@ -39,7 +39,7 @@ public class Consensusser {
 		}
 		Profile<DNASequence, NucleotideCompound> profile = Alignments.getMultipleSequenceAlignment(dnas);
 		ConcurrencyTools.shutdown();
-		System.out.println(profile.toString(StringFormat.ALN));
+//		System.out.println(profile.toString(StringFormat.ALN));
 		List<AlignedSequence<DNASequence, NucleotideCompound>> alnSeqs = profile.getAlignedSequences();
 		StringBuffer sb = new StringBuffer();
 		int size = alnSeqs.size();
@@ -89,7 +89,7 @@ public class Consensusser {
 				sb.append("g");
 			}
 		}
-		System.out.println(sb.toString());
+//		System.out.println(sb.toString());
 		return sb.toString();
 	}
 	

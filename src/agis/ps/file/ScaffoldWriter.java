@@ -38,6 +38,8 @@ public class ScaffoldWriter {
 	private Map<String, Contig> cnts;
 	private String filePath;
 	private Parameter paras;
+	private List<GapRecord> gapRecords;
+	private Map<String,PBRead> pbReads;
 
 	// public ScaffoldWriter(List<NodePath> paths, Map<String, DNASequence>
 	// cnts, String filePath) {
@@ -94,10 +96,13 @@ public class ScaffoldWriter {
 				logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
 				return;
 			}
-			grReader = new GapRecordReader(paras);
-			List<GapRecord> gapRecords = grReader.read();
-			pbReader = new PBReader(paras);
-			Map<String, PBRead> pbReads = pbReader.read();
+			if(paras.isGapFilling())
+			{
+				grReader = new GapRecordReader(paras);
+				gapRecords = grReader.read();
+				pbReader = new PBReader(paras);
+				pbReads = pbReader.read();
+			}
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);
 			int count = 0; // scaffolds number;
@@ -233,49 +238,57 @@ public class ScaffoldWriter {
 //							System.out.println(seq);
 							cSeq = null;
 						}
-						// if not the last element, fill the gap!
-						if(i != p.getPathSize() - 1)
+						// if not the last element, fill the gap according to user specified!
+						if(paras.isGapFilling())
 						{
-//							bw.write(repeatString("N", nLen));
-							next = p.getElement(i + 1);
-							nId = next.getCnt().getID();
-							GapRecord gr = new GapRecord();
-							gr.setStart(cId);
-							gr.setEnd(nId);
-							int index = gapRecords.indexOf(gr);
-							if(index != -1)
+							if(i != p.getPathSize() - 1)
 							{
-								List<PBGapSeq> pbgs = gapRecords.get(index).getSeqs();//gr.getSeqs();
-								List<String> seqs = new Vector<String>();
-								for(PBGapSeq pbg : pbgs)
+//								bw.write(repeatString("N", nLen));
+								next = p.getElement(i + 1);
+								nId = next.getCnt().getID();
+								GapRecord gr = new GapRecord();
+								gr.setStart(cId);
+								gr.setEnd(nId);
+								int index = gapRecords.indexOf(gr);
+								if(index != -1)
 								{
-									String pbId = pbg.getId();
-									int start = pbg.getStart();
-									int end = pbg.getEnd();
-									Strand strand = pbg.getStrand();
-									String seq = "";
-									if(strand.equals(Strand.FORWARD))
+									List<PBGapSeq> pbgs = gapRecords.get(index).getSeqs();//gr.getSeqs();
+									List<String> seqs = new Vector<String>();
+									for(PBGapSeq pbg : pbgs)
 									{
-										seq = pbReads.get(pbId).getSequenceAsString().substring(start, end);
-									} else
-									{
-										String temp = pbReads.get(pbId).getReverseComplement().getSequenceAsString();
-										int len = temp.length();
-										int t = start;
-										start = len - end;
-										end = len - t;
-										seq = temp.substring(start, end);
+										String pbId = pbg.getId();
+										int start = pbg.getStart();
+										int end = pbg.getEnd();
+										Strand strand = pbg.getStrand();
+										String seq = "";
+										if(strand.equals(Strand.FORWARD))
+										{
+											seq = pbReads.get(pbId).getSequenceAsString().substring(start, end);
+										} else
+										{
+											String temp = pbReads.get(pbId).getReverseComplement().getSequenceAsString();
+											int len = temp.length();
+											int t = start;
+											start = len - end;
+											end = len - t;
+											seq = temp.substring(start, end);
+										}
+										seqs.add(seq);
 									}
-									seqs.add(seq);
+									Consensusser cs = new Consensusser();
+									String value = cs.getConsensus(seqs);
+									bw.write(value);
+								} else
+								{
+									bw.write(repeatString("N", nLen));
 								}
-								Consensusser cs = new Consensusser();
-								String value = cs.getConsensus(seqs);
-								bw.write(value);
-							} else
-							{
-								bw.write(repeatString("N", nLen));
 							}
+						} else
+						{
+							if(i != p.getPathSize() -1 )
+								bw.write(repeatString("N", nLen));
 						}
+
 //						logger.debug(repeatString("N", nLen));
 //						System.out.println(repeatString("N", nLen));
 						isNextUsed = false;

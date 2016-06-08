@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.link.M5Record;
 import agis.ps.seqs.Contig;
+import agis.ps.util.Parameter;
 
 public class ContigReader {
 
@@ -34,6 +35,12 @@ public class ContigReader {
 
 	public ContigReader(String filePath) {
 		this.filePath = filePath;
+	}
+	
+	public ContigReader(Parameter paras)
+	{
+		this.filePath = paras.getCntFile();
+		this.cntLen = paras.getMinContLen();
 	}
 	
 	public ContigReader(String filePath, int cntLen)
@@ -73,7 +80,7 @@ public class ContigReader {
 						id = id.split("\\s")[0];
 						id = id.trim();
 						cnt.setID(id);
-						cnt.setLength(sb.length());
+//						cnt.setLength(sb.length());
 						cnts.put(id, cnt);
 //						logger.debug("ContigReader: " + id);
 //						logger.debug("ContigReader: " + sb.toString());
@@ -96,7 +103,7 @@ public class ContigReader {
 						temp = temp.trim();
 						Contig cnt = new Contig(sb.toString());
 						cnt.setID(temp);
-						cnt.setLength(sb.length());
+//						cnt.setLength(sb.length());
 						cnts.put(temp, cnt);
 						sb = null;
 						cnt = null;

@@ -116,6 +116,7 @@ public class XMLParser {
 				para.setUseOLLink(false);
 				para.setRatio(0.3);
 				para.setRepMask(false);
+				para.setGapFilling(false);
 			} else {
 				Node parasNode = nodes.item(0);
 				nodes = parasNode.getChildNodes();
@@ -166,7 +167,13 @@ public class XMLParser {
 							para.setRepMask(true);
 						else 
 							para.setRepMask(false);
-					} else {
+					} else if(nodeName.equalsIgnoreCase("gap_filling")){
+						String temp = node.getTextContent().trim();
+						if(temp.startsWith("t") || temp.startsWith("T"))
+							para.setGapFilling(true);
+						else 
+							para.setGapFilling(false);
+					}else {
 						logger.debug(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");
 						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");
 					}

@@ -30,7 +30,16 @@ public class Parameter implements Serializable {
 	private boolean isUseOLLink = false; // use overlap link into build edges;
 	private Double ratio = 0.3; // use this ratio to delete edge by supported link ratio 
 	private boolean isRepMask = false; // whether repeat is mask;
+	private boolean isGapFilling = false; // whether gap is filled;
 	
+	public boolean isGapFilling() {
+		return isGapFilling;
+	}
+
+	public void setGapFilling(boolean isGapFilling) {
+		this.isGapFilling = isGapFilling;
+	}
+
 	public String getPbFile() {
 		return pbFile;
 	}
@@ -190,7 +199,7 @@ public class Parameter implements Serializable {
 				+ ", minOLRatio=" + minOLRatio + ", maxOHLen=" + maxOHLen + ", maxOHRatio=" + maxOHRatio
 				+ ", maxEndLen=" + maxEndLen + ", maxEndRatio=" + maxEndRatio + ", minSupLinks=" + minSupLinks
 				+ ", maxSupLinks=" + maxSupLinks + ", type=" + type + ", identity=" + identity + ", isUseOLLink="
-				+ isUseOLLink + ", ratio=" + ratio + ", isRepMask=" + isRepMask + "]";
+				+ isUseOLLink + ", ratio=" + ratio + ", isRepMask=" + isRepMask + ", isGapFilling=" + isGapFilling
+				+ "]";
 	}
-	
 }

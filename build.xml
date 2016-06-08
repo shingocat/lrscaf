@@ -3,7 +3,7 @@
 	<property name="src" value="${basedir}\src" />
 	<property name="bin" value="${basedir}\bin" />
 	<property name="lib" value="${basedir}\lib" />
-	<property name="build" value="${basedir}\build" />
+	<property name="build" value="${basedir}\build2" />
 	<property name="temp" value="${basedir}\temp" />
 	<property name="ps_jar" value="ps.jar" />
 
