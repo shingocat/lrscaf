@@ -25,8 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.ContInOut;
-import agis.ps.link.Contig;
 import agis.ps.link.Edge;
+import agis.ps.seqs.Contig;
 import agis.ps.util.MathTool;
 import agis.ps.util.Strand;
 

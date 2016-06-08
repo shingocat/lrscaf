@@ -16,10 +16,12 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.link.Contig;
+import agis.ps.file.GapRecordWriter;
 import agis.ps.link.Edge;
 import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM;
+import agis.ps.seqs.Contig;
+import agis.ps.seqs.PBGapSeq;
 
 public class EdgeBundler {
 	// private static int MIN_LINK_NUM = 3;
@@ -28,6 +30,7 @@ public class EdgeBundler {
 	private Parameter paras;
 	private List<Edge> edges = null;
 	private Map<String, Contig> contigs = null;
+	private List<GapRecord> gaps = new Vector<GapRecord>(50);
 
 	public EdgeBundler() {
 		// do nothing;
@@ -215,7 +218,56 @@ public class EdgeBundler {
 				// if the mean is less tan zero and the user specified do not use overlap link;
 				if(!isUseOLLink && mean < 0)
 					continue;
-				
+				// for store gap record information
+				if(mean > 0)
+				{
+					GapRecord gr = new GapRecord();
+					gr.setStart(ids[0]);
+					gr.setEnd(ids[1]);
+					for(PBLinkM p : s1As)
+					{
+						if(p.getDistance() > 0)
+						{
+							PBGapSeq seq = new PBGapSeq();
+							seq.setId(p.getOrigin().getqName());
+							int p1 = p.getOrigin().getqEnd();
+							int p2 = p.getTerminus().getqStart();
+							if(p1 <= p2)
+							{
+								seq.setStart(p1);
+								seq.setEnd(p2);
+							} else
+							{
+								seq.setStart(p2);
+								seq.setEnd(p1);
+							}
+							seq.setStrand(Strand.FORWARD);
+							gr.addSeq(seq);
+						}
+					}
+					for(PBLinkM p : s2Cs)
+					{
+						if(p.getDistance() > 0)
+						{
+							PBGapSeq seq = new PBGapSeq();
+							seq.setId(p.getOrigin().getqName());
+							int p1 = p.getOrigin().getqEnd();
+							int p2 = p.getTerminus().getqStart();
+							if(p1 <= p2)
+							{
+								seq.setStart(p1);
+								seq.setEnd(p2);
+							} else
+							{
+								seq.setStart(p2);
+								seq.setEnd(p1);
+							}
+							seq.setStrand(Strand.REVERSE);
+							gr.addSeq(seq);
+						}
+					}
+					gaps.add(gr);
+				}
 				// edge + +;
 				Edge edge = new Edge();
 				Contig origin = new Contig();
@@ -318,7 +370,56 @@ public class EdgeBundler {
 				// if the mean is less tan zero and the user specified do not use overlap link;
 				if(!isUseOLLink && mean < 0)
 					continue;
-				
+				// for store gap record information
+				if(mean > 0)
+				{
+					GapRecord gr = new GapRecord();
+					gr.setStart(ids[0]);
+					gr.setEnd(ids[1]);
+					for(PBLinkM p : s1Bs)
+					{
+						if(p.getDistance() > 0)
+						{
+							PBGapSeq seq = new PBGapSeq();
+							seq.setId(p.getOrigin().getqName());
+							int p1 = p.getOrigin().getqEnd();
+							int p2 = p.getTerminus().getqStart();
+							if(p1 <= p2)
+							{
+								seq.setStart(p1);
+								seq.setEnd(p2);
+							} else
+							{
+								seq.setStart(p2);
+								seq.setEnd(p1);
+							}
+							seq.setStrand(Strand.FORWARD);
+							gr.addSeq(seq);
+						}
+					}
+					for(PBLinkM p : s2Bs)
+					{
+						if(p.getDistance() > 0)
+						{
+							PBGapSeq seq = new PBGapSeq();
+							seq.setId(p.getOrigin().getqName());
+							int p1 = p.getOrigin().getqEnd();
+							int p2 = p.getTerminus().getqStart();
+							if(p1 <= p2)
+							{
+								seq.setStart(p1);
+								seq.setEnd(p2);
+							} else
+							{
+								seq.setStart(p2);
+								seq.setEnd(p1);
+							}
+							seq.setStrand(Strand.REVERSE);
+							gr.addSeq(seq);
+						}
+					}
+					gaps.add(gr);
+				}
 				// edge + -;
 				Edge edge = new Edge();
 				Contig origin = new Contig();
@@ -421,6 +522,57 @@ public class EdgeBundler {
 				// if the mean is less tan zero and the user specified do not use overlap link;
 				if(!isUseOLLink && mean < 0)
 					continue;
+				// for store gap record information
+				if(mean > 0)
+				{
+					GapRecord gr = new GapRecord();
+					gr.setStart(ids[0]);
+					gr.setEnd(ids[1]);
+					for(PBLinkM p : s1Cs)
+					{
+						if(p.getDistance() > 0)
+						{
+							PBGapSeq seq = new PBGapSeq();
+							seq.setId(p.getOrigin().getqName());
+							int p1 = p.getOrigin().getqEnd();
+							int p2 = p.getTerminus().getqStart();
+							if(p1 <= p2)
+							{
+								seq.setStart(p1);
+								seq.setEnd(p2);
+							} else
+							{
+								seq.setStart(p2);
+								seq.setEnd(p1);
+							}
+							seq.setStrand(Strand.FORWARD);
+							gr.addSeq(seq);
+						}
+					}
+					for(PBLinkM p : s2As)
+					{
+						if(p.getDistance() > 0)
+						{
+							PBGapSeq seq = new PBGapSeq();
+							seq.setId(p.getOrigin().getqName());
+							int p1 = p.getOrigin().getqEnd();
+							int p2 = p.getTerminus().getqStart();
+							if(p1 <= p2)
+							{
+								seq.setStart(p1);
+								seq.setEnd(p2);
+							} else
+							{
+								seq.setStart(p2);
+								seq.setEnd(p1);
+							}
+							seq.setStrand(Strand.REVERSE);
+							gr.addSeq(seq);
+						}
+					}
+					gaps.add(gr);
+				}
+				
 				// edge - -;
 				Edge edge = new Edge();
 				Contig origin = new Contig();
@@ -523,7 +675,56 @@ public class EdgeBundler {
 				// if the mean is less tan zero and the user specified do not use overlap link;
 				if(!isUseOLLink && mean < 0)
 					continue;
-				
+				// for store gap record information
+				if(mean > 0)
+				{
+					GapRecord gr = new GapRecord();
+					gr.setStart(ids[0]);
+					gr.setEnd(ids[1]);
+					for(PBLinkM p : s1Ds)
+					{
+						if(p.getDistance() > 0)
+						{
+							PBGapSeq seq = new PBGapSeq();
+							seq.setId(p.getOrigin().getqName());
+							int p1 = p.getOrigin().getqEnd();
+							int p2 = p.getTerminus().getqStart();
+							if(p1 <= p2)
+							{
+								seq.setStart(p1);
+								seq.setEnd(p2);
+							} else
+							{
+								seq.setStart(p2);
+								seq.setEnd(p1);
+							}
+							seq.setStrand(Strand.FORWARD);
+							gr.addSeq(seq);
+						}
+					}
+					for(PBLinkM p : s2Ds)
+					{
+						if(p.getDistance() > 0)
+						{
+							PBGapSeq seq = new PBGapSeq();
+							seq.setId(p.getOrigin().getqName());
+							int p1 = p.getOrigin().getqEnd();
+							int p2 = p.getTerminus().getqStart();
+							if(p1 <= p2)
+							{
+								seq.setStart(p1);
+								seq.setEnd(p2);
+							} else
+							{
+								seq.setStart(p2);
+								seq.setEnd(p1);
+							}
+							seq.setStrand(Strand.REVERSE);
+							gr.addSeq(seq);
+						}
+					}
+					gaps.add(gr);
+				}
 				// edge - +;
 				Edge edge = new Edge();
 				Contig origin = new Contig();
@@ -595,6 +796,9 @@ public class EdgeBundler {
 			s2Cs = null;
 			s2Ds = null;
 		}
+		GapRecordWriter grw = new GapRecordWriter(paras, gaps);
+		grw.write();
+		gaps = null;
 		return edges;
 	}
 	

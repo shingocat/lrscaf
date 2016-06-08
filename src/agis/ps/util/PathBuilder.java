@@ -24,12 +24,12 @@ import agis.ps.file.TriadLinkReader;
 import agis.ps.graph.DirectedGraph;
 import agis.ps.graph.Graph;
 import agis.ps.link.ContInOut;
-import agis.ps.link.Contig;
 import agis.ps.link.Edge;
 import agis.ps.link.TriadLink;
 import agis.ps.link.TriadLinkComparator;
 import agis.ps.path.Node;
 import agis.ps.path.NodePath;
+import agis.ps.seqs.Contig;
 
 public class PathBuilder {
 	public static Logger logger = LoggerFactory.getLogger(PathBuilder.class);

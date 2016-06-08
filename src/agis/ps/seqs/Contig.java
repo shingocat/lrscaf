@@ -4,7 +4,7 @@
 *Email: mqin@ymail.com
 *Date: 2016年1月12日
 */
-package agis.ps.link;
+package agis.ps.seqs;
 
 import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;

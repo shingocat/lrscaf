@@ -8,6 +8,7 @@ package agis.ps.link;
 
 import java.io.Serializable;
 
+import agis.ps.seqs.Contig;
 import agis.ps.util.Strand;
 
 public class Edge implements Serializable{

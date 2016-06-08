@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 
 import agis.ps.exception.EmptyPathException;
-import agis.ps.link.Contig;
+import agis.ps.seqs.Contig;
 
 
 public class NodePath implements Serializable{

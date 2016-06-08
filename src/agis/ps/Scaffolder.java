@@ -29,13 +29,13 @@ import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.M4Reader;
 import agis.ps.file.M5Reader;
 import agis.ps.file.ScaffoldWriter;
-import agis.ps.link.Contig;
 import agis.ps.link.Edge;
 import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM;
 import agis.ps.path.NodePath;
+import agis.ps.seqs.Contig;
 import agis.ps.util.Color;
 import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
@@ -144,7 +144,8 @@ public class Scaffolder {
 			PathBuilder pathBuilder = new PathBuilder(edges, paras);
 			List<NodePath> paths = pathBuilder.buildPath();
 			this.writeNodePathInfo(paths);
-			writeScaffolds(paths, contigs);
+//			writeScaffolds(paths, contigs);
+			writeScaffolds(paras,paths,contigs);
 			//List<Path> paths = pathBuilder.buildPath();
 			//this.writePathsInfo(paths);
 			
@@ -178,11 +179,17 @@ public class Scaffolder {
 		logger.info("Ending....");
 	}
 	
-	public void writeScaffolds(List<NodePath> paths, Map<String, Contig> cnts)
+	public void writeScaffolds(Parameter paras)
+	{
+		ScaffoldWriter sw = new ScaffoldWriter(paras);
+		sw.write();
+	}
+	
+	public void writeScaffolds(Parameter paras, List<NodePath> paths, Map<String, Contig> cnts)
 	{
 		String filePath = paras.getOutFolder() + System.getProperty("file.separator") + "scaffolds.fasta";
-		ScaffoldWriter sw = new ScaffoldWriter(paths, cnts, filePath);
-		sw.write();
+		ScaffoldWriter sw = new ScaffoldWriter(paras, paths, cnts, filePath);
+		sw.write2();
 	}
 	
 	public void writePathsInfo(List<Path> paths) {

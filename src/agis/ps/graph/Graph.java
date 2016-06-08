@@ -21,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.DiGraph;
-import agis.ps.link.Contig;
 import agis.ps.link.Edge;
+import agis.ps.seqs.Contig;
 import agis.ps.util.MathTool;
 
 public abstract class Graph implements Serializable,IUntangler {

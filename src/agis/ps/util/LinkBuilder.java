@@ -20,12 +20,12 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.SimplePath;
 import agis.ps.file.TriadLinkWriter;
-import agis.ps.link.Contig;
 import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM;
 import agis.ps.link.TriadLink;
+import agis.ps.seqs.Contig;
 
 public class LinkBuilder {
 	private static Logger logger = LoggerFactory.getLogger(LinkBuilder.class);

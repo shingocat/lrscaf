@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class Parameter implements Serializable {
 	// default value
 	private static final long serialVersionUID = 1L;
+	private String pbFile;
 	private String cntFile;
 	private String algFile;
 	private String outFolder = System.getProperty("user.dir"); // The current directory if not setted;
@@ -30,7 +31,14 @@ public class Parameter implements Serializable {
 	private Double ratio = 0.3; // use this ratio to delete edge by supported link ratio 
 	private boolean isRepMask = false; // whether repeat is mask;
 	
-	
+	public String getPbFile() {
+		return pbFile;
+	}
+
+	public void setPbFile(String pbFile) {
+		this.pbFile = pbFile;
+	}
+
 	public boolean isRepMask() {
 		return isRepMask;
 	}
@@ -177,12 +185,12 @@ public class Parameter implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Parameter [cntFile=" + cntFile + ", algFile=" + algFile + ", outFolder=" + outFolder + ", minContLen="
-				+ minContLen + ", minPBLen=" + minPBLen + ", minOLLen=" + minOLLen + ", minOLRatio=" + minOLRatio
-				+ ", maxOHLen=" + maxOHLen + ", maxOHRatio=" + maxOHRatio + ", maxEndLen=" + maxEndLen
-				+ ", maxEndRatio=" + maxEndRatio + ", minSupLinks=" + minSupLinks + ", maxSupLinks=" + maxSupLinks
-				+ ", type=" + type + ", identity=" + identity + ", isUseOLLink=" + isUseOLLink + ", ratio=" + ratio
-				+ ", isRepMask=" + isRepMask + "]";
+		return "Parameter [pbFile=" + pbFile + ", cntFile=" + cntFile + ", algFile=" + algFile + ", outFolder="
+				+ outFolder + ", minContLen=" + minContLen + ", minPBLen=" + minPBLen + ", minOLLen=" + minOLLen
+				+ ", minOLRatio=" + minOLRatio + ", maxOHLen=" + maxOHLen + ", maxOHRatio=" + maxOHRatio
+				+ ", maxEndLen=" + maxEndLen + ", maxEndRatio=" + maxEndRatio + ", minSupLinks=" + minSupLinks
+				+ ", maxSupLinks=" + maxSupLinks + ", type=" + type + ", identity=" + identity + ", isUseOLLink="
+				+ isUseOLLink + ", ratio=" + ratio + ", isRepMask=" + isRepMask + "]";
 	}
 	
 }

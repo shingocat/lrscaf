@@ -11,6 +11,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import org.biojava.nbio.alignment.Alignments;
+import org.biojava.nbio.alignment.template.AlignedSequence;
+import org.biojava.nbio.alignment.template.Profile;
+import org.biojava.nbio.alignment.template.Profile.StringFormat;
+import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
+import org.biojava.nbio.core.sequence.DNASequence;
+import org.biojava.nbio.core.sequence.compound.DNACompoundSet;
+import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
+import org.biojava.nbio.core.util.ConcurrencyTools;
+
 // if indicator equal to nw, specific the global alignment, abbreviation of Needleman-Wunsch; 
 // else indicator equal to sw, specific the local alignment, abbreviation of Smith-Waterman; 
 public class Consensusser {
@@ -18,6 +28,70 @@ public class Consensusser {
 	private int match = 1;
 	private int mismatch = -1;
 	private int gap = -2;
+	
+	public String getConsensus(List<String> seqs) throws CompoundNotFoundException
+	{
+		List<DNASequence> dnas = new Vector<DNASequence>();
+		for(String s : seqs)
+		{
+			DNASequence d = new DNASequence(s,DNACompoundSet.getDNACompoundSet());
+			dnas.add(d);
+		}
+		Profile<DNASequence, NucleotideCompound> profile = Alignments.getMultipleSequenceAlignment(dnas);
+		ConcurrencyTools.shutdown();
+		System.out.println(profile.toString(StringFormat.ALN));
+		List<AlignedSequence<DNASequence, NucleotideCompound>> alnSeqs = profile.getAlignedSequences();
+		StringBuffer sb = new StringBuffer();
+		int size = alnSeqs.size();
+		String[] bases = new String[size];
+		int len = alnSeqs.get(0).getLength();
+		for (int i = 1; i <= len; i++) {
+			int a = 0;
+			int t = 0;
+			int c = 0;
+			int g = 0;
+			int n = 0;
+			for (int j = 1; j <= size; j++) {
+				bases[j - 1] = alnSeqs.get(j - 1).getCompoundAt(i).getBase();
+				String base = alnSeqs.get(j - 1).getCompoundAt(i).getBase();
+				if(base.equalsIgnoreCase("A"))
+				{
+					a += 1;
+				} else if(base.equalsIgnoreCase("T"))
+				{
+					t += 1;
+				} else if(base.equalsIgnoreCase("C"))
+				{
+					c += 1;
+				} else if(base.equalsIgnoreCase("G"))
+				{
+					g += 1;
+				} else
+				{
+					n += 1;
+				}
+			}
+			Double miss = (1.0 * n) / size;
+			if(miss >= 0.8)
+				continue;
+			int max = MathTool.max(a, t, c, g);
+			if(max == a)
+			{
+				sb.append("a");
+			} else if(max == t)
+			{
+				sb.append("t");
+			} else if(max == c)
+			{
+				sb.append("c");
+			} else
+			{
+				sb.append("g");
+			}
+		}
+		System.out.println(sb.toString());
+		return sb.toString();
+	}
 	
 	public String getConsensus(String seq1, String seq2, String indicator)
 	{

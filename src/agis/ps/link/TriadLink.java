@@ -6,6 +6,8 @@
 */
 package agis.ps.link;
 
+import agis.ps.seqs.Contig;
+
 public class TriadLink {
 	private Contig previous; // previous contig in link;
 	private Contig middle; // middle contig in link;

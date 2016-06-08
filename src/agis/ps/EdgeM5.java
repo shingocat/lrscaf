@@ -8,8 +8,8 @@ package agis.ps;
 
 import java.io.Serializable;
 
-import agis.ps.link.Contig;
 import agis.ps.link.M5Record;
+import agis.ps.seqs.Contig;
 import agis.ps.util.Strand;
 
 public class EdgeM5 implements Serializable {

@@ -8,7 +8,7 @@ package agis.ps;
 
 import java.io.Serializable;
 
-import agis.ps.link.Contig;
+import agis.ps.seqs.Contig;
 import agis.ps.util.Strand;
 
 public class Vertex extends Contig implements Serializable {
