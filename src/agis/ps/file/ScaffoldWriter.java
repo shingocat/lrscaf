@@ -83,6 +83,7 @@ public class ScaffoldWriter {
 		BufferedWriter bw = null;
 		PBReader pbReader = null;
 		GapRecordReader grReader = null;
+		boolean isGapFilling = paras.isGapFilling();
 		try {
 			out = new File(filePath);
 			if (out.exists()) {
@@ -96,13 +97,15 @@ public class ScaffoldWriter {
 				logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
 				return;
 			}
-			if(paras.isGapFilling())
+			if(isGapFilling)
 			{
 				grReader = new GapRecordReader(paras);
 				gapRecords = grReader.read();
 				pbReader = new PBReader(paras);
 				pbReads = pbReader.read();
 			}
+			if(gapRecords == null || pbReads == null)
+				isGapFilling = false;
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);
 			int count = 0; // scaffolds number;
@@ -239,7 +242,7 @@ public class ScaffoldWriter {
 							cSeq = null;
 						}
 						// if not the last element, fill the gap according to user specified!
-						if(paras.isGapFilling())
+						if(isGapFilling)
 						{
 							if(i != p.getPathSize() - 1)
 							{
