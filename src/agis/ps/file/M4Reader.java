@@ -62,6 +62,7 @@ public class M4Reader {
 	
 	public List<MRecord> read()
 	{
+		long start = System.currentTimeMillis();
 		FileReader fr = null;
 		BufferedReader br = null;
 		int count = 0;
@@ -161,8 +162,10 @@ public class M4Reader {
 				m4List = null;
 			}
 		}
-		logger.debug(this.getClass().getName() + "\tAligned records: " + count);
-		logger.debug(this.getClass().getName() + "\tRecords after filtered: " + m4List.size());
+		long end = System.currentTimeMillis();
+		logger.info(this.getClass().getName() + "\tAligned records: " + count);
+		logger.info(this.getClass().getName() + "\tRecords after filtered: " + m4List.size());
+		logger.info("Reading M4 Record, erase time: " + (end - start) + " ms");
 		return m4List;
 	}
 }

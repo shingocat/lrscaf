@@ -64,6 +64,7 @@ public class M5Reader {
 	
 	public List<MRecord> read()
 	{
+		long start = System.currentTimeMillis();
 		FileReader fr = null;
 		BufferedReader br = null;
 		int count = 0;
@@ -123,9 +124,9 @@ public class M5Reader {
 				m5.setNumIns(Integer.valueOf(arrs[13]));
 				m5.setNumDel(Integer.valueOf(arrs[14]));
 				m5.setMapQV(Integer.valueOf(arrs[15]));
-				m5.setqAlignedSeq(arrs[16]);
-				m5.setMatchPattern(arrs[17]);
-				m5.settAlignedSeq(arrs[18]);
+//				m5.setqAlignedSeq(arrs[16]);
+//				m5.setMatchPattern(arrs[17]);
+//				m5.settAlignedSeq(arrs[18]);
 				// setting identity
 				m5.setIdentity(value);
 				m5List.add(m5);
@@ -163,8 +164,10 @@ public class M5Reader {
 				m5List = null;
 			}
 		}
-		logger.debug(this.getClass().getName() + "\tAligned records: " + count);
-		logger.debug(this.getClass().getName() + "\tRecords after filtered: " + m5List.size());
+		long end = System.currentTimeMillis();
+		logger.info(this.getClass().getName() + "\tAligned records: " + count);
+		logger.info(this.getClass().getName() + "\tRecords after filtered: " + m5List.size());
+		logger.info("Reading M5 Records, erase time: " + (end - start)/1000 + " s");
 		return m5List;
 	}
 }

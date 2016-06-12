@@ -49,6 +49,7 @@ public class LinkBuilder {
 
 	// method to change valid m5record to link two contigs;
 	public List<PBLinkM> mRecord2Link(List<MRecord> mRecords, Parameter paras) {
+		long start = System.currentTimeMillis();
 		List<PBLinkM> pbLinks = new Vector<PBLinkM>();
 		HashMap<String, List<MRecord>> pSet = new HashMap<String, List<MRecord>>();
 		// get all valid M5Record, and storing in a hash map by the pacbio read
@@ -306,6 +307,8 @@ public class LinkBuilder {
 		TriadLinkWriter tlw = new TriadLinkWriter(paras, triads);
 		tlw.write();
 		pSet = null;
+		long end = System.currentTimeMillis();
+		logger.info("Link Building, erase time: " + (end - start) + " ms");
 		return pbLinks;
 	}
 

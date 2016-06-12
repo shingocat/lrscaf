@@ -73,7 +73,7 @@ public class XMLParser {
 						} else if (nodeName.equalsIgnoreCase("bam")) {
 							para.setAlgFile(node.getTextContent().trim());
 							para.setType("s");
-						} else if(nodeName.equalsIgnoreCase("pbreads")){
+						} else if(nodeName.equalsIgnoreCase("pbread")){
 							para.setPbFile(node.getTextContent().trim());
 						}else {
 							logger.debug(this.getClass().getName() + "\t" + "The XML file contain illeagle elements!");

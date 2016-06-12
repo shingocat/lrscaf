@@ -252,7 +252,7 @@ public class DirectedGraph extends Graph implements Serializable {
 
 	@Override
 	public void transitiveReducting() {
-		// TODO Auto-generated method stub
+		long start = System.currentTimeMillis();
 		if(adjTos == null || adjTos.size() == 0)
 			initAdjTos();
 		// it need to transitive reduction candidate contigs list;
@@ -276,8 +276,8 @@ public class DirectedGraph extends Graph implements Serializable {
 			logger.debug(this.getClass().getName() + " The graph do not contain transitive reduction structure!");
 			return;
 		}
-		// the depth for searching, the alternative path could only accepty 5 node;
-		int depth = 10;
+		// the depth for searching, the alternative path could only accept 5 node;
+		int depth = 5;
 		int count = 1;
 		for(Contig cnt : trCnds)
 		{
@@ -438,13 +438,14 @@ inner:				while(nexts != null)
 					}
 				}
 		}
-		
+		long end = System.currentTimeMillis();
+		logger.info("Transitive Reducing, erase time: " + (end - start) + " ms");
 		updateGraph();
 	}
 
 	@Override
 	public void delErrorProneEdge(double ratio) {
-		// TODO Auto-generated method stub
+		long start = System.currentTimeMillis();
 		if(adjTos == null || adjTos.size() == 0)
 			initAdjTos();
 		List<Edge> rmEdges = new Vector<Edge>(100);
@@ -480,8 +481,10 @@ inner:				while(nexts != null)
 				}
 			}
 		}
-		logger.debug(this.getClass().getName() + "\tDelete error prone edges:" + rmEdges.size());
+		logger.info(this.getClass().getName() + "\tDelete error prone edges:" + rmEdges.size());
 		this.edges.removeAll(rmEdges);
+		long end = System.currentTimeMillis();
+		logger.info("Error prone Edge deleting, erase time: " + (end - start) + " ms");
 		updateGraph();
 	}
 

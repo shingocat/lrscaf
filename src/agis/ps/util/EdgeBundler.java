@@ -56,6 +56,7 @@ public class EdgeBundler {
 	// the second implemented
 	public List<Edge> pbLinkM5Bundling2(List<PBLinkM> links, Parameter paras)
 	{
+		long start = System.currentTimeMillis();
 		if(links == null || links.size() == 0)
 			throw new IllegalArgumentException(
 					this.getClass().getName() + "The Links is empty when passed to EdgeBundler");
@@ -64,8 +65,8 @@ public class EdgeBundler {
 			edges = null;
 		edges = new Vector<Edge>(200);
 		int minSupLink = paras.getMinSupLinks();
-		logger.debug(this.getClass().getName() + "\tMinimum supported links:" + minSupLink);
-		logger.debug(this.getClass().getName() + "\tUsed overlap link:" + isUseOLLink);
+		logger.info(this.getClass().getName() + "\tMinimum supported links:" + minSupLink);
+		logger.info(this.getClass().getName() + "\tUsed overlap link:" + isUseOLLink);
 		// the all the same origin and terminus to a hash map;
 		// both direction
 		Map<String, List<PBLinkM>> temp = new HashMap<String, List<PBLinkM>>();
@@ -823,6 +824,8 @@ public class EdgeBundler {
 		GapRecordWriter grw = new GapRecordWriter(paras, gaps);
 		grw.write();
 		gaps = null;
+		long end = System.currentTimeMillis();
+		logger.info("Edge Bundling, erase time: " + (end - start) + " ms");
 		return edges;
 	}
 	

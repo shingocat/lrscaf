@@ -142,7 +142,7 @@ public class Scaffolder {
 				return;
 //			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
 			this.writeEdgesInfo(edges, false);
-			logger.debug("Edges size: " + edges.size());
+			logger.info("Edges size: " + edges.size());
 			// do not need to build pesudo edges;
 //			edges = null;
 //			edges = edgeBundler.pesudoEdging();
@@ -227,6 +227,7 @@ public class Scaffolder {
 	public boolean buildOutputPath(Parameter paras)
 	{
 		String path = paras.getOutFolder();
+		long start = System.currentTimeMillis();
 		boolean isValid = false;
 		if (path == null || path.length() == 0) {
 			logger.error(this.getClass().getName() + "The output path was not setted!");
@@ -263,6 +264,8 @@ public class Scaffolder {
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		}
+		long end = System.currentTimeMillis();
+		logger.info("Building output folder, erase time: " + (end - start) + " ms");
 		return isValid;
 		
 	}

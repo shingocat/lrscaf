@@ -258,6 +258,7 @@ public class PathBuilder {
 	
 	public List<NodePath> buildPath2(List<Edge> edges, Parameter paras)
 	{
+		long start = System.currentTimeMillis();
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder: The Edges could not be empty!");
 		List<NodePath> paths = new Vector<NodePath>();
@@ -527,6 +528,8 @@ public class PathBuilder {
 			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
+		long end = System.currentTimeMillis();
+		logger.info("Path Building, erase time: " + (end - start) + " ms");
 		return paths;
 	}
 

@@ -37,6 +37,7 @@ public class Consensusser {
 			DNASequence d = new DNASequence(s,DNACompoundSet.getDNACompoundSet());
 			dnas.add(d);
 		}
+		ConcurrencyTools.setThreadPoolSingle(); 
 		Profile<DNASequence, NucleotideCompound> profile = Alignments.getMultipleSequenceAlignment(dnas);
 		ConcurrencyTools.shutdown();
 //		System.out.println(profile.toString(StringFormat.ALN));

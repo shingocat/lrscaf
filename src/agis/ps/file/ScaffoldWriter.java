@@ -76,6 +76,7 @@ public class ScaffoldWriter {
 	
 	public void write2()
 	{
+		long startTime = System.currentTimeMillis();
 		if (filePath == null)
 			return;
 		File out = null;
@@ -327,7 +328,8 @@ public class ScaffoldWriter {
 					logger.error(this.getClass().getName() + "\t" + e.getMessage());
 				}
 		}
-		
+		long endTime = System.currentTimeMillis();
+		logger.info("Scaffold writing, erase time: " + (endTime - startTime) + " ms");
 	}
 
 	public void write() {

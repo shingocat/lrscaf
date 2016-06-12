@@ -50,6 +50,7 @@ public class ContigReader {
 	}
 
 	public Map<String, Contig> read() {
+		long start = System.currentTimeMillis();
 		if (cnts == null)
 			cnts = new HashMap<String, Contig>();
 		cnts.clear();
@@ -166,6 +167,8 @@ public class ContigReader {
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}
+		long end = System.currentTimeMillis();
+		logger.info("Reading contigs, erase times: " + (end - start) + " ms");
 		return cnts;
 	}
 }
