@@ -91,6 +91,7 @@ public class Scaffolder {
 	// }
 
 	public void scaffolding() {
+		long start = System.currentTimeMillis();
 		logger.info("Starting....");
 		try {
 			// if could not build the output folder;
@@ -185,8 +186,9 @@ public class Scaffolder {
 			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
-
 		logger.info("Ending....");
+		long end = System.currentTimeMillis();
+		logger.info("Scaffolding erase time: " + (end - start)/1000 + " s");
 	}
 	
 	public void writeScaffolds(Parameter paras)

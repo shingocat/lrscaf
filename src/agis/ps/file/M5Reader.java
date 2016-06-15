@@ -167,7 +167,7 @@ public class M5Reader {
 		long end = System.currentTimeMillis();
 		logger.info(this.getClass().getName() + "\tAligned records: " + count);
 		logger.info(this.getClass().getName() + "\tRecords after filtered: " + m5List.size());
-		logger.info("Reading M5 Records, erase time: " + (end - start)/1000 + " s");
+		logger.info("Reading M5 Records, erase time: " + (end - start) + " ms");
 		return m5List;
 	}
 }
