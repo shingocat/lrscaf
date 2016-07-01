@@ -188,7 +188,7 @@ public class Scaffolder {
 		}
 		logger.info("Ending....");
 		long end = System.currentTimeMillis();
-		logger.info("Scaffolding erase time: " + (end - start)/1000 + " s");
+		logger.info("Scaffolding erase time: " + Double.valueOf((end - start)/1000) + " s");
 	}
 	
 	public void writeScaffolds(Parameter paras)
