@@ -49,7 +49,7 @@ public class LinkBuilder {
 	}
 	
 	// directly building pb links, do not consideration of overlap length and overhang;
-	public List<PBLinkM> mRecord2Link2(List<MRecord> records, Parameter paras)
+	private List<PBLinkM> mRecord2Link2(List<MRecord> records, Parameter paras)
 	{
 		long start = System.currentTimeMillis();
 		// initiate the pblinks based on half of records size
@@ -257,7 +257,7 @@ public class LinkBuilder {
 	}
 
 	// method to change valid m5record to link two contigs;
-	public List<PBLinkM> mRecord2Link(List<MRecord> mRecords, Parameter paras) {
+	private List<PBLinkM> mRecord2Link(List<MRecord> mRecords, Parameter paras) {
 		long start = System.currentTimeMillis();
 		List<PBLinkM> pbLinks = new Vector<PBLinkM>();
 		HashMap<String, List<MRecord>> pSet = new HashMap<String, List<MRecord>>();
@@ -430,12 +430,15 @@ public class LinkBuilder {
 				contig_pairs = temp;
 				temp = null;
 			}
+			// sorting the contig_pairs;
+			Collections.sort(contig_pairs, new ByLocOrderComparator());
+			// checking the similarity contigs 
+			if(contig_pairs.size() >= 2)
+				contig_pairs = validateContigPair(contig_pairs);
 			int cpSize = contig_pairs.size();
 
 			// at least having two contigs under the same pacbio read;
 			if (cpSize > 1) {
-				// sorting the contig_pairs;
-				Collections.sort(contig_pairs, new ByLocOrderComparator());
 				// build only the successive link; A->B->C, it will build A->B
 				// and B->C, omitted A->C
 				for (int i = 0; i <= cpSize - 2; i++) {
@@ -520,7 +523,80 @@ public class LinkBuilder {
 		logger.info("Link Building, erase time: " + (end - start) + " ms");
 		return pbLinks;
 	}
-
+	
+	// this method used to checking almost identical contigs linking by same pacbio reads
+	private List<MRecord> validateContigPair(List<MRecord> data)
+	{
+		List<MRecord> values = new Vector<MRecord>(data.size());
+		List<MRecord> simCNTs = new Vector<MRecord>(5);
+		List<MRecord> delCNTs = new Vector<MRecord>(5);
+//		int minOLLen = paras.getMinOLLen();// defined by parameter;
+		int minOLLen = 300; // defined by myself;
+		int start = 0;
+		int end = 0;
+		for(int i = 0; i < data.size(); i++)
+		{
+			MRecord m = data.get(i);
+			if(i == 0)
+			{
+				start = m.getqStart();
+				end = m.getqEnd();
+				continue;
+			}		
+			int tStart = m.getqStart();
+			int tEnd = m.getqEnd();
+			int ol = 0;
+			if(end > tEnd)
+			{
+				ol = tEnd - tStart;
+			} else
+			{
+				ol =  end - tStart;
+			}
+			if(ol > minOLLen)
+			{
+				if(!simCNTs.contains(data.get(i - 1)))
+					simCNTs.add(data.get(i - 1));
+				if(!simCNTs.contains(m))
+					simCNTs.add(m);
+			} else
+			{
+				start = tStart;
+				end = tEnd;
+			}
+		}
+		if(simCNTs.size() != 0){
+			double olweight = 0.6;
+			double identweight = 0.4;
+			long score = 0;
+			logger.debug("Similairty contigs:");
+			for(int i = 0; i < simCNTs.size(); i++)
+			{
+				MRecord m = simCNTs.get(i);
+				logger.debug(m.gettName());
+				int pS = m.getqStart();
+				int pE = m.getqEnd();
+				int ol = pE - pS;
+				int ident = (int) Math.round(m.getIdentity() * 1000);
+				if(i == 0)
+				{
+					score = Math.round(ol * olweight + ident * identweight);
+					continue;
+				}
+				long temp = Math.round(ol * olweight + ident * identweight);
+				if(score <= temp)
+				{
+					delCNTs.add(simCNTs.get(i - 1));
+					score = temp;
+				} else
+				{
+					delCNTs.add(m);
+				}
+			}
+			data.removeAll(delCNTs);
+		}
+		return data;
+	}
 }
 
 class ByLocOrderComparator implements Comparator<Object> {

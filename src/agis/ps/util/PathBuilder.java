@@ -256,7 +256,7 @@ public class PathBuilder {
 		return this.buildPath2(edges, paras);
 	}
 	
-	public List<NodePath> buildPath2(List<Edge> edges, Parameter paras)
+	private List<NodePath> buildPath2(List<Edge> edges, Parameter paras)
 	{
 		long start = System.currentTimeMillis();
 		if (edges == null || edges.size() == 0)
@@ -536,7 +536,7 @@ public class PathBuilder {
 	}
 
 	@SuppressWarnings("unused")
-	public List<NodePath> buildPath(List<Edge> edges, Parameter paras) {
+	private List<NodePath> buildPath(List<Edge> edges, Parameter paras) {
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder: The Edges could not be empty!");
 		List<NodePath> paths = new Vector<NodePath>();
