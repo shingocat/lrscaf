@@ -48,7 +48,109 @@ public class ContigReader {
 		this.filePath = filePath;
 		this.cntLen = cntLen;
 	}
+	
+	// second method for reading contigs without filtering parameters;
+	public Map<String, Contig> read2()
+	{
+		long start = System.currentTimeMillis();
+		if (cnts == null)
+			cnts = new HashMap<String, Contig>();
+		cnts.clear();
+		FileReader fr = null;
+		BufferedReader br = null;
+		try {
+			File cntFile = new File(filePath);
+			if (!cntFile.exists()) {
+				logger.debug(this.getClass().getName() + "\t" + "The contig file " + filePath + " do not exist!");
+				logger.error(this.getClass().getName() + "\t" + "The contig file " + filePath + " do not exist!");
+				return null;
+			}
 
+			fr = new FileReader(cntFile);
+			br = new BufferedReader(fr);
+			String line = null;
+			String id = null;
+			StringBuffer sb = new StringBuffer();
+			String temp;
+			while (true) {
+				line = br.readLine();
+				if(line == null)
+				{
+					if(id != null && sb.length() >= 0)
+					{
+						Contig cnt = new Contig(sb.toString());
+						id = id.replaceAll("^>", "");
+						id = id.split("\\s")[0];
+						id = id.trim();
+						cnt.setID(id);
+//						cnt.setLength(sb.length());
+						cnts.put(id, cnt);
+//						logger.debug("ContigReader: " + id);
+//						logger.debug("ContigReader: " + sb.toString());
+						cnt = null;
+					}
+					sb = null;
+					temp = null;
+					id = null;
+					break;
+				}
+				line = line.trim();
+				line = line.replaceAll(System.getProperty("line.separator"), "");
+				if (line.startsWith(">")) {
+					temp = id;
+					id = line;
+					if(temp != null && sb.length() >= 0)
+					{
+						temp = temp.replaceFirst("^>", "");
+						temp = temp.split("\\s")[0];
+						temp = temp.trim();
+						Contig cnt = new Contig(sb.toString());
+						cnt.setID(temp);
+//						cnt.setLength(sb.length());
+						cnts.put(temp, cnt);
+						sb = null;
+						cnt = null;
+						temp = null;
+						sb = new StringBuffer();
+					}
+				} else {
+					sb.append(line);
+				}
+			}
+
+		} catch (ArrayIndexOutOfBoundsException e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (FileNotFoundException e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (IOException e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (CompoundNotFoundException e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (PatternSyntaxException e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (Exception e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+			} catch (IOException e) {
+				logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			}
+		}
+		long end = System.currentTimeMillis();
+		logger.info("Reading contigs, erase times: " + (end - start) + " ms");
+		return cnts;
+	}
+	
+	// original method for reading contigs with filtering parameters
 	public Map<String, Contig> read() {
 		long start = System.currentTimeMillis();
 		if (cnts == null)

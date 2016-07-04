@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -45,6 +46,214 @@ public class LinkBuilder {
 		if (ms == null || ms.size() == 0)
 			throw new IllegalArgumentException("LinkBuilder: The MRecords could not be empty!");
 		return this.mRecord2Link(ms, paras);
+	}
+	
+	// directly building pb links, do not consideration of overlap length and overhang;
+	public List<PBLinkM> mRecord2Link2(List<MRecord> records, Parameter paras)
+	{
+		long start = System.currentTimeMillis();
+		// initiate the pblinks based on half of records size
+		List<PBLinkM> pbLinks = new Vector<PBLinkM>(records.size()/2);
+		Map<String, List<MRecord>> pSet = new HashMap<String, List<MRecord>>(records.size()/2);
+		// with some filtering setting;
+		// considering overhang of contig;
+		for(MRecord m : records)
+		{
+
+			int minOLLen = paras.getMinOLLen();
+			double minOLRatio = paras.getMinOLRatio();
+			int maxOHLen = paras.getMaxOHLen();
+			double maxOHRatio = paras.getMaxOHRatio();
+			int maxEndLen = paras.getMaxEndLen();
+			double maxEndRatio = paras.getMaxEndRatio();
+			
+			int pbLen = m.getqLength();
+			int pbStart = m.getqStart();
+			int pbEnd = m.getqEnd() - 1;
+			int contLen = m.gettLength();
+			int contStart = m.gettStart();
+			int contEnd = m.gettEnd() - 1;
+			Strand tStrand = m.gettStrand();
+
+			boolean isInner = false;
+			int endDefLen = (int) Math.round(pbLen * maxEndRatio);
+			// if max end length larger than the endDefLen, used the endDefLen
+			// as threshold
+			if (endDefLen < maxEndLen)
+				maxEndLen = endDefLen;
+			maxEndLen = 100;
+			if (pbStart >= maxEndLen && pbStart <= (pbLen - maxEndLen)) {
+				if (pbEnd <= (pbLen - maxEndLen))
+					isInner = true;
+			}
+			// the overlap length of contig
+			int ol_len = contEnd - contStart + 1;
+			double ratio = (double) ol_len / contLen;
+			// the overhang length
+			int contLeftLen = contStart;
+			int contRigthLen = contLen - contEnd - 1;
+			// for the reversed strand, BLASR define the coordinate according to aligned seq 
+			if(tStrand.equals(Strand.REVERSE))
+			{
+				int temp = contLeftLen;
+				contLeftLen = contRigthLen;
+				contRigthLen = temp;
+			}
+			int ohDefLen = (int) Math.round(contLen * maxOHRatio);
+//			if (ohDefLen < maxOHLen)
+//				maxOHLen = ohDefLen;
+			maxOHLen = 50;
+			if (isInner) {
+				// the overlap length less than specified value, next;
+//				if (ol_len < minOLLen)
+//					continue;
+//				// if the overlap length enough for specified value, the ratio
+//				// is less than specified value, also next;
+//				if (ratio < minOLRatio)
+//					continue;
+				// for two end length of contig not allow larger than maxOHLen
+				if (contLeftLen > maxOHLen || contRigthLen > maxOHLen)
+					continue;
+			} else {
+				if (pbStart <= maxEndLen && pbEnd <= (pbLen - maxEndLen)) {
+					// check right side, for the end point in p1-p2 and p2-p3
+//					if (ol_len < minOLLen)
+//						continue;
+					if (contRigthLen > maxOHLen)
+						continue;
+				} else if (pbStart <= maxEndLen && pbEnd >= (pbLen - maxEndLen)) {
+					// for start point in p1-p2 and end point in p3-p4, outer
+					// case!
+					// do no afford info, next directly;
+					// if (ol_len < minOLLen)
+					// continue;
+					continue;
+				} else if (pbStart >= maxEndLen && pbEnd >= (pbLen - maxEndLen)) {
+					// check left side, for start point in p2-p3 and end point
+					// in p3-p4,
+					// and start point in p3-p4 and end point in p3-p4;
+//					if (ol_len < minOLLen)
+//						continue;
+					if (contLeftLen > maxOHLen)
+						continue;
+				}
+			}
+			
+			if (pSet.containsKey(m.getqName())) {
+				pSet.get(m.getqName()).add(m);
+			} else {
+				List<MRecord> rs = new Vector<MRecord>();
+				rs.add(m);
+				pSet.put(m.getqName(), rs);
+				rs = null;
+			}
+		}
+		logger.debug(this.getClass().getName() + "\t" + "Valid link: " + pSet.size());
+
+		List<String> repeats = null;
+		if(paras.isRepMask())
+		{
+			RepeatFinder rf = new RepeatFinder(paras);
+			repeats =  rf.findRepeat(pSet);
+		}
+		// transform valid M5Record to Pacbio links
+		int count = 0;
+		List<TriadLink> triads = new Vector<TriadLink>();
+		for (String s : pSet.keySet()) {
+			count++;
+			List<MRecord> contig_pairs = pSet.get(s);
+			// remove the repeats
+			if(paras.isRepMask())
+			{
+				Iterator<MRecord> it = contig_pairs.iterator();
+				while(it.hasNext())
+				{
+					MRecord m = it.next();
+					if(repeats.contains(m.gettName()))
+					{
+						it.remove();
+					}
+				}
+			}
+			int cpSize = contig_pairs.size();
+
+			// at least having two contigs under the same pacbio read;
+			if (cpSize > 1) {
+				// sorting the contig_pairs;
+				Collections.sort(contig_pairs, new ByLocOrderComparator());
+				// build only the successive link; A->B->C, it will build A->B
+				// and B->C, omitted A->C
+				for (int i = 0; i <= cpSize - 2; i++) {
+					MRecord m1 = contig_pairs.get(i);
+					MRecord m2 = contig_pairs.get(i + 1);
+					if (m1.gettName().equalsIgnoreCase(m2.gettName())) {
+						m1 = null;
+						m2 = null;
+						continue;
+					}
+					PBLinkM p = new PBLinkM();
+					p.setOrigin(m1);
+					p.setTerminus(m2);
+					p.setId(s);
+					pbLinks.add(p);
+					p = null;
+					m1 = null;
+					m2 = null;
+				}
+				// build TriadLink
+				if(cpSize >= 3)
+				{
+					for(int i = 0; i <= cpSize - 3; i++)
+					{
+						MRecord m1 = contig_pairs.get(i);
+						MRecord m2 = contig_pairs.get(i + 1);
+						MRecord m3 = contig_pairs.get(i + 2);
+						Contig pre = new Contig();
+						pre.setID(m1.gettName());
+//						pre.setLength(m1.gettLength());
+						Contig mid = new Contig();
+						mid.setID(m2.gettName());
+//						mid.setLength(m2.gettLength());
+						Contig lst = new Contig();
+						lst.setID(m3.gettName());
+//						lst.setLength(m3.gettLength());
+						TriadLink tl = new TriadLink(pre, mid, lst);
+						tl.setSupLinks(1);
+						if(triads.contains(tl))
+						{
+							int index = triads.indexOf(tl);
+							int supLink = triads.get(index).getSupLinks();
+							supLink += 1;
+							triads.get(index).setSupLinks(supLink);
+							m1 = null;
+							m2 = null;
+							m3 = null;
+							pre = null;
+							mid = null;
+							lst = null;
+							tl = null;
+						} else
+						{
+							triads.add(tl);
+							m1 = null;
+							m2 = null;
+							m3 = null;
+							pre = null;
+							mid = null;
+							lst = null;
+							tl = null;
+						}
+					}
+				}
+			}
+		}
+		TriadLinkWriter tlw = new TriadLinkWriter(paras, triads);
+		tlw.write();
+		pSet = null;
+		
+		long end = System.currentTimeMillis();
+		logger.info("Link building earasing time : " + (end - start) + " ms");
+		return pbLinks;
 	}
 
 	// method to change valid m5record to link two contigs;

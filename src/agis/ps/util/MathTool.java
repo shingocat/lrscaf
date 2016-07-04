@@ -7,7 +7,10 @@
 package agis.ps.util;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +74,7 @@ public class MathTool {
 			mean = Math.round(sum / size);
 		} catch (Exception e) {
 			logger.debug(MathTool.class.getName() + "\t" + e.getMessage());
-			logger.info(MathTool.class.getName() + "\t" + e.getMessage());
+			logger.error(MathTool.class.getName() + "\t" + e.getMessage());
 		}
 		return mean;
 	}
@@ -92,7 +95,7 @@ public class MathTool {
 			sd = (int) Math.round(Math.sqrt(diff / (size - 1)));
 		} catch (Exception e) {
 			logger.debug(MathTool.class.getName() + "\t" + e.getMessage());
-			logger.info(MathTool.class.getName() + "\t" + e.getMessage());
+			logger.error(MathTool.class.getName() + "\t" + e.getMessage());
 		}
 		return sd;
 	}
@@ -105,6 +108,18 @@ public class MathTool {
 		int sd = (int) Math.sqrt(sum);
 		return sd;
 	}
+	
+	public static int max(List<Integer> values)
+	{
+		Integer [] arrs = values.toArray(new Integer[values.size()]);
+		return max(arrs);
+	}
+	
+	public static int max(Integer[] values)
+	{
+		Arrays.sort(values);
+		return values[values.length - 1];
+	}
 
 	public static int max(int typeA, int typeB, int typeC, int typeD) {
 		// TODO Auto-generated method stub
@@ -115,12 +130,28 @@ public class MathTool {
 
 	public static int min(Integer[] values) {
 		// TODO Auto-generated method stub
-
-		return 0;
+		Arrays.sort(values);
+		return values[0];
 	}
 
 	public static int min(List<Integer> values) {
-		return 0;
+		Integer [] arrs = values.toArray(new Integer[values.size()]);
+		return min(arrs);
+	}
+
+	public static Map<String, Integer> summary(List<Integer> suptLinks) {
+		int mean = mean(suptLinks);
+		int median = median(suptLinks);
+		int min = min(suptLinks);
+		int max = max(suptLinks);
+		int sd = sd(suptLinks);
+		Map<String, Integer> values = new HashMap<String, Integer>();
+		values.put("MEAN", mean);
+		values.put("MEDIAN", median);
+		values.put("MIN", min);
+		values.put("MAX", max);
+		values.put("SD", sd);
+		return values;
 	}
 
 }

@@ -134,11 +134,13 @@ public class Scaffolder {
 			}
 			// links building
 			LinkBuilder linkBuilder = new LinkBuilder(mRecords, paras);
-			pbLinks = linkBuilder.mRecord2Link();
+			pbLinks = linkBuilder.mRecord2Link(); // original strictly building pb links
+//			pbLinks = linkBuilder.mRecord2Link2(mRecords, paras);
 			linkBuilder = null;
 			// edges building
 			EdgeBundler edgeBundler = new EdgeBundler(pbLinks, paras, contigs);
-			edges = edgeBundler.pbLinkM5Bundling();
+			edges = edgeBundler.pbLinkM5Bundling(); // original strictly building edges;
+//			edges = edgeBundler.pbLinkM5Bundling3(pbLinks, paras);
 			if(edges == null)
 				return;
 //			edges = EdgeBundler.pbLinkM5Bundling(pbLinks, paras);
@@ -315,7 +317,8 @@ public class Scaffolder {
 	public boolean readContigs(Parameter paras)
 	{
 		ContigReader cr = new ContigReader(paras);
-		contigs = cr.read();
+//		contigs = cr.read2();
+		contigs = cr.read(); // original methods with filtering parameter;
 		if(contigs == null)
 			return false;
 		else
@@ -333,7 +336,8 @@ public class Scaffolder {
 //		setContigs(FastaReaderHelper.readFastaDNASequence(cFile));
 		ContigReader cr = new ContigReader(cFilePath, cntLen);
 //		setContigs(cr.read());
-		contigs = cr.read();
+//		contigs = cr.read();
+		contigs = cr.read2();
 		if(contigs == null)
 			return false;
 		else
@@ -343,7 +347,8 @@ public class Scaffolder {
 	public List<MRecord> readM5Aligned(Parameter paras)
 	{
 		M5Reader reader = new M5Reader(paras);
-		return reader.read();
+		return reader.read(); // original method to read m5 record
+//		return reader.readWithoutFiltering();
 	}
 	
 	public List<MRecord> readM4Alingned(Parameter paras)
