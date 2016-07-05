@@ -265,7 +265,7 @@ public class DirectedGraph extends Graph implements Serializable {
 			List<Contig> adjs = adjTos.get(id);
 			int adjCount = adjs.size();
 			// by far only considering three adjacent statement;
-			if(adjCount == 3)
+			if(adjCount >= 3)
 			{
 				trCnds.add(getVertex(id));
 			}
