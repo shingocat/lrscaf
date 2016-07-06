@@ -59,7 +59,7 @@ public abstract class Graph implements Serializable,IUntangler {
 		if(vertices != null)
 			vertices = null;
 		if (vertices == null)
-			vertices = new Vector<Contig>();
+			vertices = new Vector<Contig>(((edges.size() - 1) * 3)/2); // in the worst case, nodes = 2 + 2(n-1), where n is the size of edges
 		for (Edge e : edges) {
 			if (!vertices.contains(e.getOrigin()))
 				vertices.add(e.getOrigin());
