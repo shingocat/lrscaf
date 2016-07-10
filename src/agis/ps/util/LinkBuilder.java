@@ -569,11 +569,11 @@ public class LinkBuilder {
 			double olweight = 0.6;
 			double identweight = 0.4;
 			long score = 0;
-			logger.debug("Similairty contigs:");
+//			logger.debug("Similairty contigs:");
 			for(int i = 0; i < simCNTs.size(); i++)
 			{
 				MRecord m = simCNTs.get(i);
-				logger.debug(m.gettName());
+//				logger.debug(m.gettName());
 				int pS = m.getqStart();
 				int pE = m.getqEnd();
 				int ol = pE - pS;

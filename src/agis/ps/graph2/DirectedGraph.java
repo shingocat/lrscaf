@@ -31,6 +31,7 @@ public class DirectedGraph extends Graph implements Serializable {
 	private Map<String, List<Contig>> adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
 	// for store multiple in and multiple out contig vertex;
 	private List<Contig> mimos = new Vector<Contig>();
+	private static int index = 0;
 
 	public DirectedGraph(List<Edge> edges) {
 		super(edges);
@@ -38,9 +39,9 @@ public class DirectedGraph extends Graph implements Serializable {
 	}
 
 	private void initAdjTos() {
-		if(adjTos == null)
+		if (adjTos == null)
 			adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
-		if(adjTos != null)
+		if (adjTos != null)
 			adjTos.clear();
 		Collection<Map.Entry<String, Edge>> collections = this.edges.entrySet();
 		Iterator<Map.Entry<String, Edge>> it = collections.iterator();
@@ -52,16 +53,14 @@ public class DirectedGraph extends Graph implements Serializable {
 			String id = origin.getID();
 			if (adjTos.containsKey(id)) {
 				List<Contig> temp = adjTos.get(id);
-				if(!temp.contains(terminus))
+				if (!temp.contains(terminus))
 					temp.add(terminus);
 				adjTos.replace(id, temp);
-				if(temp.size() >= 3)
-				{
-					if(!mimos.contains(origin))
+				if (temp.size() >= 3) {
+					if (!mimos.contains(origin))
 						mimos.add(origin);
 				}
-			} else
-			{
+			} else {
 				List<Contig> temp = new Vector<Contig>();
 				temp.add(terminus);
 				adjTos.put(id, temp);
@@ -81,10 +80,9 @@ public class DirectedGraph extends Graph implements Serializable {
 		List<Contig> adjs = this.adjTos.get(current.getID());
 		List<Contig> values = new Vector<Contig>();
 		Iterator<Contig> it = adjs.iterator();
-		while(it.hasNext())
-		{
+		while (it.hasNext()) {
 			Contig c = it.next();
-			if(!c.equals(former))
+			if (!c.equals(former))
 				values.add(c);
 		}
 		if (values == null || values.isEmpty())
@@ -118,18 +116,24 @@ public class DirectedGraph extends Graph implements Serializable {
 			List<Contig> cnts = this.getAdjVertices(origin);
 			Iterator<Contig> it = cnts.iterator();
 			int indicator = cnts.size();
-			while (it.hasNext()) {
-				Contig c = it.next();
-				LinkedList<Contig> path = new LinkedList<Contig>();
-				path.addLast(origin);
-				path.addLast(c);
-				this.transitiveReducting(c, origin, origin, depth, path);
-				it = this.getAdjVertices(origin).iterator();
-				int temp = cnts.size();
-				if(indicator != temp)
-					indicator = temp;
-				else
-					break;
+			try {
+				while (it.hasNext()) {
+					Contig c = it.next();
+					LinkedList<Contig> path = new LinkedList<Contig>();
+					path.addLast(origin);
+//					path.addLast(c);
+					this.transitiveReducting(c, origin, origin, depth, path);
+					it = this.getAdjVertices(origin).iterator();
+					int temp = cnts.size();
+					if (indicator != temp)
+						indicator = temp;
+					else
+						break;
+				}
+			} catch (Exception e) {
+				logger.debug(this.getClass().getName() + " " + e.getMessage());
+				logger.error(this.getClass().getName() + " " + e.getMessage());
+				logger.info(this.getClass().getName() + " " + e.getMessage());
 			}
 		}
 		long end = System.currentTimeMillis();
@@ -142,14 +146,18 @@ public class DirectedGraph extends Graph implements Serializable {
 	// the recurrence break or if the depth is equal to defined depth return;
 	private boolean transitiveReducting(Contig current, Contig former, Contig start, int depth,
 			LinkedList<Contig> path) {
-
-		if (!path.contains(former))
-			path.addLast(former);
-		if (!path.contains(current))
-			path.addLast(current);
+		index++;
+//		logger.debug("index " + index);
+//		logger.debug("current " + current.getID());
+//		logger.debug("former " + former.getID());
+		path.addLast(current);
+//		if (!path.contains(former))
+//			path.addLast(former);
+//		if (!path.contains(current))
+//			path.addLast(current);
 		List<Contig> cnts = this.getNextVertices(current, former);
 		if (cnts == null) {
-			if(path.size() > 2)
+//			if (!path.isEmpty())
 				path.removeLast();
 			return false;
 		}
@@ -212,23 +220,23 @@ public class DirectedGraph extends Graph implements Serializable {
 				for (Edge e : alEs) {
 					e.setLinkNum(e.getLinkNum() + trSL);
 				}
-				if(path.size() > 2)
+//				if (!path.isEmpty())
 					path.removeLast();
 				return true;
 			} else {
-				if(path.size() > 2)
+//				if (!path.isEmpty())
 					path.removeLast();
 				return false;
 			}
 		} else if (depth == 0) {
-			if(path.size() > 2)
+//			if (!path.isEmpty())
 				path.removeLast();
 			return false;
 		} else {
 			for (Contig c : cnts) {
 				transitiveReducting(c, current, start, depth - 1, path);
 			}
-			if(path.size() > 2)
+//			if (!path.isEmpty())
 				path.removeLast();
 			return false;
 		}
@@ -391,10 +399,9 @@ public class DirectedGraph extends Graph implements Serializable {
 		Contig terminus = e.getTerminus();
 		String id = origin.getID() + "->" + terminus.getID();
 		if (this.edges.containsKey(id)) {
-			if (this.edges.remove(id) != null)
-			{
+			if (this.edges.remove(id) != null) {
 				List<Contig> temp = this.adjTos.get(origin.getID());
-				if(temp.contains(terminus))
+				if (temp.contains(terminus))
 					temp.remove(terminus);
 				this.adjTos.replace(origin.getID(), temp);
 				isRemove = true;
@@ -406,8 +413,7 @@ public class DirectedGraph extends Graph implements Serializable {
 	@Override
 	public void removeEdges(List<Edge> edges) {
 		Iterator<Edge> it = edges.iterator();
-		while(it.hasNext())
-		{
+		while (it.hasNext()) {
 			Edge e = it.next();
 			Contig origin = e.getOrigin();
 			Contig terminus = e.getTerminus();
@@ -415,11 +421,11 @@ public class DirectedGraph extends Graph implements Serializable {
 			if (this.edges.containsKey(id))
 				this.edges.remove(id);
 			List<Contig> temp = this.adjTos.get(origin.getID());
-			if(temp.contains(terminus))
+			if (temp.contains(terminus))
 				temp.remove(terminus);
 			this.adjTos.replace(origin.getID(), temp);
 		}
-		//updateGraph();
+		// updateGraph();
 	}
 
 	public void updateGraph() {
