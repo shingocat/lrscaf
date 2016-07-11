@@ -31,7 +31,6 @@ public class DirectedGraph extends Graph implements Serializable {
 	private Map<String, List<Contig>> adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
 	// for store multiple in and multiple out contig vertex;
 	private List<Contig> mimos = new Vector<Contig>();
-	private static int index = 0;
 
 	public DirectedGraph(List<Edge> edges) {
 		super(edges);
@@ -111,7 +110,7 @@ public class DirectedGraph extends Graph implements Serializable {
 
 		// the depth for searching, the alternative path could only accept 5
 		// node;
-		int depth = 5;
+		int depth = 10;
 		for (Contig origin : mimos) {
 			List<Contig> cnts = this.getAdjVertices(origin);
 			Iterator<Contig> it = cnts.iterator();
@@ -121,14 +120,16 @@ public class DirectedGraph extends Graph implements Serializable {
 					Contig c = it.next();
 					LinkedList<Contig> path = new LinkedList<Contig>();
 					path.addLast(origin);
-//					path.addLast(c);
-					this.transitiveReducting(c, origin, origin, depth, path);
-					it = this.getAdjVertices(origin).iterator();
+					// path.addLast(c);
+					this.transitiveReducting(c, origin, origin, depth, path);					
 					int temp = cnts.size();
 					if (indicator != temp)
-						indicator = temp;
-					else
-						break;
+					{
+						it = this.getAdjVertices(origin).iterator();
+						indicator = temp;					
+					}
+//					else
+//						break;
 				}
 			} catch (Exception e) {
 				logger.debug(this.getClass().getName() + " " + e.getMessage());
@@ -146,19 +147,10 @@ public class DirectedGraph extends Graph implements Serializable {
 	// the recurrence break or if the depth is equal to defined depth return;
 	private boolean transitiveReducting(Contig current, Contig former, Contig start, int depth,
 			LinkedList<Contig> path) {
-		index++;
-//		logger.debug("index " + index);
-//		logger.debug("current " + current.getID());
-//		logger.debug("former " + former.getID());
 		path.addLast(current);
-//		if (!path.contains(former))
-//			path.addLast(former);
-//		if (!path.contains(current))
-//			path.addLast(current);
 		List<Contig> cnts = this.getNextVertices(current, former);
 		if (cnts == null) {
-//			if (!path.isEmpty())
-				path.removeLast();
+			path.removeLast();
 			return false;
 		}
 		if (cnts.contains(start)) {
@@ -220,24 +212,20 @@ public class DirectedGraph extends Graph implements Serializable {
 				for (Edge e : alEs) {
 					e.setLinkNum(e.getLinkNum() + trSL);
 				}
-//				if (!path.isEmpty())
-					path.removeLast();
+				path.removeLast();
 				return true;
 			} else {
-//				if (!path.isEmpty())
-					path.removeLast();
+				path.removeLast();
 				return false;
 			}
 		} else if (depth == 0) {
-//			if (!path.isEmpty())
-				path.removeLast();
+			path.removeLast();
 			return false;
 		} else {
 			for (Contig c : cnts) {
 				transitiveReducting(c, current, start, depth - 1, path);
 			}
-//			if (!path.isEmpty())
-				path.removeLast();
+			path.removeLast();
 			return false;
 		}
 	}
