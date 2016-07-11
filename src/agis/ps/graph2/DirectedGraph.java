@@ -110,7 +110,7 @@ public class DirectedGraph extends Graph implements Serializable {
 
 		// the depth for searching, the alternative path could only accept 5
 		// node;
-		int depth = 10;
+		int depth = 5;
 		for (Contig origin : mimos) {
 			List<Contig> cnts = this.getAdjVertices(origin);
 			Iterator<Contig> it = cnts.iterator();
@@ -203,7 +203,7 @@ public class DirectedGraph extends Graph implements Serializable {
 
 			int sd = trSd >= alSd ? trSd : alSd;
 			int diff = trDist - alDist;
-			int range = 10 * sd;
+			int range = 20 * sd;
 
 			if (diff >= -range && diff <= range) {
 				// remove tr edges
@@ -267,6 +267,7 @@ public class DirectedGraph extends Graph implements Serializable {
 		}
 		logger.info(this.getClass().getName() + "\tDelete error prone edges:" + rmEdges.size());
 		this.removeEdges(rmEdges);
+		this.updateGraph();
 		long end = System.currentTimeMillis();
 		logger.info("Error prone Edge deleting, erase time: " + (end - start) + " ms");
 	}

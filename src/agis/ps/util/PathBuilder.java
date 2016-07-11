@@ -37,6 +37,7 @@ public class PathBuilder {
 	private Parameter paras;
 	private DiGraph diGraph;
 	private List<TriadLink> triads;
+	private static int index = 0;
 
 	public PathBuilder() {
 		// do nothing;
@@ -278,21 +279,25 @@ public class PathBuilder {
 			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dep.info";
 			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
 			NodePath path = null;
-			int count = 0;
 //			TriadLinkReader tlr = new TriadLinkReader(paras);
 //			List<TriadLink> triads = tlr.read();
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-				count = count + 1;
-//				if(count == 35)
-//					logger.debug("count " + count);
+//				index++;
+//				if(index == 49)
+//					logger.debug("index error " + index);
 				Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false then break;
 				if (current == null)
 					break;
 				List<Contig> adjs = diGraph.getAdjVertices(current);
+				if(adjs == null)
+				{
+					diGraph.setVertexAsSelected(current);
+					continue;
+				}
 				int adjsSize = adjs.size();
 				// random selected the frist 
 				if(adjsSize == 0)
