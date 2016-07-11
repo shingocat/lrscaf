@@ -269,13 +269,19 @@ public class PathBuilder {
 			// do transitive reduction
 			diGraph.transitiveReducting();
 			List<Edge> tempEdges = diGraph.getEdges();
-			logger.debug("Edges size after transitive reducing: " + tempEdges.size());
+			logger.info("Edges size after transitive reducing: " + tempEdges.size());
 			String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_tr.info";
 			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
 			// delete error prone edge
-			diGraph.delErrorProneEdge(paras.getRatio());
-			tempEdges = diGraph.getEdges();
-			logger.debug("Edges size after error prone deleting: " + tempEdges.size());
+			try{
+				diGraph.delErrorProneEdge(paras.getRatio());
+				tempEdges = diGraph.getEdges();
+			} catch(Exception e)
+			{
+				logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			}
+			logger.info("Edges size after error prone deleting: " + tempEdges.size());
 			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dep.info";
 			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
 			NodePath path = null;

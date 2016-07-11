@@ -203,7 +203,7 @@ public class DirectedGraph extends Graph implements Serializable {
 
 			int sd = trSd >= alSd ? trSd : alSd;
 			int diff = trDist - alDist;
-			int range = 20 * sd;
+			int range = 10 * sd;
 
 			if (diff >= -range && diff <= range) {
 				// remove tr edges
