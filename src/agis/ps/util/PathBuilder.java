@@ -277,8 +277,8 @@ public class PathBuilder {
 				diGraph.delErrorProneEdge(paras.getRatio());
 			} catch(Exception e)
 			{
-				logger.debug(this.getClass().getName() + "\t" + e.getMessage());
-				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+				logger.debug(this.getClass().getName() + "\t dep: " + e.getMessage());
+				logger.error(this.getClass().getName() + "\t deo: " + e.getMessage());
 			}
 			tempEdges = diGraph.getEdges();
 			logger.info("Edges size after error prone deleting: " + tempEdges.size());
