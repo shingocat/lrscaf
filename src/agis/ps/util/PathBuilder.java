@@ -275,12 +275,12 @@ public class PathBuilder {
 			// delete error prone edge
 			try{
 				diGraph.delErrorProneEdge(paras.getRatio());
-				tempEdges = diGraph.getEdges();
 			} catch(Exception e)
 			{
 				logger.debug(this.getClass().getName() + "\t" + e.getMessage());
 				logger.error(this.getClass().getName() + "\t" + e.getMessage());
 			}
+			tempEdges = diGraph.getEdges();
 			logger.info("Edges size after error prone deleting: " + tempEdges.size());
 			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dep.info";
 			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
