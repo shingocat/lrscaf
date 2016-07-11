@@ -121,15 +121,14 @@ public class DirectedGraph extends Graph implements Serializable {
 					LinkedList<Contig> path = new LinkedList<Contig>();
 					path.addLast(origin);
 					// path.addLast(c);
-					this.transitiveReducting(c, origin, origin, depth, path);					
+					this.transitiveReducting(c, origin, origin, depth, path);
 					int temp = cnts.size();
-					if (indicator != temp)
-					{
+					if (indicator != temp) {
 						it = this.getAdjVertices(origin).iterator();
-						indicator = temp;					
+						indicator = temp;
 					}
-//					else
-//						break;
+					// else
+					// break;
 				}
 			} catch (Exception e) {
 				logger.debug(this.getClass().getName() + " " + e.getMessage());
@@ -240,30 +239,38 @@ public class DirectedGraph extends Graph implements Serializable {
 	public void delErrorProneEdge(double ratio) {
 		long start = System.currentTimeMillis();
 		List<Edge> rmEdges = new Vector<Edge>(100);
-		for (Contig c : mimos) {
-			String id = c.getID();
-			List<Contig> adjs = adjTos.get(id);
-			int adjCount = adjs.size();
-			Contig cnt = new Contig();
-			cnt.setID(id);
-			int[] sls = new int[adjCount];
-			for (int i = 0; i < adjCount; i++) {
-				Contig t = adjs.get(i);
-				List<Edge> es = this.getEdgesInfo(cnt, t);
-				sls[i] = es.get(0).getLinkNum();
-			}
-			Arrays.sort(sls);
-			int max = sls[adjCount - 1];
-			for (int i = 0; i < adjCount; i++) {
-				Contig t = adjs.get(i);
-				List<Edge> es = this.getEdgesInfo(cnt, t);
-				int sl = es.get(0).getLinkNum();
-				double r = (double) sl / max;
-				if (r <= ratio) {
-					rmEdges.addAll(es);
+		try {
+			Iterator<Contig> it = mimos.iterator();
+			while (it.hasNext()) {
+				Contig c = it.next();
+				String id = c.getID();
+				List<Contig> adjs = adjTos.get(id);
+				if (adjs == null)
+					continue;
+				int adjCount = adjs.size();
+				Contig cnt = new Contig();
+				cnt.setID(id);
+				int[] sls = new int[adjCount];
+				for (int i = 0; i < adjCount; i++) {
+					Contig t = adjs.get(i);
+					List<Edge> es = this.getEdgesInfo(cnt, t);
+					sls[i] = es.get(0).getLinkNum();
+				}
+				Arrays.sort(sls);
+				int max = sls[adjCount - 1];
+				for (int i = 0; i < adjCount; i++) {
+					Contig t = adjs.get(i);
+					List<Edge> es = this.getEdgesInfo(cnt, t);
+					int sl = es.get(0).getLinkNum();
+					double r = (double) sl / max;
+					if (r <= ratio) {
+						rmEdges.addAll(es);
+					}
 				}
 			}
-
+		} catch (Exception e) {
+			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		logger.info(this.getClass().getName() + "\tDelete error prone edges:" + rmEdges.size());
 		this.removeEdges(rmEdges);
