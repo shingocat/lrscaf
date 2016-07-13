@@ -32,6 +32,7 @@ public class EdgeBundler {
 	private List<Edge> edges = null;
 	private Map<String, Contig> contigs = null;
 	private List<GapRecord> gaps = new Vector<GapRecord>(50);
+	private static int index = 0;
 
 	public EdgeBundler() {
 		// do nothing;
@@ -102,26 +103,27 @@ public class EdgeBundler {
 		logger.debug("MIN: " + summary.get("MIN"));
 		logger.debug("MAX: " + summary.get("MAX"));
 		logger.debug("SD: " + summary.get("SD"));
-//		// remove the edges of minimum support links
-//		Iterator<Map.Entry<String, List<PBLinkM>>> iterator = temp.entrySet().iterator();
-//		while (iterator.hasNext()) {
-//			Map.Entry<String, List<PBLinkM>> entry = iterator.next();
-//			List<PBLinkM> pblinks = entry.getValue();
-//			if (pblinks.size() <= 4)
-//				iterator.remove();
-//		}
-//		suptLinks.clear();
-//		for (String s : temp.keySet()) {
-//			suptLinks.add(temp.get(s).size());
-//		}
-//		summary = MathTool.summary(suptLinks);
-//		logger.debug("Edge supported links after cleaning");
-//		logger.debug("SIZE: " + temp.size());
-//		logger.debug("MEAN: " + summary.get("MEAN"));
-//		logger.debug("MEDIAN: " + summary.get("MEDIAN"));
-//		logger.debug("MIN: " + summary.get("MIN"));
-//		logger.debug("MAX: " + summary.get("MAX"));
-//		logger.debug("SD: " + summary.get("SD"));
+		// // remove the edges of minimum support links
+		// Iterator<Map.Entry<String, List<PBLinkM>>> iterator =
+		// temp.entrySet().iterator();
+		// while (iterator.hasNext()) {
+		// Map.Entry<String, List<PBLinkM>> entry = iterator.next();
+		// List<PBLinkM> pblinks = entry.getValue();
+		// if (pblinks.size() <= 4)
+		// iterator.remove();
+		// }
+		// suptLinks.clear();
+		// for (String s : temp.keySet()) {
+		// suptLinks.add(temp.get(s).size());
+		// }
+		// summary = MathTool.summary(suptLinks);
+		// logger.debug("Edge supported links after cleaning");
+		// logger.debug("SIZE: " + temp.size());
+		// logger.debug("MEAN: " + summary.get("MEAN"));
+		// logger.debug("MEDIAN: " + summary.get("MEDIAN"));
+		// logger.debug("MIN: " + summary.get("MIN"));
+		// logger.debug("MAX: " + summary.get("MAX"));
+		// logger.debug("SD: " + summary.get("SD"));
 
 		// loop in temp hash map
 		for (String s : temp.keySet()) {
@@ -207,23 +209,21 @@ public class EdgeBundler {
 				int low = mean - 3 * sd;
 				// if the distance larger than mean + 3 * sd, then remove;
 				Iterator<PBLinkM> it1 = s1As.iterator();
-				while(it1.hasNext())
-				{
+				while (it1.hasNext()) {
 					PBLinkM pb = it1.next();
-					if(pb.getDistance() > upper || pb.getDistance() < low)
+					if (pb.getDistance() > upper || pb.getDistance() < low)
 						it1.remove();
 				}
 				Iterator<PBLinkM> it2 = s2Cs.iterator();
-				while(it2.hasNext())
-				{
+				while (it2.hasNext()) {
 					PBLinkM pb = it2.next();
 					if (pb.getDistance() > upper || pb.getDistance() < low)
 						it2.remove();
 				}
 				// when less than support links
-				if((s1As.size() + s2Cs.size()) <= minSupLink)
+				if ((s1As.size() + s2Cs.size()) <= minSupLink)
 					continue;
-				
+
 				// recompute mean and sd;
 				dists = null;
 				dists = new Vector<Integer>();
@@ -353,23 +353,21 @@ public class EdgeBundler {
 				int low = mean - 3 * sd;
 				// if the distance larger than mean + 3 * sd, then remove;
 				Iterator<PBLinkM> it1 = s1Bs.iterator();
-				while(it1.hasNext())
-				{
+				while (it1.hasNext()) {
 					PBLinkM pb = it1.next();
 					if (pb.getDistance() > upper || pb.getDistance() < low)
 						it1.remove();
 				}
 				Iterator<PBLinkM> it2 = s2Bs.iterator();
-				while(it2.hasNext())
-				{
+				while (it2.hasNext()) {
 					PBLinkM pb = it2.next();
 					if (pb.getDistance() > upper || pb.getDistance() < low)
 						it2.remove();
 				}
 				// remove less support links
-				if((s1Bs.size() + s2Bs.size()) <= minSupLink)
+				if ((s1Bs.size() + s2Bs.size()) <= minSupLink)
 					continue;
-			
+
 				// recompute mean and sd;
 				dists = null;
 				dists = new Vector<Integer>();
@@ -499,21 +497,19 @@ public class EdgeBundler {
 				int low = mean - 3 * sd;
 				// if the distance larger than mean + 3 * sd, then remove;
 				Iterator<PBLinkM> it1 = s1Cs.iterator();
-				while(it1.hasNext())
-				{
+				while (it1.hasNext()) {
 					PBLinkM pb = it1.next();
 					if (pb.getDistance() > upper || pb.getDistance() < low)
 						it1.remove();
 				}
 				Iterator<PBLinkM> it2 = s2As.iterator();
-				while(it2.hasNext())
-				{
+				while (it2.hasNext()) {
 					PBLinkM pb = it2.next();
 					if (pb.getDistance() > upper || pb.getDistance() < low)
 						it2.remove();
 				}
 				// remove less support links
-				if((s1Cs.size() + s2As.size()) <= minSupLink)
+				if ((s1Cs.size() + s2As.size()) <= minSupLink)
 					continue;
 				// recompute mean and sd;
 				dists = null;
@@ -645,23 +641,21 @@ public class EdgeBundler {
 				int low = mean - 3 * sd;
 				// if the distance larger than mean + 3 * sd, then remove;
 				Iterator<PBLinkM> it1 = s1Ds.iterator();
-				while(it1.hasNext())
-				{
+				while (it1.hasNext()) {
 					PBLinkM pb = it1.next();
 					if (pb.getDistance() > upper || pb.getDistance() < low)
 						it1.remove();
 				}
 				Iterator<PBLinkM> it2 = s2Ds.iterator();
-				while(it2.hasNext())
-				{
+				while (it2.hasNext()) {
 					PBLinkM pb = it2.next();
 					if (pb.getDistance() > upper || pb.getDistance() < low)
 						it2.remove();
 				}
-				//remove less than the supportLink;
-				if((s1Ds.size() + s2Ds.size()) <= minSupLink)
+				// remove less than the supportLink;
+				if ((s1Ds.size() + s2Ds.size()) <= minSupLink)
 					continue;
-				
+
 				// recompute mean and sd;
 				dists = null;
 				dists = new Vector<Integer>();
@@ -843,749 +837,780 @@ public class EdgeBundler {
 		}
 
 		// loop in temp hash map
+
 		for (String s : temp.keySet()) {
-			// divide into two set, i.e. A->B; B->A
-			List<PBLinkM> all = temp.get(s);
-			List<PBLinkM> s1 = new Vector<PBLinkM>(10);
-			List<PBLinkM> s2 = new Vector<PBLinkM>(10);
-			String[] ids = s.split(":->:");
-			for (PBLinkM p : all) {
-				if (ids[0].equalsIgnoreCase(p.getOrigin().gettName()))
-					s1.add(p);
-				else
-					s2.add(p);
-			}
+			try {
+				index++;
+				if(index == 12)
+					logger.debug("NullPointer Exception");
+				// divide into two set, i.e. A->B; B->A
+				List<PBLinkM> all = temp.get(s);
+				List<PBLinkM> s1 = new Vector<PBLinkM>(10);
+				List<PBLinkM> s2 = new Vector<PBLinkM>(10);
+				String[] ids = s.split(":->:");
+				for (PBLinkM p : all) {
+					if (ids[0].equalsIgnoreCase(p.getOrigin().gettName()))
+						s1.add(p);
+					else
+						s2.add(p);
+				}
 
-			// compute the most type in s1 and s2;
-			// A for + +; B for + -; C for - -; D for - +;
-			// FOR S1 SET
-			List<PBLinkM> s1As = new Vector<PBLinkM>(10);
-			List<PBLinkM> s1Bs = new Vector<PBLinkM>(10);
-			List<PBLinkM> s1Cs = new Vector<PBLinkM>(10);
-			List<PBLinkM> s1Ds = new Vector<PBLinkM>(10);
-			for (PBLinkM p : s1) {
-				Strand oStrand = p.getOrigin().gettStrand();
-				Strand tStrand = p.getTerminus().gettStrand();
-				if (oStrand.equals(Strand.FORWARD)) {
-					if (tStrand.equals(Strand.FORWARD)) {
-						s1As.add(p);
+				// compute the most type in s1 and s2;
+				// A for + +; B for + -; C for - -; D for - +;
+				// FOR S1 SET
+				List<PBLinkM> s1As = new Vector<PBLinkM>(10);
+				List<PBLinkM> s1Bs = new Vector<PBLinkM>(10);
+				List<PBLinkM> s1Cs = new Vector<PBLinkM>(10);
+				List<PBLinkM> s1Ds = new Vector<PBLinkM>(10);
+				for (PBLinkM p : s1) {
+					Strand oStrand = p.getOrigin().gettStrand();
+					Strand tStrand = p.getTerminus().gettStrand();
+					if (oStrand.equals(Strand.FORWARD)) {
+						if (tStrand.equals(Strand.FORWARD)) {
+							s1As.add(p);
+						} else {
+							s1Bs.add(p);
+						}
 					} else {
-						s1Bs.add(p);
+						if (tStrand.equals(Strand.REVERSE)) {
+							s1Cs.add(p);
+						} else {
+							s1Ds.add(p);
+						}
 					}
-				} else {
-					if (tStrand.equals(Strand.REVERSE)) {
-						s1Cs.add(p);
+					oStrand = null;
+					tStrand = null;
+				}
+				// FOR S2 SET
+				List<PBLinkM> s2As = new Vector<PBLinkM>(10);
+				List<PBLinkM> s2Bs = new Vector<PBLinkM>(10);
+				List<PBLinkM> s2Cs = new Vector<PBLinkM>(10);
+				List<PBLinkM> s2Ds = new Vector<PBLinkM>(10);
+				for (PBLinkM p : s2) {
+					Strand oStrand = p.getOrigin().gettStrand();
+					Strand tStrand = p.getTerminus().gettStrand();
+					if (oStrand.equals(Strand.FORWARD)) {
+						if (tStrand.equals(Strand.FORWARD)) {
+							s2As.add(p);
+						} else {
+							s2Bs.add(p);
+						}
 					} else {
-						s1Ds.add(p);
+						if (tStrand.equals(Strand.REVERSE)) {
+							s2Cs.add(p);
+						} else {
+							s2Ds.add(p);
+						}
 					}
+					oStrand = null;
+					tStrand = null;
 				}
-				oStrand = null;
-				tStrand = null;
+
+				int sA = s1As.size() + s2Cs.size(); // A(+)->B(+):B(-)->A(-)
+				int sB = s1Bs.size() + s2Bs.size(); // A(+)->B(-):B(+)->A(-)
+				int sC = s1Cs.size() + s2As.size(); // A(-)->B(-):B(+)->A(+)
+				int sD = s1Ds.size() + s2Ds.size(); // A(-)->B(+):B(-)->A(+)
+
+				int max = MathTool.max(sA, sB, sC, sD);
+				if (max == sA) // for the A statement;
+				{
+					List<Integer> dists = new Vector<Integer>(10);
+					for (PBLinkM p : s1As)
+						dists.add(p.getDistance());
+					for (PBLinkM p : s2Cs)
+						dists.add(p.getDistance());
+					int mean = MathTool.mean(dists);
+					int sd = MathTool.sd(dists);
+					int upper = mean + 3 * sd;
+					int low = mean - 3 * sd;
+					// if the distance larger than mean + 3 * sd, then remove;
+					Iterator<PBLinkM> it1 = s1As.iterator();
+					while (it1.hasNext()) {
+						PBLinkM pb = it1.next();
+						if (pb.getDistance() > upper || pb.getDistance() < low)
+							it1.remove();
+					}
+					Iterator<PBLinkM> it2 = s2Cs.iterator();
+					while (it2.hasNext()) {
+						PBLinkM pb = it2.next();
+						if (pb.getDistance() > upper || pb.getDistance() < low)
+							it2.remove();
+					}
+					// if the supported link count less then user specified
+					int supLink = s1As.size() + s2Cs.size();
+					// logger.debug(this.getClass().getName() + "\tSupported
+					// link: "
+					// + supLink);
+					if (supLink < minSupLink)
+						continue;
+					// recompute mean and sd;
+					dists = null;
+					dists = new Vector<Integer>();
+					for (PBLinkM p : s1As)
+						dists.add(p.getDistance());
+					for (PBLinkM p : s2Cs)
+						dists.add(p.getDistance());
+					mean = MathTool.mean(dists);
+					sd = MathTool.sd(dists);
+
+					// if the mean is less tan zero and the user specified do
+					// not
+					// use overlap link;
+					if (!isUseOLLink && mean < 0)
+						continue;
+					// there are very similarity of two contigs with high
+					// identity
+					// and PB reads also have high error ratio, so it will lead
+					// to
+					// pb read links two high identity contigs by overlap two
+					// large
+					// defining a standard when they over larger or less than
+					// this
+					// filtering parameter, it will omit this edges;
+					if (mean < 0) {
+						low = Math.abs(mean) - 4 * sd;
+						upper = Math.abs(mean) + 4 * sd;
+						int c1Len = contigs.get(ids[0]).getLength();
+						int c2Len = contigs.get(ids[1]).getLength();
+						if (c1Len >= low && c1Len <= upper)
+							continue;
+						if (c2Len >= low && c2Len <= upper)
+							continue;
+					}
+					// for store gap record information
+					if (mean > 0) {
+						GapRecord gr = new GapRecord();
+						gr.setStart(ids[0]);
+						gr.setEnd(ids[1]);
+						for (PBLinkM p : s1As) {
+							if (p.getDistance() > 0) {
+								PBGapSeq seq = new PBGapSeq();
+								seq.setId(p.getOrigin().getqName());
+								int p1 = p.getOrigin().getqEnd();
+								int p2 = p.getTerminus().getqStart();
+								if (p1 <= p2) {
+									seq.setStart(p1);
+									seq.setEnd(p2);
+								} else {
+									seq.setStart(p2);
+									seq.setEnd(p1);
+								}
+								seq.setStrand(Strand.FORWARD);
+								gr.addSeq(seq);
+							}
+						}
+						for (PBLinkM p : s2Cs) {
+							if (p.getDistance() > 0) {
+								PBGapSeq seq = new PBGapSeq();
+								seq.setId(p.getOrigin().getqName());
+								int p1 = p.getOrigin().getqEnd();
+								int p2 = p.getTerminus().getqStart();
+								if (p1 <= p2) {
+									seq.setStart(p1);
+									seq.setEnd(p2);
+								} else {
+									seq.setStart(p2);
+									seq.setEnd(p1);
+								}
+								seq.setStrand(Strand.REVERSE);
+								gr.addSeq(seq);
+							}
+						}
+						gaps.add(gr);
+					}
+					// edge + +;
+					Edge edge = new Edge();
+					Contig origin = contigs.get(ids[0]);
+					Contig terminus = contigs.get(ids[1]);
+					// Contig origin = new Contig();
+					// Contig terminus = new Contig();
+					// origin.setID(ids[0]);
+					// origin.setLength(contigs.get(ids[0]).getLength());
+					// terminus.setID(ids[1]);
+					// terminus.setLength(contigs.get(ids[1]).getLength());
+					edge.setOrigin(origin);
+					edge.setTerminus(terminus);
+					edge.setDistMean(mean);
+					edge.setDistSd(sd);
+					edge.setFake(false);
+					// if the mean is minus, it means that edge is overlap, set
+					// it
+					// to be overlap and not valid;
+					if (mean < 0)
+						edge.setOL(true);
+					if (isUseOLLink)
+						edge.setValid(true);
+					else
+						edge.setValid(false);
+					edge.setoStrand(Strand.FORWARD);
+					edge.settStrand(Strand.FORWARD);
+					edge.setLinkNum(dists.size());
+					edges.add(edge);
+					// edge - -;
+					edge = null;
+					// origin = null;
+					// terminus = null;
+					edge = new Edge();
+					Contig tC = origin;
+					origin = terminus;
+					terminus = tC;
+					tC = null;
+					// origin = new Contig();
+					// terminus = new Contig();
+					// origin.setID(ids[1]);
+					// origin.setLength(contigs.get(ids[1]).getLength());
+					// terminus.setID(ids[0]);
+					// terminus.setLength(contigs.get(ids[0]).getLength());
+					edge.setOrigin(origin);
+					edge.setTerminus(terminus);
+					edge.setDistMean(mean);
+					edge.setDistSd(sd);
+					edge.setFake(false);
+					// if the mean is minus, it means that edge is overlap, set
+					// it
+					// to be overlap and not valid;
+					if (mean < 0)
+						edge.setOL(true);
+					if (isUseOLLink)
+						edge.setValid(true);
+					else
+						edge.setValid(false);
+					edge.setoStrand(Strand.REVERSE);
+					edge.settStrand(Strand.REVERSE);
+					edge.setLinkNum(dists.size());
+					edges.add(edge);
+					edge = null;
+					origin = null;
+					terminus = null;
+				} else if (max == sB) // for the B statement
+				{
+					List<Integer> dists = new Vector<Integer>(10);
+					for (PBLinkM p : s1Bs)
+						dists.add(p.getDistance());
+					for (PBLinkM p : s2Bs)
+						dists.add(p.getDistance());
+					int mean = MathTool.mean(dists);
+					int sd = MathTool.sd(dists);
+					int upper = mean + 3 * sd;
+					int low = mean - 3 * sd;
+					// if the distance larger than mean + 3 * sd, then remove;
+					Iterator<PBLinkM> it1 = s1Bs.iterator();
+					while (it1.hasNext()) {
+						PBLinkM pb = it1.next();
+						if (pb.getDistance() > upper || pb.getDistance() < low)
+							it1.remove();
+					}
+					Iterator<PBLinkM> it2 = s2Bs.iterator();
+					while (it2.hasNext()) {
+						PBLinkM pb = it2.next();
+						if (pb.getDistance() > upper || pb.getDistance() < low)
+							it2.remove();
+					}
+					// if the supported link count less then user specified
+					int supLink = s1Bs.size() + s2Bs.size();
+					// logger.debug(this.getClass().getName() + "\tSupported
+					// link: "
+					// + supLink);
+					if (supLink < minSupLink)
+						continue;
+					// recompute mean and sd;
+					dists = null;
+					dists = new Vector<Integer>();
+					for (PBLinkM p : s1Bs)
+						dists.add(p.getDistance());
+					for (PBLinkM p : s2Bs)
+						dists.add(p.getDistance());
+					mean = MathTool.mean(dists);
+					sd = MathTool.sd(dists);
+					// if the mean is less tan zero and the user specified do
+					// not
+					// use overlap link;
+					if (!isUseOLLink && mean < 0)
+						continue;
+					// there are very similarity of two contigs with high
+					// identity
+					// and PB reads also have high error ratio, so it will lead
+					// to
+					// pb read links two high identity contigs by overlap two
+					// large
+					// defining a standard when they over larger or less than
+					// this
+					// filtering parameter, it will omit this edges;
+					if (mean < 0) {
+						low = Math.abs(mean) - 4 * sd;
+						upper = Math.abs(mean) + 4 * sd;
+						int c1Len = contigs.get(ids[0]).getLength();
+						int c2Len = contigs.get(ids[1]).getLength();
+						if (c1Len >= low && c1Len <= upper)
+							continue;
+						if (c2Len >= low && c2Len <= upper)
+							continue;
+					}
+					// for store gap record information
+					if (mean > 0) {
+						GapRecord gr = new GapRecord();
+						gr.setStart(ids[0]);
+						gr.setEnd(ids[1]);
+						for (PBLinkM p : s1Bs) {
+							if (p.getDistance() > 0) {
+								PBGapSeq seq = new PBGapSeq();
+								seq.setId(p.getOrigin().getqName());
+								int p1 = p.getOrigin().getqEnd();
+								int p2 = p.getTerminus().getqStart();
+								if (p1 <= p2) {
+									seq.setStart(p1);
+									seq.setEnd(p2);
+								} else {
+									seq.setStart(p2);
+									seq.setEnd(p1);
+								}
+								seq.setStrand(Strand.FORWARD);
+								gr.addSeq(seq);
+							}
+						}
+						for (PBLinkM p : s2Bs) {
+							if (p.getDistance() > 0) {
+								PBGapSeq seq = new PBGapSeq();
+								seq.setId(p.getOrigin().getqName());
+								int p1 = p.getOrigin().getqEnd();
+								int p2 = p.getTerminus().getqStart();
+								if (p1 <= p2) {
+									seq.setStart(p1);
+									seq.setEnd(p2);
+								} else {
+									seq.setStart(p2);
+									seq.setEnd(p1);
+								}
+								seq.setStrand(Strand.REVERSE);
+								gr.addSeq(seq);
+							}
+						}
+						gaps.add(gr);
+					}
+					// edge + -;
+					Edge edge = new Edge();
+					Contig origin = contigs.get(ids[0]);
+					Contig terminus = contigs.get(ids[1]);
+					// Contig origin = new Contig();
+					// Contig terminus = new Contig();
+					// origin.setID(ids[0]);
+					// origin.setLength(contigs.get(ids[0]).getLength());
+					// terminus.setID(ids[1]);
+					// terminus.setLength(contigs.get(ids[1]).getLength());
+					edge.setOrigin(origin);
+					edge.setTerminus(terminus);
+					edge.setDistMean(mean);
+					edge.setDistSd(sd);
+					edge.setFake(false);
+					// if the mean is minus, it means that edge is overlap, set
+					// it
+					// to be overlap and not valid;
+					if (mean < 0)
+						edge.setOL(true);
+					if (isUseOLLink)
+						edge.setValid(true);
+					else
+						edge.setValid(false);
+					edge.setoStrand(Strand.FORWARD);
+					edge.settStrand(Strand.REVERSE);
+					edge.setLinkNum(dists.size());
+					edges.add(edge);
+					// edge - +;
+					edge = null;
+					// origin = null;
+					// terminus = null;
+					edge = new Edge();
+					Contig tC = origin;
+					origin = terminus;
+					terminus = tC;
+					tC = null;
+					// origin = new Contig();
+					// terminus = new Contig();
+					// origin.setID(ids[1]);
+					// origin.setLength(contigs.get(ids[1]).getLength());
+					// terminus.setID(ids[0]);
+					// terminus.setLength(contigs.get(ids[0]).getLength());
+					edge.setOrigin(origin);
+					edge.setTerminus(terminus);
+					edge.setDistMean(mean);
+					edge.setDistSd(sd);
+					edge.setFake(false);
+					// if the mean is minus, it means that edge is overlap, set
+					// it
+					// to be overlap and not valid;
+					if (mean < 0)
+						edge.setOL(true);
+					if (isUseOLLink)
+						edge.setValid(true);
+					else
+						edge.setValid(false);
+					edge.setoStrand(Strand.FORWARD);
+					edge.settStrand(Strand.REVERSE);
+					edge.setLinkNum(dists.size());
+					edges.add(edge);
+					edge = null;
+					origin = null;
+					terminus = null;
+				} else if (max == sC) // for the C statement
+				{
+					List<Integer> dists = new Vector<Integer>(10);
+					for (PBLinkM p : s1Cs)
+						dists.add(p.getDistance());
+					for (PBLinkM p : s2As)
+						dists.add(p.getDistance());
+					int mean = MathTool.mean(dists);
+					int sd = MathTool.sd(dists);
+					int upper = mean + 3 * sd;
+					int low = mean - 3 * sd;
+					// if the distance larger than mean + 3 * sd, then remove;
+					Iterator<PBLinkM> it1 = s1Cs.iterator();
+					while (it1.hasNext()) {
+						PBLinkM pb = it1.next();
+						if (pb.getDistance() > upper || pb.getDistance() < low)
+							it1.remove();
+					}
+					Iterator<PBLinkM> it2 = s2As.iterator();
+					while (it2.hasNext()) {
+						PBLinkM pb = it2.next();
+						if (pb.getDistance() > upper || pb.getDistance() < low)
+							it2.remove();
+					}
+					// if the supported link count less then user specified
+					int supLink = s1Cs.size() + s2As.size();
+					// logger.debug(this.getClass().getName() + "\tSupported
+					// link: "
+					// + supLink);
+					if (supLink < minSupLink)
+						continue;
+					// recompute mean and sd;
+					dists = null;
+					dists = new Vector<Integer>();
+					for (PBLinkM p : s1Cs)
+						dists.add(p.getDistance());
+					for (PBLinkM p : s2As)
+						dists.add(p.getDistance());
+					mean = MathTool.mean(dists);
+					sd = MathTool.sd(dists);
+					// if the mean is less tan zero and the user specified do
+					// not
+					// use overlap link;
+					if (!isUseOLLink && mean < 0)
+						continue;
+					// there are very similarity of two contigs with high
+					// identity
+					// and PB reads also have high error ratio, so it will lead
+					// to
+					// pb read links two high identity contigs by overlap two
+					// large
+					// defining a standard when they over larger or less than
+					// this
+					// filtering parameter, it will omit this edges;
+					if (mean < 0) {
+						low = Math.abs(mean) - 4 * sd;
+						upper = Math.abs(mean) + 4 * sd;
+						int c1Len = contigs.get(ids[0]).getLength();
+						int c2Len = contigs.get(ids[1]).getLength();
+						if (c1Len >= low && c1Len <= upper)
+							continue;
+						if (c2Len >= low && c2Len <= upper)
+							continue;
+					}
+					// for store gap record information
+					if (mean > 0) {
+						GapRecord gr = new GapRecord();
+						gr.setStart(ids[0]);
+						gr.setEnd(ids[1]);
+						for (PBLinkM p : s1Cs) {
+							if (p.getDistance() > 0) {
+								PBGapSeq seq = new PBGapSeq();
+								seq.setId(p.getOrigin().getqName());
+								int p1 = p.getOrigin().getqEnd();
+								int p2 = p.getTerminus().getqStart();
+								if (p1 <= p2) {
+									seq.setStart(p1);
+									seq.setEnd(p2);
+								} else {
+									seq.setStart(p2);
+									seq.setEnd(p1);
+								}
+								seq.setStrand(Strand.FORWARD);
+								gr.addSeq(seq);
+							}
+						}
+						for (PBLinkM p : s2As) {
+							if (p.getDistance() > 0) {
+								PBGapSeq seq = new PBGapSeq();
+								seq.setId(p.getOrigin().getqName());
+								int p1 = p.getOrigin().getqEnd();
+								int p2 = p.getTerminus().getqStart();
+								if (p1 <= p2) {
+									seq.setStart(p1);
+									seq.setEnd(p2);
+								} else {
+									seq.setStart(p2);
+									seq.setEnd(p1);
+								}
+								seq.setStrand(Strand.REVERSE);
+								gr.addSeq(seq);
+							}
+						}
+						gaps.add(gr);
+					}
+
+					// edge - -;
+					Edge edge = new Edge();
+					Contig origin = contigs.get(ids[0]);
+					Contig terminus = contigs.get(ids[1]);
+					// Contig origin = new Contig();
+					// Contig terminus = new Contig();
+					// origin.setID(ids[0]);
+					// origin.setLength(contigs.get(ids[0]).getLength());
+					// terminus.setID(ids[1]);
+					// terminus.setLength(contigs.get(ids[1]).getLength());
+					edge.setOrigin(origin);
+					edge.setTerminus(terminus);
+					edge.setDistMean(mean);
+					edge.setDistSd(sd);
+					edge.setFake(false);
+					// if the mean is minus, it means that edge is overlap, set
+					// it
+					// to be overlap and not valid;
+					if (mean < 0)
+						edge.setOL(true);
+					if (isUseOLLink)
+						edge.setValid(true);
+					else
+						edge.setValid(false);
+					edge.setoStrand(Strand.REVERSE);
+					edge.settStrand(Strand.REVERSE);
+					edge.setLinkNum(dists.size());
+					edges.add(edge);
+					// edge + +;
+					edge = null;
+					// origin = null;
+					// terminus = null;
+					edge = new Edge();
+					Contig tC = origin;
+					origin = terminus;
+					terminus = tC;
+					tC = null;
+					// origin = new Contig();
+					// terminus = new Contig();
+					// origin.setID(ids[1]);
+					// origin.setLength(contigs.get(ids[1]).getLength());
+					// terminus.setID(ids[0]);
+					// terminus.setLength(contigs.get(ids[0]).getLength());
+					edge.setOrigin(origin);
+					edge.setTerminus(terminus);
+					edge.setDistMean(mean);
+					edge.setDistSd(sd);
+					edge.setFake(false);
+					// if the mean is minus, it means that edge is overlap, set
+					// it
+					// to be overlap and not valid;
+					if (mean < 0)
+						edge.setOL(true);
+					if (isUseOLLink)
+						edge.setValid(true);
+					else
+						edge.setValid(false);
+					edge.setoStrand(Strand.FORWARD);
+					edge.settStrand(Strand.FORWARD);
+					edge.setLinkNum(dists.size());
+					edges.add(edge);
+					edge = null;
+					origin = null;
+					terminus = null;
+				} else if (max == sD) // for the D statement
+				{
+					List<Integer> dists = new Vector<Integer>(10);
+					for (PBLinkM p : s1Ds)
+						dists.add(p.getDistance());
+					for (PBLinkM p : s2Ds)
+						dists.add(p.getDistance());
+					int mean = MathTool.mean(dists);
+					int sd = MathTool.sd(dists);
+					int upper = mean + 3 * sd;
+					int low = mean - 3 * sd;
+					// if the distance larger than mean + 3 * sd, then remove;
+					Iterator<PBLinkM> it1 = s1Ds.iterator();
+					while (it1.hasNext()) {
+						PBLinkM pb = it1.next();
+						if (pb.getDistance() > upper || pb.getDistance() < low)
+							it1.remove();
+					}
+					Iterator<PBLinkM> it2 = s2Ds.iterator();
+					while (it2.hasNext()) {
+						PBLinkM pb = it2.next();
+						if (pb.getDistance() > upper || pb.getDistance() < low)
+							it2.remove();
+					}
+					// if the supported link count less then user specified
+					int supLink = s1Ds.size() + s2Ds.size();
+					// logger.debug(this.getClass().getName() + "\tSupported
+					// link: "
+					// + supLink);
+					if (supLink < minSupLink)
+						continue;
+					// recompute mean and sd;
+					dists = null;
+					dists = new Vector<Integer>();
+					for (PBLinkM p : s1Ds)
+						dists.add(p.getDistance());
+					for (PBLinkM p : s2Ds)
+						dists.add(p.getDistance());
+					mean = MathTool.mean(dists);
+					sd = MathTool.sd(dists);
+					// if the mean is less tan zero and the user specified do
+					// not
+					// use overlap link;
+					if (!isUseOLLink && mean < 0)
+						continue;
+					// there are very similarity of two contigs with high
+					// identity
+					// and PB reads also have high error ratio, so it will lead
+					// to
+					// pb read links two high identity contigs by overlap two
+					// large
+					// defining a standard when they over larger or less than
+					// this
+					// filtering parameter, it will omit this edges;
+					if (mean < 0) {
+						low = Math.abs(mean) - 4 * sd;
+						upper = Math.abs(mean) + 4 * sd;
+						int c1Len = contigs.get(ids[0]).getLength();
+						int c2Len = contigs.get(ids[1]).getLength();
+						if (c1Len >= low && c1Len <= upper)
+							continue;
+						if (c2Len >= low && c2Len <= upper)
+							continue;
+					}
+					// for store gap record information
+					if (mean > 0) {
+						GapRecord gr = new GapRecord();
+						gr.setStart(ids[0]);
+						gr.setEnd(ids[1]);
+						for (PBLinkM p : s1Ds) {
+							if (p.getDistance() > 0) {
+								PBGapSeq seq = new PBGapSeq();
+								seq.setId(p.getOrigin().getqName());
+								int p1 = p.getOrigin().getqEnd();
+								int p2 = p.getTerminus().getqStart();
+								if (p1 <= p2) {
+									seq.setStart(p1);
+									seq.setEnd(p2);
+								} else {
+									seq.setStart(p2);
+									seq.setEnd(p1);
+								}
+								seq.setStrand(Strand.FORWARD);
+								gr.addSeq(seq);
+							}
+						}
+						for (PBLinkM p : s2Ds) {
+							if (p.getDistance() > 0) {
+								PBGapSeq seq = new PBGapSeq();
+								seq.setId(p.getOrigin().getqName());
+								int p1 = p.getOrigin().getqEnd();
+								int p2 = p.getTerminus().getqStart();
+								if (p1 <= p2) {
+									seq.setStart(p1);
+									seq.setEnd(p2);
+								} else {
+									seq.setStart(p2);
+									seq.setEnd(p1);
+								}
+								seq.setStrand(Strand.REVERSE);
+								gr.addSeq(seq);
+							}
+						}
+						gaps.add(gr);
+					}
+					// edge - +;
+					Edge edge = new Edge();
+					Contig origin = contigs.get(ids[0]);
+					Contig terminus = contigs.get(ids[1]);
+					// Contig origin = new Contig();
+					// Contig terminus = new Contig();
+					// origin.setID(ids[0]);
+					// origin.setLength(contigs.get(ids[0]).getLength());
+					// terminus.setID(ids[1]);
+					// terminus.setLength(contigs.get(ids[1]).getLength());
+					edge.setOrigin(origin);
+					edge.setTerminus(terminus);
+					edge.setDistMean(mean);
+					edge.setDistSd(sd);
+					edge.setFake(false);
+					// if the mean is minus, it means that edge is overlap, set
+					// it
+					// to be overlap and not valid;
+					if (mean < 0)
+						edge.setOL(true);
+					if (isUseOLLink)
+						edge.setValid(true);
+					else
+						edge.setValid(false);
+					edge.setoStrand(Strand.REVERSE);
+					edge.settStrand(Strand.FORWARD);
+					edge.setLinkNum(dists.size());
+					edges.add(edge);
+					// edge + -;
+					edge = null;
+					// origin = null;
+					// terminus = null;
+					edge = new Edge();
+					Contig tC = origin;
+					origin = terminus;
+					terminus = tC;
+					tC = null;
+					// origin = new Contig();
+					// terminus = new Contig();
+					// origin.setID(ids[1]);
+					// origin.setLength(contigs.get(ids[1]).getLength());
+					// terminus.setID(ids[0]);
+					// terminus.setLength(contigs.get(ids[0]).getLength());
+					edge.setOrigin(origin);
+					edge.setTerminus(terminus);
+					edge.setDistMean(mean);
+					edge.setDistSd(sd);
+					edge.setFake(false);
+					// if the mean is minus, it means that edge is overlap, set
+					// it
+					// to be overlap and not valid;
+					if (mean < 0)
+						edge.setOL(true);
+					if (isUseOLLink)
+						edge.setValid(true);
+					else
+						edge.setValid(false);
+					edge.setoStrand(Strand.REVERSE);
+					edge.settStrand(Strand.FORWARD);
+					edge.setLinkNum(dists.size());
+					edges.add(edge);
+					edge = null;
+					origin = null;
+					terminus = null;
+				}
+
+				// gc the variables
+				all = null;
+				s1 = null;
+				s2 = null;
+				s1As = null;
+				s1Bs = null;
+				s1Cs = null;
+				s1Ds = null;
+				s2As = null;
+				s2Bs = null;
+				s2Cs = null;
+				s2Ds = null;
+			} catch (Exception e) {
+				logger.debug(this.getClass().getName() + "\tindex = " + index);
+				logger.debug(this.getClass().getName() + "\t" + e.getMessage());
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
 			}
-			// FOR S2 SET
-			List<PBLinkM> s2As = new Vector<PBLinkM>(10);
-			List<PBLinkM> s2Bs = new Vector<PBLinkM>(10);
-			List<PBLinkM> s2Cs = new Vector<PBLinkM>(10);
-			List<PBLinkM> s2Ds = new Vector<PBLinkM>(10);
-			for (PBLinkM p : s2) {
-				Strand oStrand = p.getOrigin().gettStrand();
-				Strand tStrand = p.getTerminus().gettStrand();
-				if (oStrand.equals(Strand.FORWARD)) {
-					if (tStrand.equals(Strand.FORWARD)) {
-						s2As.add(p);
-					} else {
-						s2Bs.add(p);
-					}
-				} else {
-					if (tStrand.equals(Strand.REVERSE)) {
-						s2Cs.add(p);
-					} else {
-						s2Ds.add(p);
-					}
-				}
-				oStrand = null;
-				tStrand = null;
-			}
-
-			int sA = s1As.size() + s2Cs.size(); // A(+)->B(+):B(-)->A(-)
-			int sB = s1Bs.size() + s2Bs.size(); // A(+)->B(-):B(+)->A(-)
-			int sC = s1Cs.size() + s2As.size(); // A(-)->B(-):B(+)->A(+)
-			int sD = s1Ds.size() + s2Ds.size(); // A(-)->B(+):B(-)->A(+)
-
-			int max = MathTool.max(sA, sB, sC, sD);
-			if (max == sA) // for the A statement;
-			{
-				List<Integer> dists = new Vector<Integer>(10);
-				for (PBLinkM p : s1As)
-					dists.add(p.getDistance());
-				for (PBLinkM p : s2Cs)
-					dists.add(p.getDistance());
-				int mean = MathTool.mean(dists);
-				int sd = MathTool.sd(dists);
-				int upper = mean + 3 * sd;
-				int low = mean - 3 * sd;
-				// if the distance larger than mean + 3 * sd, then remove;
-				Iterator<PBLinkM> it1 = s1As.iterator();
-				while(it1.hasNext())
-				{
-					PBLinkM pb = it1.next();
-					if(pb.getDistance() > upper || pb.getDistance() < low)
-						it1.remove();
-				}
-				Iterator<PBLinkM> it2 = s2Cs.iterator();
-				while(it2.hasNext())
-				{
-					PBLinkM pb = it2.next();
-					if (pb.getDistance() > upper || pb.getDistance() < low)
-						it2.remove();
-				}
-				// if the supported link count less then user specified
-				int supLink = s1As.size() + s2Cs.size();
-				// logger.debug(this.getClass().getName() + "\tSupported link: "
-				// + supLink);
-				if (supLink < minSupLink)
-					continue;
-				// recompute mean and sd;
-				dists = null;
-				dists = new Vector<Integer>();
-				for (PBLinkM p : s1As)
-					dists.add(p.getDistance());
-				for (PBLinkM p : s2Cs)
-					dists.add(p.getDistance());
-				mean = MathTool.mean(dists);
-				sd = MathTool.sd(dists);
-		
-				// if the mean is less tan zero and the user specified do not
-				// use overlap link;
-				if (!isUseOLLink && mean < 0)
-					continue;
-				// there are very similarity of two contigs with high identity
-				// and PB reads also have high error ratio, so it will lead to
-				// pb read links two high identity contigs by overlap two large
-				// defining a standard when they over larger or less than this 
-				// filtering parameter, it will omit this edges;
-				if(mean < 0)
-				{
-					low = Math.abs(mean) - 4 * sd;
-					upper = Math.abs(mean) + 4 * sd;
-					int c1Len = contigs.get(ids[0]).getLength();
-					int c2Len = contigs.get(ids[1]).getLength();
-					if(c1Len >= low && c1Len <= upper)
-						continue;
-					if(c2Len >= low && c2Len <= upper)
-						continue;
-				}
-				// for store gap record information
-				if (mean > 0) {
-					GapRecord gr = new GapRecord();
-					gr.setStart(ids[0]);
-					gr.setEnd(ids[1]);
-					for (PBLinkM p : s1As) {
-						if (p.getDistance() > 0) {
-							PBGapSeq seq = new PBGapSeq();
-							seq.setId(p.getOrigin().getqName());
-							int p1 = p.getOrigin().getqEnd();
-							int p2 = p.getTerminus().getqStart();
-							if (p1 <= p2) {
-								seq.setStart(p1);
-								seq.setEnd(p2);
-							} else {
-								seq.setStart(p2);
-								seq.setEnd(p1);
-							}
-							seq.setStrand(Strand.FORWARD);
-							gr.addSeq(seq);
-						}
-					}
-					for (PBLinkM p : s2Cs) {
-						if (p.getDistance() > 0) {
-							PBGapSeq seq = new PBGapSeq();
-							seq.setId(p.getOrigin().getqName());
-							int p1 = p.getOrigin().getqEnd();
-							int p2 = p.getTerminus().getqStart();
-							if (p1 <= p2) {
-								seq.setStart(p1);
-								seq.setEnd(p2);
-							} else {
-								seq.setStart(p2);
-								seq.setEnd(p1);
-							}
-							seq.setStrand(Strand.REVERSE);
-							gr.addSeq(seq);
-						}
-					}
-					gaps.add(gr);
-				}
-				// edge + +;
-				Edge edge = new Edge();
-				Contig origin = contigs.get(ids[0]);
-				Contig terminus = contigs.get(ids[1]);
-				// Contig origin = new Contig();
-				// Contig terminus = new Contig();
-				// origin.setID(ids[0]);
-				// origin.setLength(contigs.get(ids[0]).getLength());
-				// terminus.setID(ids[1]);
-				// terminus.setLength(contigs.get(ids[1]).getLength());
-				edge.setOrigin(origin);
-				edge.setTerminus(terminus);
-				edge.setDistMean(mean);
-				edge.setDistSd(sd);
-				edge.setFake(false);
-				// if the mean is minus, it means that edge is overlap, set it
-				// to be overlap and not valid;
-				if (mean < 0)
-					edge.setOL(true);
-				if (isUseOLLink)
-					edge.setValid(true);
-				else
-					edge.setValid(false);
-				edge.setoStrand(Strand.FORWARD);
-				edge.settStrand(Strand.FORWARD);
-				edge.setLinkNum(dists.size());
-				edges.add(edge);
-				// edge - -;
-				edge = null;
-				// origin = null;
-				// terminus = null;
-				edge = new Edge();
-				Contig tC = origin;
-				origin = terminus;
-				terminus = tC;
-				tC = null;
-				// origin = new Contig();
-				// terminus = new Contig();
-				// origin.setID(ids[1]);
-				// origin.setLength(contigs.get(ids[1]).getLength());
-				// terminus.setID(ids[0]);
-				// terminus.setLength(contigs.get(ids[0]).getLength());
-				edge.setOrigin(origin);
-				edge.setTerminus(terminus);
-				edge.setDistMean(mean);
-				edge.setDistSd(sd);
-				edge.setFake(false);
-				// if the mean is minus, it means that edge is overlap, set it
-				// to be overlap and not valid;
-				if (mean < 0)
-					edge.setOL(true);
-				if (isUseOLLink)
-					edge.setValid(true);
-				else
-					edge.setValid(false);
-				edge.setoStrand(Strand.REVERSE);
-				edge.settStrand(Strand.REVERSE);
-				edge.setLinkNum(dists.size());
-				edges.add(edge);
-				edge = null;
-				origin = null;
-				terminus = null;
-			} else if (max == sB) // for the B statement
-			{
-				List<Integer> dists = new Vector<Integer>(10);
-				for (PBLinkM p : s1Bs)
-					dists.add(p.getDistance());
-				for (PBLinkM p : s2Bs)
-					dists.add(p.getDistance());
-				int mean = MathTool.mean(dists);
-				int sd = MathTool.sd(dists);
-				int upper = mean + 3 * sd;
-				int low = mean - 3 * sd;
-				// if the distance larger than mean + 3 * sd, then remove;
-				Iterator<PBLinkM> it1 = s1Bs.iterator();
-				while(it1.hasNext())
-				{
-					PBLinkM pb = it1.next();
-					if(pb.getDistance() > upper || pb.getDistance() < low)
-						it1.remove();
-				}
-				Iterator<PBLinkM> it2 = s2Bs.iterator();
-				while(it2.hasNext())
-				{
-					PBLinkM pb = it2.next();
-					if (pb.getDistance() > upper || pb.getDistance() < low)
-						it2.remove();
-				}
-				// if the supported link count less then user specified
-				int supLink = s1Bs.size() + s2Bs.size();
-				// logger.debug(this.getClass().getName() + "\tSupported link: "
-				// + supLink);
-				if (supLink < minSupLink)
-					continue;
-				// recompute mean and sd;
-				dists = null;
-				dists = new Vector<Integer>();
-				for (PBLinkM p : s1Bs)
-					dists.add(p.getDistance());
-				for (PBLinkM p : s2Bs)
-					dists.add(p.getDistance());
-				mean = MathTool.mean(dists);
-				sd = MathTool.sd(dists);
-				// if the mean is less tan zero and the user specified do not
-				// use overlap link;
-				if (!isUseOLLink && mean < 0)
-					continue;
-				// there are very similarity of two contigs with high identity
-				// and PB reads also have high error ratio, so it will lead to
-				// pb read links two high identity contigs by overlap two large
-				// defining a standard when they over larger or less than this 
-				// filtering parameter, it will omit this edges;
-				if(mean < 0)
-				{
-					low = Math.abs(mean) - 4 * sd;
-					upper = Math.abs(mean) + 4 * sd;
-					int c1Len = contigs.get(ids[0]).getLength();
-					int c2Len = contigs.get(ids[1]).getLength();
-					if(c1Len >= low && c1Len <= upper)
-						continue;
-					if(c2Len >= low && c2Len <= upper)
-						continue;
-				}
-				// for store gap record information
-				if (mean > 0) {
-					GapRecord gr = new GapRecord();
-					gr.setStart(ids[0]);
-					gr.setEnd(ids[1]);
-					for (PBLinkM p : s1Bs) {
-						if (p.getDistance() > 0) {
-							PBGapSeq seq = new PBGapSeq();
-							seq.setId(p.getOrigin().getqName());
-							int p1 = p.getOrigin().getqEnd();
-							int p2 = p.getTerminus().getqStart();
-							if (p1 <= p2) {
-								seq.setStart(p1);
-								seq.setEnd(p2);
-							} else {
-								seq.setStart(p2);
-								seq.setEnd(p1);
-							}
-							seq.setStrand(Strand.FORWARD);
-							gr.addSeq(seq);
-						}
-					}
-					for (PBLinkM p : s2Bs) {
-						if (p.getDistance() > 0) {
-							PBGapSeq seq = new PBGapSeq();
-							seq.setId(p.getOrigin().getqName());
-							int p1 = p.getOrigin().getqEnd();
-							int p2 = p.getTerminus().getqStart();
-							if (p1 <= p2) {
-								seq.setStart(p1);
-								seq.setEnd(p2);
-							} else {
-								seq.setStart(p2);
-								seq.setEnd(p1);
-							}
-							seq.setStrand(Strand.REVERSE);
-							gr.addSeq(seq);
-						}
-					}
-					gaps.add(gr);
-				}
-				// edge + -;
-				Edge edge = new Edge();
-				Contig origin = contigs.get(ids[0]);
-				Contig terminus = contigs.get(ids[1]);
-				// Contig origin = new Contig();
-				// Contig terminus = new Contig();
-				// origin.setID(ids[0]);
-				// origin.setLength(contigs.get(ids[0]).getLength());
-				// terminus.setID(ids[1]);
-				// terminus.setLength(contigs.get(ids[1]).getLength());
-				edge.setOrigin(origin);
-				edge.setTerminus(terminus);
-				edge.setDistMean(mean);
-				edge.setDistSd(sd);
-				edge.setFake(false);
-				// if the mean is minus, it means that edge is overlap, set it
-				// to be overlap and not valid;
-				if (mean < 0)
-					edge.setOL(true);
-				if (isUseOLLink)
-					edge.setValid(true);
-				else
-					edge.setValid(false);
-				edge.setoStrand(Strand.FORWARD);
-				edge.settStrand(Strand.REVERSE);
-				edge.setLinkNum(dists.size());
-				edges.add(edge);
-				// edge - +;
-				edge = null;
-				// origin = null;
-				// terminus = null;
-				edge = new Edge();
-				Contig tC = origin;
-				origin = terminus;
-				terminus = tC;
-				tC = null;
-				// origin = new Contig();
-				// terminus = new Contig();
-				// origin.setID(ids[1]);
-				// origin.setLength(contigs.get(ids[1]).getLength());
-				// terminus.setID(ids[0]);
-				// terminus.setLength(contigs.get(ids[0]).getLength());
-				edge.setOrigin(origin);
-				edge.setTerminus(terminus);
-				edge.setDistMean(mean);
-				edge.setDistSd(sd);
-				edge.setFake(false);
-				// if the mean is minus, it means that edge is overlap, set it
-				// to be overlap and not valid;
-				if (mean < 0)
-					edge.setOL(true);
-				if (isUseOLLink)
-					edge.setValid(true);
-				else
-					edge.setValid(false);
-				edge.setoStrand(Strand.FORWARD);
-				edge.settStrand(Strand.REVERSE);
-				edge.setLinkNum(dists.size());
-				edges.add(edge);
-				edge = null;
-				origin = null;
-				terminus = null;
-			} else if (max == sC) // for the C statement
-			{
-				List<Integer> dists = new Vector<Integer>(10);
-				for (PBLinkM p : s1Cs)
-					dists.add(p.getDistance());
-				for (PBLinkM p : s2As)
-					dists.add(p.getDistance());
-				int mean = MathTool.mean(dists);
-				int sd = MathTool.sd(dists);
-				int upper = mean + 3 * sd;
-				int low = mean - 3 * sd;
-				// if the distance larger than mean + 3 * sd, then remove;
-				Iterator<PBLinkM> it1 = s1Cs.iterator();
-				while(it1.hasNext())
-				{
-					PBLinkM pb = it1.next();
-					if(pb.getDistance() > upper || pb.getDistance() < low)
-						it1.remove();
-				}
-				Iterator<PBLinkM> it2 = s2As.iterator();
-				while(it2.hasNext())
-				{
-					PBLinkM pb = it2.next();
-					if (pb.getDistance() > upper || pb.getDistance() < low)
-						it2.remove();
-				}
-				// if the supported link count less then user specified
-				int supLink = s1Cs.size() + s2As.size();
-				// logger.debug(this.getClass().getName() + "\tSupported link: "
-				// + supLink);
-				if (supLink < minSupLink)
-					continue;
-				// recompute mean and sd;
-				dists = null;
-				dists = new Vector<Integer>();
-				for (PBLinkM p : s1Cs)
-					dists.add(p.getDistance());
-				for (PBLinkM p : s2As)
-					dists.add(p.getDistance());
-				mean = MathTool.mean(dists);
-				sd = MathTool.sd(dists);
-				// if the mean is less tan zero and the user specified do not
-				// use overlap link;
-				if (!isUseOLLink && mean < 0)
-					continue;
-				// there are very similarity of two contigs with high identity
-				// and PB reads also have high error ratio, so it will lead to
-				// pb read links two high identity contigs by overlap two large
-				// defining a standard when they over larger or less than this 
-				// filtering parameter, it will omit this edges;
-				if(mean < 0)
-				{
-					low = Math.abs(mean) - 4 * sd;
-					upper = Math.abs(mean) + 4 * sd;
-					int c1Len = contigs.get(ids[0]).getLength();
-					int c2Len = contigs.get(ids[1]).getLength();
-					if(c1Len >= low && c1Len <= upper)
-						continue;
-					if(c2Len >= low && c2Len <= upper)
-						continue;
-				}
-				// for store gap record information
-				if (mean > 0) {
-					GapRecord gr = new GapRecord();
-					gr.setStart(ids[0]);
-					gr.setEnd(ids[1]);
-					for (PBLinkM p : s1Cs) {
-						if (p.getDistance() > 0) {
-							PBGapSeq seq = new PBGapSeq();
-							seq.setId(p.getOrigin().getqName());
-							int p1 = p.getOrigin().getqEnd();
-							int p2 = p.getTerminus().getqStart();
-							if (p1 <= p2) {
-								seq.setStart(p1);
-								seq.setEnd(p2);
-							} else {
-								seq.setStart(p2);
-								seq.setEnd(p1);
-							}
-							seq.setStrand(Strand.FORWARD);
-							gr.addSeq(seq);
-						}
-					}
-					for (PBLinkM p : s2As) {
-						if (p.getDistance() > 0) {
-							PBGapSeq seq = new PBGapSeq();
-							seq.setId(p.getOrigin().getqName());
-							int p1 = p.getOrigin().getqEnd();
-							int p2 = p.getTerminus().getqStart();
-							if (p1 <= p2) {
-								seq.setStart(p1);
-								seq.setEnd(p2);
-							} else {
-								seq.setStart(p2);
-								seq.setEnd(p1);
-							}
-							seq.setStrand(Strand.REVERSE);
-							gr.addSeq(seq);
-						}
-					}
-					gaps.add(gr);
-				}
-
-				// edge - -;
-				Edge edge = new Edge();
-				Contig origin = contigs.get(ids[0]);
-				Contig terminus = contigs.get(ids[1]);
-				// Contig origin = new Contig();
-				// Contig terminus = new Contig();
-				// origin.setID(ids[0]);
-				// origin.setLength(contigs.get(ids[0]).getLength());
-				// terminus.setID(ids[1]);
-				// terminus.setLength(contigs.get(ids[1]).getLength());
-				edge.setOrigin(origin);
-				edge.setTerminus(terminus);
-				edge.setDistMean(mean);
-				edge.setDistSd(sd);
-				edge.setFake(false);
-				// if the mean is minus, it means that edge is overlap, set it
-				// to be overlap and not valid;
-				if (mean < 0)
-					edge.setOL(true);
-				if (isUseOLLink)
-					edge.setValid(true);
-				else
-					edge.setValid(false);
-				edge.setoStrand(Strand.REVERSE);
-				edge.settStrand(Strand.REVERSE);
-				edge.setLinkNum(dists.size());
-				edges.add(edge);
-				// edge + +;
-				edge = null;
-				// origin = null;
-				// terminus = null;
-				edge = new Edge();
-				Contig tC = origin;
-				origin = terminus;
-				terminus = tC;
-				tC = null;
-				// origin = new Contig();
-				// terminus = new Contig();
-				// origin.setID(ids[1]);
-				// origin.setLength(contigs.get(ids[1]).getLength());
-				// terminus.setID(ids[0]);
-				// terminus.setLength(contigs.get(ids[0]).getLength());
-				edge.setOrigin(origin);
-				edge.setTerminus(terminus);
-				edge.setDistMean(mean);
-				edge.setDistSd(sd);
-				edge.setFake(false);
-				// if the mean is minus, it means that edge is overlap, set it
-				// to be overlap and not valid;
-				if (mean < 0)
-					edge.setOL(true);
-				if (isUseOLLink)
-					edge.setValid(true);
-				else
-					edge.setValid(false);
-				edge.setoStrand(Strand.FORWARD);
-				edge.settStrand(Strand.FORWARD);
-				edge.setLinkNum(dists.size());
-				edges.add(edge);
-				edge = null;
-				origin = null;
-				terminus = null;
-			} else if (max == sD) // for the D statement
-			{
-				List<Integer> dists = new Vector<Integer>(10);
-				for (PBLinkM p : s1Ds)
-					dists.add(p.getDistance());
-				for (PBLinkM p : s2Ds)
-					dists.add(p.getDistance());
-				int mean = MathTool.mean(dists);
-				int sd = MathTool.sd(dists);
-				int upper = mean + 3 * sd;
-				int low = mean - 3 * sd;
-				// if the distance larger than mean + 3 * sd, then remove;
-				Iterator<PBLinkM> it1 = s1Ds.iterator();
-				while(it1.hasNext())
-				{
-					PBLinkM pb = it1.next();
-					if(pb.getDistance() > upper || pb.getDistance() < low)
-						it1.remove();
-				}
-				Iterator<PBLinkM> it2 = s2Ds.iterator();
-				while(it2.hasNext())
-				{
-					PBLinkM pb = it2.next();
-					if (pb.getDistance() > upper || pb.getDistance() < low)
-						it2.remove();
-				}
-				// if the supported link count less then user specified
-				int supLink = s1Ds.size() + s2Ds.size();
-				// logger.debug(this.getClass().getName() + "\tSupported link: "
-				// + supLink);
-				if (supLink < minSupLink)
-					continue;
-				// recompute mean and sd;
-				dists = null;
-				dists = new Vector<Integer>();
-				for (PBLinkM p : s1Ds)
-					dists.add(p.getDistance());
-				for (PBLinkM p : s2Ds)
-					dists.add(p.getDistance());
-				mean = MathTool.mean(dists);
-				sd = MathTool.sd(dists);
-				// if the mean is less tan zero and the user specified do not
-				// use overlap link;
-				if (!isUseOLLink && mean < 0)
-					continue;
-				// there are very similarity of two contigs with high identity
-				// and PB reads also have high error ratio, so it will lead to
-				// pb read links two high identity contigs by overlap two large
-				// defining a standard when they over larger or less than this 
-				// filtering parameter, it will omit this edges;
-				if(mean < 0)
-				{
-					low = Math.abs(mean) - 4 * sd;
-					upper = Math.abs(mean) + 4 * sd;
-					int c1Len = contigs.get(ids[0]).getLength();
-					int c2Len = contigs.get(ids[1]).getLength();
-					if(c1Len >= low && c1Len <= upper)
-						continue;
-					if(c2Len >= low && c2Len <= upper)
-						continue;
-				}
-				// for store gap record information
-				if (mean > 0) {
-					GapRecord gr = new GapRecord();
-					gr.setStart(ids[0]);
-					gr.setEnd(ids[1]);
-					for (PBLinkM p : s1Ds) {
-						if (p.getDistance() > 0) {
-							PBGapSeq seq = new PBGapSeq();
-							seq.setId(p.getOrigin().getqName());
-							int p1 = p.getOrigin().getqEnd();
-							int p2 = p.getTerminus().getqStart();
-							if (p1 <= p2) {
-								seq.setStart(p1);
-								seq.setEnd(p2);
-							} else {
-								seq.setStart(p2);
-								seq.setEnd(p1);
-							}
-							seq.setStrand(Strand.FORWARD);
-							gr.addSeq(seq);
-						}
-					}
-					for (PBLinkM p : s2Ds) {
-						if (p.getDistance() > 0) {
-							PBGapSeq seq = new PBGapSeq();
-							seq.setId(p.getOrigin().getqName());
-							int p1 = p.getOrigin().getqEnd();
-							int p2 = p.getTerminus().getqStart();
-							if (p1 <= p2) {
-								seq.setStart(p1);
-								seq.setEnd(p2);
-							} else {
-								seq.setStart(p2);
-								seq.setEnd(p1);
-							}
-							seq.setStrand(Strand.REVERSE);
-							gr.addSeq(seq);
-						}
-					}
-					gaps.add(gr);
-				}
-				// edge - +;
-				Edge edge = new Edge();
-				Contig origin = contigs.get(ids[0]);
-				Contig terminus = contigs.get(ids[1]);
-				// Contig origin = new Contig();
-				// Contig terminus = new Contig();
-				// origin.setID(ids[0]);
-				// origin.setLength(contigs.get(ids[0]).getLength());
-				// terminus.setID(ids[1]);
-				// terminus.setLength(contigs.get(ids[1]).getLength());
-				edge.setOrigin(origin);
-				edge.setTerminus(terminus);
-				edge.setDistMean(mean);
-				edge.setDistSd(sd);
-				edge.setFake(false);
-				// if the mean is minus, it means that edge is overlap, set it
-				// to be overlap and not valid;
-				if (mean < 0)
-					edge.setOL(true);
-				if (isUseOLLink)
-					edge.setValid(true);
-				else
-					edge.setValid(false);
-				edge.setoStrand(Strand.REVERSE);
-				edge.settStrand(Strand.FORWARD);
-				edge.setLinkNum(dists.size());
-				edges.add(edge);
-				// edge + -;
-				edge = null;
-				// origin = null;
-				// terminus = null;
-				edge = new Edge();
-				Contig tC = origin;
-				origin = terminus;
-				terminus = tC;
-				tC = null;
-				// origin = new Contig();
-				// terminus = new Contig();
-				// origin.setID(ids[1]);
-				// origin.setLength(contigs.get(ids[1]).getLength());
-				// terminus.setID(ids[0]);
-				// terminus.setLength(contigs.get(ids[0]).getLength());
-				edge.setOrigin(origin);
-				edge.setTerminus(terminus);
-				edge.setDistMean(mean);
-				edge.setDistSd(sd);
-				edge.setFake(false);
-				// if the mean is minus, it means that edge is overlap, set it
-				// to be overlap and not valid;
-				if (mean < 0)
-					edge.setOL(true);
-				if (isUseOLLink)
-					edge.setValid(true);
-				else
-					edge.setValid(false);
-				edge.setoStrand(Strand.REVERSE);
-				edge.settStrand(Strand.FORWARD);
-				edge.setLinkNum(dists.size());
-				edges.add(edge);
-				edge = null;
-				origin = null;
-				terminus = null;
-			}
-
-			// gc the variables
-			all = null;
-			s1 = null;
-			s2 = null;
-			s1As = null;
-			s1Bs = null;
-			s1Cs = null;
-			s1Ds = null;
-			s2As = null;
-			s2Bs = null;
-			s2Cs = null;
-			s2Ds = null;
 		}
+
 		GapRecordWriter grw = new GapRecordWriter(paras, gaps);
 		grw.write();
 		gaps = null;

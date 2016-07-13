@@ -273,46 +273,6 @@ public class Scaffolder {
 		return isValid;
 		
 	}
-
-	public boolean buildOutputPath(String path) {
-		boolean isValid = false;
-		if (path == null || path.length() == 0) {
-			logger.error(this.getClass().getName() + "The output path was not setted!");
-			logger.debug(this.getClass().getName() + "The output path was not setted!");
-			return isValid;
-		}
-		try {
-			File output = new File(path);
-			if (output.exists()) {
-				logger.info(this.getClass().getName() + "The output folder was exist!");
-				logger.debug(this.getClass().getName() + "The output folder was exist!");
-				isValid = true;
-			} else {
-				isValid = output.mkdirs();
-				if(isValid)
-				{
-					logger.info(this.getClass().getName() + "\t" + "Build output folder successfully!");
-					logger.debug(this.getClass().getName() + "\t" + "Build output folder successfully!");
-				} else
-				{
-					logger.info(this.getClass().getName() + "\t" + "Build output folder failed!");
-					logger.debug(this.getClass().getName() + "\t" + "Build output folder failed!");
-				}
-//				if (output.mkdirs()) {
-//					logger.info(this.getClass().getName() + "The output folder was created!");
-//					logger.debug(this.getClass().getName() + "The output folder was created!");
-//					isValid = true;
-//				}
-			}
-		} catch (SecurityException e) {
-			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-		} catch (Exception e) {
-			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
-		}
-		return isValid;
-	}
 	
 	public boolean readContigs(Parameter paras)
 	{
@@ -325,25 +285,6 @@ public class Scaffolder {
 			return true;
 	}
 
-	public boolean readContigs(String cFilePath, int cntLen) {
-//		if (cFilePath == null || cFilePath.length() == 0) {
-//			logger.error("The contig file was null or not setted!");
-//			logger.debug("The contig file was null or not setted!");
-//			logger.info("The contig file was null or not setted!");
-//			return;
-//		}
-//		File cFile = new File(cFilePath);
-//		setContigs(FastaReaderHelper.readFastaDNASequence(cFile));
-		ContigReader cr = new ContigReader(cFilePath, cntLen);
-//		setContigs(cr.read());
-//		contigs = cr.read();
-		contigs = cr.read2();
-		if(contigs == null)
-			return false;
-		else
-			return true;
-	}
-	
 	public List<MRecord> readM5Aligned(Parameter paras)
 	{
 		M5Reader reader = new M5Reader(paras);
