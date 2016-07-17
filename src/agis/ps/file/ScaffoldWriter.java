@@ -19,7 +19,6 @@ import org.biojava.nbio.core.sequence.DNASequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.Path;
 import agis.ps.path.Node;
 import agis.ps.path.NodePath;
 import agis.ps.seqs.Contig;

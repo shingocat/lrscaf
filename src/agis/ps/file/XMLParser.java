@@ -37,7 +37,7 @@ public class XMLParser {
 			para = new Parameter();
 			// root element
 			Element rootElm = doc.getDocumentElement();
-			logger.debug(this.getClass().getName() + "\t" + rootElm.getTagName());
+//			logger.debug(this.getClass().getName() + "\t" + rootElm.getTagName());
 
 			NodeList nodes = rootElm.getChildNodes();
 			if (nodes == null || nodes.getLength() == 0) {
@@ -153,12 +153,6 @@ public class XMLParser {
 							para.setUseOLLink(true);
 						else 
 							para.setUseOLLink(false);
-//						Pattern pat = Pattern.compile("^T", Pattern.CASE_INSENSITIVE);
-//						Matcher mat = pat.matcher(node.getTextContent());
-//						if(mat.find())
-//							para.setUseOLLink(true);
-//						else 
-//							para.setUseOLLink(false);
 					} else if (nodeName.equalsIgnoreCase("ratio")){
 						para.setRatio(Double.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("repeat_mask")){
@@ -174,8 +168,8 @@ public class XMLParser {
 						else 
 							para.setGapFilling(false);
 					}else {
-						logger.debug(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");
-						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will omit!");
+						logger.debug(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will be omitted!");
+						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will be omitted!");
 					}
 				}
 			}

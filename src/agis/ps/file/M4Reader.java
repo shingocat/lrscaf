@@ -25,34 +25,14 @@ import agis.ps.util.Strand;
 public class M4Reader {
 
 	private final static Logger logger = LoggerFactory.getLogger(M4Reader.class);
-	private Parameter paras;
 	private String path;
 	private List<MRecord> m4List;
 	private int minPBLen = 5000; // minimum pacbio read length
 	private int minCNTLen = 3000; // minimum contig length;
 	private double identity = 0.8;
 	
-	public M4Reader(String path)
-	{
-		this.path = path;
-	}
-	
-	public M4Reader(String path, int minPBLen)
-	{
-		this.path = path;
-		this.minPBLen = minPBLen;
-	}
-	
-	public M4Reader(String path, int minPBLen, int minCNTLen)
-	{
-		this.path = path;
-		this.minPBLen = minPBLen;
-		this.minCNTLen = minCNTLen;
-	}
-	
 	public M4Reader(Parameter paras)
 	{
-		this.paras = paras;
 		this.path = paras.getAlgFile();
 		this.minPBLen = paras.getMinPBLen();
 		this.minCNTLen = paras.getMinContLen();
@@ -89,9 +69,6 @@ public class M4Reader {
 				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("tName"))
 					continue;
 				count++;
-				// if the first line is header
-//				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
-//					continue;
 				// if less than minimum pacbio length
 				if(Integer.valueOf(arrs[7]) < minPBLen)
 					continue;
@@ -102,8 +79,6 @@ public class M4Reader {
 				double value = Double.valueOf(arrs[3]);
 				if(value < identity)
 					continue;
-//				int sum = this.getNumMatch() + this.getNumMismatch() + this.getNumIns() + this.getNumDel();
-//				double value = (double)this.getNumMatch() / sum;
 				M4Record m4 = new M4Record();
 				m4.setqName(arrs[0]);
 				m4.setqLength(Integer.valueOf(arrs[7]));

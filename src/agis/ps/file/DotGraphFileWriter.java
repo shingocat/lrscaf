@@ -16,8 +16,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.Path;
-import agis.ps.SimplePath;
 import agis.ps.link.Edge;
 import agis.ps.link.PBLink;
 import agis.ps.path.NodePath;
@@ -28,20 +26,12 @@ public class DotGraphFileWriter {
 	public static final Logger logger = LoggerFactory.getLogger(DotGraphFileWriter.class);
 
 	private String filePath;
-	private List<SimplePath> paths;
 	private List<PBLink> links;
 
-	public DotGraphFileWriter(String filePath, List<SimplePath> paths) {
+	public DotGraphFileWriter(String filePath) {
 		this.filePath = filePath;
-		this.paths = paths;
 	}
 
-	// public DotGraphFileWriter(String filePath, List<PBLink> links)
-	// {
-	// this.filePath = filePath;
-	// this.links = links;
-	// }
-	//
 	public static void writePBLink(String filePath, List<PBLink> links) {
 		if (filePath == null)
 			return;
@@ -138,86 +128,6 @@ public class DotGraphFileWriter {
 				logger.debug(DotGraphFileWriter.class.getName() + e.getMessage() + "\t" + e.getClass().getName());
 				logger.error(DotGraphFileWriter.class.getName() + e.getMessage() + "\t" + e.getClass().getName());
 			}
-		}
-
-	}
-
-	public static void writePaths(String filePath, List<Path> paths) {
-		if (filePath == null)
-			return;
-		File out = null;
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-		try {
-			out = new File(filePath);
-			if (out.exists()) {
-				logger.debug("The output file of dot graph is exist!");
-				logger.info("The output file of dot graph is exist!");
-				return;
-			}
-			out.createNewFile();
-			fw = new FileWriter(out);
-			bw = new BufferedWriter(fw);
-			int count = 0;
-			for (Path p : paths) {
-				bw.write("digraph G" + count + "{\n");
-				bw.write(p.toString() + ";\n");
-				bw.write("}\n");
-				count++;
-			}
-
-		} catch (IOException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
-		} finally {
-			if (bw != null)
-				try {
-					bw.close();
-				} catch (IOException e) {
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
-					;
-				}
-		}
-
-	}
-
-	public void write() {
-		if (paths == null)
-			return;
-
-		File out = null;
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-		try {
-			out = new File(filePath);
-			if (out.exists()) {
-				logger.debug("The output file of dot graph is exist!");
-				logger.info("The output file of dot graph is exist!");
-				return;
-			}
-			out.createNewFile();
-			fw = new FileWriter(out);
-			bw = new BufferedWriter(fw);
-			bw.write("digraph G{\n");
-			// for the original paths code
-			for (SimplePath sp : paths) {
-				bw.write(sp.getStart() + " -> " + sp.getEnd() + " [label=\"" + sp.getLabel() + "\",color="
-						+ sp.getColor().toString() + "];\n");
-			}
-			bw.write("}");
-		} catch (IOException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
-		} finally {
-			if (bw != null)
-				try {
-					bw.close();
-				} catch (IOException e) {
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
-					;
-				}
 		}
 
 	}
