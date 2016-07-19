@@ -41,7 +41,8 @@
 				<attribute name="Main-class" value="agis.ps.Main" />
 				<attribute name="Class-Path" value="lib/biojava-alignment-4.1.0.jar lib/biojava-core-4.1.0.jar 
 					lib/biojava-genome-4.1.0.jar lib/commons-cli-1.3.1.jar lib/htsjdk-2.0.1.jar lib/log4j-1.2.17.jar 
-					lib/slf4j-api-1.7.13.jar lib/slf4j-log4j12-1.7.13.jar lib/forester-1.038.jar" />
+					lib/slf4j-api-1.7.13.jar lib/slf4j-log4j12-1.7.13.jar lib/forester-1.038.jar lib/lucene-core-6.1.0.jar
+					lib/lucene-analyzers-common-6.1.0.jar lib/lucene-queryparser-6.10.jar" />
 			</manifest>
 		</jar>
 		<!-- 复制jar文件  todir="复制到目录"-->
