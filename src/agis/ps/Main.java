@@ -27,6 +27,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		// System.setProperty("log4j.configuration", "log4j.properties");
+		long start = System.currentTimeMillis();
+		logger.info("Launching...");
 		try {
 			Options opts = Main.initOpts();
 			CommandLineParser parser = new DefaultParser();
@@ -41,14 +43,14 @@ public class Main {
 			} else {
 				// for parse the xml configure, all the other parameters set by command line will dismissed
 				if (cl.hasOption("x")) {
-					logger.info("parse the xml configure, all the other parameters set by command line will dismissed");
+					logger.info("Parsing the xml configure, all the other parameters set by command line will dismissed");
 					String xmlFile = cl.getOptionValue("x");
 					XMLParser xmlParser = new XMLParser();
 					paras = xmlParser.parseXML(xmlFile);
 				} else {				
 					paras = Main.parsering(cl, f, opts);
 				}
-				Scaffolder scaffolder = new Scaffolder(paras);
+				Scaffolder2 scaffolder = new Scaffolder2(paras);
 				scaffolder.scaffolding();
 			}
 		} catch (MissingArgumentException e) {
@@ -58,6 +60,9 @@ public class Main {
 		} catch (Exception e) {
 			logger.error(Main.class.getName() + "\t" + e.getMessage());
 		}
+		logger.info("Ending...");
+		long end = System.currentTimeMillis();
+		logger.info("Scaffolding erase time: " + (end - start)/1000 + " s");
 	}
 	
 	private static Options initOpts()

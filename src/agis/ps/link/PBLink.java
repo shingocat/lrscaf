@@ -13,104 +13,123 @@ import agis.ps.util.Strand;
 
 // PacBio link model 
 
-public class PBLink implements ILink, Serializable {
-	private String ID; // it is the pacbio read id for each link identify;
-	private Contig origin; // the origin contig in the directed graph;
-	private Contig terminus; // the terminus contig in the directed graph;
-	private Strand oStrand; // the strand of the origin contig aligned to PacBio
-							// read
-	private Strand tStrand; // the strand of the terminus contig aligned to
-							// PacBio read
-	private int oStartLoc; // the start location of origin contig over pacbio
-							// read;
-	private int oEndLoc; // the end location of origin contig over pacbio read;
-	private int tStartLoc; // the end location of terminus over pacbio read;
-	private int tEndLoc; // the end location of terminus over pacbio read;
-	private boolean isValid; // whether this link fit for the
+public class PBLink implements ILink {
+	private String origin;
+	private Strand oStrand;
+	private String terminus;
+	private Strand tStrand;
+	private int dist;
+	private String pbId;
+	private int oPStart;
+	private int oPEnd;
+	private int tPStart;
+	private int tPEnd;
 
-	@Override
-	public int getDistance() {
-		return oEndLoc - tStartLoc;
+	public PBLink() {
+
 	}
-
-	public String getID() {
-		return ID;
+	
+	public void setOPStart(int start)
+	{
+		this.oPStart = start;
 	}
-
-	public void setID(String iD) {
-		ID = iD;
+	
+	public int getOPStart()
+	{
+		return this.oPStart;
 	}
-
-	public Contig getOrigin() {
-		return origin;
+	
+	public void setOPEnd(int end)
+	{
+		this.oPEnd = end;
 	}
-
-	public void setOrigin(Contig origin) {
-		this.origin = origin;
+	
+	public int getOPEnd()
+	{
+		return this.oPEnd;
 	}
-
-	public Contig getTerminus() {
-		return terminus;
+	
+	public void setTPStart(int start)
+	{
+		this.tPStart = start;
 	}
-
-	public void setTerminus(Contig terminus) {
-		this.terminus = terminus;
+	
+	public int getTPStart()
+	{
+		return this.oPStart;
 	}
-
-	public Strand getoStrand() {
+	
+	public void setTPEnd(int end)
+	{
+		this.tPEnd = end;
+	}
+	
+	public int getTPEnd()
+	{
+		return this.tPEnd;
+	} 
+	
+	public void setOStrand(String mark)
+	{
+		if(mark.equalsIgnoreCase("+"))
+			oStrand = Strand.FORWARD;
+		else
+			oStrand = Strand.REVERSE;
+	}
+	
+	public Strand getOStrand()
+	{
 		return oStrand;
 	}
-
-	public void setoStrand(Strand oStrand) {
-		this.oStrand = oStrand;
+	
+	public void setTStrand(String mark)
+	{
+		if(mark.equalsIgnoreCase("+"))
+			tStrand = Strand.FORWARD;
+		else
+			tStrand = Strand.REVERSE;
 	}
-
-	public Strand gettStrand() {
+	
+	public Strand getTStrand()
+	{
 		return tStrand;
 	}
 
-	public void settStrand(Strand tStrand) {
-		this.tStrand = tStrand;
+	public String getOrigin() {
+		return origin;
 	}
 
-	public int getoStartLoc() {
-		return oStartLoc;
+	public void setOrigin(String origin) {
+		this.origin = origin;
 	}
 
-	public void setoStartLoc(int oStartLoc) {
-		this.oStartLoc = oStartLoc;
+	public String getTerminus() {
+		return terminus;
 	}
 
-	public int getoEndLoc() {
-		return oEndLoc;
+	public void setTerminus(String terminus) {
+		this.terminus = terminus;
 	}
 
-	public void setoEndLoc(int oEndLoc) {
-		this.oEndLoc = oEndLoc;
+	public int getDist() {
+		return dist;
 	}
 
-	public int gettStartLoc() {
-		return tStartLoc;
+	public void setDist(int dist) {
+		this.dist = dist;
 	}
 
-	public void settStartLoc(int tStartLoc) {
-		this.tStartLoc = tStartLoc;
+	public String getPbId() {
+		return pbId;
 	}
 
-	public int gettEndLoc() {
-		return tEndLoc;
+	public void setPbId(String pbId) {
+		this.pbId = pbId;
 	}
 
-	public void settEndLoc(int tEndLoc) {
-		this.tEndLoc = tEndLoc;
-	}
-
-	public boolean isValid() {
-		return isValid;
-	}
-
-	public void setValid(boolean isValid) {
-		this.isValid = isValid;
+	@Override
+	public int getDistance() {
+		return dist;
 	}
 
 }

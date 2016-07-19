@@ -103,7 +103,6 @@ public class DirectedGraph extends Graph implements Serializable {
 		// it store the replication contig in the same transitive reduction,
 		// it do need to do transitive reduction again
 		if (mimos.size() == 0) {
-			logger.debug(this.getClass().getName() + " The graph do not contain transitive reduction structure!");
 			logger.info(this.getClass().getName() + " The graph do not contain transitive reduction structure!");
 			return;
 		}
@@ -131,9 +130,7 @@ public class DirectedGraph extends Graph implements Serializable {
 					// break;
 				}
 			} catch (Exception e) {
-				logger.debug(this.getClass().getName() + " " + e.getMessage());
-				logger.error(this.getClass().getName() + " " + e.getMessage());
-				logger.info(this.getClass().getName() + " " + e.getMessage());
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
 			}
 		}
 		long end = System.currentTimeMillis();

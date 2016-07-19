@@ -41,7 +41,6 @@ public class XMLParser {
 
 			NodeList nodes = rootElm.getChildNodes();
 			if (nodes == null || nodes.getLength() == 0) {
-				logger.debug(this.getClass().getName() + "\t" + "The XML file do not contain any elements!");
 				logger.error(this.getClass().getName() + "\t" + "The XML file do not contain any elements!");
 				return null;
 			}
@@ -49,7 +48,6 @@ public class XMLParser {
 			// traverse child input elements
 			nodes = rootElm.getElementsByTagName("input");
 			if (nodes == null || nodes.getLength() == 0) {
-				logger.debug(this.getClass().getName() + "\t" + "The XML file do not contain input elements!");
 				logger.error(this.getClass().getName() + "\t" + "The XML file do not contain input elements!");
 				return null;
 			} else {
@@ -76,8 +74,7 @@ public class XMLParser {
 						} else if(nodeName.equalsIgnoreCase("pbread")){
 							para.setPbFile(node.getTextContent().trim());
 						}else {
-							logger.debug(this.getClass().getName() + "\t" + "The XML file contain illeagle elements!");
-							logger.error(this.getClass().getName() + "\t" + "The XML file contain illeagle elements!");
+							logger.info(this.getClass().getName() + "\t" + "The XML file contain illeagle elements!");
 							return null;
 						}
 					}
@@ -87,9 +84,7 @@ public class XMLParser {
 			// traverse child output elements
 			nodes = rootElm.getElementsByTagName("output");
 			if (nodes == null || nodes.getLength() == 0) {
-				logger.debug(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use "
-						+ System.getProperty("user.dir") + "!");
-				logger.error(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use "
+				logger.info(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use "
 						+ System.getProperty("user.dir") + "!");
 				para.setOutFolder(System.getProperty("user.dir"));
 			} else {
@@ -100,8 +95,7 @@ public class XMLParser {
 			// traverse child paras elements
 			nodes = rootElm.getElementsByTagName("paras");
 			if (nodes == null || nodes.getLength() == 0) {
-				logger.debug(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use default value!");
-				logger.error(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use default value!");
+				logger.info(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use default value!");
 				para.setMinContLen(2000);
 				para.setMinPBLen(5000);
 				para.setMinOLLen(1500);
@@ -168,7 +162,6 @@ public class XMLParser {
 						else 
 							para.setGapFilling(false);
 					}else {
-						logger.debug(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will be omitted!");
 						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will be omitted!");
 					}
 				}

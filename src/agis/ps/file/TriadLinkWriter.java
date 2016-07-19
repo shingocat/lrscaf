@@ -25,11 +25,36 @@ public class TriadLinkWriter {
 	public static Logger logger = LoggerFactory.getLogger(TriadLinkWriter.class);
 	private Parameter paras;
 	private List<TriadLink> triads;
+	private File file = null;
+	private FileWriter fw = null;
+	private BufferedWriter bw = null;
+	
+	public TriadLinkWriter(Parameter paras)
+	{
+		this.paras = paras;
+	}
 	
 	public TriadLinkWriter(Parameter paras, List<TriadLink> triads)
 	{
 		this.paras = paras;
 		this.triads = triads;
+	}
+	
+	public void init()
+	{
+		try{
+			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "triadlinks.info");
+			if(!file.exists())
+				file.createNewFile();
+			fw = new FileWriter(file, true);
+			bw = new BufferedWriter(fw);
+		} catch(IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		} catch(Exception e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		}
 	}
 
 	public void write()
@@ -82,6 +107,38 @@ public class TriadLinkWriter {
 				logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			}
+		}
+	}
+	
+	public void write2(List<TriadLink> triads)
+	{
+		try
+		{
+			for(TriadLink tl : triads)
+			{
+				Contig pre = tl.getPrevious();
+				Contig mid = tl.getMiddle();
+				Contig lst = tl.getLast();
+				String line = pre.getID() + "," + mid.getID() + "," + lst.getID() + "," + tl.getSupLinks();
+				bw.write(line);
+				bw.newLine();
+			}
+			bw.flush();
+		} catch(IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		}
+	}
+	
+	public void close()
+	{
+		try
+		{
+			if(bw != null)
+				bw.close();
+		} catch(IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 	}
 }

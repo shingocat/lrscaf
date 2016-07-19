@@ -34,7 +34,7 @@ public class TriadLinkReader {
 	{
 		triads = new Vector<TriadLink>(100);
 		String outFolder = paras.getOutFolder();
-		String fileName = outFolder + System.getProperty("file.separator") + "triad_link.info";
+		String fileName = outFolder + System.getProperty("file.separator") + "triadlinks.info";
 		File file = null;
 		FileReader fr = null;
 		BufferedReader br = null;

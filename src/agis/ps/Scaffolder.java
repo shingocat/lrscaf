@@ -122,12 +122,6 @@ public class Scaffolder {
 		logger.info("Scaffolding erase time: " + Double.valueOf((end - start)/1000) + " s");
 	}
 	
-	public void writeScaffolds(Parameter paras)
-	{
-		ScaffoldWriter sw = new ScaffoldWriter(paras);
-		sw.write();
-	}
-	
 	public void writeScaffolds(Parameter paras, List<NodePath> paths, Map<String, Contig> cnts)
 	{
 		String filePath = paras.getOutFolder() + System.getProperty("file.separator") + "scaffolds.fasta";
