@@ -10,73 +10,18 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.Edge;
-import agis.ps.link.PBLink;
 import agis.ps.path.NodePath;
 import agis.ps.util.Strand;
 
 public class DotGraphFileWriter {
 
 	public static final Logger logger = LoggerFactory.getLogger(DotGraphFileWriter.class);
-
-	private String filePath;
-	private List<PBLink> links;
-
-	public DotGraphFileWriter(String filePath) {
-		this.filePath = filePath;
-	}
-
-//	public static void writePBLink(String filePath, List<PBLink> links) {
-//		if (filePath == null)
-//			return;
-//		File out = null;
-//		FileWriter fw = null;
-//		BufferedWriter bw = null;
-//		try {
-//			out = new File(filePath);
-//			if (out.exists()) {
-//				logger.debug("The output file of dot graph is exist!");
-//				logger.info("The output file of dot graph is exist!");
-//				return;
-//			}
-//			out.createNewFile();
-//			fw = new FileWriter(out);
-//			bw = new BufferedWriter(fw);
-//			bw.write("digraph G{\n");
-//			for (PBLink pb : links) {
-//				String color = "red";
-//				if (pb.getoStrand().equals(Strand.FORWARD) && pb.gettStrand().equals(Strand.REVERSE))
-//					color = "green";
-//				else if (pb.getoStrand().equals(Strand.REVERSE) && pb.gettStrand().equals(Strand.REVERSE))
-//					color = "blue";
-//				else if (pb.getoStrand().equals(Strand.REVERSE) && pb.gettStrand().equals(Strand.FORWARD))
-//					color = "yellow";
-//				bw.write(pb.getOrigin().getID() + " -> " + pb.getTerminus().getID() + " [label=\""
-//						+ pb.getoStrand().toString() + pb.getoStartLoc() + ":" + pb.gettStrand().toString()
-//						+ pb.gettStartLoc() + "\",color=" + color + "];\n");
-//			}
-//			bw.write("}");
-//		} catch (IOException e) {
-//			logger.debug(e.getMessage());
-//			logger.error(e.getMessage());
-//		} finally {
-//			if (bw != null)
-//				try {
-//					bw.close();
-//				} catch (IOException e) {
-//					logger.debug(e.getMessage());
-//					logger.error(e.getMessage());
-//					;
-//				}
-//		}
-//
-//	}
 
 	public static void writeEdge(String filePath, List<Edge> edges) {
 		if (filePath == null)
@@ -87,8 +32,7 @@ public class DotGraphFileWriter {
 		try {
 			out = new File(filePath);
 			if (out.exists()) {
-				logger.debug(filePath + " is exist!");
-				logger.info(filePath + " is exist!");
+				logger.info(DotGraphFileWriter.class.getName() + "\t" + filePath + " is exist!");
 				return;
 			}
 			out.createNewFile();
@@ -115,18 +59,15 @@ public class DotGraphFileWriter {
 			}
 			bw.write("}");
 		} catch (IOException e) {
-			logger.debug(DotGraphFileWriter.class.getName() + e.getMessage() + "\t" + e.getClass().getName());
-			logger.error(DotGraphFileWriter.class.getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 		} catch (Exception e) {
-			logger.debug(DotGraphFileWriter.class.getName() + e.getMessage() + "\t" + e.getClass().getName());
-			logger.error(DotGraphFileWriter.class.getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 		} finally {
 			try {
 				if (bw != null)
 					bw.close();
 			} catch (IOException e) {
-				logger.debug(DotGraphFileWriter.class.getName() + e.getMessage() + "\t" + e.getClass().getName());
-				logger.error(DotGraphFileWriter.class.getName() + e.getMessage() + "\t" + e.getClass().getName());
+				logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 			}
 		}
 
@@ -142,8 +83,7 @@ public class DotGraphFileWriter {
 		try {
 			out = new File(filePath);
 			if (out.exists()) {
-				logger.debug("The output file of dot graph is exist!");
-				logger.info("The output file of dot graph is exist!");
+				logger.error(filePath + " is exist!");
 				return;
 			}
 			out.createNewFile();
@@ -158,16 +98,13 @@ public class DotGraphFileWriter {
 			}
 
 		} catch (IOException e) {
-			logger.debug(e.getMessage());
-			logger.error(e.getMessage());
+			logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 		} finally {
 			if (bw != null)
 				try {
 					bw.close();
 				} catch (IOException e) {
-					logger.debug(e.getMessage());
-					logger.error(e.getMessage());
-					;
+					logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 				}
 		}
 	}

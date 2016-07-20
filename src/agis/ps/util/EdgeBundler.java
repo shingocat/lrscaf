@@ -56,11 +56,6 @@ public class EdgeBundler {
 		this.paras = paras;
 	}
 
-	public EdgeBundler(List<PBLinkM> links, Parameter paras) {
-		this.links = links;
-		this.paras = paras;
-	}
-
 	public EdgeBundler(List<PBLinkM> links, Parameter paras, Map<String, Contig> contigs) {
 		this.links = links;
 		this.paras = paras;
@@ -76,11 +71,11 @@ public class EdgeBundler {
 		if (edges != null)
 			edges = null;
 		this.initCntIndexer();
-		edges = new Vector<Edge>(200);
+		edges = new Vector<Edge>(links.size()/5);
 		boolean isUseOLLink = paras.isUseOLLink();
 		int minSupLink = paras.getMinSupLinks();
-		logger.info(this.getClass().getName() + "\tMinimum supported links:" + minSupLink);
-		logger.info(this.getClass().getName() + "\tUsed overlap link:" + isUseOLLink);
+		logger.info(this.getClass().getName() + "\tMinimum supported links: " + minSupLink);
+		logger.info(this.getClass().getName() + "\tUsed overlap link: " + isUseOLLink);
 		// the all the same origin and terminus to a hash map;
 		// both direction
 		Map<String, List<PBLink>> temp = new HashMap<String, List<PBLink>>();
@@ -109,7 +104,6 @@ public class EdgeBundler {
 		}
 
 		// loop in temp hash map
-
 		for (String s : temp.keySet()) {
 			try {
 				index++;
@@ -300,8 +294,8 @@ public class EdgeBundler {
 					Edge edge = new Edge();
 //					Contig origin = contigs.get(ids[0]);
 //					Contig terminus = contigs.get(ids[1]);
-					Contig origin = new Contig();
-					Contig terminus = new Contig();
+					Contig origin = new Contig(this.indexCntSeq(ids[0]));
+					Contig terminus = new Contig(this.indexCntSeq(ids[1]));
 					origin.setID(ids[0]);
 //					origin.setLength(this.indexCntLength(ids[0]));
 					terminus.setID(ids[1]);
@@ -477,8 +471,8 @@ public class EdgeBundler {
 					Edge edge = new Edge();
 //					Contig origin = contigs.get(ids[0]);
 //					Contig terminus = contigs.get(ids[1]);
-					 Contig origin = new Contig();
-					 Contig terminus = new Contig();
+					 Contig origin = new Contig(this.indexCntSeq(ids[0]));
+					 Contig terminus = new Contig(this.indexCntSeq(ids[1]));
 					 origin.setID(ids[0]);
 					// origin.setLength(contigs.get(ids[0]).getLength());
 					 terminus.setID(ids[1]);
@@ -655,8 +649,8 @@ public class EdgeBundler {
 					Edge edge = new Edge();
 //					Contig origin = contigs.get(ids[0]);
 //					Contig terminus = contigs.get(ids[1]);
-					 Contig origin = new Contig();
-					 Contig terminus = new Contig();
+					 Contig origin = new Contig(this.indexCntSeq(ids[0]));
+					 Contig terminus = new Contig(this.indexCntSeq(ids[1]));
 					 origin.setID(ids[0]);
 					// origin.setLength(contigs.get(ids[0]).getLength());
 					 terminus.setID(ids[1]);
@@ -832,8 +826,8 @@ public class EdgeBundler {
 					Edge edge = new Edge();
 //					Contig origin = contigs.get(ids[0]);
 //					Contig terminus = contigs.get(ids[1]);
-					 Contig origin = new Contig();
-					 Contig terminus = new Contig();
+					 Contig origin = new Contig(this.indexCntSeq(ids[0]));
+					 Contig terminus = new Contig(this.indexCntSeq(ids[1]));
 					 origin.setID(ids[0]);
 					// origin.setLength(contigs.get(ids[0]).getLength());
 					 terminus.setID(ids[1]);
@@ -2625,5 +2619,21 @@ public class EdgeBundler {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		return len;
+	}
+	
+	private String indexCntSeq(String id)
+	{
+		String seq = "";
+		try {
+			Query query = parser.parse(id);
+			TopDocs tds = searcher.search(query, 10);
+			for (ScoreDoc sd : tds.scoreDocs) {
+				Document doc = searcher.doc(sd.doc);
+				seq = doc.get("seq");
+			}
+		} catch (Exception e) {
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		}
+		return seq;
 	}
 }

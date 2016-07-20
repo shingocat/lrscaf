@@ -62,7 +62,7 @@ public class Main {
 		}
 		logger.info("Ending...");
 		long end = System.currentTimeMillis();
-		logger.info("Scaffolding erase time: " + (end - start)/1000 + " s");
+		logger.info("Scaffolding erase time: " + (end - start)/1000 + " s.");
 	}
 	
 	private static Options initOpts()

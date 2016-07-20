@@ -461,7 +461,6 @@ public class LinkBuilder {
 	// this method used to checking almost identical contigs linking by same
 	// pacbio reads
 	private List<MRecord> validateContigPair(List<MRecord> data) {
-		List<MRecord> values = new Vector<MRecord>(data.size());
 		List<MRecord> simCNTs = new Vector<MRecord>(5);
 		List<MRecord> delCNTs = new Vector<MRecord>(5);
 		// int minOLLen = paras.getMinOLLen();// defined by parameter;

@@ -106,7 +106,6 @@ public class DirectedGraph extends Graph implements Serializable {
 			logger.info(this.getClass().getName() + " The graph do not contain transitive reduction structure!");
 			return;
 		}
-
 		// the depth for searching, the alternative path could only accept 5
 		// node;
 		int depth = 5;

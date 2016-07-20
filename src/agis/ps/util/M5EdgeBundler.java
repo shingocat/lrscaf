@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import org.slf4j.Logger;
@@ -25,7 +24,6 @@ import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM;
-import agis.ps.seqs.Contig;
 
 public class M5EdgeBundler {
 
@@ -34,10 +32,10 @@ public class M5EdgeBundler {
 	private int minPBLen = 0;
 	private int minCNTLen = 0;
 	private double identity = 0.0d;
-	private Map<String, Contig> contigs;
 	private LinkBuilder linkBuilder = null;
 	private PBLinkWriter linkWriter = null;
 	private TriadLinkWriter tlWriter = null;
+	private List<Edge> edges = null;
 
 	public M5EdgeBundler(Parameter paras) {
 		this.paras = paras;
@@ -51,16 +49,11 @@ public class M5EdgeBundler {
 		this.tlWriter.init();
 	}
 
-	public M5EdgeBundler(Parameter paras, Map<String, Contig> contigs) {
-		this(paras);
-		this.contigs = contigs;
-	}
-
 	public List<Edge> building() {
-		List<Edge> edges = null;
 		this.buildingLinks();
 		PBLinkReader linkReader = new PBLinkReader(paras);
 		List<PBLink> links = linkReader.read();
+		logger.info(this.getClass().getName() + "\tFlitered links: " + links.size());
 		EdgeBundler eb = new EdgeBundler(paras);
 		edges = eb.pbLink2Edges(links);
 		return edges;
@@ -71,7 +64,6 @@ public class M5EdgeBundler {
 		FileReader fr = null;
 		BufferedReader br = null;
 		String alnFile = paras.getAlgFile();
-		int index = 0;
 		try {
 			file = new File(alnFile);
 			if (!file.exists()) {
@@ -86,7 +78,6 @@ public class M5EdgeBundler {
 			String id = null; // pacbio long read id
 			MRecord m = null;
 			while (true) {
-				index++;
 				line = br.readLine();
 				if (line != null) {
 					line.trim();
@@ -129,10 +120,8 @@ public class M5EdgeBundler {
 			}
 		} catch (IOException e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-			logger.debug("index " + index);
 		} catch (Exception e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-			logger.debug("index " + index);
 		} finally {
 			try {
 				if (br != null)
