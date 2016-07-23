@@ -6,12 +6,8 @@
 */
 package agis.ps.util;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import org.slf4j.Logger;
@@ -21,7 +17,6 @@ import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.TriadLinkReader;
 import agis.ps.graph2.DirectedGraph;
 import agis.ps.graph2.Graph;
-import agis.ps.link.ContInOut;
 import agis.ps.link.Edge;
 import agis.ps.link.TriadLink;
 import agis.ps.link.TriadLinkComparator;
@@ -59,7 +54,7 @@ public class PathBuilder {
 		List<NodePath> paths = new Vector<NodePath>();
 		Graph diGraph = null;
 		try {
-			diGraph = new DirectedGraph(edges);
+			diGraph = new DirectedGraph(edges, paras);
 			// do transitive reduction
 			diGraph.transitiveReducting();
 			List<Edge> tempEdges = diGraph.getEdges();
@@ -283,7 +278,6 @@ public class PathBuilder {
 				}
 			}
 		} catch (Exception e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		// orientation contig in the paths;
@@ -341,7 +335,7 @@ public class PathBuilder {
 		List<NodePath> paths = new Vector<NodePath>();
 		Graph diGraph = null;
 		try {
-			diGraph = new DirectedGraph(edges);
+			diGraph = new DirectedGraph(edges, paras);
 			// do transitive reduction
 			diGraph.transitiveReducting();
 			List<Edge> tempEdges = diGraph.getEdges();

@@ -19,16 +19,9 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.SimpleFSDirectory;
@@ -38,19 +31,17 @@ import org.slf4j.LoggerFactory;
 import agis.ps.util.Parameter;
 
 public class ContigIndexer {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ContigIndexer.class);
 	private Parameter paras = null;
 	private Directory directory = null;
 	private IndexWriter writer = null;
 
-	public ContigIndexer(Parameter paras)
-	{
+	public ContigIndexer(Parameter paras) {
 		this.paras = paras;
 	}
-	
-	public boolean indexing()
-	{
+
+	public boolean indexing() {
 		long start = System.currentTimeMillis();
 		boolean isValid = true;
 		File file = null;
@@ -62,7 +53,7 @@ public class ContigIndexer {
 			file = new File(paras.getCntFile());
 			String indexPath = paras.getOutFolder() + System.getProperty("file.separator") + "cnt.index";
 			File indexDir = new File(indexPath);
-			directory = new SimpleFSDirectory(indexDir.toPath());//FSDirectory.open(indexDir.toPath());
+			directory = new SimpleFSDirectory(indexDir.toPath());// FSDirectory.open(indexDir.toPath());
 			fr = new FileReader(file);
 			br = new BufferedReader(fr);
 			analyzer = new StandardAnalyzer();
@@ -101,6 +92,7 @@ public class ContigIndexer {
 					}
 				}
 			}
+			writer.close();
 		} catch (CorruptIndexException e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 			isValid = false;
@@ -117,10 +109,20 @@ public class ContigIndexer {
 			try {
 				if (br != null)
 					br.close();
+				if (fr != null)
+					fr.close();
+				if (file != null)
+					file = null;
 				if (writer != null)
 					writer.close();
+				if (directory != null)
+					directory = null;
+				if (analyzer != null)
+					analyzer = null;
+				if (config != null)
+					config = null;
 			} catch (IOException e) {
-				logger.error(this.getClass().getName() + "\t" + e.getMessage());;
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
 			}
 		}
 		long end = System.currentTimeMillis();
@@ -128,5 +130,3 @@ public class ContigIndexer {
 		return isValid;
 	}
 }
-
-

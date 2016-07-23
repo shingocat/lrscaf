@@ -17,7 +17,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.seqs.Contig;
 import agis.ps.util.Parameter;
 
 public class ContigCoverageWriter {
@@ -42,13 +41,11 @@ public class ContigCoverageWriter {
 		{
 			file = new File(fileName);
 			if (file.exists()) {
-				logger.debug("The output file of scaffold is exist! It will not be overwrited!");
 				logger.info("The output file of scaffold is exist! It will not be overwrited!");
 				return;
 			}
 			if(!file.createNewFile())
 			{
-				logger.debug("ScaffoldWriter: The output file of scaffolds could not create!");
 				logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
 				return;
 			}
@@ -62,7 +59,6 @@ public class ContigCoverageWriter {
 			bw.flush();
 		} catch(IOException e)
 		{
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} finally
 		{
@@ -71,7 +67,6 @@ public class ContigCoverageWriter {
 					bw.close();
 			} catch(IOException e)
 			{
-				logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}

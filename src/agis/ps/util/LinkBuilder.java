@@ -104,28 +104,55 @@ public class LinkBuilder {
 				if (contLeftLen > maxOHLen || contRigthLen > maxOHLen)
 					continue;
 			} else {
-				if (pbStart <= maxEndLen && pbEnd <= (pbLen - maxEndLen)) {
-					// check right side, for the end point in p1-p2 and p2-p3
-					if (ol_len < minOLLen)
+				if(pbStart <= maxEndLen && pbEnd <= maxEndLen)
+				{ // checking the right side, for the end point in p1-p2
+					if(contRigthLen > maxOHLen)
 						continue;
-					if (contRigthLen > maxOHLen)
+				} else if(pbStart <= maxEndLen && pbEnd <= (pbLen - maxEndLen))
+				{
+					if(ol_len < minOLLen)
 						continue;
-				} else if (pbStart <= maxEndLen && pbEnd >= (pbLen - maxEndLen)) {
-					// for start point in p1-p2 and end point in p3-p4, outer
-					// case!
-					// do no afford info, next directly;
-					// if (ol_len < minOLLen)
-					// continue;
+					if(contRigthLen > maxOHLen)
+						continue;
+				} else if(pbStart <= maxEndLen && pbEnd >= (pbLen - maxEndLen))
+				{
+					// start point in p1-p2 and end point in p3-p4
+					// do no afford info, discard
 					continue;
-				} else if (pbStart >= maxEndLen && pbEnd >= (pbLen - maxEndLen)) {
-					// check left side, for start point in p2-p3 and end point
-					// in p3-p4,
-					// and start point in p3-p4 and end point in p3-p4;
-					if (ol_len < minOLLen)
+				} else if(pbStart >= maxEndLen && pbStart <= (pbLen - maxEndLen) 
+						&& pbEnd >= (pbLen - maxEndLen))
+				{ // start point in p2-p3 and end point in p3-p4
+					if(ol_len < minOLLen)
 						continue;
-					if (contLeftLen > maxOHLen)
+					if(contLeftLen > maxOHLen)
+						continue;
+				} else if(pbStart >= (pbLen - maxEndLen) && pbEnd >= (pbLen - maxEndLen))
+				{
+					if(contLeftLen > maxOHLen)
 						continue;
 				}
+//				if (pbStart <= maxEndLen && pbEnd <= (pbLen - maxEndLen)) {
+//					// check right side, for the end point in p1-p2 and p2-p3
+//					if (ol_len < minOLLen)
+//						continue;
+//					if (contRigthLen > maxOHLen)
+//						continue;
+//				} else if (pbStart <= maxEndLen && pbEnd >= (pbLen - maxEndLen)) {
+//					// for start point in p1-p2 and end point in p3-p4, outer
+//					// case!
+//					// do no afford info, next directly;
+//					// if (ol_len < minOLLen)
+//					// continue;
+//					continue;
+//				} else if (pbStart >= maxEndLen && pbEnd >= (pbLen - maxEndLen)) {
+//					// check left side, for start point in p2-p3 and end point
+//					// in p3-p4,
+//					// and start point in p3-p4 and end point in p3-p4;
+//					if (ol_len < minOLLen)
+//						continue;
+//					if (contLeftLen > maxOHLen)
+//						continue;
+//				}
 			}
 			// if the mrecord is valid;
 			valids.add(m);

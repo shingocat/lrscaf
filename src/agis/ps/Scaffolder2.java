@@ -75,7 +75,9 @@ public class Scaffolder2 {
 	private boolean indexCnt()
 	{
 		ContigIndexer ci = new ContigIndexer(paras);
-		return ci.indexing();
+		boolean isValid = ci.indexing();
+		ci = null;
+		return isValid;
 	}
 	
 	// building edges

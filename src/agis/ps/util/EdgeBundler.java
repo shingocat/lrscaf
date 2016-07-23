@@ -294,8 +294,8 @@ public class EdgeBundler {
 					Edge edge = new Edge();
 //					Contig origin = contigs.get(ids[0]);
 //					Contig terminus = contigs.get(ids[1]);
-					Contig origin = new Contig(this.indexCntSeq(ids[0]));
-					Contig terminus = new Contig(this.indexCntSeq(ids[1]));
+					Contig origin = new Contig();
+					Contig terminus = new Contig();
 					origin.setID(ids[0]);
 //					origin.setLength(this.indexCntLength(ids[0]));
 					terminus.setID(ids[1]);
@@ -471,8 +471,8 @@ public class EdgeBundler {
 					Edge edge = new Edge();
 //					Contig origin = contigs.get(ids[0]);
 //					Contig terminus = contigs.get(ids[1]);
-					 Contig origin = new Contig(this.indexCntSeq(ids[0]));
-					 Contig terminus = new Contig(this.indexCntSeq(ids[1]));
+					 Contig origin = new Contig();
+					 Contig terminus = new Contig();
 					 origin.setID(ids[0]);
 					// origin.setLength(contigs.get(ids[0]).getLength());
 					 terminus.setID(ids[1]);
@@ -649,8 +649,8 @@ public class EdgeBundler {
 					Edge edge = new Edge();
 //					Contig origin = contigs.get(ids[0]);
 //					Contig terminus = contigs.get(ids[1]);
-					 Contig origin = new Contig(this.indexCntSeq(ids[0]));
-					 Contig terminus = new Contig(this.indexCntSeq(ids[1]));
+					 Contig origin = new Contig();
+					 Contig terminus = new Contig();
 					 origin.setID(ids[0]);
 					// origin.setLength(contigs.get(ids[0]).getLength());
 					 terminus.setID(ids[1]);
@@ -826,8 +826,8 @@ public class EdgeBundler {
 					Edge edge = new Edge();
 //					Contig origin = contigs.get(ids[0]);
 //					Contig terminus = contigs.get(ids[1]);
-					 Contig origin = new Contig(this.indexCntSeq(ids[0]));
-					 Contig terminus = new Contig(this.indexCntSeq(ids[1]));
+					 Contig origin = new Contig();
+					 Contig terminus = new Contig();
 					 origin.setID(ids[0]);
 					// origin.setLength(contigs.get(ids[0]).getLength());
 					 terminus.setID(ids[1]);

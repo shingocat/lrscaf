@@ -15,9 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.file.ContigCoverageWriter;
-import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
-import agis.ps.seqs.Contig;
 
 public class RepeatFinder {
 	

@@ -6,6 +6,8 @@
 */
 package agis.ps.graph2;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,24 +19,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.SimpleFSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.Edge;
 import agis.ps.seqs.Contig;
 import agis.ps.util.MathTool;
+import agis.ps.util.Parameter;
 
 public class DirectedGraph extends Graph implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = LoggerFactory.getLogger(DirectedGraph.class);
+	private Parameter paras = null;
 	private Map<String, List<Contig>> adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
 	// for store multiple in and multiple out contig vertex;
 	private List<Contig> mimos = new Vector<Contig>();
+	private Directory directory = null;
+	private IndexReader reader = null;
+	private IndexSearcher searcher = null;
+	private Analyzer analyzer = null;
+	private QueryParser parser = null;
+	
 
-	public DirectedGraph(List<Edge> edges) {
+	public DirectedGraph(List<Edge> edges, Parameter paras) {
 		super(edges);
+		this.paras = paras; 
 		initAdjTos();
+		initCntIndexer();
 	}
 
 	private void initAdjTos() {
@@ -187,7 +211,8 @@ public class DirectedGraph extends Graph implements Serializable {
 				alSds.add(temp.get(0).getDistSd());
 
 				if (i > 0 && i < (alPath.size() - 1))
-					alDists.add(now.getLength());
+//					alDists.add(now.getLength());
+					alDists.add(this.indexCntLength(now.getID()));
 			}
 			alDist = MathTool.sum(alDists);
 			alSd = MathTool.avgSd(alSds);
@@ -422,6 +447,36 @@ public class DirectedGraph extends Graph implements Serializable {
 
 	public void updateGraph() {
 		initAdjTos();
+	}
+	
+	private void initCntIndexer()
+	{
+		try {
+			String path = paras.getOutFolder() + System.getProperty("file.separator") + "cnt.index";
+			directory = new SimpleFSDirectory(new File(path).toPath());
+			reader = DirectoryReader.open(directory);
+			searcher = new IndexSearcher(reader);
+			analyzer = new StandardAnalyzer();
+			parser = new QueryParser("id", analyzer);
+		} catch (IOException e) {
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		}
+	}
+	
+	private int indexCntLength(String id)
+	{
+		int len = 0;
+		try {
+			Query query = parser.parse(id);
+			TopDocs tds = searcher.search(query, 10);
+			for (ScoreDoc sd : tds.scoreDocs) {
+				Document doc = searcher.doc(sd.doc);
+				len = Integer.valueOf(doc.get("len"));
+			}
+		} catch (Exception e) {
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		}
+		return len;
 	}
 
 }
