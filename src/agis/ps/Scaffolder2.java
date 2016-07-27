@@ -44,8 +44,9 @@ public class Scaffolder2 {
 		try
 		{
 			// building output folder
-			if(!buildOutputFolder())
-				return;
+//			if(!buildOutputFolder())
+//				return;
+			this.buildOutputFolder();
 			// index contigs
 			if(!this.indexCnt())
 				return;

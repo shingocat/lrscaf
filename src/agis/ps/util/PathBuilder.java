@@ -67,6 +67,7 @@ public class PathBuilder {
 			logger.info("Edges size after error prone deleting: " + tempEdges.size());
 			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dep.info";
 			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
+			tempEdges = null;
 			NodePath path = null;
 //			TriadLinkReader tlr = new TriadLinkReader(paras);
 //			List<TriadLink> triads = tlr.read();
