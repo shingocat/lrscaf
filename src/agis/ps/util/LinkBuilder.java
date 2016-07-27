@@ -10,7 +10,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.slf4j.Logger;
@@ -165,7 +167,8 @@ public class LinkBuilder {
 			// sorting the contig_pairs;
 			Collections.sort(valids, new ByLocOrderComparator());
 			// checking the similarity contigs
-			valids = validateContigPair(valids);
+//			valids = validateContigPair(valids);
+			valids = this.validateContigs(valids);
 			int cpSize = valids.size();
 
 			// build only the successive link; A->B->C, it will build A->B
@@ -546,6 +549,111 @@ public class LinkBuilder {
 			data.removeAll(delCNTs);
 		}
 		return data;
+	}
+	
+	private List<MRecord> validateContigs(List<MRecord> data)
+	{
+		Map<String, List<MRecord>> sims = this.findSimilarityCnts(data);
+		int size = sims.size();
+		if(size != 0)
+		{
+			for(int i = 1; i <= size; i++)
+			{
+				List<MRecord> ms = sims.get(String.valueOf(i));
+//				data.remove(ms); // try remove all similarity contigs
+				List<Integer> scores = new Vector<Integer>(ms.size());
+				Iterator<MRecord> it = ms.iterator();
+				double olweight = 0.6;
+				double identweight = 0.4;
+				while(it.hasNext())
+				{
+					MRecord m = it.next();
+					int pS = m.getqStart();
+					int pE = m.getqEnd();
+					int ol = pE - pS;
+					int ident = (int) Math.round(m.getIdentity() * 1000);
+					int score = (int) Math.round(ol * olweight + ident * identweight);
+					scores.add(score);
+				}
+				int max = MathTool.max(scores);
+				it = ms.iterator();
+				while(it.hasNext())
+				{
+					MRecord m = it.next();
+					int pS = m.getqStart();
+					int pE = m.getqEnd();
+					int ol = pE - pS;
+					int ident = (int) Math.round(m.getIdentity() * 1000);
+					int score = (int) Math.round(ol * olweight + ident * identweight);
+					if(score != max)
+					{
+						if(data.contains(m))
+							data.remove(m);
+					}
+				}
+			}
+		}
+		return data;
+	}
+	
+	
+	
+	private Map<String, List<MRecord>> findSimilarityCnts(List<MRecord> data)
+	{
+		Map<String, List<MRecord>> sims = new HashMap<String, List<MRecord>>();
+		List<MRecord> tempSims = new Vector<MRecord>(5);
+		Iterator<MRecord> it = data.iterator();
+		int count = 1;
+		int preStart = 0;
+		int preEnd = 0;
+		int constant = 100; // 100 bp to defined whether contigs is similarity
+		boolean isFirst = true;
+		while(it.hasNext())
+		{
+			MRecord m = it.next();
+			if(isFirst)
+			{ // the first time
+				preStart = m.getqStart();
+				preEnd = m.getqEnd();
+				tempSims.add(m);
+				isFirst = false;
+				continue;
+			} else
+			{
+				int curStart = m.getqStart();
+				int curEnd = m.getqEnd();
+				
+				int left = curStart - preStart;
+				int right = curEnd - preEnd;
+				left = Math.abs(left);
+				right = Math.abs(right);
+				
+				if(left <= constant && right <= constant)
+				{ // similarity contigs
+					if(!tempSims.contains(m))
+						tempSims.add(m);
+					preStart = curStart;
+					preEnd = curEnd;
+				} else
+				{
+					preStart = curStart;
+					preEnd = curEnd;
+					if(tempSims.size() <= 1)
+					{
+						tempSims.clear();
+						if(!tempSims.contains(m))
+							tempSims.add(m);
+					} else
+					{
+						sims.put(String.valueOf(count), tempSims);
+						tempSims = new Vector<MRecord>(5);
+						count++;
+					}
+				}
+			}
+			
+		}		
+		return sims;
 	}
 
 	public List<TriadLink> getTriadLinks()
