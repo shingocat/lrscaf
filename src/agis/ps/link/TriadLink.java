@@ -56,6 +56,17 @@ public class TriadLink {
 	public void setSupLinks(int supLinks) {
 		this.supLinks = supLinks;
 	}
+	
+	public boolean isContain(Contig contig)
+	{
+		if(this.previous.equals(contig))
+			return true;
+		if(this.middle.equals(contig))
+			return true;
+		if(this.last.equals(contig))
+			return true;
+		return false;
+	}
 
 	@Override
 	public int hashCode() {

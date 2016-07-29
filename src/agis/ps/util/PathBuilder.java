@@ -7,6 +7,7 @@
 package agis.ps.util;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -30,6 +31,7 @@ public class PathBuilder {
 	private Parameter paras;
 	private List<TriadLink> triads;
 	private static int index = 0;
+	private Graph diGraph;
 
 	public PathBuilder() {
 		// do nothing;
@@ -45,14 +47,13 @@ public class PathBuilder {
 			throw new IllegalArgumentException("PathBuilder ： The Edges could not be empty!");
 		return this.buildPath2(edges, paras);
 	}
-	
-	private List<NodePath> buildPath2(List<Edge> edges, Parameter paras)
-	{
+
+	private List<NodePath> buildPath2(List<Edge> edges, Parameter paras) {
 		long start = System.currentTimeMillis();
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder: The Edges could not be empty!");
 		List<NodePath> paths = new Vector<NodePath>();
-		Graph diGraph = null;
+		diGraph = null;
 		try {
 			diGraph = new DirectedGraph(edges, paras);
 			// do transitive reduction
@@ -69,29 +70,27 @@ public class PathBuilder {
 			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
 			tempEdges = null;
 			NodePath path = null;
-//			TriadLinkReader tlr = new TriadLinkReader(paras);
-//			List<TriadLink> triads = tlr.read();
+			// TriadLinkReader tlr = new TriadLinkReader(paras);
+			// List<TriadLink> triads = tlr.read();
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-//				index++;
-//				if(index == 49)
-//					logger.debug("index error " + index);
+				// index++;
+				// if(index == 49)
+				// logger.debug("index error " + index);
 				Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false then break;
 				if (current == null)
 					break;
 				List<Contig> adjs = diGraph.getAdjVertices(current);
-				if(adjs == null)
-				{
+				if (adjs == null) {
 					diGraph.setVertexAsSelected(current);
 					continue;
 				}
 				int adjsSize = adjs.size();
-				// random selected the frist 
-				if(adjsSize == 0)
-				{
+				// random selected the frist
+				if (adjsSize == 0) {
 					// orphan contig, only one element in path
 					path = new NodePath();
 					Node node = new Node();
@@ -100,15 +99,13 @@ public class PathBuilder {
 					path.push(node);
 					paths.add(path);
 					diGraph.setVertexAsSelected(current);
-				} else if(adjsSize == 1)
-				{
+				} else if (adjsSize == 1) {
 					// normal start point, always on the linear end point;
 					path = new NodePath();
-//					Contig next = diGraph.getNextVertex(current, null);
+					// Contig next = diGraph.getNextVertex(current, null);
 					Contig next = adjs.get(0);
 					Contig startPoint = current;
-					while(true)
-					{   
+					while (true) {
 						Node node = new Node();
 						node.setCnt(current);
 						node.setOrphan(false);
@@ -118,26 +115,23 @@ public class PathBuilder {
 						Contig previous = current;
 						current = next;
 						next = diGraph.getNextVertex(current, previous);
-						if(next == null)
-						{ // for the divergence point
+						if (next == null) { // for the divergence point
 							next = getTriadLinkNext(current, previous);
 							// checking next is not null statement,
-							// but the next will be not the adjacent vertex 
-							if(next != null)
-							{
+							// but the next will be not the adjacent vertex
+							if (next != null) {
 								List<Contig> tAdjs = diGraph.getAdjVertices(current);
-								if(!tAdjs.contains(next))
+								if (!tAdjs.contains(next))
 									next = null;
 							}
-							if(next == null){
+							if (next == null) {
 								next = null;
 								current = null;
 								previous = null;
 								break;
-							} 
-						} 
-						if(next.equals(previous))
-						{ // for the linear end point
+							}
+						}
+						if (next.equals(previous)) { // for the linear end point
 							Node n = new Node();
 							n.setCnt(current);
 							n.setOrphan(false);
@@ -151,9 +145,9 @@ public class PathBuilder {
 						}
 					}
 					paths.add(path);
-				} else if(adjsSize == 2)
-				{ // middle point;
-					// normal start point, located in the linear path
+				} else if (adjsSize == 2) { // middle point;
+											// normal start point, located in
+											// the linear path
 					path = new NodePath();
 					Node node = new Node();
 					node.setCnt(current);
@@ -164,26 +158,23 @@ public class PathBuilder {
 					Contig c2 = adjs.get(1);
 					// c1--current--c2
 					// directed by both direction;
-					// for c1 direction; using c2 as previous point; checking whether c1 is valid point
+					// for c1 direction; using c2 as previous point; checking
+					// whether c1 is valid point
 					// all the element unshift into path;
 					Contig previous = startPoint;
 					current = c1;
 					diGraph.setVertexAsSelected(current);
 					Contig next = diGraph.getNextVertex(current, previous);
-					while(true)
-					{
-						if(next != null)
-						{
-							if(next.equals(startPoint))
-							{
+					while (true) {
+						if (next != null) {
+							if (next.equals(startPoint)) {
 								node = new Node();
 								node.setCnt(current);
 								path.unshift(node);
 								diGraph.setVertexAsSelected(current);
 								break;
 							}
-							if(next.equals(previous))
-							{
+							if (next.equals(previous)) {
 								node = new Node();
 								node.setCnt(current);
 								path.unshift(node);
@@ -197,48 +188,41 @@ public class PathBuilder {
 							previous = current;
 							current = next;
 							next = diGraph.getNextVertex(current, previous);
-						} else
-						{
+						} else {
 							next = getTriadLinkNext(current, previous);
 							// checking next is not null statement,
-							// but the next will be not the adjacent vertex 
-							if(next != null)
-							{
+							// but the next will be not the adjacent vertex
+							if (next != null) {
 								List<Contig> tAdjs = diGraph.getAdjVertices(current);
-								if(!tAdjs.contains(next))
+								if (!tAdjs.contains(next))
 									next = null;
 							}
-							if(next == null)
-							{
+							if (next == null) {
 								diGraph.setVertexAsSelected(current);
 								break;
 							}
 						}
 					}
-					// for c2 direction; using c1 as previous point; checking whether c2 is valid point;
+					// for c2 direction; using c1 as previous point; checking
+					// whether c2 is valid point;
 					// all the valid element push into path;
-					if(!diGraph.isExistUnSelectedVertices())
-					{
+					if (!diGraph.isExistUnSelectedVertices()) {
 						paths.add(path);
 						break;
 					}
 					previous = startPoint;
 					current = c2;
 					next = diGraph.getNextVertex(current, previous);
-					while(true)
-					{
-						if(next != null)
-						{
-							if(next.equals(startPoint))
-							{
+					while (true) {
+						if (next != null) {
+							if (next.equals(startPoint)) {
 								node = new Node();
 								node.setCnt(current);
 								path.push(node);
 								diGraph.setVertexAsSelected(current);
 								break;
 							}
-							if(next.equals(previous))
-							{
+							if (next.equals(previous)) {
 								node = new Node();
 								node.setCnt(current);
 								path.push(node);
@@ -252,28 +236,24 @@ public class PathBuilder {
 							previous = current;
 							current = next;
 							next = diGraph.getNextVertex(current, previous);
-						} else
-						{
+						} else {
 							next = getTriadLinkNext(current, previous);
 							// checking next is not null statement,
-							// but the next will be not the adjacent vertex 
-							if(next != null)
-							{
+							// but the next will be not the adjacent vertex
+							if (next != null) {
 								List<Contig> tAdjs = diGraph.getAdjVertices(current);
-								if(!tAdjs.contains(next))
+								if (!tAdjs.contains(next))
 									next = null;
 							}
-							if(next == null)
-							{
+							if (next == null) {
 								diGraph.setVertexAsSelected(current);
 								break;
 							}
 						}
 					}
 					paths.add(path);
-					
-				} else if(adjsSize > 2)
-				{ // divergence point
+
+				} else if (adjsSize > 2) { // divergence point
 					diGraph.setVertexAsSelected(current);
 					continue;
 				}
@@ -292,24 +272,21 @@ public class PathBuilder {
 					current.setMeanDist2Next(0);
 					current.setSdDist2Next(0);
 					current.setSupportLinkNum(0);
-				} else
-				{
-					for(int i = 0 ; i < pathSize - 1; i++)
-					{
+				} else {
+					for (int i = 0; i < pathSize - 1; i++) {
 						Node current = np.getElement(i);
 						Node next = np.getElement(i + 1);
 						Contig cCnt = current.getCnt();
 						Contig nCnt = next.getCnt();
 						Edge e = null;
 						List<Edge> es = diGraph.getEdgesInfo(current.getCnt(), next.getCnt());
-						for(Edge t : es)
-						{
-							if(t.getOrigin().equals(cCnt) && t.getTerminus().equals(nCnt))
+						for (Edge t : es) {
+							if (t.getOrigin().equals(cCnt) && t.getTerminus().equals(nCnt))
 								e = t;
 						}
-						if(current.getStrand() == null)
+						if (current.getStrand() == null)
 							current.setStrand(e.getoStrand());
-						if(next.getStrand() == null)
+						if (next.getStrand() == null)
 							next.setStrand(e.gettStrand());
 						int meanSum = e.getDistMean();
 						int sdSum = e.getDistSd();
@@ -321,9 +298,13 @@ public class PathBuilder {
 				}
 			}
 		} catch (Exception e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
+		// cleaning and call gc
+		this.diGraph = null;
+		this.edges = null;
+		this.triads = null;
+		System.gc();
 		long end = System.currentTimeMillis();
 		logger.info("Path Building, erase time: " + (end - start) + " ms");
 		return paths;
@@ -377,8 +358,7 @@ public class PathBuilder {
 					path = new NodePath();
 					Contig next = diGraph.getNextVertex(current, null);
 					Contig startPoint = current;
-					while(true)
-					{   
+					while (true) {
 						Node node = new Node();
 						node.setCnt(current);
 						node.setOrphan(false);
@@ -388,15 +368,13 @@ public class PathBuilder {
 						Contig previous = current;
 						current = next;
 						next = diGraph.getNextVertex(current, previous);
-						if(next == null)
-						{ // for the divergence point
+						if (next == null) { // for the divergence point
 							next = null;
 							current = null;
 							previous = null;
 							break;
-						} 
-						if(next.equals(previous))
-						{ // for the linear end point
+						}
+						if (next.equals(previous)) { // for the linear end point
 							Node n = new Node();
 							n.setCnt(current);
 							n.setOrphan(false);
@@ -410,23 +388,24 @@ public class PathBuilder {
 						}
 					}
 					paths.add(path);
-//					while (next != null) {
-//						Node node = new Node();
-//						node.setCnt(cnt);
-//						node.setOrphan(false);
-//						diGraph.setVertexAsSelected(cnt);
-//						path.push(node);
-//						Contig temp = cnt;
-//						cnt = next;
-//						next = diGraph.getNextVertex(cnt, temp);
-//						if (path.isNextExist(cnt, 0) && path.isNextExist(next, 0))
-//						{
-//							paths.add(path);
-//							break;
-//						}
-//						if (next.equals(startPoint))
-//							count = count + 1;
-//					}
+					// while (next != null) {
+					// Node node = new Node();
+					// node.setCnt(cnt);
+					// node.setOrphan(false);
+					// diGraph.setVertexAsSelected(cnt);
+					// path.push(node);
+					// Contig temp = cnt;
+					// cnt = next;
+					// next = diGraph.getNextVertex(cnt, temp);
+					// if (path.isNextExist(cnt, 0) && path.isNextExist(next,
+					// 0))
+					// {
+					// paths.add(path);
+					// break;
+					// }
+					// if (next.equals(startPoint))
+					// count = count + 1;
+					// }
 				} else if (adjSetSize == 2) {
 					// normal start point, located in the linear path
 					path = new NodePath();
@@ -439,26 +418,23 @@ public class PathBuilder {
 					Contig c2 = adjSet.get(1);
 					// c1--current--c2
 					// directed by both direction;
-					// for c1 direction; using c2 as previous point; checking whether c1 is valid point
+					// for c1 direction; using c2 as previous point; checking
+					// whether c1 is valid point
 					// all the element unshift into path;
 					Contig previous = startPoint;
 					current = c1;
 					diGraph.setVertexAsSelected(current);
 					Contig next = diGraph.getNextVertex(current, previous);
-					while(true)
-					{
-						if(next != null)
-						{
-							if(next.equals(startPoint))
-							{
+					while (true) {
+						if (next != null) {
+							if (next.equals(startPoint)) {
 								node = new Node();
 								node.setCnt(current);
 								path.unshift(node);
 								diGraph.setVertexAsSelected(current);
 								break;
 							}
-							if(next.equals(previous))
-							{
+							if (next.equals(previous)) {
 								node = new Node();
 								node.setCnt(current);
 								path.unshift(node);
@@ -472,36 +448,31 @@ public class PathBuilder {
 							previous = current;
 							current = next;
 							next = diGraph.getNextVertex(current, previous);
-						} else
-						{
+						} else {
 							diGraph.setVertexAsSelected(current);
 							break;
 						}
 					}
-					// for c2 direction; using c1 as previous point; checking whether c2 is valid point;
+					// for c2 direction; using c1 as previous point; checking
+					// whether c2 is valid point;
 					// all the valid element push into path;
-					if(!diGraph.isExistUnSelectedVertices())
-					{
+					if (!diGraph.isExistUnSelectedVertices()) {
 						paths.add(path);
 						break;
 					}
 					previous = startPoint;
 					current = c2;
 					next = diGraph.getNextVertex(current, previous);
-					while(true)
-					{
-						if(next != null)
-						{
-							if(next.equals(startPoint))
-							{
+					while (true) {
+						if (next != null) {
+							if (next.equals(startPoint)) {
 								node = new Node();
 								node.setCnt(current);
 								path.unshift(node);
 								diGraph.setVertexAsSelected(current);
 								break;
 							}
-							if(next.equals(previous))
-							{
+							if (next.equals(previous)) {
 								node = new Node();
 								node.setCnt(current);
 								path.push(node);
@@ -515,40 +486,39 @@ public class PathBuilder {
 							previous = current;
 							current = next;
 							next = diGraph.getNextVertex(current, previous);
-						} else
-						{
+						} else {
 							diGraph.setVertexAsSelected(current);
 							break;
 						}
 					}
 					paths.add(path);
-					
-//					int count = 0;
-//					boolean isReverse = false;
-//					Contig next = diGraph.getNextVertex(current, null);
-//					while (next != null) {
-//						Node node = new Node();
-//						node.setCnt(current);
-//						node.setOrphan(false);
-//						diGraph.setVertexAsSelected(current);
-//						if (!path.isNextExist(current, 0)) {
-//							if (isReverse)
-//								path.unshift(node);
-//							else
-//								path.push(node);
-//						}
-//						Contig temp = current;
-//						current = next;
-//						next = diGraph.getNextVertex(current, temp);
-//						if (next.equals(startPoint))
-//							count += 1;
-//						if (current.equals(startPoint))
-//							isReverse = true;
-//						if (current.equals(startPoint) && count == 2) {
-//							paths.add(path);
-//							break;
-//						}
-//					}
+
+					// int count = 0;
+					// boolean isReverse = false;
+					// Contig next = diGraph.getNextVertex(current, null);
+					// while (next != null) {
+					// Node node = new Node();
+					// node.setCnt(current);
+					// node.setOrphan(false);
+					// diGraph.setVertexAsSelected(current);
+					// if (!path.isNextExist(current, 0)) {
+					// if (isReverse)
+					// path.unshift(node);
+					// else
+					// path.push(node);
+					// }
+					// Contig temp = current;
+					// current = next;
+					// next = diGraph.getNextVertex(current, temp);
+					// if (next.equals(startPoint))
+					// count += 1;
+					// if (current.equals(startPoint))
+					// isReverse = true;
+					// if (current.equals(startPoint) && count == 2) {
+					// paths.add(path);
+					// break;
+					// }
+					// }
 				} else if (adjSetSize >= 3) {
 					diGraph.setVertexAsSelected(current);
 					continue;
@@ -570,42 +540,39 @@ public class PathBuilder {
 					current.setMeanDist2Next(0);
 					current.setSdDist2Next(0);
 					current.setSupportLinkNum(0);
-				} else
-				{
-					for(int i = 0 ; i < pathSize - 1; i++)
-					{
+				} else {
+					for (int i = 0; i < pathSize - 1; i++) {
 						Node current = np.getElement(i);
 						Node next = np.getElement(i + 1);
 						Contig cCnt = current.getCnt();
 						Contig nCnt = next.getCnt();
 						Edge e = null;
 						List<Edge> es = diGraph.getEdgesInfo(current.getCnt(), next.getCnt());
-						for(Edge t : es)
-						{
-							if(t.getOrigin().equals(cCnt) && t.getTerminus().equals(nCnt))
+						for (Edge t : es) {
+							if (t.getOrigin().equals(cCnt) && t.getTerminus().equals(nCnt))
 								e = t;
 						}
-						if(current.getStrand() == null)
+						if (current.getStrand() == null)
 							current.setStrand(e.getoStrand());
-						if(next.getStrand() == null)
+						if (next.getStrand() == null)
 							next.setStrand(e.gettStrand());
-//						
-//						
-//						if (e.getOrigin().equals(current.getCnt())) {
-//							current.setStrand(e.getoStrand());
-//							next.setStrand(e.gettStrand());
-//						} else {
-//							// for the previous point
-//							if (e.gettStrand().equals(Strand.FORWARD))
-//								current.setStrand(Strand.REVERSE);
-//							else
-//								current.setStrand(Strand.FORWARD);
-//							// for the following point
-//							if (e.getoStrand().equals(Strand.FORWARD))
-//								next.setStrand(Strand.REVERSE);
-//							else
-//								next.setStrand(Strand.FORWARD);
-//						}
+						//
+						//
+						// if (e.getOrigin().equals(current.getCnt())) {
+						// current.setStrand(e.getoStrand());
+						// next.setStrand(e.gettStrand());
+						// } else {
+						// // for the previous point
+						// if (e.gettStrand().equals(Strand.FORWARD))
+						// current.setStrand(Strand.REVERSE);
+						// else
+						// current.setStrand(Strand.FORWARD);
+						// // for the following point
+						// if (e.getoStrand().equals(Strand.FORWARD))
+						// next.setStrand(Strand.REVERSE);
+						// else
+						// next.setStrand(Strand.FORWARD);
+						// }
 						// for the distance, sd and support links
 						int meanSum = e.getDistMean();
 						int sdSum = e.getDistSd();
@@ -615,105 +582,70 @@ public class PathBuilder {
 						current.setSupportLinkNum(slSum);
 					}
 				}
-				
-/*				else if (pathSize == 2) {
-					Node current = np.getElement(0);
-					Node next = np.getElement(1);
-					List<Edge> eInfo = diGraph.getEdgesInfo(current.getCnt(), next.getCnt());
-					Edge e = eInfo.get(0);
-					if (e.getOrigin().equals(current.getCnt())) {
-						current.setStrand(e.getoStrand());
-						next.setStrand(e.gettStrand());
-					} else {
-						// for the previous point
-						if (e.gettStrand().equals(Strand.FORWARD))
-							current.setStrand(Strand.REVERSE);
-						else
-							current.setStrand(Strand.FORWARD);
-						// for the following point
-						if (e.getoStrand().equals(Strand.FORWARD))
-							next.setStrand(Strand.REVERSE);
-						else
-							next.setStrand(Strand.FORWARD);
-					}
-					// for the distance, sd and support links
-					int meanSum = e.getDistMean();
-					int sdSum = e.getDistSd();
-					int slSum = e.getLinkNum();
-//					if (eInfo.size() == 1) {
-//						meanSum = eInfo.get(0).getDistMean();
-//						sdSum = eInfo.get(0).getDistSd();
-//						slSum = eInfo.get(0).getLinkNum();
-//					} else {
-//						Edge e2 = eInfo.get(1);
-//						meanSum = MathTool.mean(new Integer[] { e.getDistMean(), e2.getDistMean() });
-//						sdSum = MathTool.mean(new Integer[] { e.getDistSd(), e2.getDistSd() });
-//						slSum = e.getLinkNum() + e2.getLinkNum();
-//					}
-					current.setMeanDist2Next(meanSum);
-					current.setSdDist2Next(sdSum);
-					current.setSupportLinkNum(slSum);
-				} else {
-					for (int i = 0; i < pathSize - 1; i++) {
-						Node previous = np.getElement(i);
-						Node following = np.getElement(i + 1);
-						List<Edge> eInfo = diGraph.getEdgesInfo(previous.getCnt(), following.getCnt());
-						Edge e1 = eInfo.get(0);
-						if (e1.getOrigin().equals(previous.getCnt())) {
-							if (previous.getStrand() == null) {
-								previous.setStrand(e1.getoStrand());
-								following.setStrand(e1.gettStrand());
-							} else {
-								if (e1.getoStrand().equals(previous.getStrand())) {
-									following.setStrand(e1.gettStrand());
-								} else {
-									// do some check, since the orientation is
-									// wrong in path!
-								}
-							}
-						} else {
-							if (previous.getStrand() == null) {
-								if (e1.gettStrand().equals(Strand.FORWARD))
-									previous.setStrand(Strand.REVERSE);
-								else
-									previous.setStrand(Strand.FORWARD);
-								if (e1.getoStrand().equals(Strand.FORWARD))
-									following.setStrand(Strand.REVERSE);
-								else
-									following.setStrand(Strand.FORWARD);
-							} else {
-								if (!e1.gettStrand().equals(previous.getStrand())) {
-									if (e1.getoStrand().equals(Strand.FORWARD))
-										following.setStrand(Strand.REVERSE);
-									else
-										following.setStrand(Strand.FORWARD);
-								} else {
-									// do some check, since the orientation is
-									// wrong in path!
-									// it need to implemented!
-								}
-							}
-						}
 
-						// distance, sd and supported link
-						int meanSum = 0;
-						int sdSum = 0;
-						int slSum = 0;
-						if (eInfo.size() == 1) {
-							meanSum = eInfo.get(0).getDistMean();
-							sdSum = eInfo.get(0).getDistSd();
-							slSum = eInfo.get(0).getLinkNum();
-						} else {
-							Edge e2 = eInfo.get(1);
-							meanSum = MathTool.mean(new Integer[] { e1.getDistMean(), e2.getDistMean() });
-							sdSum = MathTool.mean(new Integer[] { e1.getDistSd(), e2.getDistSd() });
-							slSum = e1.getLinkNum() + e2.getLinkNum();
-						}
-						previous.setMeanDist2Next(meanSum);
-						previous.setSdDist2Next(sdSum);
-						previous.setSupportLinkNum(slSum);
-					}
-				}*/
+				/*
+				 * else if (pathSize == 2) { Node current = np.getElement(0);
+				 * Node next = np.getElement(1); List<Edge> eInfo =
+				 * diGraph.getEdgesInfo(current.getCnt(), next.getCnt()); Edge e
+				 * = eInfo.get(0); if (e.getOrigin().equals(current.getCnt())) {
+				 * current.setStrand(e.getoStrand());
+				 * next.setStrand(e.gettStrand()); } else { // for the previous
+				 * point if (e.gettStrand().equals(Strand.FORWARD))
+				 * current.setStrand(Strand.REVERSE); else
+				 * current.setStrand(Strand.FORWARD); // for the following point
+				 * if (e.getoStrand().equals(Strand.FORWARD))
+				 * next.setStrand(Strand.REVERSE); else
+				 * next.setStrand(Strand.FORWARD); } // for the distance, sd and
+				 * support links int meanSum = e.getDistMean(); int sdSum =
+				 * e.getDistSd(); int slSum = e.getLinkNum(); // if
+				 * (eInfo.size() == 1) { // meanSum =
+				 * eInfo.get(0).getDistMean(); // sdSum =
+				 * eInfo.get(0).getDistSd(); // slSum =
+				 * eInfo.get(0).getLinkNum(); // } else { // Edge e2 =
+				 * eInfo.get(1); // meanSum = MathTool.mean(new Integer[] {
+				 * e.getDistMean(), e2.getDistMean() }); // sdSum =
+				 * MathTool.mean(new Integer[] { e.getDistSd(), e2.getDistSd()
+				 * }); // slSum = e.getLinkNum() + e2.getLinkNum(); // }
+				 * current.setMeanDist2Next(meanSum);
+				 * current.setSdDist2Next(sdSum);
+				 * current.setSupportLinkNum(slSum); } else { for (int i = 0; i
+				 * < pathSize - 1; i++) { Node previous = np.getElement(i); Node
+				 * following = np.getElement(i + 1); List<Edge> eInfo =
+				 * diGraph.getEdgesInfo(previous.getCnt(), following.getCnt());
+				 * Edge e1 = eInfo.get(0); if
+				 * (e1.getOrigin().equals(previous.getCnt())) { if
+				 * (previous.getStrand() == null) {
+				 * previous.setStrand(e1.getoStrand());
+				 * following.setStrand(e1.gettStrand()); } else { if
+				 * (e1.getoStrand().equals(previous.getStrand())) {
+				 * following.setStrand(e1.gettStrand()); } else { // do some
+				 * check, since the orientation is // wrong in path! } } } else
+				 * { if (previous.getStrand() == null) { if
+				 * (e1.gettStrand().equals(Strand.FORWARD))
+				 * previous.setStrand(Strand.REVERSE); else
+				 * previous.setStrand(Strand.FORWARD); if
+				 * (e1.getoStrand().equals(Strand.FORWARD))
+				 * following.setStrand(Strand.REVERSE); else
+				 * following.setStrand(Strand.FORWARD); } else { if
+				 * (!e1.gettStrand().equals(previous.getStrand())) { if
+				 * (e1.getoStrand().equals(Strand.FORWARD))
+				 * following.setStrand(Strand.REVERSE); else
+				 * following.setStrand(Strand.FORWARD); } else { // do some
+				 * check, since the orientation is // wrong in path! // it need
+				 * to implemented! } } }
+				 * 
+				 * // distance, sd and supported link int meanSum = 0; int sdSum
+				 * = 0; int slSum = 0; if (eInfo.size() == 1) { meanSum =
+				 * eInfo.get(0).getDistMean(); sdSum = eInfo.get(0).getDistSd();
+				 * slSum = eInfo.get(0).getLinkNum(); } else { Edge e2 =
+				 * eInfo.get(1); meanSum = MathTool.mean(new Integer[] {
+				 * e1.getDistMean(), e2.getDistMean() }); sdSum =
+				 * MathTool.mean(new Integer[] { e1.getDistSd(), e2.getDistSd()
+				 * }); slSum = e1.getLinkNum() + e2.getLinkNum(); }
+				 * previous.setMeanDist2Next(meanSum);
+				 * previous.setSdDist2Next(sdSum);
+				 * previous.setSupportLinkNum(slSum); } }
+				 */
 			}
 		} catch (Exception e) {
 			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
@@ -813,37 +745,77 @@ public class PathBuilder {
 	 */
 
 	// c1 for middle and c2 for two adjacent;
-	public Contig getTriadLinkNext(Contig c1, Contig c2)
-	{
+	public Contig getTriadLinkNext(Contig internal, Contig external) {
 		Contig next = null;
-		if(triads == null)
-		{
+		boolean isIdeal = true;
+		if (triads == null) {
 			TriadLinkReader tlr = new TriadLinkReader(paras);
 			triads = tlr.read();
 		}
 		List<TriadLink> tls = new Vector<TriadLink>();
-		for(TriadLink tl : triads)
-		{
+		// divide into two cases;
+		// ideal case: the divergence contig is internal contig in triadlink and the external
+		// contig is beside to the internal contig;
+		// non-ideal case: the triad link is missing the internal contig, but connect to the 
+		// other external contig;
+		// the ideal case:
+		for (TriadLink tl : triads) {
 			Contig pre = tl.getPrevious();
 			Contig mid = tl.getMiddle();
 			Contig lst = tl.getLast();
-			if(!c1.equals(mid))
+			if (!internal.equals(mid))
 				continue;
-			if(c2.equals(pre) || c2.equals(lst))
-			{
+			if (external.equals(pre) || external.equals(lst)) {
 				tls.add(tl);
 			}
 		}
+		// try non-ideal case, if ideal case does not exist;
 		if(tls.isEmpty())
+		{
+			isIdeal = false;
+			List<Contig> adjs = diGraph.getAdjVertices(internal);
+			// remove the external contig in adjs;
+			Iterator<Contig> it = adjs.iterator();
+			while(it.hasNext())
+			{
+				Contig c = it.next();
+				if(c.equals(external))
+					it.remove();
+			}
+			// if triads contain external have one of other contig;
+			for(TriadLink tl : triads)
+			{
+				Contig pre = tl.getPrevious();
+				Contig mid = tl.getMiddle();
+				Contig lst = tl.getLast();
+				if(external.equals(pre) || external.equals(lst))
+				{
+					for(Contig c : adjs)
+					{
+						if(tl.isContain(c))
+							tls.add(tl);
+					}
+				} 
+			}
+		}
+		// if still null return;
+		if (tls.isEmpty())
 			return null;
 		TriadLinkComparator tlc = new TriadLinkComparator();
 		Collections.sort(tls, tlc);
 		TriadLink tl = tls.get(tls.size() - 1);
-		if(tl.getPrevious().equals(c2))
-			next = tl.getLast();
-		else if(tl.getLast().equals(c2))
-			next = tl.getPrevious();
-		triads.remove(tl);
+		if(isIdeal)
+		{
+			if (tl.getPrevious().equals(external))
+				next = tl.getLast();
+			else if (tl.getLast().equals(external))
+				next = tl.getPrevious();
+			triads.remove(tl);
+		} else
+		{
+			next = tl.getMiddle();
+			triads.remove(tl);
+		}
 		return next;
 	}
 
