@@ -6,6 +6,10 @@
 */
 package agis.ps.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,16 +19,96 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.file.ContigCoverageWriter;
+import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
 
 public class RepeatFinder {
 	
 	public static Logger logger = LoggerFactory.getLogger(RepeatFinder.class);
 	private Parameter paras;
+	private List<String> repeats;
+	private Map<String, List<MRecord>> cntMaps; 
+	private int minCNTLen = 0;
+	private int minPBLen = 0;
+	private double identity = 0.0d;
 	
 	public RepeatFinder(Parameter paras)
 	{
 		this.paras = paras;
+	}
+	
+	public List<String> findRepeat()
+	{
+		long start = System.currentTimeMillis();
+		if(cntMaps == null)
+			cntMaps = new HashMap<String, List<MRecord>>();
+		cntMaps.clear();
+		File file = null;
+		FileReader fr = null;
+		BufferedReader br = null;
+		String alnFile = paras.getAlgFile();
+		try {
+			file = new File(alnFile);
+			if (!file.exists()) {
+				logger.error(this.getClass().getName() + "\t" + "The m5 file do not exist!");
+				 return null;
+			}
+			fr = new FileReader(file);
+			br = new BufferedReader(fr);
+			String line = null;
+			String[] arrs = null;
+			while(true)
+			{
+				line = br.readLine();
+				if(line != null)
+				{
+					arrs = line.split("\\s+");
+					if (arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
+						continue;
+					MRecord m = MRecordValidator.validate(arrs, paras);
+					if(m != null)
+					{
+						String pbId = m.getqName();
+						if(cntMaps.containsKey(pbId))
+						{
+							List<MRecord> ms = cntMaps.get(pbId);
+							if(!ms.contains(m))
+							{
+								ms.add(m);
+								cntMaps.replace(pbId, ms);
+							}
+						} else
+						{
+							List<MRecord> ms = new Vector<MRecord>(10);
+							ms.add(m);
+							cntMaps.put(pbId, ms);
+						}
+					}
+				} else
+				{
+					break;
+				}
+			}
+		} catch(IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		} catch(Exception e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		} finally
+		{
+			try{
+				if(br != null)
+					br.close();
+			} catch(Exception e)
+			{
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			}
+		}
+		repeats = this.findRepeat(cntMaps);
+		long end = System.currentTimeMillis();
+		logger.info("Finding repeat, erase time: " + (end - start) / 1000 + " s");
+		return repeats;
 	}
 	
 	public List<String> findRepeat(Map<String, List<MRecord>> args)
@@ -87,14 +171,14 @@ public class RepeatFinder {
 		int sd = MathTool.sd(covs);
 		int median = MathTool.median(covs);
 		int upper = median + 2 * sd;
-		logger.debug("Mean cov = " + mean);
-		logger.debug("Median cov = " + median);
-		logger.debug("S.D. = " + sd);
-		logger.debug("Mean Range 95%: [" + (mean - 2 * sd) + " : " + (mean + 2 * sd) + "]");
-		logger.debug("Mean Range 99%: [" + (mean - 3 * sd) + " : " + (mean + 3 * sd) + "]");
-		logger.debug("Median Range 95%: [" + (median - 2 * sd) + " : " + (median + 2 * sd) + "]");
-		logger.debug("Median Range 99%: [" + (median - 3 * sd) + " : " + (median + 3 * sd) + "]");
-		logger.debug("Pesudo repeat contigs");
+		logger.info("Mean cov = " + mean);
+		logger.info("Median cov = " + median);
+		logger.info("S.D. = " + sd);
+		logger.info("Mean Range 95%: [" + (mean - 2 * sd) + " : " + (mean + 2 * sd) + "]");
+		logger.info("Mean Range 99%: [" + (mean - 3 * sd) + " : " + (mean + 3 * sd) + "]");
+		logger.info("Median Range 95%: [" + (median - 2 * sd) + " : " + (median + 2 * sd) + "]");
+		logger.info("Median Range 99%: [" + (median - 3 * sd) + " : " + (median + 3 * sd) + "]");
+		logger.info("Pesudo repeat contigs");
 //		Map<String, List<String>> repeat = new HashMap<String, List<String>>();
 		for(String id : cntCounts.keySet())
 		{
@@ -102,10 +186,10 @@ public class RepeatFinder {
 			{
 //				repeat.put(id, cntCounts.get(id));
 				repeats.add(id);
-				logger.debug(id + " might be repeat!");
+				logger.info(id + " might be repeat!");
 			}
 		}
-		logger.debug("Repeat count: " + repeats.size());
+		logger.info("Repeat count: " + repeats.size());
 		ContigCoverageWriter ccw = new ContigCoverageWriter(paras, cntCounts);
 		ccw.write();;
 		return repeats;

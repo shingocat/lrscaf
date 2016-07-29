@@ -889,7 +889,6 @@ public class ScaffoldWriter {
 					value = cs.getConsensus(seqs);
 				} catch (CompoundNotFoundException e) {
 					// TODO Auto-generated catch block
-					logger.debug(this.getClass().getName() + "\t" + e.getMessage());
 					logger.error(this.getClass().getName() + "\t" + e.getMessage());
 					if (t1.length() > t2.length())
 						value = t1;
@@ -908,7 +907,6 @@ public class ScaffoldWriter {
 				try {
 					value = cs.getConsensus(seqs);
 				} catch (CompoundNotFoundException e) {
-					logger.debug(this.getClass().getName() + "\t" + e.getMessage());
 					logger.error(this.getClass().getName() + "\t" + e.getMessage());
 					if (t1.length() > t2.length())
 						value = t1;
@@ -934,7 +932,6 @@ public class ScaffoldWriter {
 				try {
 					value = cs.getConsensus(seqs);
 				} catch (CompoundNotFoundException e) {
-					logger.debug(this.getClass().getName() + "\t" + e.getMessage());
 					logger.error(this.getClass().getName() + "\t" + e.getMessage());
 					if (t1.length() > t2.length())
 						value = t1;
@@ -957,7 +954,6 @@ public class ScaffoldWriter {
 				try {
 					value = cs.getConsensus(seqs);
 				} catch (CompoundNotFoundException e) {
-					logger.debug(this.getClass().getName() + "\t" + e.getMessage());
 					logger.error(this.getClass().getName() + "\t" + e.getMessage());
 					if (t1.length() > t2.length())
 						value = t1;

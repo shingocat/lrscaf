@@ -21,6 +21,8 @@ import org.biojava.nbio.core.sequence.compound.DNACompoundSet;
 import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
 import org.biojava.nbio.core.util.ConcurrencyTools;
 
+import com.sun.media.jfxmedia.logging.Logger;
+
 // if indicator equal to nw, specific the global alignment, abbreviation of Needleman-Wunsch; 
 // else indicator equal to sw, specific the local alignment, abbreviation of Smith-Waterman; 
 public class Consensusser {
@@ -30,6 +32,20 @@ public class Consensusser {
 	private int gap = -2;
 	
 	public String getConsensus(List<String> seqs) throws CompoundNotFoundException
+	{
+		if(seqs.size() == 2)
+		{
+			String seq1 = seqs.get(0);
+			String seq2 = seqs.get(1);
+			return this.nw_2(seq1, seq2);
+		} else
+		{
+			return this.getConsensus_biojava(seqs);
+		}
+	}
+	
+	
+	public String getConsensus_biojava(List<String> seqs) throws CompoundNotFoundException
 	{
 		List<DNASequence> dnas = new Vector<DNASequence>();
 		for(String s : seqs)
