@@ -139,13 +139,16 @@ public class LinkBuilder {
 		}
 		
 		// deleting repeats;
-		Iterator<MRecord> iterator = valids.iterator();
-		while(iterator.hasNext())
+		if(paras.isRepMask())
 		{
-			MRecord m = iterator.next();
-			String cntId = m.gettName();
-			if(repeats.contains(cntId))
-				iterator.remove();
+			Iterator<MRecord> iterator = valids.iterator();
+			while(iterator.hasNext())
+			{
+				MRecord m = iterator.next();
+				String cntId = m.gettName();
+				if(repeats.contains(cntId))
+					iterator.remove();
+			}
 		}
 
 		// iterator valid mrecords
