@@ -75,9 +75,6 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-				// index++;
-				// if(index == 49)
-				// logger.debug("index error " + index);
 				Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false then break;
@@ -104,7 +101,6 @@ public class PathBuilder {
 					path = new NodePath();
 					// Contig next = diGraph.getNextVertex(current, null);
 					Contig next = adjs.get(0);
-					Contig startPoint = current;
 					while (true) {
 						Node node = new Node();
 						node.setCnt(current);
@@ -145,9 +141,8 @@ public class PathBuilder {
 						}
 					}
 					paths.add(path);
-				} else if (adjsSize == 2) { // middle point;
-											// normal start point, located in
-											// the linear path
+				} else if (adjsSize == 2) { 
+					// middle point; normal start point, located in the linear path
 					path = new NodePath();
 					Node node = new Node();
 					node.setCnt(current);
@@ -770,10 +765,11 @@ public class PathBuilder {
 			}
 		}
 		// try non-ideal case, if ideal case does not exist;
+		List<Contig> adjs = null;
 		if(tls.isEmpty())
 		{
 			isIdeal = false;
-			List<Contig> adjs = diGraph.getAdjVertices(internal);
+			adjs = diGraph.getAdjVertices(internal);
 			// remove the external contig in adjs;
 			Iterator<Contig> it = adjs.iterator();
 			while(it.hasNext())
@@ -788,7 +784,8 @@ public class PathBuilder {
 				Contig pre = tl.getPrevious();
 				Contig mid = tl.getMiddle();
 				Contig lst = tl.getLast();
-				if(external.equals(pre) || external.equals(lst))
+//				if(external.equals(pre) || external.equals(lst))
+				if(tl.isContain(external))
 				{
 					for(Contig c : adjs)
 					{
@@ -813,7 +810,14 @@ public class PathBuilder {
 			triads.remove(tl);
 		} else
 		{
-			next = tl.getMiddle();
+			//next = tl.getMiddle();
+			Iterator<Contig> it = adjs.iterator();
+			while(it.hasNext())
+			{
+				Contig c = it.next();
+				if(tl.isContain(c))
+					next = c;
+			}
 			triads.remove(tl);
 		}
 		return next;
