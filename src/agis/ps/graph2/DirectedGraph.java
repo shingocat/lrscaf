@@ -99,9 +99,11 @@ public class DirectedGraph extends Graph implements Serializable {
 	}
 
 	// return next vertices by current and former vertex
+	// but exclude former contig;
+	@Override
 	public List<Contig> getNextVertices(Contig current, Contig former) {
 		List<Contig> adjs = this.adjTos.get(current.getID());
-		List<Contig> values = new Vector<Contig>();
+		List<Contig> values = new Vector<Contig>(adjs.size() - 1);
 		Iterator<Contig> it = adjs.iterator();
 		while (it.hasNext()) {
 			Contig c = it.next();

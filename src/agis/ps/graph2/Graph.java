@@ -170,6 +170,10 @@ public abstract class Graph implements Serializable, IUntangler {
 
 	// return the next vertex from the current vertex and former vertex;
 	public abstract Contig getNextVertex(Contig current, Contig former);
+	
+	// return the next vertices from the current vertext and former vertext
+	// but exclude the former vertex
+	public abstract List<Contig> getNextVertices(Contig current, Contig former);
 
 	// return the next vertex from the current vertex and former vertex;
 	public abstract Contig getNextVertex2(Contig current, Contig former);

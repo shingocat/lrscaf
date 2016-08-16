@@ -14,8 +14,8 @@ public class TriadLinkComparator implements Comparator<TriadLink> {
 	public int compare(TriadLink o1, TriadLink o2) {
 		// TODO Auto-generated method stub
 		if(o1.getSupLinks() >= o2.getSupLinks())
-			return 1;
-		return -1;
+			return -1;
+		return 1;
 	}
 
 }

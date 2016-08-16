@@ -76,6 +76,7 @@ public class Contig extends DNASequence {
 
 	@Override
 	public String toString() {
-		return "Contig [ID=" + this.getAccession().getID() + ", length=" + this.getLength() + "]";
+//		return "Contig [ID=" + this.getAccession().getID() + ", length=" + this.getLength() + "]";
+		return "Contig [ID=" + this.getAccession().getID() + "]";
 	}
 }
