@@ -83,8 +83,8 @@ public class PathBuilder {
 				// isExistUnSelectedVertices equal false then break;
 				if (current == null)
 					break;
-//				if(current.getID().equals("1339"))
-//					logger.debug("null exception");
+				// if(current.getID().equals("1339"))
+				// logger.debug("null exception");
 				List<Contig> adjs = diGraph.getAdjVertices(current);
 				if (adjs == null) {
 					diGraph.setVertexAsSelected(current);
@@ -118,19 +118,16 @@ public class PathBuilder {
 						next = diGraph.getNextVertex(current, previous);
 						if (next == null) { // for the divergence point
 							List<Contig> selectedCnts = this.getTriadLinkNext3(current, previous);
-							if(selectedCnts == null)
-							{
+							if (selectedCnts == null) {
 								next = null;
 								current = null;
 								previous = null;
 								break;
 							}
 							int size = selectedCnts.size();
-							if(size == 1)
-							{
+							if (size == 1) {
 								next = selectedCnts.get(0);
-							} else if(size == 2)
-							{
+							} else if (size == 2) {
 								Node iNode = new Node();
 								iNode.setCnt(current);
 								iNode.setOrphan(false);
@@ -139,12 +136,15 @@ public class PathBuilder {
 								previous = current;
 								current = selectedCnts.get(0);
 								next = selectedCnts.get(1);
-							} else 
-							{
-								for(int i = 0; i < size - 2; i++)
-								{
+							} else {
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
+								for (int i = 0; i < size - 2; i++) {
 									current = selectedCnts.get(i);
-									Node iNode = new Node();
+									iNode = new Node();
 									iNode.setCnt(current);
 									iNode.setOrphan(false);
 									diGraph.setVertexAsSelected(current);
@@ -154,20 +154,21 @@ public class PathBuilder {
 								current = selectedCnts.get(size - 2);
 								next = selectedCnts.get(size - 1);
 							}
-//							next = getTriadLinkNext2(current, previous);
-//							// checking next is not null statement,
-//							// but the next will be not the adjacent vertex
-//							if (next != null) {
-//								List<Contig> tAdjs = diGraph.getAdjVertices(current);
-//								if (!tAdjs.contains(next))
-//									next = null;
-//							}
-//							if (next == null) {
-//								next = null;
-//								current = null;
-//								previous = null;
-//								break;
-//							}
+							// next = getTriadLinkNext2(current, previous);
+							// // checking next is not null statement,
+							// // but the next will be not the adjacent vertex
+							// if (next != null) {
+							// List<Contig> tAdjs =
+							// diGraph.getAdjVertices(current);
+							// if (!tAdjs.contains(next))
+							// next = null;
+							// }
+							// if (next == null) {
+							// next = null;
+							// current = null;
+							// previous = null;
+							// break;
+							// }
 						}
 						if (next.equals(previous)) { // for the linear end point
 							Node n = new Node();
@@ -228,19 +229,16 @@ public class PathBuilder {
 							next = diGraph.getNextVertex(current, previous);
 						} else {
 							List<Contig> selectedCnts = this.getTriadLinkNext3(current, previous);
-							if(selectedCnts == null)
-							{
+							if (selectedCnts == null) {
 								next = null;
 								current = null;
 								previous = null;
 								break;
 							}
 							int size = selectedCnts.size();
-							if(size == 1)
-							{
+							if (size == 1) {
 								next = selectedCnts.get(0);
-							} else if(size == 2)
-							{
+							} else if (size == 2) {
 								Node iNode = new Node();
 								iNode.setCnt(current);
 								iNode.setOrphan(false);
@@ -249,12 +247,16 @@ public class PathBuilder {
 								previous = current;
 								current = selectedCnts.get(0);
 								next = selectedCnts.get(1);
-							} else 
-							{
-								for(int i = 0; i < size - 2; i++)
-								{
+							} else {
+								// push right now current node
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.unshift(iNode);
+								for (int i = 0; i < size - 2; i++) {
 									current = selectedCnts.get(i);
-									Node iNode = new Node();
+									iNode = new Node();
 									iNode.setCnt(current);
 									iNode.setOrphan(false);
 									diGraph.setVertexAsSelected(current);
@@ -264,19 +266,21 @@ public class PathBuilder {
 								current = selectedCnts.get(size - 2);
 								next = selectedCnts.get(size - 1);
 							}
-//							List<Contig> unique = this.getTriadLinkNext3(current, previous);
-//							next = getTriadLinkNext2(current, previous);
-//							// checking next is not null statement,
-//							// but the next will be not the adjacent vertex
-//							if (next != null) {
-//								List<Contig> tAdjs = diGraph.getAdjVertices(current);
-//								if (!tAdjs.contains(next))
-//									next = null;
-//							}
-//							if (next == null) {
-//								diGraph.setVertexAsSelected(current);
-//								break;
-//							}
+							// List<Contig> unique =
+							// this.getTriadLinkNext3(current, previous);
+							// next = getTriadLinkNext2(current, previous);
+							// // checking next is not null statement,
+							// // but the next will be not the adjacent vertex
+							// if (next != null) {
+							// List<Contig> tAdjs =
+							// diGraph.getAdjVertices(current);
+							// if (!tAdjs.contains(next))
+							// next = null;
+							// }
+							// if (next == null) {
+							// diGraph.setVertexAsSelected(current);
+							// break;
+							// }
 						}
 					}
 					// for c2 direction; using c1 as previous point; checking
@@ -314,19 +318,16 @@ public class PathBuilder {
 							next = diGraph.getNextVertex(current, previous);
 						} else {
 							List<Contig> selectedCnts = this.getTriadLinkNext3(current, previous);
-							if(selectedCnts == null)
-							{
+							if (selectedCnts == null) {
 								next = null;
 								current = null;
 								previous = null;
 								break;
 							}
 							int size = selectedCnts.size();
-							if(size == 1)
-							{
+							if (size == 1) {
 								next = selectedCnts.get(0);
-							} else if(size == 2)
-							{
+							} else if (size == 2) {
 								Node iNode = new Node();
 								iNode.setCnt(current);
 								iNode.setOrphan(false);
@@ -335,12 +336,15 @@ public class PathBuilder {
 								previous = current;
 								current = selectedCnts.get(0);
 								next = selectedCnts.get(1);
-							} else 
-							{
-								for(int i = 0; i < size - 2; i++)
-								{
+							} else {
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
+								for (int i = 0; i < size - 2; i++) {
 									current = selectedCnts.get(i);
-									Node iNode = new Node();
+									iNode = new Node();
 									iNode.setCnt(current);
 									iNode.setOrphan(false);
 									diGraph.setVertexAsSelected(current);
@@ -350,19 +354,21 @@ public class PathBuilder {
 								current = selectedCnts.get(size - 2);
 								next = selectedCnts.get(size - 1);
 							}
-//							List<Contig> unique = this.getTriadLinkNext3(current, previous);
-//							next = getTriadLinkNext2(current, previous);
-//							// checking next is not null statement,
-//							// but the next will be not the adjacent vertex
-//							if (next != null) {
-//								List<Contig> tAdjs = diGraph.getAdjVertices(current);
-//								if (!tAdjs.contains(next))
-//									next = null;
-//							}
-//							if (next == null) {
-//								diGraph.setVertexAsSelected(current);
-//								break;
-//							}
+							// List<Contig> unique =
+							// this.getTriadLinkNext3(current, previous);
+							// next = getTriadLinkNext2(current, previous);
+							// // checking next is not null statement,
+							// // but the next will be not the adjacent vertex
+							// if (next != null) {
+							// List<Contig> tAdjs =
+							// diGraph.getAdjVertices(current);
+							// if (!tAdjs.contains(next))
+							// next = null;
+							// }
+							// if (next == null) {
+							// diGraph.setVertexAsSelected(current);
+							// break;
+							// }
 						}
 					}
 					paths.add(path);
@@ -639,7 +645,6 @@ public class PathBuilder {
 				}
 			}
 		} catch (Exception e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		// orientation contig in the paths;
@@ -878,8 +883,7 @@ public class PathBuilder {
 			uniques.addAll(tempUnique);
 		}
 		// based on unique contig to travel divergence node;
-		// the remainder triadlinks for next-next adjacents contig;
-		List<TriadLink> rmdTls = new Vector<TriadLink>(triads.size());
+
 		// candidate triad link
 		List<TriadLink> canTls = new Vector<TriadLink>(10);
 		TriadLinkComparator tlc = new TriadLinkComparator();
@@ -891,10 +895,14 @@ public class PathBuilder {
 			tl.setLast(c);
 			tl.setSupLinks(0);
 
+			// the remainder triadlinks for next-next adjacents contig;
+			List<TriadLink> rmdTls = new Vector<TriadLink>(triads.size());
+
 			// considering the next adjacent contig
 			Iterator<TriadLink> it = triads.iterator();
+			TriadLink t = null;
 			while (it.hasNext()) {
-				TriadLink t = it.next();
+				t = it.next();
 				// if(t.equals(tl))
 				if (t.isContain(external) && t.isContain(c)) {
 					if (t.isContain(internal)) {
@@ -929,41 +937,56 @@ public class PathBuilder {
 
 			// considering the next next adjacent contig;
 			// only considering unique conditions;
-			List<Contig> canNextAjds = diGraph.getNextVertices(c, internal);	
-			if (canNextAjds.size() == 1) {
-				Contig cn = canNextAjds.get(0);
-				// it = triads.iterator();
-				it = rmdTls.iterator();
-				while (it.hasNext()) {
-					TriadLink t = it.next();
-					if (t.isContain(external) && t.isContain(cn)) {
-						if (t.isContain(internal)) {
-							// if the triad link contain middle contig,
-							// divide into two case:
-							// the middle contig is internal, ideal case;
-							// else the middle contig is not internal,
-							// then substract the supported links
-							Contig mid = t.getMiddle();
-							if (mid.equals(internal))
+			List<Contig> canNextAdjs = diGraph.getNextVertices(c, internal);
+			if (canNextAdjs != null) {
+				// remove internal contig if canNextAdjs size large than 1
+				if (canNextAdjs.size() > 1) {
+					List<Contig> temp = new Vector<Contig>(canNextAdjs.size());
+					for (Contig ct : canNextAdjs) {
+						List<Contig> ctAdjs = diGraph.getNextVertices(ct, c);
+						if (ctAdjs == null || ctAdjs.size() == 1)
+							temp.add(ct);
+					}
+					canNextAdjs.clear();
+					for (Contig ct : temp) {
+						canNextAdjs.add(ct);
+					}
+				}
+				if (canNextAdjs.size() == 1) {
+					Contig cn = canNextAdjs.get(0);
+					// it = triads.iterator();
+					it = rmdTls.iterator();
+					while (it.hasNext()) {
+						t = it.next();
+						if (t.isContain(external) && t.isContain(cn)) {
+							if (t.isContain(internal)) {
+								// if the triad link contain middle contig,
+								// divide into two case:
+								// the middle contig is internal, ideal case;
+								// else the middle contig is not internal,
+								// then substract the supported links
+								Contig mid = t.getMiddle();
+								if (mid.equals(internal))
+									tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+								else
+									tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
+								// it.remove();
+							} else {
 								tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
-							else
-								tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
-							// it.remove();
-						} else {
-							tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
-						}
-						// break;
-						// it.remove();
-						if (delLinksMap.containsKey(c.getID())) {
-							List<TriadLink> tempLink = delLinksMap.get(c.getID());
-							if (!tempLink.contains(t)) {
-								tempLink.add(t);
-								delLinksMap.replace(c.getID(), tempLink);
 							}
-						} else {
-							List<TriadLink> tempLink = new Vector<TriadLink>(10);
-							tempLink.add(t);
-							delLinksMap.put(c.getID(), tempLink);
+							// break;
+							// it.remove();
+							if (delLinksMap.containsKey(c.getID())) {
+								List<TriadLink> tempLink = delLinksMap.get(c.getID());
+								if (!tempLink.contains(t)) {
+									tempLink.add(t);
+									delLinksMap.replace(c.getID(), tempLink);
+								}
+							} else {
+								List<TriadLink> tempLink = new Vector<TriadLink>(10);
+								tempLink.add(t);
+								delLinksMap.put(c.getID(), tempLink);
+							}
 						}
 					}
 				}
@@ -976,7 +999,7 @@ public class PathBuilder {
 			return null;
 		Collections.sort(canTls, tlc);
 		TriadLink tl = canTls.get(0);
-		if(tl.getSupLinks() == 0)
+		if (tl.getSupLinks() == 0)
 			return null;
 		// remove the supported triadlinks
 		List<TriadLink> dels = delLinksMap.get(tl.getLast().getID());
@@ -985,52 +1008,43 @@ public class PathBuilder {
 		}
 		// return the contig path;
 		LinkedList<Contig> path = new LinkedList<Contig>();
-		if(adjInternals.contains(tl.getLast()))
-		{
+		if (adjInternals.contains(tl.getLast())) {
 			path.addLast(tl.getLast());
 			return path;
-		} else
-		{
+		} else {
 			return this.getInternalPath(external, internal, tl.getLast());
 		}
 	}
-	
-	private LinkedList<Contig> getInternalPath(Contig external, Contig internal, Contig unique)
-	{
+
+	private LinkedList<Contig> getInternalPath(Contig external, Contig internal, Contig unique) {
 		LinkedList<Contig> path = new LinkedList<Contig>();
 		List<Contig> nextAdjs = diGraph.getNextVertices(internal, external);
 		int depth = 5;
-		for(Contig c : nextAdjs)
-		{
+		for (Contig c : nextAdjs) {
 			this.getInternalPath(internal, c, depth, unique, path);
 		}
-		if(path.size() != 0)
+		if (path.size() != 0)
 			return path;
-		else 
+		else
 			return null;
 	}
-	
-	private void getInternalPath(Contig previous, Contig current, int depth, Contig unique, LinkedList<Contig> path)
-	{
+
+	private void getInternalPath(Contig previous, Contig current, int depth, Contig unique, LinkedList<Contig> path) {
 		path.addLast(current);
 		List<Contig> nextAdjs = diGraph.getNextVertices(current, previous);
-		if(nextAdjs == null || nextAdjs.size() == 0)
-		{
+		if (nextAdjs == null || nextAdjs.size() == 0) {
 			path.clear();
 			return;
 		}
-		if(depth == 0)
-		{
+		if (depth == 0) {
 			path.clear();
 			return;
 		}
-		if(nextAdjs.contains(unique))
-		{
+		if (nextAdjs.contains(unique)) {
 			path.addLast(unique);
 			return;
 		}
-		for(Contig c : nextAdjs)
-		{
+		for (Contig c : nextAdjs) {
 			this.getInternalPath(current, c, depth - 1, unique, path);
 		}
 	}
@@ -1038,14 +1052,13 @@ public class PathBuilder {
 	private void getNextUniqueContigs(Contig current, Contig previous, int depth, List<Contig> uniques) {
 		// List<Contig> uniques = new Vector<Contig>(5);
 		List<Contig> nextAdjs = diGraph.getNextVertices(current, previous);
-		if (nextAdjs.size() == 0)
+		if (nextAdjs == null || nextAdjs.size() == 0)
 			return;
 		if (depth == 0)
 			return;
 		if (nextAdjs.size() > 1) {
 			uniques.clear();
-			for(Contig c : nextAdjs)
-			{
+			for (Contig c : nextAdjs) {
 				uniques.add(c);
 			}
 			return;
