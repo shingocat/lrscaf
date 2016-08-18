@@ -97,6 +97,15 @@ public class DirectedGraph extends Graph implements Serializable {
 		num = getAdjVertices(cnt).size();
 		return num;
 	}
+	
+	@Override
+	public boolean isDivergenceVertex(Contig cnt)
+	{
+		if(this.getVertexAdjVerticesNum(cnt) > 2)
+			return true;
+		else 
+			return false;
+	}
 
 	// return next vertices by current and former vertex
 	// but exclude former contig;

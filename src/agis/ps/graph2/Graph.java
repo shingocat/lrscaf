@@ -164,6 +164,9 @@ public abstract class Graph implements Serializable, IUntangler {
 		}
 		return cnt;
 	}
+	
+	// return whether the contig is divergence contig;
+	public abstract boolean isDivergenceVertex(Contig cnt);
 
 	// return all the adjacent vertices to or from this contig;
 	public abstract List<Contig> getAdjVertices(Contig cnt);
