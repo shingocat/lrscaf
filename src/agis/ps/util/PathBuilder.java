@@ -1044,6 +1044,8 @@ public class PathBuilder {
 		int depth = 5;
 		for (Contig c : nextAdjs) {
 			this.getInternalPath(internal, c, depth, unique, path);
+			if(path.contains(unique))
+				break;
 		}
 		if (path.size() != 0)
 			return path;
