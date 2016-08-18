@@ -6,6 +6,7 @@
 */
 package agis.ps.util;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +15,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.SimpleFSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,19 +43,28 @@ import agis.ps.seqs.Contig;
 
 public class PathBuilder {
 	public static Logger logger = LoggerFactory.getLogger(PathBuilder.class);
+	private static int MAXIMUM_INTERNAL_LENGTH = 5000; // 5000 bp for validating segement duplication;
+	private static int INTERNAL_LENGTH = 0; // store the internal length;
+	private static int INDEX = 0;
 	private List<Edge> edges;
 	private Parameter paras;
 	private List<TriadLink> triads;
-	private static int index = 0;
 	private Graph diGraph;
+	private Directory directory;
+	private IndexReader reader;
+	private Analyzer analyzer;
+	private QueryParser parser;
+	private IndexSearcher searcher;
 
 	public PathBuilder() {
 		// do nothing;
+		this.initCntIndexer();
 	}
 
 	public PathBuilder(List<Edge> edges, Parameter paras) {
 		this.edges = edges;
 		this.paras = paras;
+		this.initCntIndexer();
 	}
 
 	public List<NodePath> buildPath() {
@@ -83,8 +105,8 @@ public class PathBuilder {
 				// isExistUnSelectedVertices equal false then break;
 				if (current == null)
 					break;
-				// if(current.getID().equals("1339"))
-				// logger.debug("null exception");
+//				if(current.getID().equals("1145"))
+//					logger.debug("null exception");
 				List<Contig> adjs = diGraph.getAdjVertices(current);
 				if (adjs == null) {
 					diGraph.setVertexAsSelected(current);
@@ -1053,17 +1075,39 @@ public class PathBuilder {
 		// List<Contig> uniques = new Vector<Contig>(5);
 		List<Contig> nextAdjs = diGraph.getNextVertices(current, previous);
 		if (nextAdjs == null || nextAdjs.size() == 0)
-			return;
-		if (depth == 0)
-			return;
-		if (nextAdjs.size() > 1) {
-			uniques.clear();
-			for (Contig c : nextAdjs) {
-				uniques.add(c);
-			}
+		{
+			INTERNAL_LENGTH = 0;
 			return;
 		}
-		for (Contig c : nextAdjs) {
+		if (depth == 0)
+		{
+			INTERNAL_LENGTH = 0;
+			return;
+		}
+		// two cases: 1) the next point is divergence; 2) the next point is unique;
+		if (nextAdjs.size() > 1) {
+			List<Edge> egs = diGraph.getEdgesInfo(current, previous);
+			INTERNAL_LENGTH += egs.get(0).getDistMean();
+			INTERNAL_LENGTH += this.indexLen(current.getID());
+			if(INTERNAL_LENGTH <= MAXIMUM_INTERNAL_LENGTH)
+			{
+				uniques.clear();
+				for (Contig c : nextAdjs) {
+					uniques.add(c);
+				}
+				INTERNAL_LENGTH = 0;
+				return;
+			} else
+			{
+				// do nothing, the first next point is unique;
+				INTERNAL_LENGTH = 0;
+				return;
+			}
+		} else{
+			Contig c = nextAdjs.get(0);
+			List<Edge> egs = diGraph.getEdgesInfo(current, previous);
+			INTERNAL_LENGTH += egs.get(0).getDistMean();
+			INTERNAL_LENGTH += this.indexLen(current.getID());
 			this.getNextUniqueContigs(c, current, depth - 1, uniques);
 		}
 	}
@@ -1330,6 +1374,36 @@ public class PathBuilder {
 			triads.remove(tl);
 		}
 		return next;
+	}
+	
+	private void initCntIndexer() {
+		try {
+			directory = new SimpleFSDirectory(
+					new File(paras.getOutFolder() + System.getProperty("file.separator") + "cnt.index").toPath());
+			reader = DirectoryReader.open(directory);
+			searcher = new IndexSearcher(reader);
+			analyzer = new StandardAnalyzer();
+			parser = new QueryParser("id", analyzer);
+		} catch (Exception e) {
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		}
+	}
+	
+	private int indexLen(String id)
+	{
+		int len = 0;
+		try{
+			Query query = parser.parse(id);
+			TopDocs tds = searcher.search(query, 10);
+			for (ScoreDoc sd : tds.scoreDocs) {
+				Document doc = searcher.doc(sd.doc);
+				len = Integer.valueOf(doc.get("len"));
+			}
+		}catch(Exception e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		}
+		return len;
 	}
 
 }
