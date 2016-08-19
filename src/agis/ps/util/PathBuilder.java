@@ -101,7 +101,9 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-				Contig current = diGraph.getRandomVertex();
+//				Contig current = new Contig();
+//				current.setID("981");
+				 Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false then break;
 				if (current == null)
@@ -140,7 +142,18 @@ public class PathBuilder {
 						current = next;
 						next = diGraph.getNextVertex(current, previous);
 						if (next == null) { // for the divergence point
-							List<Contig> selectedCnts = this.getTriadLinkNext3(current, previous);
+							List<Contig> formers = new Vector<Contig>(3);
+							if(path.getPathSize() > 2 )
+							{
+								formers.add(path.getElement(path.getPathSize() - 2).getCnt());
+								formers.add(path.getElement(path.getPathSize() - 3).getCnt());
+							} else if (path.getPathSize() == 2)
+							{
+								formers.add(path.getElement(path.getPathSize() - 2).getCnt());
+							}
+							// List<Contig> selectedCnts =
+							// this.getTriadLinkNext3(current, previous);
+							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
 								next = null;
 								current = null;
@@ -251,7 +264,16 @@ public class PathBuilder {
 							current = next;
 							next = diGraph.getNextVertex(current, previous);
 						} else {
-							List<Contig> selectedCnts = this.getTriadLinkNext3(current, previous);
+							List<Contig> formers = new Vector<Contig>(3);
+							if(path.getPathSize() > 2 )
+							{
+								formers.add(path.getElement(1).getCnt());
+								formers.add(path.getElement(2).getCnt());
+							} else if (path.getPathSize() == 2)
+							{
+								formers.add(path.getElement(1).getCnt());
+							}
+							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
 								next = null;
 								current = null;
@@ -336,13 +358,20 @@ public class PathBuilder {
 							node.setCnt(current);
 							path.push(node);
 							diGraph.setVertexAsSelected(current);
-							if(current.getID().equals("1077"))
-								logger.debug("breakpoint");
 							previous = current;
 							current = next;
 							next = diGraph.getNextVertex(current, previous);
 						} else {
-							List<Contig> selectedCnts = this.getTriadLinkNext3(current, previous);
+							List<Contig> formers = new Vector<Contig>(3);
+							if(path.getPathSize() > 2 )
+							{
+								formers.add(path.getElement(path.getPathSize() - 2).getCnt());
+								formers.add(path.getElement(path.getPathSize() - 3).getCnt());
+							} else if (path.getPathSize() == 2)
+							{
+								formers.add(path.getElement(path.getPathSize() - 2).getCnt());
+							}
+							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
 								next = null;
 								current = null;
@@ -792,7 +821,6 @@ public class PathBuilder {
 				 */
 			}
 		} catch (Exception e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		return paths;
@@ -888,12 +916,102 @@ public class PathBuilder {
 	 * null; } }
 	 */
 
+	private List<Contig> getTriadLinkNext4(Contig internal, Contig external, List<Contig> formers) {
+		List<Contig> nexts = new Vector<Contig>();
+		// contigs adjacents to internal but exclude external;
+		List<Contig> adjInternals = diGraph.getNextVertices(internal, external);
+		if (adjInternals.size() == 0)
+			return null;
+		// the unique contig list through path from external to internal;
+		List<Contig> uniques = new Vector<Contig>(5);
+		// loop the internal adjacent contigs
+		for (Contig c : adjInternals) {
+			List<Contig> tempUnique = new Vector<Contig>();
+			tempUnique.add(c);
+			this.getNextUniqueContigs(c, internal, 3, tempUnique);
+			uniques.addAll(tempUnique);
+		}
+		// candidate triad link
+		List<TriadLink> canTls = new Vector<TriadLink>(10);
+		TriadLinkComparator tlc = new TriadLinkComparator();
+		// store requried deleting triadlinks;
+		Map<String, List<TriadLink>> delLinksMap = new HashMap<String, List<TriadLink>>();
+		for (Contig unique : uniques) {
+			List<TriadLink> tls = new Vector<TriadLink>();
+			int depth = 4;
+			this.getSupportedTraidLinks(external, internal, unique, internal, depth, tls);
+			// considering next external contigs
+			List<TriadLink> temp = null;
+			for(Contig c : formers)
+			{
+				temp = this.findTriadLinks(c, internal, unique);
+				if(temp != null && temp.size() != 0)
+				{
+					for(TriadLink t : temp)
+					{
+						tls.add(t);
+					}
+				}
+			}
+
+			TriadLink tl = new TriadLink();
+			tl.setPrevious(external);
+			tl.setMiddle(internal);
+			tl.setLast(unique);
+
+			for (TriadLink t : tls) {
+				if (t.isContain(internal)) {
+					if (t.getMiddle().equals(internal)) {
+						tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+					} else {
+						tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
+					}
+				} else {
+					tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+				}
+			}
+			canTls.add(tl);
+			delLinksMap.put(unique.getID(), tls);
+		}
+
+		if (canTls.isEmpty())
+			return null;
+		Collections.sort(canTls, tlc);
+		// if the first tl supported links equal to the second then return null;
+		TriadLink tl = null;
+		if (canTls.size() > 1) {
+			if (canTls.get(0).getSupLinks() == canTls.get(1).getSupLinks())
+				return null;
+			tl = canTls.get(0);
+		} else {
+			if (canTls.size() != 0)
+				tl = canTls.get(0);
+			else
+				return null;
+		}
+		if (tl.getSupLinks() == 0)
+			return null;
+		// remove the supported triadlinks
+		List<TriadLink> dels = delLinksMap.get(tl.getLast().getID());
+		for (TriadLink t : dels) {
+			triads.remove(t);
+		}
+		// return the contig path;
+		LinkedList<Contig> path = new LinkedList<Contig>();
+		if (adjInternals.contains(tl.getLast())) {
+			path.addLast(tl.getLast());
+			return path;
+		} else {
+			return this.getInternalPath(external, internal, tl.getLast());
+		}
+	}
+
 	private List<Contig> getTriadLinkNext3(Contig internal, Contig external) {
 		List<Contig> nexts = new Vector<Contig>();
-//		if (triads == null) {
-//			TriadLinkReader tlr = new TriadLinkReader(paras);
-//			triads = tlr.read();
-//		}
+		// if (triads == null) {
+		// TriadLinkReader tlr = new TriadLinkReader(paras);
+		// triads = tlr.read();
+		// }
 		// contigs adjacents to internal but exclude external;
 		List<Contig> adjInternals = diGraph.getNextVertices(internal, external);
 		if (adjInternals.size() == 0)
@@ -914,124 +1032,123 @@ public class PathBuilder {
 		TriadLinkComparator tlc = new TriadLinkComparator();
 		// store requried deleting triadlinks;
 		Map<String, List<TriadLink>> delLinksMap = new HashMap<String, List<TriadLink>>();
-//		for (Contig c : uniques) {
-//			TriadLink tl = new TriadLink();
-//			tl.setPrevious(external);
-//			tl.setLast(c);
-//			tl.setSupLinks(0);
-//
-//			// the remainder triadlinks for next-next adjacents contig;
-//			List<TriadLink> rmdTls = new Vector<TriadLink>(triads.size());
-//
-//			// considering the next adjacent contig
-//			Iterator<TriadLink> it = triads.iterator();
-//			TriadLink t = null;
-//			while (it.hasNext()) {
-//				t = it.next();
-//				// if(t.equals(tl))
-//				if (t.isContain(external) && t.isContain(c)) {
-//					if (t.isContain(internal)) {
-//						// if the triad link contain middle contig,
-//						// divide into two case:
-//						// the middle contig is internal, ideal case;
-//						// else the middle contig is not internal,
-//						// then substract the supported links
-//						Contig mid = t.getMiddle();
-//						if (mid.equals(internal))
-//							tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
-//						else
-//							tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
-//					} else {
-//						tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
-//					}
-//					if (delLinksMap.containsKey(c.getID())) {
-//						List<TriadLink> tempLink = delLinksMap.get(c.getID());
-//						if (!tempLink.contains(t)) {
-//							tempLink.add(t);
-//							delLinksMap.replace(c.getID(), tempLink);
-//						}
-//					} else {
-//						List<TriadLink> tempLink = new Vector<TriadLink>(10);
-//						tempLink.add(t);
-//						delLinksMap.put(c.getID(), tempLink);
-//					}
-//				} else {
-//					rmdTls.add(t);
-//				}
-//			}
-//
-//			// considering the next next adjacent contig;
-//			// only considering unique conditions;
-//			List<Contig> canNextAdjs = diGraph.getNextVertices(c, internal);
-//			if (canNextAdjs != null) {
-//				// remove internal contig if canNextAdjs size large than 1
-//				if (canNextAdjs.size() > 1) {
-//					List<Contig> temp = new Vector<Contig>(canNextAdjs.size());
-//					for (Contig ct : canNextAdjs) {
-//						List<Contig> ctAdjs = diGraph.getNextVertices(ct, c);
-//						if (ctAdjs == null || ctAdjs.size() == 1)
-//							temp.add(ct);
-//					}
-//					canNextAdjs.clear();
-//					for (Contig ct : temp) {
-//						canNextAdjs.add(ct);
-//					}
-//				}
-//				if (canNextAdjs.size() == 1) {
-//					Contig cn = canNextAdjs.get(0);
-//					// it = triads.iterator();
-//					it = rmdTls.iterator();
-//					while (it.hasNext()) {
-//						t = it.next();
-//						if (t.isContain(external) && t.isContain(cn)) {
-//							if (t.isContain(internal)) {
-//								// if the triad link contain middle contig,
-//								// divide into two case:
-//								// the middle contig is internal, ideal case;
-//								// else the middle contig is not internal,
-//								// then substract the supported links
-//								Contig mid = t.getMiddle();
-//								if (mid.equals(internal))
-//									tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
-//								else
-//									tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
-//								// it.remove();
-//							} else {
-//								tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
-//							}
-//							// break;
-//							// it.remove();
-//							if (delLinksMap.containsKey(c.getID())) {
-//								List<TriadLink> tempLink = delLinksMap.get(c.getID());
-//								if (!tempLink.contains(t)) {
-//									tempLink.add(t);
-//									delLinksMap.replace(c.getID(), tempLink);
-//								}
-//							} else {
-//								List<TriadLink> tempLink = new Vector<TriadLink>(10);
-//								tempLink.add(t);
-//								delLinksMap.put(c.getID(), tempLink);
-//							}
-//						}
-//					}
-//				}
-//			}
-//			// adding to candidate triad links
-//			// if(tl.getSupLinks() != 0)
-//			canTls.add(tl);
-//		}
-		
-		for(Contig unique : uniques)
-		{
-			List<TriadLink> tls = new Vector<TriadLink>(); 
+		// for (Contig c : uniques) {
+		// TriadLink tl = new TriadLink();
+		// tl.setPrevious(external);
+		// tl.setLast(c);
+		// tl.setSupLinks(0);
+		//
+		// // the remainder triadlinks for next-next adjacents contig;
+		// List<TriadLink> rmdTls = new Vector<TriadLink>(triads.size());
+		//
+		// // considering the next adjacent contig
+		// Iterator<TriadLink> it = triads.iterator();
+		// TriadLink t = null;
+		// while (it.hasNext()) {
+		// t = it.next();
+		// // if(t.equals(tl))
+		// if (t.isContain(external) && t.isContain(c)) {
+		// if (t.isContain(internal)) {
+		// // if the triad link contain middle contig,
+		// // divide into two case:
+		// // the middle contig is internal, ideal case;
+		// // else the middle contig is not internal,
+		// // then substract the supported links
+		// Contig mid = t.getMiddle();
+		// if (mid.equals(internal))
+		// tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+		// else
+		// tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
+		// } else {
+		// tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+		// }
+		// if (delLinksMap.containsKey(c.getID())) {
+		// List<TriadLink> tempLink = delLinksMap.get(c.getID());
+		// if (!tempLink.contains(t)) {
+		// tempLink.add(t);
+		// delLinksMap.replace(c.getID(), tempLink);
+		// }
+		// } else {
+		// List<TriadLink> tempLink = new Vector<TriadLink>(10);
+		// tempLink.add(t);
+		// delLinksMap.put(c.getID(), tempLink);
+		// }
+		// } else {
+		// rmdTls.add(t);
+		// }
+		// }
+		//
+		// // considering the next next adjacent contig;
+		// // only considering unique conditions;
+		// List<Contig> canNextAdjs = diGraph.getNextVertices(c, internal);
+		// if (canNextAdjs != null) {
+		// // remove internal contig if canNextAdjs size large than 1
+		// if (canNextAdjs.size() > 1) {
+		// List<Contig> temp = new Vector<Contig>(canNextAdjs.size());
+		// for (Contig ct : canNextAdjs) {
+		// List<Contig> ctAdjs = diGraph.getNextVertices(ct, c);
+		// if (ctAdjs == null || ctAdjs.size() == 1)
+		// temp.add(ct);
+		// }
+		// canNextAdjs.clear();
+		// for (Contig ct : temp) {
+		// canNextAdjs.add(ct);
+		// }
+		// }
+		// if (canNextAdjs.size() == 1) {
+		// Contig cn = canNextAdjs.get(0);
+		// // it = triads.iterator();
+		// it = rmdTls.iterator();
+		// while (it.hasNext()) {
+		// t = it.next();
+		// if (t.isContain(external) && t.isContain(cn)) {
+		// if (t.isContain(internal)) {
+		// // if the triad link contain middle contig,
+		// // divide into two case:
+		// // the middle contig is internal, ideal case;
+		// // else the middle contig is not internal,
+		// // then substract the supported links
+		// Contig mid = t.getMiddle();
+		// if (mid.equals(internal))
+		// tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+		// else
+		// tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
+		// // it.remove();
+		// } else {
+		// tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+		// }
+		// // break;
+		// // it.remove();
+		// if (delLinksMap.containsKey(c.getID())) {
+		// List<TriadLink> tempLink = delLinksMap.get(c.getID());
+		// if (!tempLink.contains(t)) {
+		// tempLink.add(t);
+		// delLinksMap.replace(c.getID(), tempLink);
+		// }
+		// } else {
+		// List<TriadLink> tempLink = new Vector<TriadLink>(10);
+		// tempLink.add(t);
+		// delLinksMap.put(c.getID(), tempLink);
+		// }
+		// }
+		// }
+		// }
+		// }
+		// // adding to candidate triad links
+		// // if(tl.getSupLinks() != 0)
+		// canTls.add(tl);
+		// }
+
+		for (Contig unique : uniques) {
+			List<TriadLink> tls = new Vector<TriadLink>();
 			int depth = 4;
 			this.getSupportedTraidLinks(external, internal, unique, internal, depth, tls);
-			
+
 			TriadLink tl = new TriadLink();
 			tl.setPrevious(external);
 			tl.setMiddle(internal);
 			tl.setLast(unique);
-			
+
 			for (TriadLink t : tls) {
 				if (t.isContain(internal)) {
 					if (t.getMiddle().equals(internal)) {
@@ -1046,11 +1163,22 @@ public class PathBuilder {
 			canTls.add(tl);
 			delLinksMap.put(unique.getID(), tls);
 		}
-		
+
 		if (canTls.isEmpty())
 			return null;
 		Collections.sort(canTls, tlc);
-		TriadLink tl = canTls.get(0);
+		// if the first tl supported links equal to the second then return null;
+		TriadLink tl = null;
+		if (canTls.size() > 1) {
+			if (canTls.get(0).getSupLinks() == canTls.get(1).getSupLinks())
+				return null;
+			tl = canTls.get(0);
+		} else {
+			if (canTls.size() != 0)
+				tl = canTls.get(0);
+			else
+				return null;
+		}
 		if (tl.getSupLinks() == 0)
 			return null;
 		// remove the supported triadlinks
@@ -1097,41 +1225,37 @@ public class PathBuilder {
 		int size = adjs.size();
 		if (size == 1 || depth == 0) { // end point;
 			List<TriadLink> temp = findTriadLinks(external, internal, unique);
-			for(TriadLink t : temp)
-			{
+			for (TriadLink t : temp) {
 				links.add(t);
 			}
 			return;
 		} else if (size == 2) { // linear point;
 			// if the linear point, it should be have depth attribute;
 			// remove divergence point
-			List<Contig> adjsNext = new Vector<Contig> (adjs.size() - 1); 
+			List<Contig> adjsNext = new Vector<Contig>(adjs.size() - 1);
 			Iterator<Contig> it = adjs.iterator();
-			while(it.hasNext())
-			{
+			while (it.hasNext()) {
 				Contig c = it.next();
-				if(c.equals(internal))
+				if (c.equals(internal))
 					continue;
-				if(c.equals(former))
+				if (c.equals(former))
 					continue;
-				if(diGraph.isDivergenceVertex(c))
+				if (diGraph.isDivergenceVertex(c))
 					continue;
 				adjsNext.add(c);
 			}
 			List<TriadLink> temp = findTriadLinks(external, internal, unique);
-			for(TriadLink t : temp)
-			{
+			for (TriadLink t : temp) {
 				links.add(t);
 			}
-			if(adjsNext.size() == 0)
+			if (adjsNext.size() == 0)
 				return;
 			former = unique;
 			unique = adjsNext.get(0);
 			this.getSupportedTraidLinks(external, internal, unique, former, depth - 1, links);
 		} else if (size > 2) {// divergence point;
 			List<TriadLink> temp = findTriadLinks(external, internal, unique);
-			for(TriadLink t : temp)
-			{
+			for (TriadLink t : temp) {
 				links.add(t);
 			}
 			return;
@@ -1187,8 +1311,7 @@ public class PathBuilder {
 			path.addLast(unique);
 			return;
 		}
-		if(nextAdjs.size() > 1)
-		{
+		if (nextAdjs.size() > 1) {
 			path.clear();
 			return;
 		}
