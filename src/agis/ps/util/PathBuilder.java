@@ -336,6 +336,8 @@ public class PathBuilder {
 							node.setCnt(current);
 							path.push(node);
 							diGraph.setVertexAsSelected(current);
+							if(current.getID().equals("1077"))
+								logger.debug("breakpoint");
 							previous = current;
 							current = next;
 							next = diGraph.getNextVertex(current, previous);
@@ -1185,9 +1187,13 @@ public class PathBuilder {
 			path.addLast(unique);
 			return;
 		}
-		for (Contig c : nextAdjs) {
-			this.getInternalPath(current, c, depth - 1, unique, path);
+		if(nextAdjs.size() > 1)
+		{
+			path.clear();
+			return;
 		}
+		Contig c = nextAdjs.get(0);
+		getInternalPath(current, c, depth - 1, unique, path);
 	}
 
 	private void getNextUniqueContigs(Contig current, Contig previous, int depth, List<Contig> uniques) {
