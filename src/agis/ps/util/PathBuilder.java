@@ -944,6 +944,8 @@ public class PathBuilder {
 			List<TriadLink> temp = null;
 			for(Contig c : formers)
 			{
+				if(diGraph.isDivergenceVertex(c))
+					continue;
 				temp = this.findTriadLinks(c, internal, unique);
 				if(temp != null && temp.size() != 0)
 				{
