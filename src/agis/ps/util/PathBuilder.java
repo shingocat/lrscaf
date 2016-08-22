@@ -94,6 +94,12 @@ public class PathBuilder {
 			logger.info("Edges size after error prone deleting: " + tempEdges.size());
 			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dep.info";
 			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
+			// delete tips
+			diGraph.delTips();
+			tempEdges = diGraph.getEdges();
+			logger.info("Edges size after deleting tips: " + tempEdges.size());
+			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dt.info";
+			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
 			tempEdges = null;
 			NodePath path = null;
 			// TriadLinkReader tlr = new TriadLinkReader(paras);

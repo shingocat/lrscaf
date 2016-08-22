@@ -24,6 +24,8 @@ public interface IUntangler {
 	// delete the error prone edge by ratio, it mean if one node have more than 2 adjacent vertex, if the
 	// edge A->B(10), C->B(20) and D->B(2), the edge D->B(2) might be error, so delete it;
 	public void delErrorProneEdge(double ratio);
+	// delete tip when the divergence point have a path that contains only one node;
+	public void delTips();
 }
 
 

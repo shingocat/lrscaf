@@ -489,5 +489,50 @@ public class DirectedGraph extends Graph implements Serializable {
 		}
 		return len;
 	}
-
+	
+	@Override
+	public void delTips()
+	{
+		long start = System.currentTimeMillis();
+		List<Edge> rmEdges = new Vector<Edge>(100);
+		try {
+			Iterator<Contig> it = mimos.iterator();
+			while (it.hasNext()) {
+				Contig c = it.next();
+				String id = c.getID();
+				if(c.getID().equals("1163"))
+					logger.debug("breakpoint");
+				List<Contig> adjs = adjTos.get(id);
+				if (adjs == null)
+					continue;
+				int adjCount = adjs.size();
+				// only considering divergence point
+				if(adjCount > 2)
+				{
+					for(int i = 0; i < adjCount; i++)
+					{
+						Contig next = adjs.get(i);
+						List<Contig> nextAdjs = adjTos.get(next.getID());
+						if(nextAdjs == null)
+							continue;
+						if(nextAdjs.size() != 1)
+							continue;
+						// if the next adjacent is not equal to former divergence point;
+						if(!nextAdjs.get(0).equals(c))
+							continue;
+						logger.debug("Edges between: " + c.getID() + "\t" + next.getID());
+						List<Edge> es = this.getEdgesInfo(c, next);
+						rmEdges.addAll(es);
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		}
+		logger.info(this.getClass().getName() + "\tDelete tip edges:" + rmEdges.size());
+		this.removeEdges(rmEdges);
+		this.updateGraph();
+		long end = System.currentTimeMillis();
+		logger.info("Tip edge deleting, erase time: " + (end - start) + " ms");
+	}
 }

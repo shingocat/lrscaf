@@ -508,4 +508,12 @@ inner:				while(nexts != null)
 		initAdjTos();
 		initAdjFroms();
 	}
+
+
+
+	@Override
+	public void delTips() {
+		// TODO Auto-generated method stub
+		
+	}
 }
