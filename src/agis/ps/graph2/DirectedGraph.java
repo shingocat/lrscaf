@@ -43,6 +43,7 @@ public class DirectedGraph extends Graph implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = LoggerFactory.getLogger(DirectedGraph.class);
+	private static int TR_TIMES = 15; // for transitive reduction
 	private Parameter paras = null;
 	private Map<String, List<Contig>> adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
 	// for store multiple in and multiple out contig vertex;
@@ -234,7 +235,7 @@ public class DirectedGraph extends Graph implements Serializable {
 
 			int sd = trSd >= alSd ? trSd : alSd;
 			int diff = trDist - alDist;
-			int range = 12 * sd;
+			int range = TR_TIMES * sd;
 
 			if (diff >= -range && diff <= range) {
 				// remove tr edges
@@ -500,8 +501,6 @@ public class DirectedGraph extends Graph implements Serializable {
 			while (it.hasNext()) {
 				Contig c = it.next();
 				String id = c.getID();
-				if(c.getID().equals("1163"))
-					logger.debug("breakpoint");
 				List<Contig> adjs = adjTos.get(id);
 				if (adjs == null)
 					continue;
@@ -520,7 +519,6 @@ public class DirectedGraph extends Graph implements Serializable {
 						// if the next adjacent is not equal to former divergence point;
 						if(!nextAdjs.get(0).equals(c))
 							continue;
-						logger.debug("Edges between: " + c.getID() + "\t" + next.getID());
 						List<Edge> es = this.getEdgesInfo(c, next);
 						rmEdges.addAll(es);
 					}

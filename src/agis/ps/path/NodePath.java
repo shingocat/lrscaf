@@ -84,6 +84,34 @@ public class NodePath implements Serializable{
 		return isExist;
 	}
 	
+	public boolean isContain(Contig c)
+	{
+		if(path == null || path.size() == 0)
+			return false;
+		for(Node n : path)
+		{
+			if(n.getCnt().equals(c))
+			{
+				return true;
+			} 
+		}
+		return false;
+	}
+	
+	public boolean isContain(String id)
+	{
+		if(path == null || path.size() == 0)
+			return false;
+		for(Node n : path)
+		{
+			if(n.getCnt().getID().equals(id))
+			{
+				return true;
+			} 
+		}
+		return false;
+	}
+	
 	public Node getElement(int index)
 	{
 		return path.get(index);

@@ -56,6 +56,7 @@ public class PathBuilder {
 	private Analyzer analyzer;
 	private QueryParser parser;
 	private IndexSearcher searcher;
+	private NodePath path;
 
 	public PathBuilder() {
 		// do nothing;
@@ -101,7 +102,7 @@ public class PathBuilder {
 			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dt.info";
 			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
 			tempEdges = null;
-			NodePath path = null;
+			path = null;
 			// TriadLinkReader tlr = new TriadLinkReader(paras);
 			// List<TriadLink> triads = tlr.read();
 			// travel the graph, random start
@@ -937,6 +938,18 @@ public class PathBuilder {
 			this.getNextUniqueContigs(c, internal, 3, tempUnique);
 			uniques.addAll(tempUnique);
 		}
+		// remove unique contig already in path;
+		List<Contig> tempUniques = new Vector<Contig>(uniques.size());
+		for(Contig c : uniques)
+		{
+			if(!path.isContain(c))
+				tempUniques.add(c);
+		}
+		uniques = null;
+		uniques = tempUniques;
+		tempUniques = null;
+		if(uniques.size() == 0)
+			return null;
 		// candidate triad link
 		List<TriadLink> canTls = new Vector<TriadLink>(10);
 		TriadLinkComparator tlc = new TriadLinkComparator();
@@ -970,7 +983,10 @@ public class PathBuilder {
 			for (TriadLink t : tls) {
 				if (t.isContain(internal)) {
 					if (t.getMiddle().equals(internal)) {
-						tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+						if(t.isContain(unique))
+							tl.setSupLinks(tl.getSupLinks() + t.getSupLinks() + 2);
+						else
+							tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
 					} else {
 						tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
 					}
