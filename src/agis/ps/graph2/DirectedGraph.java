@@ -38,6 +38,7 @@ import agis.ps.link.Edge;
 import agis.ps.seqs.Contig;
 import agis.ps.util.MathTool;
 import agis.ps.util.Parameter;
+import agis.ps.util.Strand;
 
 public class DirectedGraph extends Graph implements Serializable {
 
@@ -228,6 +229,33 @@ public class DirectedGraph extends Graph implements Serializable {
 			}
 			alDist = MathTool.sum(alDists);
 			alSd = MathTool.avgSd(alSds);
+			
+			// check whether the direction is  conflict;
+			Strand trStrand = null;
+			for(Edge e : trEs)
+			{
+				if(e.getOrigin().equals(start) && e.getTerminus().equals(end))
+				{
+					trStrand = e.gettStrand();
+					break;
+				}
+			}
+			Strand alStrand = null;
+			Contig preLst = alPath.get(alPath.size() - 2);
+			List<Edge> lstEdges = this.getEdgesInfo(preLst, end);
+			for(Edge e : lstEdges)
+			{
+				if(e.getOrigin().equals(preLst) && e.getTerminus().equals(end))
+				{
+					alStrand = e.gettStrand();
+					break;
+				}
+			}
+			if(!trStrand.equals(alStrand))
+			{
+				path.removeLast();
+				return false;
+			}
 
 			int trDist = trEs.get(0).getDistMean();
 			int trSd = trEs.get(0).getDistSd();
