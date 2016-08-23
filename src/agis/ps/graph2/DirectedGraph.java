@@ -230,7 +230,11 @@ public class DirectedGraph extends Graph implements Serializable {
 			alDist = MathTool.sum(alDists);
 			alSd = MathTool.avgSd(alSds);
 			
-			// check whether the direction is  conflict;
+			// check whether the direction is conflict;
+			// there are two cases;
+			// 1: the conflict point is the end;
+			// 2: the conflict point is the start;
+			// first case:
 			Strand trStrand = null;
 			for(Edge e : trEs)
 			{
@@ -240,6 +244,7 @@ public class DirectedGraph extends Graph implements Serializable {
 					break;
 				}
 			}
+			// considering the previous last point;
 			Strand alStrand = null;
 			Contig preLst = alPath.get(alPath.size() - 2);
 			List<Edge> lstEdges = this.getEdgesInfo(preLst, end);
@@ -248,6 +253,31 @@ public class DirectedGraph extends Graph implements Serializable {
 				if(e.getOrigin().equals(preLst) && e.getTerminus().equals(end))
 				{
 					alStrand = e.gettStrand();
+					break;
+				}
+			}
+			if(!trStrand.equals(alStrand))
+			{
+				path.removeLast();
+				return false;
+			}
+			// case 2:
+			// considering the next first point;
+			for(Edge e : trEs)
+			{
+				if(e.getOrigin().equals(start) && e.getTerminus().equals(end))
+				{
+					trStrand = e.getoStrand();
+					break;
+				}
+			}
+			Contig nextFirst = alPath.get(1);
+			List<Edge> nextEdges = this.getEdgesInfo(start, nextFirst);
+			for(Edge e : nextEdges)
+			{
+				if(e.getOrigin().equals(start) && e.getTerminus().equals(nextFirst))
+				{
+					alStrand = e.getoStrand();
 					break;
 				}
 			}
