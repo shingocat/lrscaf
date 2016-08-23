@@ -45,6 +45,7 @@ public class DirectedGraph extends Graph implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = LoggerFactory.getLogger(DirectedGraph.class);
 	private static int TR_TIMES = 15; // for transitive reduction
+	private static int TIP_LENGTH = 1000; // 1000 bp for tip length;
 	private Parameter paras = null;
 	private Map<String, List<Contig>> adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
 	// for store multiple in and multiple out contig vertex;
@@ -569,16 +570,20 @@ public class DirectedGraph extends Graph implements Serializable {
 					for(int i = 0; i < adjCount; i++)
 					{
 						Contig next = adjs.get(i);
-						List<Contig> nextAdjs = adjTos.get(next.getID());
-						if(nextAdjs == null)
-							continue;
-						if(nextAdjs.size() != 1)
-							continue;
-						// if the next adjacent is not equal to former divergence point;
-						if(!nextAdjs.get(0).equals(c))
-							continue;
-						List<Edge> es = this.getEdgesInfo(c, next);
-						rmEdges.addAll(es);
+						LinkedList<Contig> path = new LinkedList<Contig>();
+						path.addLast(c);
+						this.delTips(next, c, 1, path, rmEdges);
+//						Contig next = adjs.get(i);
+//						List<Contig> nextAdjs = adjTos.get(next.getID());
+//						if(nextAdjs == null)
+//							continue;
+//						if(nextAdjs.size() != 1)
+//							continue;
+//						// if the next adjacent is not equal to former divergence point;
+//						if(!nextAdjs.get(0).equals(c))
+//							continue;
+//						List<Edge> es = this.getEdgesInfo(c, next);
+//						rmEdges.addAll(es);
 					}
 				}
 			}
@@ -590,5 +595,61 @@ public class DirectedGraph extends Graph implements Serializable {
 		this.updateGraph();
 		long end = System.currentTimeMillis();
 		logger.info("Tip edge deleting, erase time: " + (end - start) + " ms");
+	}
+	
+	public void delTips(Contig current, Contig former, int depth, LinkedList<Contig> path, List<Edge> removes)
+	{
+		path.addLast(current);
+		List<Contig> nexts = this.getNextVertices(current, former);
+		if(nexts == null)
+		{
+			// check the tip length;
+			int length = 0;
+			List<Edge> all = new Vector<Edge>(6);
+			for(int i = 0; i < path.size() - 1; i++)
+			{
+				Contig f = path.get(i);
+				Contig n = path.get(i + 1);
+				List<Edge> es = this.getEdgesInfo(f, n);
+				all.addAll(es);
+				length += es.get(0).getDistMean();
+				length += this.indexCntLength(n.getID());
+			}
+			if(length <= TIP_LENGTH)
+			{
+				removes.addAll(all);
+			}
+			return;
+		}
+		if(depth == 0)
+		{
+			if(nexts == null || nexts.size() == 0)
+			{
+				// check the tip length;
+				int length = 0;
+				List<Edge> all = new Vector<Edge>(6);
+				for(int i = 0; i < path.size() - 1; i++)
+				{
+					Contig f = path.get(i);
+					Contig n = path.get(i + 1);
+					List<Edge> es = this.getEdgesInfo(f, n);
+					all.addAll(es);
+					length += es.get(0).getDistMean();
+					length += this.indexCntLength(n.getID());
+				}
+				if(length <= TIP_LENGTH)
+				{
+					removes.addAll(all);
+				}
+			}
+			return;
+		}
+		if(nexts.size() > 1)
+		{
+			return;
+		}
+		former = current;
+		current = nexts.get(0);
+		this.delTips(current, former, depth - 1, path, removes);
 	}
 }
