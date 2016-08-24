@@ -939,15 +939,24 @@ public class PathBuilder {
 			uniques.addAll(tempUnique);
 		}
 		// remove unique contig already in path;
+		// remove unique contig is directly link former contigs
 		List<Contig> tempUniques = new Vector<Contig>(uniques.size());
 		for(Contig c : uniques)
 		{
 			if(!path.isContain(c))
-				tempUniques.add(c);
+			{
+				for(Contig in : formers)
+				{
+					List<Edge> es = diGraph.getEdgesInfo(c, in);
+					if((es == null || es.isEmpty()) && !tempUniques.contains(c))
+						tempUniques.add(c);
+				}
+			}
 		}
 		uniques = null;
 		uniques = tempUniques;
 		tempUniques = null;
+		
 		if(uniques.size() == 0)
 			return null;
 		// candidate triad link
@@ -967,6 +976,20 @@ public class PathBuilder {
 					continue;
 				temp = this.findTriadLinks(c, internal, unique);
 				if(temp != null && temp.size() != 0)
+				{
+					for(TriadLink t : temp)
+					{
+						tls.add(t);
+					}
+				}
+			}
+			
+			// if the inner contig is large than 5000 bp, considering it is unqiue;
+			int inLen = this.indexLen(internal.getID());
+			if(inLen >= 5000)
+			{
+				temp = this.findTriadLinks(internal, null, unique);
+				if(temp != null && !temp.isEmpty())
 				{
 					for(TriadLink t : temp)
 					{
