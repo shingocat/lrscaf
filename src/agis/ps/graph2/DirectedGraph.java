@@ -598,7 +598,7 @@ public class DirectedGraph extends Graph implements Serializable {
 						Contig next = adjs.get(i);
 						LinkedList<Contig> path = new LinkedList<Contig>();
 						path.addLast(c);
-						this.delTips(next, c, 1, path, rmEdges);
+						this.delTips(next, c, 2, path, rmEdges);
 //						Contig next = adjs.get(i);
 //						List<Contig> nextAdjs = adjTos.get(next.getID());
 //						if(nextAdjs == null)
