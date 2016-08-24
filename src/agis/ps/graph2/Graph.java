@@ -165,6 +165,15 @@ public abstract class Graph implements Serializable, IUntangler {
 		return cnt;
 	}
 	
+	public boolean isVertexSelected(Contig c)
+	{
+		String id = c.getID();
+		if(selectedVertices.containsKey(id))
+			return true;
+		else
+			return false;
+	}
+	
 	// return whether the contig is divergence contig;
 	public abstract boolean isDivergenceVertex(Contig cnt);
 

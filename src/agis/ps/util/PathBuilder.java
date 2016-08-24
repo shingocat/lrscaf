@@ -243,6 +243,9 @@ public class PathBuilder {
 					// for c1 direction; using c2 as previous point; checking
 					// whether c1 is valid point
 					// all the element unshift into path;
+					// checking the c1 and c2 whether travel
+					if(diGraph.isVertexSelected(c1) && diGraph.isVertexSelected(c2))
+						continue;
 					Contig previous = startPoint;
 					current = c1;
 					diGraph.setVertexAsSelected(current);
