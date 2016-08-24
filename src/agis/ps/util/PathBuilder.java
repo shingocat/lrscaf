@@ -945,11 +945,19 @@ public class PathBuilder {
 		{
 			if(!path.isContain(c))
 			{
+				boolean isExist = false;
 				for(Contig in : formers)
 				{
 					List<Edge> es = diGraph.getEdgesInfo(c, in);
-					if((es == null || es.isEmpty()) && !tempUniques.contains(c))
-						tempUniques.add(c);
+					if(es != null && !es.isEmpty())
+					{
+						isExist = true;
+						break;
+					}
+				}
+				if(!isExist)
+				{
+					tempUniques.add(c);
 				}
 			}
 		}
@@ -1011,7 +1019,10 @@ public class PathBuilder {
 						else
 							tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
 					} else {
-						tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
+						if(t.isContain(external) && t.isContain(unique))
+							tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
+						else
+							tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
 					}
 				} else {
 					tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
