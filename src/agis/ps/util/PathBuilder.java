@@ -936,7 +936,11 @@ public class PathBuilder {
 			List<Contig> tempUnique = new Vector<Contig>();
 			tempUnique.add(c);
 			this.getNextUniqueContigs(c, internal, 3, tempUnique);
-			uniques.addAll(tempUnique);
+			for(Contig t : tempUnique)
+			{
+				if(!uniques.contains(t))
+					uniques.add(t);
+			}
 		}
 		// remove unique contig already in path;
 		// remove unique contig is directly link former contigs
