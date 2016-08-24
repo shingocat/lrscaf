@@ -343,12 +343,16 @@ public class DirectedGraph extends Graph implements Serializable {
 				Contig cnt = new Contig();
 				cnt.setID(id);
 				int[] sls = new int[adjCount];
+				int[] lens = new int[adjCount + 1];
 				for (int i = 0; i < adjCount; i++) {
 					Contig t = adjs.get(i);
 					List<Edge> es = this.getEdgesInfo(cnt, t);
 					sls[i] = es.get(0).getLinkNum();
+					lens[i] = this.indexCntLength(t.getID());
 				}
+				lens[adjCount] = this.indexCntLength(id);
 				Arrays.sort(sls);
+				Arrays.sort(lens);
 				int max = sls[adjCount - 1];
 				for (int i = 0; i < adjCount; i++) {
 					Contig t = adjs.get(i);
@@ -359,9 +363,31 @@ public class DirectedGraph extends Graph implements Serializable {
 						rmEdges.addAll(es);
 					}
 				}
+				if(adjCount == 3)
+				{
+					int min = lens[0];
+					int next = lens[1];
+					if(min <= 500 && next >= 5000)
+					{
+						for (int i = 0; i < adjCount; i++) {
+							Contig t = adjs.get(i);
+							if(this.indexCntLength(t.getID()) <= 500){
+								List<Edge> es = this.getEdgesInfo(cnt, t);
+								int sl = es.get(0).getLinkNum();
+								double r = (double) sl / max;
+								if (r <= 0.3) {
+									for(Edge e : es)
+									{
+										if(!rmEdges.contains(e))
+											rmEdges.add(e);
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		} catch (Exception e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		logger.info(this.getClass().getName() + "\tDelete error prone edges:" + rmEdges.size());
