@@ -964,7 +964,8 @@ public class PathBuilder {
 				}
 				if(!isExist)
 				{
-					tempUniques.add(c);
+					if(!c.equals(internal))
+						tempUniques.add(c);
 				}
 			}
 		}
@@ -994,7 +995,8 @@ public class PathBuilder {
 				{
 					for(TriadLink t : temp)
 					{
-						tls.add(t);
+						if(!tls.contains(t))
+							tls.add(t);
 					}
 				}
 			}
@@ -1008,7 +1010,8 @@ public class PathBuilder {
 				{
 					for(TriadLink t : temp)
 					{
-						tls.add(t);
+						if(!tls.contains(t))
+							tls.add(t);
 					}
 				}
 			}
@@ -1291,7 +1294,8 @@ public class PathBuilder {
 		if (size == 1 || depth == 0) { // end point;
 			List<TriadLink> temp = findTriadLinks(external, internal, unique);
 			for (TriadLink t : temp) {
-				links.add(t);
+				if(!links.contains(t))
+					links.add(t);
 			}
 			return;
 		} else if (size == 2) { // linear point;
@@ -1311,7 +1315,8 @@ public class PathBuilder {
 			}
 			List<TriadLink> temp = findTriadLinks(external, internal, unique);
 			for (TriadLink t : temp) {
-				links.add(t);
+				if(!links.contains(t))
+					links.add(t);
 			}
 			if (adjsNext.size() == 0)
 				return;
@@ -1321,7 +1326,8 @@ public class PathBuilder {
 		} else if (size > 2) {// divergence point;
 			List<TriadLink> temp = findTriadLinks(external, internal, unique);
 			for (TriadLink t : temp) {
-				links.add(t);
+				if(!links.contains(t))
+					links.add(t);
 			}
 			return;
 		}
