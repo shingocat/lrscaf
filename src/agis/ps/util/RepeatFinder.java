@@ -65,7 +65,7 @@ public class RepeatFinder {
 					arrs = line.split("\\s+");
 					if (arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
 						continue;
-					MRecord m = MRecordValidator.validate(arrs, paras);
+					MRecord m = MRecordValidator.validate4Repeats(arrs, paras);
 					if(m != null)
 					{
 						String pbId = m.getqName();
