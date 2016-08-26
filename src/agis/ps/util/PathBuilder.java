@@ -165,6 +165,11 @@ public class PathBuilder {
 							// this.getTriadLinkNext3(current, previous);
 							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
 								next = null;
 								current = null;
 								previous = null;
@@ -288,6 +293,11 @@ public class PathBuilder {
 							}
 							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
+								Node n = new Node();
+								n.setCnt(current);
+								n.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(n);
 								next = null;
 								current = null;
 								previous = null;
@@ -396,6 +406,11 @@ public class PathBuilder {
 							}
 							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
+								Node n = new Node();
+								n.setCnt(current);
+								n.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(n);
 								next = null;
 								current = null;
 								previous = null;
