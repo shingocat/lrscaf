@@ -108,6 +108,9 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
+//				INDEX++;
+//				if(INDEX == 28)
+//					logger.debug("breakpoint");
 //				Contig current = new Contig();
 //				current.setID("981");
 				 Contig current = diGraph.getRandomVertex();
@@ -344,6 +347,16 @@ public class PathBuilder {
 					if (!diGraph.isExistUnSelectedVertices()) {
 						paths.add(path);
 						break;
+					}
+					// if it is the loop, then the former current contig equal to 
+					// next start contig c2, break;
+					if(current != null && c2 != null )
+					{
+						if(current.equals(c2))
+						{
+							paths.add(path);
+							continue;
+						}
 					}
 					previous = startPoint;
 					current = c2;
