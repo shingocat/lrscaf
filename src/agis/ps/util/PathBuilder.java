@@ -109,7 +109,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 28)
+//				if(INDEX == 2)
 //					logger.debug("breakpoint");
 //				Contig current = new Contig();
 //				current.setID("981");
@@ -297,7 +297,7 @@ public class PathBuilder {
 								n.setCnt(current);
 								n.setOrphan(false);
 								diGraph.setVertexAsSelected(current);
-								path.push(n);
+								path.unshift(n);
 								next = null;
 								current = null;
 								previous = null;
@@ -486,12 +486,15 @@ public class PathBuilder {
 					current.setSupportLinkNum(0);
 				} else {
 					for (int i = 0; i < pathSize - 1; i++) {
+//						INDEX++;
+//						if(INDEX == 66)
+//							logger.debug("breakpoint");
 						Node current = np.getElement(i);
 						Node next = np.getElement(i + 1);
 						Contig cCnt = current.getCnt();
 						Contig nCnt = next.getCnt();
 						Edge e = null;
-						List<Edge> es = diGraph.getEdgesInfo(current.getCnt(), next.getCnt());
+						List<Edge> es = diGraph.getEdgesInfo(cCnt, nCnt);
 						for (Edge t : es) {
 							if (t.getOrigin().equals(cCnt) && t.getTerminus().equals(nCnt))
 								e = t;
@@ -510,6 +513,7 @@ public class PathBuilder {
 				}
 			}
 		} catch (Exception e) {
+//			logger.debug("INDEX\t" + INDEX);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		// cleaning and call gc

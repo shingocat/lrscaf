@@ -35,6 +35,8 @@ public class MathTool {
 	{
 		int median = 0;
 		int len = nums.length;
+		if(len == 0)
+			return median;
 		if(len == 1)
 			return median = nums[0];
 		int [] data = new int[len];
@@ -67,7 +69,8 @@ public class MathTool {
 			int sum = 0;
 			int size = nums.length;
 			if (size == 0)
-				throw new Exception("The arrays could not be empty when computed mean!");
+				return 0;
+//				throw new Exception("The arrays could not be empty when computed mean!");
 			for (int i = 0; i < size; i++) {
 				sum += nums[i];
 			}
@@ -94,7 +97,6 @@ public class MathTool {
 			}
 			sd = (int) Math.round(Math.sqrt(diff / (size - 1)));
 		} catch (Exception e) {
-			logger.debug(MathTool.class.getName() + "\t" + e.getMessage());
 			logger.error(MathTool.class.getName() + "\t" + e.getMessage());
 		}
 		return sd;

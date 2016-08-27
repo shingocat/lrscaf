@@ -173,6 +173,17 @@ public class LinkBuilder {
 					m2 = null;
 					continue;
 				}
+				// do not considering contain case
+				int m1PS = m1.getqStart();
+				int m1PE = m1.getqEnd();
+				int m2PS = m2.getqStart();
+				int m2PE = m2.getqEnd();
+				if(m1PS <= m2PS && m1PE >= m2PE)
+				{
+					m1 = null;
+					m2 = null;
+					continue;
+				}
 				PBLinkM p = new PBLinkM();
 				p.setOrigin(m1);
 				p.setTerminus(m2);
