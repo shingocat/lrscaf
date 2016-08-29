@@ -280,6 +280,8 @@ public class PathBuilder {
 							diGraph.setVertexAsSelected(current);
 							previous = current;
 							current = next;
+//							if(current.getID().equals("997"))
+//								logger.debug("breakpoint");
 							next = diGraph.getNextVertex(current, previous);
 						} else {
 							List<Contig> formers = new Vector<Contig>(3);
@@ -471,7 +473,7 @@ public class PathBuilder {
 				}
 			}
 		} catch (Exception e) {
-			logger.debug("INDEX = " + INDEX);
+//			logger.debug("INDEX = " + INDEX);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		// orientation contig in the paths;

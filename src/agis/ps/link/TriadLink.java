@@ -88,17 +88,46 @@ public class TriadLink {
 			return false;
 		TriadLink other = (TriadLink) obj;
 		// the middle element must be equal;
-		if (middle == null) {
-			if (other.middle != null)
+//		if (middle == null) {
+//			if (other.middle != null)
+//				return false;
+//		} else if (!middle.equals(other.middle))
+//			return false;
+//		if(previous.equals(other.previous) && last.equals(other.last))
+//			return true;
+//		else if(previous.equals(other.last) && last.equals(other.previous))
+//			return true;
+//		else
+//			return false;
+		if(middle == null)
+		{
+			if(other.middle == null)
+			{
+				if(previous.equals(other.previous) && last.equals(other.last))
+					return true;
+				else if(previous.equals(other.last) && last.equals(other.previous))
+					return true;
+				else
+					return false;
+			} else
+			{
 				return false;
-		} else if (!middle.equals(other.middle))
-			return false;
-		if(previous.equals(other.previous) && last.equals(other.last))
-			return true;
-		else if(previous.equals(other.last) && last.equals(other.previous))
-			return true;
-		else
-			return false;
+			}
+		} else
+		{
+			if(other.middle == null)
+			{
+				return false;
+			} else
+			{
+				if(previous.equals(other.previous) && last.equals(other.last))
+					return true;
+				else if(previous.equals(other.last) && last.equals(other.previous))
+					return true;
+				else
+					return false;
+			}
+		}
 	}
 
 	@Override
