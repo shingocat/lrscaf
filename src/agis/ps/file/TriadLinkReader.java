@@ -51,11 +51,18 @@ public class TriadLinkReader {
 				String [] strs = line.split(",");
 				Contig pre = new Contig();
 				pre.setID(strs[0]);
-				Contig mid = new Contig();
-				mid.setID(strs[1]);
 				Contig lst = new Contig();
 				lst.setID(strs[2]);
-				TriadLink tl = new TriadLink(pre, mid, lst);
+				Contig mid = null;
+				TriadLink tl = null;
+				if(!strs[1].equalsIgnoreCase("-"))
+				{
+					mid = new Contig();
+					mid.setID(strs[1]);
+					tl = new TriadLink(pre, mid, lst);
+					tl.setSupLinks(Integer.valueOf(strs[3]));
+				}
+				tl = new TriadLink(pre, mid, lst);
 				tl.setSupLinks(Integer.valueOf(strs[3]));
 //				String [] pres = strs[0].split("\\(length=");
 //				Contig pre = new Contig();

@@ -109,7 +109,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 2)
+//				if(INDEX == 3)
 //					logger.debug("breakpoint");
 //				Contig current = new Contig();
 //				current.setID("981");
@@ -471,6 +471,7 @@ public class PathBuilder {
 				}
 			}
 		} catch (Exception e) {
+			logger.debug("INDEX = " + INDEX);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		// orientation contig in the paths;
@@ -1054,19 +1055,24 @@ public class PathBuilder {
 			tl.setLast(unique);
 
 			for (TriadLink t : tls) {
-				if (t.isContain(internal)) {
-					if (t.getMiddle().equals(internal)) {
-						if(t.isContain(unique))
-							tl.setSupLinks(tl.getSupLinks() + t.getSupLinks() + 2);
-						else
-							tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+				if(t.getMiddle() != null){
+					if (t.isContain(internal)) {
+						if (t.getMiddle().equals(internal)) {
+							if(t.isContain(unique))
+								tl.setSupLinks(tl.getSupLinks() + t.getSupLinks() + 2);
+							else
+								tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+						} else {
+							if(t.isContain(external) && t.isContain(unique))
+								tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
+							else
+								tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+						}
 					} else {
-						if(t.isContain(external) && t.isContain(unique))
-							tl.setSupLinks(tl.getSupLinks() - t.getSupLinks());
-						else
-							tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
+						tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
 					}
-				} else {
+				} else
+				{
 					tl.setSupLinks(tl.getSupLinks() + t.getSupLinks());
 				}
 			}

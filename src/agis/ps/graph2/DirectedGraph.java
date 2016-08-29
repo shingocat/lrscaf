@@ -34,6 +34,7 @@ import org.apache.lucene.store.SimpleFSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.Edge;
 import agis.ps.seqs.Contig;
 import agis.ps.util.MathTool;
@@ -55,6 +56,7 @@ public class DirectedGraph extends Graph implements Serializable {
 	private IndexSearcher searcher = null;
 	private Analyzer analyzer = null;
 	private QueryParser parser = null;
+	private TriadLinkWriter tlWriter = null;
 	
 
 	public DirectedGraph(List<Edge> edges, Parameter paras) {
@@ -62,6 +64,8 @@ public class DirectedGraph extends Graph implements Serializable {
 		this.paras = paras; 
 		initAdjTos();
 		initCntIndexer();
+		tlWriter = new TriadLinkWriter(paras);
+		tlWriter.init();
 	}
 
 	private void initAdjTos() {
@@ -171,6 +175,7 @@ public class DirectedGraph extends Graph implements Serializable {
 			}
 		}
 		long end = System.currentTimeMillis();
+		tlWriter.close();
 		logger.info("Transitive Reducing, erase time: " + (end - start) + " ms");
 		updateGraph();
 	}
@@ -297,6 +302,7 @@ public class DirectedGraph extends Graph implements Serializable {
 			int range = TR_TIMES * sd;
 
 			if (diff >= -range && diff <= range) {
+				tlWriter.write4Edges(trEs);
 				// remove tr edges
 				this.removeEdges(trEs);
 				// modify alternative path edges;

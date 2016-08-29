@@ -59,11 +59,11 @@ public class TriadLink {
 	
 	public boolean isContain(Contig contig)
 	{
-		if(this.previous.equals(contig))
+		if(this.previous != null && this.previous.equals(contig))
 			return true;
-		if(this.middle.equals(contig))
+		if(this.middle != null && this.middle.equals(contig))
 			return true;
-		if(this.last.equals(contig))
+		if(this.last != null && this.last.equals(contig))
 			return true;
 		return false;
 	}
