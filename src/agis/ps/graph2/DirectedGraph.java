@@ -316,9 +316,14 @@ public class DirectedGraph extends Graph implements Serializable {
 				return true;
 			} else {
 				
-				double trRatio = diff / trDist;
-				double alRatio = diff / alDist;
-				if(trRatio <= 0.2 || alRatio <= 0.2)
+				double trRatio = (double)(diff / trDist);
+				double alRatio = (double)(diff / alDist);
+//				logger.debug("diff: " + diff);
+//				logger.debug("trDist: " + trDist);
+//				logger.debug("alDist: " + alDist);
+//				logger.debug("trRatio: " + trRatio);
+//				logger.debug("alRatio: " + alRatio);
+				if(Math.abs(trRatio) <= 0.1 && Math.abs(alRatio) <= 0.1)
 				{
 					tlWriter.write4Edges(trEs);
 					// remove tr edges
