@@ -300,7 +300,10 @@ public class DirectedGraph extends Graph implements Serializable {
 			int sd = trSd >= alSd ? trSd : alSd;
 			int diff = trDist - alDist;
 			int range = TR_TIMES * sd;
-
+			
+			// considering two standards for transitive reduction
+			// case 1 : diff is in the confidence interval, 
+			// case 2 : diff is less than the proportion of paths
 			if (diff >= -range && diff <= range) {
 				tlWriter.write4Edges(trEs);
 				// remove tr edges
@@ -312,8 +315,24 @@ public class DirectedGraph extends Graph implements Serializable {
 				path.removeLast();
 				return true;
 			} else {
-				path.removeLast();
-				return false;
+				
+				double trRatio = diff / trDist;
+				double alRatio = diff / alDist;
+				if(trRatio <= 0.2 || alRatio <= 0.2)
+				{
+					tlWriter.write4Edges(trEs);
+					// remove tr edges
+					this.removeEdges(trEs);
+					// modify alternative path edges;
+					for (Edge e : alEs) {
+						e.setLinkNum(e.getLinkNum() + trSL);
+					}
+					path.removeLast();
+					return true;
+				} else {
+					path.removeLast();
+					return false;
+				}
 			}
 		} else if (depth == 0) {
 			path.removeLast();
