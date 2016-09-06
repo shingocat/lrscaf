@@ -13,10 +13,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.link.MRecord;
 import agis.ps.util.Parameter;
 
 public class ContigCoverageWriter {
@@ -28,6 +30,61 @@ public class ContigCoverageWriter {
 	{
 		this.paras = paras;
 		this.args = args;
+	}
+	
+	public ContigCoverageWriter(Parameter paras)
+	{
+		this.paras = paras;
+	}
+	
+	public void write(Map<String, List<MRecord>> args)
+	{
+		String outFolder = paras.getOutFolder();
+		String fileName = outFolder + System.getProperty("file.separator") + "contig_coverage.info";
+		File file = null; 
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try
+		{
+			file = new File(fileName);
+			if (file.exists()) {
+				logger.info("The output file of scaffold is exist! It will not be overwrited!");
+				return;
+			}
+			if(!file.createNewFile())
+			{
+				logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
+				return;
+			}
+			fw = new FileWriter(file);
+			bw = new BufferedWriter(fw);
+			for(String s : args.keySet())
+			{
+				List<MRecord> ms = args.get(s);
+				int size = ms.size();
+				List<String> pbIds = new Vector<String>(size);
+				for(MRecord m : ms)
+				{
+					if(!pbIds.contains(m.getqName()))
+						pbIds.add(m.getqName());
+				}
+				bw.write(s + "\t" + size + "\t" + Arrays.toString(pbIds.toArray()));
+				bw.newLine();
+			}
+			bw.flush();
+		} catch(IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} finally
+		{
+			try{
+				if(bw != null)
+					bw.close();
+			} catch(IOException e)
+			{
+				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			}
+		}
 	}
 	
 	public void write()

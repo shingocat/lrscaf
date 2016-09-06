@@ -69,6 +69,22 @@ public class MRecordValidator {
 			int minPBLen = paras.getMinPBLen();
 			int minCNTLen = paras.getMinContLen();
 			double identity = paras.getIdentity();
+			int maxOHLen = paras.getMaxOHLen();
+			double maxOHRatio = paras.getMaxOHRatio();
+
+			
+			int tLen = Integer.valueOf(arrs[6]);
+			int tStart = Integer.valueOf(arrs[7]);
+			int tEnd = Integer.valueOf(arrs[8]);
+			int tLeftLen = tStart;
+			int tRightLen = tLen - tEnd;
+			int defOHLen = (int) (tLen * maxOHRatio);
+			if(maxOHLen <= defOHLen)
+				defOHLen = maxOHLen;
+			if(tLeftLen > defOHLen )
+				return null;
+			if(tRightLen > defOHLen)
+				return null;
 			// for finding repeats, do not considering filter standard;
 //			// if less than minimum pacbio length
 //			if (Integer.valueOf(arrs[1]) < minPBLen)
@@ -89,9 +105,9 @@ public class MRecordValidator {
 			m5.setqEnd(Integer.valueOf(arrs[3]));
 			m5.setqStrand(arrs[4].equals("+") ? Strand.FORWARD : Strand.REVERSE);
 			m5.settName(arrs[5]);
-			m5.settLength(Integer.valueOf(arrs[6]));
-			m5.settStart(Integer.valueOf(arrs[7]));
-			m5.settEnd(Integer.valueOf(arrs[8]));
+			m5.settLength(tLen);
+			m5.settStart(tStart);
+			m5.settEnd(tEnd);
 			m5.settStrand(arrs[9].equals("+") ? Strand.FORWARD : Strand.REVERSE);
 			m5.setScore(Integer.valueOf(arrs[10]));
 			m5.setNumMatch(Integer.valueOf(arrs[11]));

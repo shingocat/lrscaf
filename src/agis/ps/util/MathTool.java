@@ -76,7 +76,6 @@ public class MathTool {
 			}
 			mean = Math.round(sum / size);
 		} catch (Exception e) {
-			logger.debug(MathTool.class.getName() + "\t" + e.getMessage());
 			logger.error(MathTool.class.getName() + "\t" + e.getMessage());
 		}
 		return mean;

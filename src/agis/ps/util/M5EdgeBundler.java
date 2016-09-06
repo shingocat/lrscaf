@@ -68,7 +68,7 @@ public class M5EdgeBundler {
 	private void findingRepeats()
 	{
 		RepeatFinder rf = new RepeatFinder(paras);
-		repeats = rf.findRepeat();
+		repeats = rf.findRepeat2();
 		rf = null;
 	}
 
