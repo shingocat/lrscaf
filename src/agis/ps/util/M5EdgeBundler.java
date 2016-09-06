@@ -73,6 +73,7 @@ public class M5EdgeBundler {
 	}
 
 	private void buildingLinks() {
+		long start = System.currentTimeMillis();
 		File file = null;
 		FileReader fr = null;
 		BufferedReader br = null;
@@ -152,6 +153,8 @@ public class M5EdgeBundler {
 		tlWriter.close();
 		linkWriter.close();
 		// Repeats finder;
+		long end = System.currentTimeMillis();
+		logger.info("Links building, erase time : " + (end - start) + " ms");
 		return;
 	}
 }

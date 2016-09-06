@@ -107,7 +107,7 @@ public class RepeatFinder {
 		}
 		repeats = this.findRepeat(cntMaps);
 		long end = System.currentTimeMillis();
-		logger.info("Finding repeat, erase time: " + (end - start) / 1000 + " s");
+		logger.info("Finding repeat, erase time: " + (end - start) + " ms");
 		return repeats;
 	}
 	

@@ -84,7 +84,7 @@ public class Scaffolder2 {
 	// building edges
 	private List<Edge> buildEdges()
 	{
-		long start = System.currentTimeMillis();
+//		long start = System.currentTimeMillis();
 		List<Edge> edges = null;
 		String type = paras.getType();
 		if(type.equalsIgnoreCase("m5"))
@@ -106,8 +106,8 @@ public class Scaffolder2 {
 			logger.info(this.getClass().getName() + "The aligned parameter do not set! only <m5>, <m4>, <sam> or <bam>");
 			return null;
 		}
-		long end = System.currentTimeMillis();
-		logger.info("Building edges, erase time " + (end - start) / 1000 + " s");
+//		long end = System.currentTimeMillis();
+//		logger.info("Building edges, erase time " + (end - start) + " ms");
 		return edges;
 	}
 	
