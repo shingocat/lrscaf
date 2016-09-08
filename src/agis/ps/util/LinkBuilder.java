@@ -195,7 +195,7 @@ public class LinkBuilder {
 			}
 			// build TriadLink
 			if (cpSize >= 3) {
-//				List<TriadLink> triads = new Vector<TriadLink>();
+//				List<TriadLink> triad  = new Vector<TriadLink>();
 				for (int i = 0; i <= cpSize - 3; i++) {
 					MRecord m1 = valids.get(i);
 					MRecord m2 = valids.get(i + 1);
@@ -237,6 +237,39 @@ public class LinkBuilder {
 //				if(triads.size() > 0)
 //					this.tlWriter.write2(triads);
 			}
+			// build crossing links
+			if(cpSize >= 4)
+			{
+				MRecord m1 = valids.get(0);
+				MRecord m2 = valids.get(cpSize - 1);
+				Contig first = new Contig();
+				first.setID(m1.gettName());
+				Contig last = new Contig();
+				last.setID(m2.gettName());
+				TriadLink tl = new TriadLink();
+				tl.setPrevious(first);
+				tl.setLast(last);
+				tl.setSupLinks(1);
+				if (tls.contains(tl)) {
+					int index = tls.indexOf(tl);
+					int supLink = tls.get(index).getSupLinks();
+					supLink += 1;
+					tls.get(index).setSupLinks(supLink);
+					m1 = null;
+					m2 = null;
+					first = null;
+					last = null;
+					tl = null;
+				} else {
+					tls.add(tl);
+					m1 = null;
+					m2 = null;
+					first = null;
+					last = null;
+					tl = null;
+				}
+			}
+
 			return pbLinks;
 		}
 	}
