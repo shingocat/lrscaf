@@ -8,6 +8,7 @@ package agis.ps.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -174,8 +175,14 @@ public class EdgeBundler {
 				int sB = s1Bs.size() + s2Bs.size(); // A(+)->B(-):B(+)->A(-)
 				int sC = s1Cs.size() + s2As.size(); // A(-)->B(-):B(+)->A(+)
 				int sD = s1Ds.size() + s2Ds.size(); // A(-)->B(+):B(-)->A(+)
-
+				
 				int max = MathTool.max(sA, sB, sC, sD);
+				// considering there are more than maximum value;
+				int [] arrs = new int[]{sA, sB, sC, sD};
+				Arrays.sort(arrs);
+				if(arrs[2] == max)
+					continue;
+				
 				if (max == sA) // for the A statement;
 				{
 					List<Integer> dists = new Vector<Integer>(10);
@@ -187,6 +194,7 @@ public class EdgeBundler {
 					int sd = MathTool.sd(dists);
 					int upper = mean + 3 * sd;
 					int low = mean - 3 * sd;
+					
 					// if the distance larger than mean + 3 * sd, then remove;
 					Iterator<PBLink> it1 = s1As.iterator();
 					while (it1.hasNext()) {
@@ -216,7 +224,11 @@ public class EdgeBundler {
 						dists.add(p.getDistance());
 					mean = MathTool.mean(dists);
 					sd = MathTool.sd(dists);
-
+					
+					// do not use the uncertain edges
+					if(((double) sd / mean) >= 0.7 )
+						continue;
+					
 					// if the mean is less tan zero and the user specified do
 					// not
 					// use overlap link;
@@ -394,6 +406,11 @@ public class EdgeBundler {
 						dists.add(p.getDistance());
 					mean = MathTool.mean(dists);
 					sd = MathTool.sd(dists);
+					
+					// do not use the uncertain edges
+					if(((double) sd / mean) >= 0.7 )
+						continue;
+					
 					// if the mean is less tan zero and the user specified do
 					// not
 					// use overlap link;
@@ -571,6 +588,10 @@ public class EdgeBundler {
 						dists.add(p.getDistance());
 					mean = MathTool.mean(dists);
 					sd = MathTool.sd(dists);
+					
+					// do not use the uncertain edges
+					if(((double) sd / mean) >= 0.7 )
+						continue;
 					// if the mean is less tan zero and the user specified do
 					// not
 					// use overlap link;
@@ -749,6 +770,11 @@ public class EdgeBundler {
 						dists.add(p.getDistance());
 					mean = MathTool.mean(dists);
 					sd = MathTool.sd(dists);
+					
+					// do not use the uncertain edges
+					if(((double) sd / mean) >= 0.7 )
+						continue;
+					
 					// if the mean is less tan zero and the user specified do
 					// not
 					// use overlap link;
