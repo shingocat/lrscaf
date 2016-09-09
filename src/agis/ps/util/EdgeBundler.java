@@ -226,7 +226,7 @@ public class EdgeBundler {
 					sd = MathTool.sd(dists);
 					
 					// do not use the uncertain edges
-					if(((double) sd / mean) >= 0.7 )
+					if((sd >= 2000) && ((double) sd / mean) >= 0.7 )
 						continue;
 					
 					// if the mean is less tan zero and the user specified do
@@ -408,7 +408,7 @@ public class EdgeBundler {
 					sd = MathTool.sd(dists);
 					
 					// do not use the uncertain edges
-					if(((double) sd / mean) >= 0.7 )
+					if((sd >= 2000) && ((double) sd / mean) >= 0.7 )
 						continue;
 					
 					// if the mean is less tan zero and the user specified do
@@ -590,7 +590,7 @@ public class EdgeBundler {
 					sd = MathTool.sd(dists);
 					
 					// do not use the uncertain edges
-					if(((double) sd / mean) >= 0.7 )
+					if((sd >= 2000) && ((double) sd / mean) >= 0.7 )
 						continue;
 					// if the mean is less tan zero and the user specified do
 					// not
@@ -772,7 +772,7 @@ public class EdgeBundler {
 					sd = MathTool.sd(dists);
 					
 					// do not use the uncertain edges
-					if(((double) sd / mean) >= 0.7 )
+					if((sd >= 2000) && ((double) sd / mean) >= 0.7 )
 						continue;
 					
 					// if the mean is less tan zero and the user specified do
