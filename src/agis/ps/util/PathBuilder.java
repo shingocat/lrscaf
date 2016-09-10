@@ -145,7 +145,15 @@ public class PathBuilder {
 					// then this point is not legal point
 //					Contig nNext = diGraph.getNextVertex(next, current);
 					if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
+					{
+						Node node = new Node();
+						node.setCnt(current);
+						node.setOrphan(false);
+						diGraph.setVertexAsSelected(current);
+						path.push(node);
+						paths.add(path);
 						continue;
+					}
 					while (true) {
 						Node node = new Node();
 						node.setCnt(current);
@@ -258,7 +266,10 @@ public class PathBuilder {
 					// all the element unshift into path;
 					// checking the c1 and c2 whether travel
 					if(diGraph.isVertexSelected(c1) && diGraph.isVertexSelected(c2))
+					{
+						paths.add(path);
 						continue;
+					}
 					Contig previous = startPoint;
 					current = c1;
 					diGraph.setVertexAsSelected(current);
