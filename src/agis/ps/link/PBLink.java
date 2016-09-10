@@ -132,4 +132,11 @@ public class PBLink implements ILink {
 		return dist;
 	}
 
+	@Override
+	public String toString() {
+		return "PBLink [origin=" + origin + ", oStrand=" + oStrand + ", terminus=" + terminus + ", tStrand=" + tStrand
+				+ ", dist=" + dist + ", pbId=" + pbId + ", oPStart=" + oPStart + ", oPEnd=" + oPEnd + ", tPStart="
+				+ tPStart + ", tPEnd=" + tPEnd + "]";
+	}
+
 }

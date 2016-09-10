@@ -141,6 +141,11 @@ public class PathBuilder {
 					path = new NodePath();
 					// Contig next = diGraph.getNextVertex(current, null);
 					Contig next = adjs.get(0);
+					// if the next and the next next contig is selected, 
+					// then this point is not legal point
+//					Contig nNext = diGraph.getNextVertex(next, current);
+					if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
+						continue;
 					while (true) {
 						Node node = new Node();
 						node.setCnt(current);
