@@ -46,7 +46,7 @@ public class DirectedGraph extends Graph implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = LoggerFactory.getLogger(DirectedGraph.class);
 	private static int TR_TIMES = 15; // for transitive reduction
-	private static int TIP_LENGTH = 1000; // 1000 bp for tip length;
+	private static int TIP_LENGTH = 1500; // 1000 bp for tip length;
 	private Parameter paras = null;
 	private Map<String, List<Contig>> adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
 	// for store multiple in and multiple out contig vertex;
