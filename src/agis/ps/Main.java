@@ -110,7 +110,8 @@ public class Main {
 		opts.addOption("mr", "mr", false, "The indicator for masking repeats! Default: <f>");
 		// gap filling
 		opts.addOption("gf", "gf", false, "The indicator for gap filling! Default: <f>");
-		
+		// tip length
+		opts.addOption("tl", "tiplength", false, "The maximum tip length!");
 		return opts;
 	}
 	
@@ -241,7 +242,11 @@ public class Main {
 		{
 			paras.setGapFilling(true);
 		}
-		
+		// parsing tip length
+		if(cl.hasOption("tl"))
+		{
+			paras.setTipLength(Integer.valueOf(cl.getOptionValue("tl")));
+		}
 		return paras;
 	}
 }

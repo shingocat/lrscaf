@@ -31,6 +31,7 @@ public class Parameter implements Serializable {
 	private Double ratio = 0.2; // use this ratio to delete edge by supported link ratio 
 	private boolean isRepMask = false; // whether repeat is mask;
 	private boolean isGapFilling = false; // whether gap is filled;
+	private int tipLength = 1500; // tip length is 1500 bp, larger than this do not considering as tip
 	
 	public boolean isGapFilling() {
 		return isGapFilling;
@@ -190,6 +191,14 @@ public class Parameter implements Serializable {
 
 	public void setRatio(Double ratio) {
 		this.ratio = ratio;
+	}	
+
+	public int getTipLength() {
+		return tipLength;
+	}
+
+	public void setTipLength(int tipLength) {
+		this.tipLength = tipLength;
 	}
 
 	@Override
@@ -200,6 +209,7 @@ public class Parameter implements Serializable {
 				+ ", maxEndLen=" + maxEndLen + ", maxEndRatio=" + maxEndRatio + ", minSupLinks=" + minSupLinks
 				+ ", maxSupLinks=" + maxSupLinks + ", type=" + type + ", identity=" + identity + ", isUseOLLink="
 				+ isUseOLLink + ", ratio=" + ratio + ", isRepMask=" + isRepMask + ", isGapFilling=" + isGapFilling
-				+ "]";
+				+ ", tipLength=" + tipLength + "]";
 	}
+	
 }

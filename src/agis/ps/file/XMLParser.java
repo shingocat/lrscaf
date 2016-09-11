@@ -111,6 +111,7 @@ public class XMLParser {
 				para.setRatio(0.3);
 				para.setRepMask(false);
 				para.setGapFilling(false);
+				para.setTipLength(1500);
 			} else {
 				Node parasNode = nodes.item(0);
 				nodes = parasNode.getChildNodes();
@@ -161,21 +162,19 @@ public class XMLParser {
 							para.setGapFilling(true);
 						else 
 							para.setGapFilling(false);
-					}else {
+					} else if(nodeName.equalsIgnoreCase("tip_length")){
+						para.setTipLength(Integer.valueOf(node.getTextContent().trim()));
+					} else {
 						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will be omitted!");
 					}
 				}
 			}
 
 		} catch (ParserConfigurationException e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (SAXException e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		return para;
