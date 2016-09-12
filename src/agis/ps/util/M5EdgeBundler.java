@@ -97,7 +97,7 @@ public class M5EdgeBundler {
 					arrs = line.split("\\s+");
 					if (arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
 						continue;
-//					if(arrs[0].equalsIgnoreCase("m130607_031915_42207_c100539492550000001823089611241310_s1_p0/81921/1777_16348"))
+//					if(arrs[0].equalsIgnoreCase("m130607_031915_42207_c100539492550000001823089611241310_s1_p0/39850/0_13611"))
 //						logger.debug("breakpoint");
 					if (id == null) {
 						id = arrs[0];

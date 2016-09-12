@@ -48,6 +48,8 @@ public class LinkBuilder {
 	
 	public List<PBLinkM> mRecord2Link(List<MRecord> records, List<String> repeats)
 	{
+		if(records.size() >= 3)
+			this.pesudoTriadLink(records);
 		Iterator<MRecord> it = records.iterator();
 		List<PBLinkM> pbLinks = new Vector<PBLinkM>();
 		List<MRecord> valids = new Vector<MRecord>(records.size());
@@ -823,7 +825,43 @@ public class LinkBuilder {
 		}
 		return data;
 	}
-	
+	// test in yeast for some pacbio read do not valid by the filter parameter
+	// but it provide some link info!
+	private void pesudoTriadLink(List<MRecord> ms)
+	{
+		if(tls == null)
+			tls = new Vector<TriadLink>(100);
+		Collections.sort(ms, new ByLocOrderComparator());
+		int cpSize = ms.size();
+		MRecord m1 = ms.get(0);
+		MRecord m2 = ms.get(cpSize - 1);
+		Contig first = new Contig();
+		first.setID(m1.gettName());
+		Contig last = new Contig();
+		last.setID(m2.gettName());
+		TriadLink tl = new TriadLink();
+		tl.setPrevious(first);
+		tl.setLast(last);
+		tl.setSupLinks(1);
+		if (tls.contains(tl)) {
+			int index = tls.indexOf(tl);
+			int supLink = tls.get(index).getSupLinks();
+			supLink += 1;
+			tls.get(index).setSupLinks(supLink);
+			m1 = null;
+			m2 = null;
+			first = null;
+			last = null;
+			tl = null;
+		} else {
+			tls.add(tl);
+			m1 = null;
+			m2 = null;
+			first = null;
+			last = null;
+			tl = null;
+		}
+	}
 	
 	
 	private Map<String, List<MRecord>> findSimilarityCnts(List<MRecord> data)
