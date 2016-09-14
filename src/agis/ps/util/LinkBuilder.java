@@ -162,6 +162,7 @@ public class LinkBuilder {
 			// checking the similarity contigs
 //			valids = validateContigPair(valids);
 			valids = this.validateContigs(valids);
+			valids = validateOverlap(valids);
 			int cpSize = valids.size();
 
 			// build only the successive link; A->B->C, it will build A->B
@@ -825,6 +826,51 @@ public class LinkBuilder {
 		}
 		return data;
 	}
+	
+	private List<MRecord> validateOverlap(List<MRecord> data)
+	{
+		List<MRecord> removes = new Vector<MRecord>(data.size());
+		Iterator<MRecord> it = data.iterator();
+		boolean isFirst = true;
+		MRecord former = null;
+		MRecord current = null;
+		double olRatio = 0.9; // larger than this value, it will remove;
+		while(it.hasNext())
+		{
+			if(isFirst)
+			{
+				former = it.next();
+				isFirst = false;
+				continue;
+			} else
+			{
+				current = it.next();
+				int fPS = former.getqStart();
+				int fPE = former.getqEnd();
+				int fl = fPE - fPS;
+				int cPS = current.getqStart();
+				int cPE = current.getqEnd();
+				int cl = cPE - cPS;
+				int ol = fPE - cPS;
+				double fOLRatio = (double)fl / ol;
+				double cOLRatio = (double)cl / ol;
+				if((fOLRatio >= olRatio) && (former.gettStrand().equals(current.gettStrand())))
+				{
+					removes.add(former);
+					former = current;
+					continue;
+				}
+				if((cOLRatio >= olRatio) && (former.gettStrand().equals(current.gettStrand())))
+				{
+					removes.add(current);
+					continue;
+				}
+			}
+		}
+		data.removeAll(removes);
+		return data;
+	}
+	
 	// test in yeast for some pacbio read do not valid by the filter parameter
 	// but it provide some link info!
 	private void pesudoTriadLink(List<MRecord> ms)
