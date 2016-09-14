@@ -110,7 +110,8 @@ public class PBLinkM implements ILink {
 
 	@Override
 	public String toString() {
-		return "PBLinkM5 [id=" + id + ", origin=" + origin + ", terminus=" + terminus + ", isOverLap=" + isOverLap
+		return "PBLinkM5 [id=" + id + ", origin=" + origin.gettName() + ", terminus=" + terminus.gettName()
+		+ ", isOverLap=" + isOverLap + ", distance=" + this.getDistance()
 				+ "]";
 	}
 }

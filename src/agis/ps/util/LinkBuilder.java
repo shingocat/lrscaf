@@ -162,7 +162,7 @@ public class LinkBuilder {
 			// checking the similarity contigs
 //			valids = validateContigPair(valids);
 			valids = this.validateContigs(valids);
-			valids = validateOverlap(valids);
+//			valids = validateOverlap(valids);
 			int cpSize = valids.size();
 
 			// build only the successive link; A->B->C, it will build A->B
@@ -191,6 +191,11 @@ public class LinkBuilder {
 				p.setOrigin(m1);
 				p.setTerminus(m2);
 				p.setId(m1.getqName());
+				int distance = Math.abs(p.getDistance());
+				int olength = m1.gettLength();
+				int tlength = m2.gettLength();
+				if(distance >= olength || distance >= tlength)
+					continue;
 				pbLinks.add(p);
 				p = null;
 				m1 = null;
