@@ -191,11 +191,15 @@ public class LinkBuilder {
 				p.setOrigin(m1);
 				p.setTerminus(m2);
 				p.setId(m1.getqName());
-				int distance = Math.abs(p.getDistance());
-				int olength = m1.gettLength();
-				int tlength = m2.gettLength();
-				if(distance >= olength || distance >= tlength)
-					continue;
+				int distance = p.getDistance();
+				if(distance < 0)
+				{
+					int olength = m1.gettLength();
+					int tlength = m2.gettLength();
+					distance = Math.abs(distance);
+					if(distance >= olength || distance >= tlength)
+						continue;
+				}
 				pbLinks.add(p);
 				p = null;
 				m1 = null;
