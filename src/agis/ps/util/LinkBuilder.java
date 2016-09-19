@@ -875,12 +875,16 @@ public class LinkBuilder {
 				{
 					if((fOLRatio >= olRatio))
 					{
+						logger.debug("remove former" + former.getqName());
+						logger.debug("remove former " + former.gettName());
 						removes.add(former);
 						former = current;
 						continue;
 					}
 					if((cOLRatio >= olRatio))
 					{
+						logger.debug("remover current " + current.getqName());
+						logger.debug("remover current " + current.gettName());
 						removes.add(current);
 						continue;
 					}
