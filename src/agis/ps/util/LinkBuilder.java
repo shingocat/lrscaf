@@ -161,8 +161,8 @@ public class LinkBuilder {
 			Collections.sort(valids, new ByLocOrderComparator());
 			// checking the similarity contigs
 //			valids = validateContigPair(valids);
-			valids = this.validateContigs(valids);
-//			valids = validateOverlap(valids);
+			valids = this.validateSimilarityContigs(valids);
+			valids = validateOverlapContigs(valids);
 			int cpSize = valids.size();
 
 			// build only the successive link; A->B->C, it will build A->B
@@ -176,30 +176,30 @@ public class LinkBuilder {
 					m2 = null;
 					continue;
 				}
-				// do not considering contain case
-				int m1PS = m1.getqStart();
-				int m1PE = m1.getqEnd();
-				int m2PS = m2.getqStart();
-				int m2PE = m2.getqEnd();
-				if(m1PS <= m2PS && m1PE >= m2PE)
-				{
-					m1 = null;
-					m2 = null;
-					continue;
-				}
+//				// do not considering contain case
+//				int m1PS = m1.getqStart();
+//				int m1PE = m1.getqEnd();
+//				int m2PS = m2.getqStart();
+//				int m2PE = m2.getqEnd();
+//				if(m1PS <= m2PS && m1PE >= m2PE)
+//				{
+//					m1 = null;
+//					m2 = null;
+//					continue;
+//				}
 				PBLinkM p = new PBLinkM();
 				p.setOrigin(m1);
 				p.setTerminus(m2);
 				p.setId(m1.getqName());
-				int distance = p.getDistance();
-				if(distance < 0)
-				{
-					int olength = m1.gettLength();
-					int tlength = m2.gettLength();
-					distance = Math.abs(distance);
-					if(distance >= olength || distance >= tlength)
-						continue;
-				}
+//				int distance = p.getDistance();
+//				if(distance < 0)
+//				{
+//					int olength = m1.gettLength();
+//					int tlength = m2.gettLength();
+//					distance = Math.abs(distance);
+//					if(distance >= olength || distance >= tlength)
+//						continue;
+//				}
 				pbLinks.add(p);
 				p = null;
 				m1 = null;
@@ -408,7 +408,7 @@ public class LinkBuilder {
 			Collections.sort(valids, new ByLocOrderComparator());
 			// checking the similarity contigs
 //			valids = validateContigPair(valids);
-			valids = this.validateContigs(valids);
+			valids = this.validateSimilarityContigs(valids);
 			int cpSize = valids.size();
 
 			// build only the successive link; A->B->C, it will build A->B
@@ -791,7 +791,7 @@ public class LinkBuilder {
 		return data;
 	}
 	
-	private List<MRecord> validateContigs(List<MRecord> data)
+	private List<MRecord> validateSimilarityContigs(List<MRecord> data)
 	{
 		Map<String, List<MRecord>> sims = this.findSimilarityCnts(data);
 		int size = sims.size();
@@ -836,7 +836,7 @@ public class LinkBuilder {
 		return data;
 	}
 	
-	private List<MRecord> validateOverlap(List<MRecord> data)
+	private List<MRecord> validateOverlapContigs(List<MRecord> data)
 	{
 		List<MRecord> removes = new Vector<MRecord>(data.size());
 		Iterator<MRecord> it = data.iterator();
@@ -854,6 +854,14 @@ public class LinkBuilder {
 			} else
 			{
 				current = it.next();
+				int dist = this.getDistance(former, current);
+				if(dist >= 0)
+				{
+					former = current;
+					continue;
+				}
+				
+				// former code
 				int fPS = former.getqStart();
 				int fPE = former.getqEnd();
 				int fl = fPE - fPS;
@@ -861,23 +869,66 @@ public class LinkBuilder {
 				int cPE = current.getqEnd();
 				int cl = cPE - cPS;
 				int ol = fPE - cPS;
-				double fOLRatio = (double)fl / ol;
-				double cOLRatio = (double)cl / ol;
-				if((fOLRatio >= olRatio) && (former.gettStrand().equals(current.gettStrand())))
+				double fOLRatio = (double)ol / fl;
+				double cOLRatio = (double)ol / cl;
+				if(fOLRatio >= olRatio || cOLRatio >= olRatio)
 				{
-					removes.add(former);
+					if((fOLRatio >= olRatio))
+					{
+						removes.add(former);
+						former = current;
+						continue;
+					}
+					if((cOLRatio >= olRatio))
+					{
+						removes.add(current);
+						continue;
+					}
+				} else
+				{
 					former = current;
-					continue;
-				}
-				if((cOLRatio >= olRatio) && (former.gettStrand().equals(current.gettStrand())))
-				{
-					removes.add(current);
-					continue;
 				}
 			}
 		}
 		data.removeAll(removes);
 		return data;
+	}
+	
+	private int getDistance(MRecord origin, MRecord terminus)
+	{
+		int dist = 0;
+		int oPBS = origin.getqStart(); // origin pacbio start point;
+		int oCntS = origin.gettStart(); // origin contig start point;
+		int oPBE = origin.getqEnd(); // origin pacbio end point;
+		int oCntE = origin.gettEnd(); // origin contig end point;
+		int tPBS = terminus.getqStart(); // terminus pacbio start point;
+		int tCntS = terminus.gettStart(); // terminus contig start point;
+		int tPBE = terminus.getqEnd(); // terminus pacbio end point;
+		int tCntE = terminus.gettEnd(); // terminus contig end point;
+		int oCntLen = origin.gettLength();// origin contig length;
+		int tCntLen = terminus.gettLength(); // terminus contig length
+		if(origin.gettStrand().equals(Strand.FORWARD) && terminus.gettStrand().equals(Strand.FORWARD))
+		{ // + +
+			int oRightLen = oCntLen - oCntE;
+			int tLeftLen = tCntS;
+			dist = tPBS - oPBE - oRightLen - tLeftLen;
+		} else if(origin.gettStrand().equals(Strand.REVERSE) && terminus.gettStrand().equals(Strand.REVERSE))
+		{ // - -
+			int oLeftLen = oCntS;
+			int tRightLen = tCntLen -tCntE;
+			dist = tPBS - oPBE - oLeftLen - tRightLen;
+		} else if(origin.gettStrand().equals(Strand.FORWARD) && terminus.gettStrand().equals(Strand.REVERSE))
+		{ // + -
+			int oRightLen = oCntLen - oCntE;
+			int tRightLen = tCntLen -tCntE;
+			dist = tPBS - oPBE - oRightLen - tRightLen;
+		} else if(origin.gettStrand().equals(Strand.REVERSE) && terminus.gettStrand().equals(Strand.FORWARD))
+		{ // - +
+			int oLeftLen = oCntS;
+			int tLeftLen = tCntS;
+			dist = tPBS - oPBE - oLeftLen - tLeftLen;
+		}
+		return dist;
 	}
 	
 	// test in yeast for some pacbio read do not valid by the filter parameter
