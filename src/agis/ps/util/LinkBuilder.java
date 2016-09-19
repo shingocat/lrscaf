@@ -853,6 +853,8 @@ public class LinkBuilder {
 				continue;
 			} else
 			{
+//				if(former.getqName().equalsIgnoreCase("m130605_032054_42207_c100515142550000001823076608221373_s1_p0/147280/0_8554"))
+//					logger.debug("breakpoint");
 				current = it.next();
 				int dist = this.getDistance(former, current);
 				if(dist >= 0)
@@ -873,21 +875,31 @@ public class LinkBuilder {
 				double cOLRatio = (double)ol / cl;
 				if(fOLRatio >= olRatio || cOLRatio >= olRatio)
 				{
-					if((fOLRatio >= olRatio))
+					if(fOLRatio >= cOLRatio)
 					{
-						logger.debug("remove former" + former.getqName());
-						logger.debug("remove former " + former.gettName());
 						removes.add(former);
 						former = current;
 						continue;
-					}
-					if((cOLRatio >= olRatio))
+					} else
 					{
-						logger.debug("remover current " + current.getqName());
-						logger.debug("remover current " + current.gettName());
 						removes.add(current);
 						continue;
 					}
+//					if((fOLRatio >= olRatio))
+//					{
+//						logger.debug("remove former" + former.getqName());
+//						logger.debug("remove former " + former.gettName());
+//						removes.add(former);
+//						former = current;
+//						continue;
+//					}
+//					if((cOLRatio >= olRatio))
+//					{
+//						logger.debug("remover current " + current.getqName());
+//						logger.debug("remover current " + current.gettName());
+//						removes.add(current);
+//						continue;
+//					}
 				} else
 				{
 					former = current;
