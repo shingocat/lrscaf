@@ -1038,9 +1038,13 @@ public class LinkBuilder {
 						count++;
 					}
 				}
-			}
-			
-		}		
+			}			
+		}
+		if(!tempSims.isEmpty() && tempSims.size() >= 2)
+		{
+			sims.put(String.valueOf(count), tempSims);
+			tempSims = null;
+		}
 		return sims;
 	}
 
