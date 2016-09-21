@@ -109,7 +109,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 3)
+//				if(INDEX == 2)
 //					logger.debug("breakpoint");
 //				Contig current = new Contig();
 //				current.setID("981");
@@ -164,6 +164,18 @@ public class PathBuilder {
 						Contig previous = current;
 						current = next;
 						next = diGraph.getNextVertex(current, previous);
+						if(next != null){
+							if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
+							{
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
+//								paths.add(path);
+								break;
+							}
+						}
 						if (next == null) { // for the divergence point
 							List<Contig> formers = new Vector<Contig>(3);
 							if(path.getPathSize() > 2 )
