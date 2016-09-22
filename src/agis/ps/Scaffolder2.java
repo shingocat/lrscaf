@@ -126,7 +126,8 @@ public class Scaffolder2 {
 	private void writeScaffolds(Parameter paras, List<NodePath> paths)
 	{
 		ScaffoldWriter sw = new ScaffoldWriter(paras, paths);
-		sw.write3();
+//		sw.write3();
+		sw.write2file();
 	}
 	
 

@@ -8,6 +8,7 @@ package agis.ps.file;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -56,12 +57,17 @@ public class ScaffoldWriter {
 	private Analyzer analyzer;
 	private QueryParser parser;
 	private IndexSearcher searcher;
+	private StringBuffer scaf;
+	private File out; 
+	private FileOutputStream fos;
+	private BufferedWriter bw;
+	private FileWriter fw;
 
 	public ScaffoldWriter(Parameter paras, List<NodePath> paths) {
 		this.paras = paras;
 		this.paths = paths;
 		this.filePath = paras.getOutFolder() + System.getProperty("file.separator") + "scaffolds.fasta";
-
+		this.initCntIndexer();
 	}
 
 	public ScaffoldWriter(List<NodePath> paths, Map<String, Contig> cnts, String filePath) {
@@ -77,6 +83,105 @@ public class ScaffoldWriter {
 		this.paths = paths;
 		this.cnts = cnts;
 		this.filePath = filePath;
+	}
+	
+	public void write2file()
+	{
+		long start = System.currentTimeMillis();
+//		filePath = paras.getOutFolder() + System.getProperty("file.separator") + "scaffolds.fasta";
+		try{
+			out = new File(filePath);
+			if (out.exists()) {
+				logger.info("The output file of scaffold is exist! It will not be overwrited!");
+				return;
+			}
+			if (!out.createNewFile()) {
+				logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
+				return;
+			}
+			fw = new FileWriter(out);
+			bw = new BufferedWriter(fw);
+			int index = 0;
+			for(NodePath np : paths)
+			{
+				bw.write(this.buildScaffold(np, index));
+				bw.newLine();
+				index++;
+			}		
+		} catch(IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		} catch(Exception e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		} finally
+		{
+			try
+			{
+				if(bw != null)
+					bw.close();
+				if(fw != null)
+					fw.close();
+			} catch(IOException e)
+			{
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			} catch(Exception e)
+			{
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			}
+		}
+		long end = System.currentTimeMillis();
+		logger.info("Scaffold writing, erase time: " + (end - start) + " ms");
+	}
+	
+	public String buildScaffold(NodePath path, int index)
+	{
+		StringBuffer sb = new StringBuffer();
+		int size = path.getPathSize();
+		Node current =  null;
+		sb.append(">Scaffolds_" + index + "\n");
+		String cId = null;
+		String seq = null;
+		int dist = 0;
+		int sd = 0;
+		for(int i = 0; i < size; i++)
+		{
+			current = path.getElement(i);
+			if(i == 0)
+			{
+				cId = current.getCnt().getID();
+				seq = this.indexSeq(cId);
+				seq.trim();
+				if(current.getStrand().equals(Strand.REVERSE))
+					seq = this.getReverseSeq(seq);
+				sb.append(seq);
+				dist = current.getMeanDist2Next();
+				sd = current.getSdDist2Next();
+			} else
+			{
+				cId = current.getCnt().getID();
+				seq = this.indexSeq(cId);
+				seq.trim();
+				if(current.getStrand().equals(Strand.REVERSE))
+					seq = this.getReverseSeq(seq);
+				if(dist < 0)
+				{
+					String temp = concatenate(sb.toString(), seq, dist, sd);
+					sb.delete(0, sb.length());
+					sb.append(temp);
+					dist = current.getMeanDist2Next();
+					sd = current.getSdDist2Next();
+				} else
+				{
+					String N = this.repeatString("N", dist);
+					sb.append(N);
+					sb.append(seq);
+					dist = current.getMeanDist2Next();
+					sd = current.getSdDist2Next();
+				}
+			}
+		}
+		return sb.toString();
 	}
 
 	public void write3() {
@@ -1008,5 +1113,28 @@ public class ScaffoldWriter {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		return seq;
+	}
+	
+	private String getReverseSeq(String seq)
+	{
+		StringBuffer sb = new StringBuffer();
+		seq.toUpperCase(); 
+		for (int j = (seq.length() - 1); j >= 0; j--) {
+			switch (seq.charAt(j)) {
+			case 'A':
+				sb.append("T");
+				break;
+			case 'T':
+				sb.append("A");
+				break;
+			case 'C':
+				sb.append("G");
+				break;
+			case 'G':
+				sb.append("C");
+				break;
+			}
+		}
+		return sb.toString();
 	}
 }
