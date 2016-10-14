@@ -16,6 +16,7 @@ import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.OutputFolderBuilder;
 import agis.ps.file.ScaffoldWriter;
 import agis.ps.link.Edge;
+import agis.ps.link2.CntFileEncapsulate;
 import agis.ps.path.NodePath;
 import agis.ps.util.M4EdgeBundler;
 import agis.ps.util.M5EdgeBundler;
@@ -32,7 +33,8 @@ import agis.ps.util.PathBuilder;
 public class Scaffolder2 {
 	private static Logger logger = LoggerFactory.getLogger(Scaffolder.class);
 	private Parameter paras;
-	private List<Edge> edges;	
+	private List<Edge> edges;
+	private CntFileEncapsulate cntfile;
 	
 	public Scaffolder2(Parameter paras)
 	{
@@ -44,22 +46,21 @@ public class Scaffolder2 {
 		try
 		{
 			// building output folder
-//			if(!buildOutputFolder())
-//				return;
-			this.buildOutputFolder();
-			// index contigs
-			if(!this.indexCnt())
+			if(!buildOutputFolder())
 				return;
+			// index contigs
+//			if(!this.indexCnt())
+//				return;
 			// building edges 
-			edges = buildEdges();
+			this.buildEdges();
 			if(edges == null || edges.size() == 0)
 				return;
 			this.writeEdgesInfo(edges, false);
 			logger.info("Original Edges size: " + edges.size());
-			PathBuilder pathBuilder = new PathBuilder(edges, paras);
+			PathBuilder pathBuilder = new PathBuilder(edges, paras, cntfile);
 			List<NodePath> paths = pathBuilder.buildPath();
 			this.writeNodePathInfo(paths);
-			this.writeScaffolds(paras, paths);			
+			this.writeScaffolds(paras, paths);	
 		} catch(Exception e)
 		{
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
@@ -82,21 +83,21 @@ public class Scaffolder2 {
 	}
 	
 	// building edges
-	private List<Edge> buildEdges()
+	private void buildEdges()
 	{
 //		long start = System.currentTimeMillis();
-		List<Edge> edges = null;
 		String type = paras.getType();
 		if(type.equalsIgnoreCase("m5"))
 		{
 			// using m5 format to build edges;
 			M5EdgeBundler bundler = new M5EdgeBundler(paras);
-			edges = bundler.building();
+			this.edges = bundler.building();
+			this.cntfile = bundler.getCntFile();
 		} else if(type.equalsIgnoreCase("m4"))
 		{
 			// using m4 format to build edges;
 			M4EdgeBundler bundler = new M4EdgeBundler(paras);
-			edges = bundler.building();
+			this.edges = bundler.building();
 		} else if(type.equalsIgnoreCase("sam") || type.equalsIgnoreCase("bam"))
 		{
 			// using sam format to build edges;
@@ -104,11 +105,10 @@ public class Scaffolder2 {
 		} else 
 		{
 			logger.info(this.getClass().getName() + "The aligned parameter do not set! only <m5>, <m4>, <sam> or <bam>");
-			return null;
+			return;
 		}
 //		long end = System.currentTimeMillis();
 //		logger.info("Building edges, erase time " + (end - start) + " ms");
-		return edges;
 	}
 	
 	private void writeEdgesInfo(List<Edge> edges, boolean isPesudo) {
@@ -125,9 +125,10 @@ public class Scaffolder2 {
 
 	private void writeScaffolds(Parameter paras, List<NodePath> paths)
 	{
-		ScaffoldWriter sw = new ScaffoldWriter(paras, paths);
+		ScaffoldWriter sw = new ScaffoldWriter(paras, paths, cntfile);
 //		sw.write3();
-		sw.write2file();
+//		sw.write2file();
+		sw.writeByContigFileEncapsulate();
 	}
 	
 

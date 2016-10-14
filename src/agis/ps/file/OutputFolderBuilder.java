@@ -54,15 +54,29 @@ public class OutputFolderBuilder {
 	}
 
 	private boolean deleteDir(File dir) {
+		boolean success = false;
 		if (dir.isDirectory()) {
 			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
+			if(children.length == 0)
+				success = true;
+			for(String s : children)
+			{
+				File file = new File(dir,s);
+				if(file.isFile())
+				{
+					success = file.delete();
+					if(!success)
+						break;
 				}
 			}
+//			for (int i = 0; i < children.length; i++) {
+//				boolean success = deleteDir(new File(dir, children[i]));
+//				if (!success) {
+//					return false;
+//				}
+//			}
 		}
-		return dir.delete();
+//		return dir.delete();
+		return success;
 	}
 }

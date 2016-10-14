@@ -27,6 +27,7 @@ public class MRecord implements Serializable{
 	private Integer score;
 	private Double identity;
 	private Integer mapQV;
+	
 	public String getqName() {
 		return qName;
 	}

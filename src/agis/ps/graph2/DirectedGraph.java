@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.Edge;
+import agis.ps.link2.CntFileEncapsulate;
 import agis.ps.seqs.Contig;
 import agis.ps.util.MathTool;
 import agis.ps.util.Parameter;
@@ -57,16 +58,22 @@ public class DirectedGraph extends Graph implements Serializable {
 	private Analyzer analyzer = null;
 	private QueryParser parser = null;
 	private TriadLinkWriter tlWriter = null;
-	
+	private CntFileEncapsulate cntfile;
 
 	public DirectedGraph(List<Edge> edges, Parameter paras) {
 		super(edges);
 		this.paras = paras; 
 		this.TIP_LENGTH = paras.getTipLength();
 		initAdjTos();
-		initCntIndexer();
+//		initCntIndexer();
 		tlWriter = new TriadLinkWriter(paras);
 		tlWriter.init();
+	}
+	
+	public DirectedGraph(List<Edge> edges, Parameter paras, CntFileEncapsulate cntfile)
+	{
+		this(edges, paras);
+		this.cntfile = cntfile;
 	}
 
 	private void initAdjTos() {
@@ -231,8 +238,13 @@ public class DirectedGraph extends Graph implements Serializable {
 				alSds.add(temp.get(0).getDistSd());
 
 				if (i > 0 && i < (alPath.size() - 1))
+				{
 //					alDists.add(now.getLength());
-					alDists.add(this.indexCntLength(now.getID()));
+//					alDists.add(this.indexCntLength(now.getID()));
+					String id = now.getID();
+					int dist = cntfile.getLengthByNewId(id);
+					alDists.add(dist);
+				}
 			}
 			alDist = MathTool.sum(alDists);
 			alSd = MathTool.avgSd(alSds);
@@ -374,9 +386,11 @@ public class DirectedGraph extends Graph implements Serializable {
 					Contig t = adjs.get(i);
 					List<Edge> es = this.getEdgesInfo(cnt, t);
 					sls[i] = es.get(0).getLinkNum();
-					lens[i] = this.indexCntLength(t.getID());
+//					lens[i] = this.indexCntLength(t.getID());
+					lens[i] = cntfile.getLengthByNewId(t.getID());
 				}
-				lens[adjCount] = this.indexCntLength(id);
+//				lens[adjCount] = this.indexCntLength(id);
+				lens[adjCount] = cntfile.getLengthByNewId(id);
 				Arrays.sort(sls);
 				Arrays.sort(lens);
 				int max = sls[adjCount - 1];
@@ -397,7 +411,8 @@ public class DirectedGraph extends Graph implements Serializable {
 					{
 						for (int i = 0; i < adjCount; i++) {
 							Contig t = adjs.get(i);
-							if(this.indexCntLength(t.getID()) <= 500){
+//							if(this.indexCntLength(t.getID()) <= 500){
+							if(cntfile.getLengthByNewId(t.getID()) <= 500){
 								List<Edge> es = this.getEdgesInfo(cnt, t);
 								int sl = es.get(0).getLinkNum();
 								double r = (double) sl / max;
@@ -665,7 +680,8 @@ public class DirectedGraph extends Graph implements Serializable {
 				List<Edge> es = this.getEdgesInfo(f, n);
 				all.addAll(es);
 				length += es.get(0).getDistMean();
-				length += this.indexCntLength(n.getID());
+//				length += this.indexCntLength(n.getID());
+				length += cntfile.getLengthByNewId(n.getID());
 			}
 			if(length <= TIP_LENGTH)
 			{
@@ -687,7 +703,8 @@ public class DirectedGraph extends Graph implements Serializable {
 					List<Edge> es = this.getEdgesInfo(f, n);
 					all.addAll(es);
 					length += es.get(0).getDistMean();
-					length += this.indexCntLength(n.getID());
+//					length += this.indexCntLength(n.getID());
+					length += cntfile.getLengthByNewId(n.getID());
 				}
 				if(length <= TIP_LENGTH)
 				{

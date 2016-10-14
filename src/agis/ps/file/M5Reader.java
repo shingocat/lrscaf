@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.List;
 import java.util.Vector;
 
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
+import agis.ps.link2.M5FileEncapsulate;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 
@@ -28,6 +30,7 @@ public class M5Reader {
 	
 	private String path;
 	private List<MRecord> m5List;
+	private M5FileEncapsulate m5FileEncapsulate;
 	private int minPBLen = 5000; // minimum pacbio read length
 	private int minCNTLen = 3000; // minimum contig length;
 	private double identity = 0.8;
@@ -150,6 +153,179 @@ public class M5Reader {
 		logger.info("Reading M5 Records, erase time: " + (end - start) + " ms");
 		return m5List;
 	}
+	
+	// reading file and build the M5FileEncapsulate by using LineNumberReader
+	public M5FileEncapsulate readByLineNumberReader()
+	{
+		long start = System.currentTimeMillis();
+		File file = null;
+		FileReader fr = null;
+		BufferedReader br = null;
+		int size = 0; 
+		try
+		{
+			size = this.countLineNumber();
+			file = new File(path);
+			fr = new FileReader(file);
+			br = new BufferedReader(fr);
+			// storing the data into List container;
+			String line = "";
+			String [] arrs;
+			boolean isInit = false;
+			while((line = br.readLine()) != null)
+			{
+				line = line.trim();
+				line = line.replaceAll(System.getProperty("line.separator"), "");
+				arrs = line.split("\\s+");
+				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
+				{
+					size--;
+					continue;
+				} else
+				{
+					if(!isInit)
+					{
+						m5FileEncapsulate = new M5FileEncapsulate(size);
+						isInit = true;
+					}
+					M5Record m5 = this.initM5Record(arrs);
+//					m5FileEncapsulate.addByArrayCopy(m5);
+					m5FileEncapsulate.addByArraySize(m5);
+				}
+			}
+			br.close();		
+		} catch (IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		} finally 
+		{
+			try{
+				if(br != null)
+					br.close();
+			} catch(IOException e)
+			{
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			}
+		}
+		long end = System.currentTimeMillis();
+		logger.info(this.getClass().getName() + "\tAligned records: " + size);
+		logger.info("Reading M5 Records, erase time: " + (end - start) + " ms");
+		return m5FileEncapsulate;
+	}
+	
+	private int countLineNumber()
+	{
+		File file = null;
+		FileReader fr = null;
+		LineNumberReader lnr = null;
+		int size = 0;
+		try{
+			file = new File(path);
+			fr = new FileReader(file);
+			// get the file line;
+			lnr = new LineNumberReader(fr);
+			lnr.skip(Long.MAX_VALUE);
+			size = lnr.getLineNumber();
+			lnr.close();
+		} catch(IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		} finally
+		{
+			try{
+				if(lnr != null)
+					lnr.close();
+			} catch(IOException e)
+			{
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			}
+		}
+		return size;
+	}
+	
+	// reading file and build the M5FileEncapsulte by array copy
+	public M5FileEncapsulate readByArrayCopy()
+	{
+		long start = System.currentTimeMillis();
+		File file = null;
+		FileReader fr = null;
+		BufferedReader br = null;
+		int size = 0;
+		try
+		{
+
+			file = new File(path);
+			fr = new FileReader(path);
+			br = new BufferedReader(fr);
+			// storing the data into List container;
+			String line = "";
+			String [] arrs;
+			boolean isInit = false;
+			while((line = br.readLine()) != null)
+			{
+				line = line.trim();
+				line = line.replaceAll(System.getProperty("line.separator"), "");
+				arrs = line.split("\\s+");
+				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
+				{
+					continue;
+				} else
+				{
+					if(!isInit)
+					{
+						m5FileEncapsulate = new M5FileEncapsulate();
+						isInit = true;
+					}
+					M5Record m5 = this.initM5Record(arrs);
+					m5FileEncapsulate.addByArrayCopy(m5);
+					size++;
+				}
+			}
+			br.close();		
+		} catch (IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		} finally 
+		{
+			try{
+				if(br != null)
+					br.close();
+			} catch(IOException e)
+			{
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			}
+		}
+		long end = System.currentTimeMillis();
+		logger.info(this.getClass().getName() + "\tAligned records: " + size);
+		logger.info("Reading M5 Records, erase time: " + (end - start) + " ms");
+		return m5FileEncapsulate;
+	}
+	
+	private M5Record initM5Record(String [] arrs)
+	{
+		M5Record m5 = new M5Record();
+		m5.setqName(arrs[0]);
+		m5.setqLength(Integer.valueOf(arrs[1]));
+		m5.setqStart(Integer.valueOf(arrs[2]));
+		m5.setqEnd(Integer.valueOf(arrs[3]));
+		m5.setqStrand(arrs[4].equals("+") ? Strand.FORWARD : Strand.REVERSE);
+		m5.settName(arrs[5]);
+		m5.settLength(Integer.valueOf(arrs[6]));
+		m5.settStart(Integer.valueOf(arrs[7]));
+		m5.settEnd(Integer.valueOf(arrs[8]));
+		m5.settStrand(arrs[9].equals("+") ? Strand.FORWARD : Strand.REVERSE);
+		m5.setScore(Integer.valueOf(arrs[10]));
+		m5.setNumMatch(Integer.valueOf(arrs[11]));
+		m5.setNumMismatch(Integer.valueOf(arrs[12]));
+		m5.setNumIns(Integer.valueOf(arrs[13]));
+		m5.setNumDel(Integer.valueOf(arrs[14]));
+		m5.setMapQV(Integer.valueOf(arrs[15]));
+//		m5.setqAlignedSeq(arrs[16]);
+//		m5.setMatchPattern(arrs[17]);
+//		m5.settAlignedSeq(arrs[18]);
+		return m5;
+	}
+	
 }
 
 

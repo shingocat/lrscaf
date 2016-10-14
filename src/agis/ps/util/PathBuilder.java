@@ -37,6 +37,7 @@ import agis.ps.graph2.Graph;
 import agis.ps.link.Edge;
 import agis.ps.link.TriadLink;
 import agis.ps.link.TriadLinkComparator;
+import agis.ps.link2.CntFileEncapsulate;
 import agis.ps.path.Node;
 import agis.ps.path.NodePath;
 import agis.ps.seqs.Contig;
@@ -57,6 +58,7 @@ public class PathBuilder {
 	private QueryParser parser;
 	private IndexSearcher searcher;
 	private NodePath path;
+	private CntFileEncapsulate cntfile;
 
 	public PathBuilder() {
 		// do nothing;
@@ -66,13 +68,503 @@ public class PathBuilder {
 	public PathBuilder(List<Edge> edges, Parameter paras) {
 		this.edges = edges;
 		this.paras = paras;
-		this.initCntIndexer();
+//		this.initCntIndexer();
+	}
+	
+	public PathBuilder(List<Edge> edges, Parameter paras, CntFileEncapsulate cntfile)
+	{
+		this(edges, paras);
+		this.cntfile = cntfile;
 	}
 
 	public List<NodePath> buildPath() {
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder ： The Edges could not be empty!");
-		return this.buildPath2(edges, paras);
+//		return this.buildPath2(edges, paras);
+		return this.buildPathByCntFileEncapsulate();
+	}
+	
+	private List<NodePath> buildPathByCntFileEncapsulate()
+	{
+		long start = System.currentTimeMillis();
+		if (edges == null || edges.size() == 0)
+			throw new IllegalArgumentException("PathBuilder: The Edges could not be empty!");
+		List<NodePath> paths = new Vector<NodePath>();
+		diGraph = null;
+		try {
+			diGraph = new DirectedGraph(edges, paras, cntfile);
+			// do transitive reduction
+			diGraph.transitiveReducting();
+			List<Edge> tempEdges = diGraph.getEdges();
+			logger.info("Edges size after transitive reducing: " + tempEdges.size());
+			String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_tr.info";
+			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
+			// delete error prone edge
+			diGraph.delErrorProneEdge(paras.getRatio());
+			tempEdges = diGraph.getEdges();
+			logger.info("Edges size after error prone deleting: " + tempEdges.size());
+			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dep.info";
+			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
+			// delete tips
+			diGraph.delTips();
+			tempEdges = diGraph.getEdges();
+			logger.info("Edges size after deleting tips: " + tempEdges.size());
+			edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges_after_dt.info";
+			DotGraphFileWriter.writeEdge(edgeFile, tempEdges);
+			tempEdges = null;
+			path = null;
+			// TriadLinkReader tlr = new TriadLinkReader(paras);
+			// List<TriadLink> triads = tlr.read();
+			// travel the graph, random start
+			// do not including the divergence end point in the path
+			while (diGraph.isExistUnSelectedVertices()) {
+//				INDEX++;
+//				if(INDEX == 2)
+//					logger.debug("breakpoint");
+//				Contig current = new Contig();
+//				current.setID("981");
+				 Contig current = diGraph.getRandomVertex();
+				// if the return conting is null and the
+				// isExistUnSelectedVertices equal false then break;
+				if (current == null)
+					break;
+				// if(current.getID().equals("1145"))
+				// logger.debug("null exception");
+				List<Contig> adjs = diGraph.getAdjVertices(current);
+				if (adjs == null) {
+					diGraph.setVertexAsSelected(current);
+					continue;
+				}
+				int adjsSize = adjs.size();
+				// random selected the frist
+				if (adjsSize == 0) {
+					// orphan contig, only one element in path
+					path = new NodePath();
+					Node node = new Node();
+					node.setCnt(current);
+					node.setOrphan(true);
+					path.push(node);
+					paths.add(path);
+					diGraph.setVertexAsSelected(current);
+				} else if (adjsSize == 1) {
+					// normal start point, always on the linear end point;
+					path = new NodePath();
+					// Contig next = diGraph.getNextVertex(current, null);
+					Contig next = adjs.get(0);
+					// if the next and the next next contig is selected, 
+					// then this point is not legal point
+//					Contig nNext = diGraph.getNextVertex(next, current);
+					if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
+					{
+						Node node = new Node();
+						node.setCnt(current);
+						node.setOrphan(false);
+						diGraph.setVertexAsSelected(current);
+						path.push(node);
+						paths.add(path);
+						continue;
+					}
+					while (true) {
+						Node node = new Node();
+						node.setCnt(current);
+						node.setOrphan(false);
+						diGraph.setVertexAsSelected(current);
+						path.push(node);
+						node = null;
+						Contig previous = current;
+						current = next;
+						next = diGraph.getNextVertex(current, previous);
+						if(next != null){
+							if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
+							{
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
+//								paths.add(path);
+								break;
+							}
+						}
+						if (next == null) { // for the divergence point
+							List<Contig> formers = new Vector<Contig>(3);
+							if(path.getPathSize() > 2 )
+							{
+								formers.add(path.getElement(path.getPathSize() - 2).getCnt());
+								formers.add(path.getElement(path.getPathSize() - 3).getCnt());
+							} else if (path.getPathSize() == 2)
+							{
+								formers.add(path.getElement(path.getPathSize() - 2).getCnt());
+							}
+							// List<Contig> selectedCnts =
+							// this.getTriadLinkNext3(current, previous);
+							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
+							if (selectedCnts == null) {
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
+								next = null;
+								current = null;
+								previous = null;
+								break;
+							}
+							int size = selectedCnts.size();
+							if (size == 1) {
+								next = selectedCnts.get(0);
+							} else if (size == 2) {
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
+								previous = current;
+								current = selectedCnts.get(0);
+								next = selectedCnts.get(1);
+							} else {
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
+								for (int i = 0; i < size - 2; i++) {
+									current = selectedCnts.get(i);
+									iNode = new Node();
+									iNode.setCnt(current);
+									iNode.setOrphan(false);
+									diGraph.setVertexAsSelected(current);
+									path.push(iNode);
+								}
+								previous = current;
+								current = selectedCnts.get(size - 2);
+								next = selectedCnts.get(size - 1);
+							}
+							// next = getTriadLinkNext2(current, previous);
+							// // checking next is not null statement,
+							// // but the next will be not the adjacent vertex
+							// if (next != null) {
+							// List<Contig> tAdjs =
+							// diGraph.getAdjVertices(current);
+							// if (!tAdjs.contains(next))
+							// next = null;
+							// }
+							// if (next == null) {
+							// next = null;
+							// current = null;
+							// previous = null;
+							// break;
+							// }
+						}
+						if (next.equals(previous)) { // for the linear end point
+							Node n = new Node();
+							n.setCnt(current);
+							n.setOrphan(false);
+							diGraph.setVertexAsSelected(current);
+							path.push(n);
+							n = null;
+							next = null;
+							current = null;
+							previous = null;
+							break;
+						}
+					}
+					paths.add(path);
+				} else if (adjsSize == 2) {
+					// middle point; normal start point, located in the linear
+					// path
+					path = new NodePath();
+					Node node = new Node();
+					node.setCnt(current);
+					path.push(node);
+					diGraph.setVertexAsSelected(current);
+					Contig startPoint = current;
+					Contig c1 = adjs.get(0);
+					Contig c2 = adjs.get(1);
+					// c1--current--c2
+					// directed by both direction;
+					// for c1 direction; using c2 as previous point; checking
+					// whether c1 is valid point
+					// all the element unshift into path;
+					// checking the c1 and c2 whether travel
+					if(diGraph.isVertexSelected(c1) && diGraph.isVertexSelected(c2))
+					{
+						paths.add(path);
+						continue;
+					}
+					Contig previous = startPoint;
+					current = c1;
+					diGraph.setVertexAsSelected(current);
+					Contig next = diGraph.getNextVertex(current, previous);
+					while (true) {
+						if (next != null) {
+							if (next.equals(startPoint)) {
+								node = new Node();
+								node.setCnt(current);
+								path.unshift(node);
+								diGraph.setVertexAsSelected(current);
+								break;
+							}
+							if (next.equals(previous)) {
+								node = new Node();
+								node.setCnt(current);
+								path.unshift(node);
+								diGraph.setVertexAsSelected(current);
+								break;
+							}
+							node = new Node();
+							node.setCnt(current);
+							path.unshift(node);
+							diGraph.setVertexAsSelected(current);
+							previous = current;
+							current = next;
+//							if(current.getID().equals("997"))
+//								logger.debug("breakpoint");
+							next = diGraph.getNextVertex(current, previous);
+						} else {
+							List<Contig> formers = new Vector<Contig>(3);
+							if(path.getPathSize() > 2 )
+							{
+								formers.add(path.getElement(1).getCnt());
+								formers.add(path.getElement(2).getCnt());
+							} else if (path.getPathSize() == 2)
+							{
+								formers.add(path.getElement(1).getCnt());
+							}
+							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
+							if (selectedCnts == null) {
+								Node n = new Node();
+								n.setCnt(current);
+								n.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.unshift(n);
+								next = null;
+								current = null;
+								previous = null;
+								break;
+							}
+							int size = selectedCnts.size();
+							if (size == 1) {
+								next = selectedCnts.get(0);
+							} else if (size == 2) {
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.unshift(iNode);
+								previous = current;
+								current = selectedCnts.get(0);
+								next = selectedCnts.get(1);
+							} else {
+								// push right now current node
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.unshift(iNode);
+								for (int i = 0; i < size - 2; i++) {
+									current = selectedCnts.get(i);
+									iNode = new Node();
+									iNode.setCnt(current);
+									iNode.setOrphan(false);
+									diGraph.setVertexAsSelected(current);
+									path.unshift(iNode);
+								}
+								previous = current;
+								current = selectedCnts.get(size - 2);
+								next = selectedCnts.get(size - 1);
+							}
+							// List<Contig> unique =
+							// this.getTriadLinkNext3(current, previous);
+							// next = getTriadLinkNext2(current, previous);
+							// // checking next is not null statement,
+							// // but the next will be not the adjacent vertex
+							// if (next != null) {
+							// List<Contig> tAdjs =
+							// diGraph.getAdjVertices(current);
+							// if (!tAdjs.contains(next))
+							// next = null;
+							// }
+							// if (next == null) {
+							// diGraph.setVertexAsSelected(current);
+							// break;
+							// }
+						}
+					}
+					// for c2 direction; using c1 as previous point; checking
+					// whether c2 is valid point;
+					// all the valid element push into path;
+					if (!diGraph.isExistUnSelectedVertices()) {
+						paths.add(path);
+						break;
+					}
+					// if it is the loop, then the former current contig equal to 
+					// next start contig c2, break;
+					if(current != null && c2 != null )
+					{
+						if(current.equals(c2))
+						{
+							paths.add(path);
+							continue;
+						}
+					}
+					previous = startPoint;
+					current = c2;
+					next = diGraph.getNextVertex(current, previous);
+					while (true) {
+						if (next != null) {
+							if (next.equals(startPoint)) {
+								node = new Node();
+								node.setCnt(current);
+								path.push(node);
+								diGraph.setVertexAsSelected(current);
+								break;
+							}
+							if (next.equals(previous)) {
+								node = new Node();
+								node.setCnt(current);
+								path.push(node);
+								diGraph.setVertexAsSelected(current);
+								break;
+							}
+							node = new Node();
+							node.setCnt(current);
+							path.push(node);
+							diGraph.setVertexAsSelected(current);
+							previous = current;
+							current = next;
+							next = diGraph.getNextVertex(current, previous);
+						} else {
+							List<Contig> formers = new Vector<Contig>(3);
+							if(path.getPathSize() > 2 )
+							{
+								formers.add(path.getElement(path.getPathSize() - 2).getCnt());
+								formers.add(path.getElement(path.getPathSize() - 3).getCnt());
+							} else if (path.getPathSize() == 2)
+							{
+								formers.add(path.getElement(path.getPathSize() - 2).getCnt());
+							}
+							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
+							if (selectedCnts == null) {
+								Node n = new Node();
+								n.setCnt(current);
+								n.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(n);
+								next = null;
+								current = null;
+								previous = null;
+								break;
+							}
+							int size = selectedCnts.size();
+							if (size == 1) {
+								next = selectedCnts.get(0);
+							} else if (size == 2) {
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
+								previous = current;
+								current = selectedCnts.get(0);
+								next = selectedCnts.get(1);
+							} else {
+								Node iNode = new Node();
+								iNode.setCnt(current);
+								iNode.setOrphan(false);
+								diGraph.setVertexAsSelected(current);
+								path.push(iNode);
+								for (int i = 0; i < size - 2; i++) {
+									current = selectedCnts.get(i);
+									iNode = new Node();
+									iNode.setCnt(current);
+									iNode.setOrphan(false);
+									diGraph.setVertexAsSelected(current);
+									path.push(iNode);
+								}
+								previous = current;
+								current = selectedCnts.get(size - 2);
+								next = selectedCnts.get(size - 1);
+							}
+							// List<Contig> unique =
+							// this.getTriadLinkNext3(current, previous);
+							// next = getTriadLinkNext2(current, previous);
+							// // checking next is not null statement,
+							// // but the next will be not the adjacent vertex
+							// if (next != null) {
+							// List<Contig> tAdjs =
+							// diGraph.getAdjVertices(current);
+							// if (!tAdjs.contains(next))
+							// next = null;
+							// }
+							// if (next == null) {
+							// diGraph.setVertexAsSelected(current);
+							// break;
+							// }
+						}
+					}
+					paths.add(path);
+
+				} else if (adjsSize > 2) { // divergence point
+					diGraph.setVertexAsSelected(current);
+					continue;
+				}
+			}
+		} catch (Exception e) {
+//			logger.debug("INDEX = " + INDEX);
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		}
+		// orientation contig in the paths;
+		// define the first element in path is forward;
+		try {
+			for (NodePath np : paths) {
+				int pathSize = np.getPathSize();
+				if (pathSize == 1) {
+					Node current = np.getElement(0);
+					current.setStrand(Strand.FORWARD);
+					current.setMeanDist2Next(0);
+					current.setSdDist2Next(0);
+					current.setSupportLinkNum(0);
+				} else {
+					for (int i = 0; i < pathSize - 1; i++) {
+//						INDEX++;
+//						if(INDEX == 66)
+//							logger.debug("breakpoint");
+						Node current = np.getElement(i);
+						Node next = np.getElement(i + 1);
+						Contig cCnt = current.getCnt();
+						Contig nCnt = next.getCnt();
+						Edge e = null;
+						List<Edge> es = diGraph.getEdgesInfo(cCnt, nCnt);
+						for (Edge t : es) {
+							if (t.getOrigin().equals(cCnt) && t.getTerminus().equals(nCnt))
+								e = t;
+						}
+						if (current.getStrand() == null)
+							current.setStrand(e.getoStrand());
+						if (next.getStrand() == null)
+							next.setStrand(e.gettStrand());
+						int meanSum = e.getDistMean();
+						int sdSum = e.getDistSd();
+						int slSum = e.getLinkNum();
+						current.setMeanDist2Next(meanSum);
+						current.setSdDist2Next(sdSum);
+						current.setSupportLinkNum(slSum);
+					}
+				}
+			}
+		} catch (Exception e) {
+//			logger.debug("INDEX\t" + INDEX);
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		}
+		// cleaning and call gc
+		this.diGraph = null;
+		this.edges = null;
+		this.triads = null;
+		System.gc();
+		long end = System.currentTimeMillis();
+		logger.info("Path Building, erase time: " + (end - start) + " ms");
+		return paths;
 	}
 
 	private List<NodePath> buildPath2(List<Edge> edges, Parameter paras) {
@@ -1065,7 +1557,8 @@ public class PathBuilder {
 			}
 			
 			// if the inner contig is large than 5000 bp, considering it is unqiue;
-			int inLen = this.indexLen(internal.getID());
+//			int inLen = this.indexLen(internal.getID());
+			int inLen = cntfile.getLengthByNewId(Integer.valueOf(internal.getID()));
 			if(inLen >= 5000)
 			{
 				temp = this.findTriadLinks(internal, null, unique);
@@ -1474,7 +1967,8 @@ public class PathBuilder {
 		if (nextAdjs.size() > 1) {
 			List<Edge> egs = diGraph.getEdgesInfo(current, previous);
 			INTERNAL_LENGTH += egs.get(0).getDistMean();
-			INTERNAL_LENGTH += this.indexLen(current.getID());
+//			INTERNAL_LENGTH += this.indexLen(current.getID());
+			INTERNAL_LENGTH += cntfile.getLengthByNewId(Integer.valueOf(current.getID()));
 			if (INTERNAL_LENGTH <= MAXIMUM_INTERNAL_LENGTH) {
 				uniques.clear();
 				for (Contig c : nextAdjs) {
@@ -1491,7 +1985,8 @@ public class PathBuilder {
 			Contig c = nextAdjs.get(0);
 			List<Edge> egs = diGraph.getEdgesInfo(current, previous);
 			INTERNAL_LENGTH += egs.get(0).getDistMean();
-			INTERNAL_LENGTH += this.indexLen(current.getID());
+//			INTERNAL_LENGTH += this.indexLen(current.getID());
+			INTERNAL_LENGTH += cntfile.getLengthByNewId(Integer.valueOf(current.getID()));
 			this.getNextUniqueContigs(c, current, depth - 1, uniques);
 		}
 	}

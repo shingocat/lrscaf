@@ -14,6 +14,31 @@ import agis.ps.link.MRecord;
 
 public class MRecordValidator {
 	private static Logger logger = LoggerFactory.getLogger(MRecordValidator.class);
+	
+	public static MRecord validate(M5Record m5, Parameter paras) {
+		try{ 
+			int minPBLen = paras.getMinPBLen();
+			int minCNTLen = paras.getMinContLen();
+			double identity = paras.getIdentity();
+			// if less than minimum pacbio length
+			if (Integer.valueOf(m5.getqLength()) < minPBLen)
+				return null;
+			// if less tan minimum contig length
+			if (Integer.valueOf(m5.gettLength()) < minCNTLen)
+				return null;
+			// if the identity less than specified value;
+			double sum = Double.valueOf(m5.getNumMatch()) + Double.valueOf(m5.getNumMismatch()) + Double.valueOf(m5.getNumIns())
+					+ Double.valueOf(m5.getNumDel());
+			double value = Double.valueOf(m5.getNumMatch()) / sum;
+			if (value < identity)
+				return null;
+			m5.setIdentity(value);
+		}catch(Exception e)
+		{
+			logger.error(MRecordValidator.class.getName() + "\t" + e.getMessage());
+		}
+		return m5;
+	}
 
 	public static MRecord validate(String [] arrs, Parameter paras) {
 		M5Record m5 = null;
@@ -119,6 +144,42 @@ public class MRecordValidator {
 			// m5.setMatchPattern(arrs[17]);
 			// m5.settAlignedSeq(arrs[18]);
 			// setting identity
+			m5.setIdentity(value);
+		}catch(Exception e)
+		{
+			logger.error(MRecordValidator.class.getName() + "\t" + e.getMessage());
+		}
+		return m5;
+	}
+
+	public static MRecord validate4Repeats(M5Record m5, Parameter paras) {
+		try{ 
+			int maxOHLen = paras.getMaxOHLen();
+			double maxOHRatio = paras.getMaxOHRatio();
+			
+			int tLen = m5.gettLength();
+			int tStart = m5.gettStart();
+			int tEnd = m5.gettEnd();
+			int tLeftLen = tStart;
+			int tRightLen = tLen - tEnd;
+			int defOHLen = (int) (tLen * maxOHRatio);
+			if(maxOHLen <= defOHLen)
+				defOHLen = maxOHLen;
+			if(tLeftLen > defOHLen )
+				return null;
+			if(tRightLen > defOHLen)
+				return null;
+			// for finding repeats, do not considering filter standard;
+//			// if less than minimum pacbio length
+//			if (Integer.valueOf(arrs[1]) < minPBLen)
+//				return null;
+//			// if less tan minimum contig length
+//			if (Integer.valueOf(arrs[6]) < minCNTLen)
+//				return null;
+//			// if the identity less than specified value;
+			double sum = Double.valueOf(m5.getNumMatch()) + Double.valueOf(m5.getNumMismatch()) + Double.valueOf(m5.getNumIns())
+					+ Double.valueOf(m5.getNumDel());
+			double value = Double.valueOf(m5.getNumMatch()) / sum;
 			m5.setIdentity(value);
 		}catch(Exception e)
 		{
