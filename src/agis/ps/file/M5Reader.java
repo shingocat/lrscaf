@@ -189,8 +189,7 @@ public class M5Reader {
 						isInit = true;
 					}
 					M5Record m5 = this.initM5Record(arrs);
-//					m5FileEncapsulate.addByArrayCopy(m5);
-					m5FileEncapsulate.addByArraySize(m5);
+					m5FileEncapsulate.addRecord(m5);
 				}
 			}
 			br.close();		
@@ -213,6 +212,11 @@ public class M5Reader {
 		return m5FileEncapsulate;
 	}
 	
+	/**
+	 * A method to count the file line number
+	 * it is faster than by using array copy to build aligned file encapsulate
+	 * @return
+	 */
 	private int countLineNumber()
 	{
 		File file = null;
@@ -241,64 +245,6 @@ public class M5Reader {
 			}
 		}
 		return size;
-	}
-	
-	// reading file and build the M5FileEncapsulte by array copy
-	public M5FileEncapsulate readByArrayCopy()
-	{
-		long start = System.currentTimeMillis();
-		File file = null;
-		FileReader fr = null;
-		BufferedReader br = null;
-		int size = 0;
-		try
-		{
-
-			file = new File(path);
-			fr = new FileReader(path);
-			br = new BufferedReader(fr);
-			// storing the data into List container;
-			String line = "";
-			String [] arrs;
-			boolean isInit = false;
-			while((line = br.readLine()) != null)
-			{
-				line = line.trim();
-				line = line.replaceAll(System.getProperty("line.separator"), "");
-				arrs = line.split("\\s+");
-				if(arrs[0].equalsIgnoreCase("qName") && arrs[1].equalsIgnoreCase("qLength"))
-				{
-					continue;
-				} else
-				{
-					if(!isInit)
-					{
-						m5FileEncapsulate = new M5FileEncapsulate();
-						isInit = true;
-					}
-					M5Record m5 = this.initM5Record(arrs);
-					m5FileEncapsulate.addByArrayCopy(m5);
-					size++;
-				}
-			}
-			br.close();		
-		} catch (IOException e)
-		{
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-		} finally 
-		{
-			try{
-				if(br != null)
-					br.close();
-			} catch(IOException e)
-			{
-				logger.error(this.getClass().getName() + "\t" + e.getMessage());
-			}
-		}
-		long end = System.currentTimeMillis();
-		logger.info(this.getClass().getName() + "\tAligned records: " + size);
-		logger.info("Reading M5 Records, erase time: " + (end - start) + " ms");
-		return m5FileEncapsulate;
 	}
 	
 	private M5Record initM5Record(String [] arrs)

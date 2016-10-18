@@ -83,83 +83,13 @@ public class M5FileEncapsulate {
 	}
 	
 	// using init array size
-	public void addByArraySize(M5Record m5)
+	public void addRecord(M5Record m5)
 	{
 		this.addRecord(m5, index);
 		index++;
 	}
 	
-	
-	// using arrayCopy method
-	public void addByArrayCopy(M5Record m5)
-	{
-		int size = index + 1;
-		if(size == 1)
-		{
-			qIds = new int[size];
-			qLengths = new int[size];
-			qStart = new int[size];
-			qEnd = new int[size];
-			tIds = new int[size];
-			tLengths = new int[size];
-			tStart = new int[size];
-			tEnd = new int[size];
-			tStrand = new byte[size];
-			matchs = new int[size];
-			misMatchs = new int[size];
-			inserts = new int[size];
-			deletes = new int[size];
-			this.addRecord(m5, 0);
-		} else
-		{
-			// temp arrays to store data;
-			int [] tqIds = new int[size];
-			int [] tqLengths = new int[size];
-			int [] tqStart = new int[size];
-			int [] tqEnd = new int[size];
-			int [] ttIds = new int [size];
-			int [] ttLengths = new int[size];
-			int [] ttStart = new int[size];
-			int [] ttEnd = new int[size];
-			byte [] ttStrand = new byte[size];
-			int [] tmatchs = new int[size];
-			int [] tmisMatchs = new int[size];
-			int [] tinserts = new int[size];
-			int [] tdeletes = new int[size];
-			// copy former array into new temp array;
-			System.arraycopy(qIds, 0, tqIds, 0, index);
-			System.arraycopy(qLengths, 0, tqLengths, 0, index);
-			System.arraycopy(qStart, 0, tqStart, 0, index);
-			System.arraycopy(qEnd, 0, tqEnd, 0, index);
-			System.arraycopy(tIds, 0, ttIds, 0, index);
-			System.arraycopy(tLengths, 0, ttLengths, 0, index);
-			System.arraycopy(tStart, 0, ttStart, 0, index);
-			System.arraycopy(tEnd, 0, ttEnd, 0, index);
-			System.arraycopy(tStrand, 0, ttStrand, 0, index);
-			System.arraycopy(matchs, 0, tmatchs, 0, index);
-			System.arraycopy(misMatchs, 0, tmisMatchs, 0, index);
-			System.arraycopy(inserts, 0, tinserts, 0, index);
-			System.arraycopy(deletes, 0, tdeletes, 0, index);
-			// reassign to origin value;
-			qIds = tqIds;
-			qLengths = tqLengths;
-			qStart = tqStart;
-			qEnd = tqEnd;
-			tIds = ttIds;
-			tLengths = ttLengths;
-			tStart = ttStart;
-			tEnd = ttEnd;
-			tStrand = ttStrand;
-			matchs = tmatchs;
-			misMatchs = tmisMatchs;
-			inserts = tinserts;
-			deletes = tdeletes;
-			this.addRecord(m5, size - 1);
-		}
-		index++;
-	}
-	
-	public void addRecord(M5Record m5, int index)
+	private void addRecord(M5Record m5, int index)
 	{
 		// for the last element to insert into array
 		String pId = m5.getqName();
@@ -202,21 +132,14 @@ public class M5FileEncapsulate {
 		deletes[index] = m5.getNumDel();
 		if(!cntLens.containsKey(cId))
 			cntLens.put(cId, m5.gettLength());
-		// next array element index;
-//		index++;
 	}
 	
-	public String getCntId(int index)
-	{
-		if(cIdHashForward.containsValue(index))
-		{
-			return null;
-		} else
-		{
-			return null;
-		}
-	}
-	
+	/**
+	 * build contig file encapsulate from the aligned record.
+	 * It will be only had id and length, omitted seq data;
+	 * adding seq data in ScaffoldWriter class.
+	 * @return
+	 */
 	public CntFileEncapsulate getCntFileEncapsulate()
 	{
 		CntFileEncapsulate cntFile = new CntFileEncapsulate();

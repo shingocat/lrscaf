@@ -50,6 +50,7 @@ public class Main {
 				} else {				
 					paras = Main.parsering(cl, f, opts);
 				}
+				// The body for executing scaffolding process
 				Scaffolder2 scaffolder = new Scaffolder2(paras);
 				scaffolder.scaffolding();
 			}

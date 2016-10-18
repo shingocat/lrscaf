@@ -11,7 +11,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.file.ContigIndexer;
 import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.OutputFolderBuilder;
 import agis.ps.file.ScaffoldWriter;
@@ -27,6 +26,9 @@ import agis.ps.util.PathBuilder;
  * The second scaffolder by using java lucene to index
  * , change logic on handling links building, edges 
  * building and path building, also on build scaffolds; 
+ * 
+ * A new version by using encapsulate aligned and contig file;
+ * 
  * @author mqin
  *
  */
@@ -48,9 +50,6 @@ public class Scaffolder2 {
 			// building output folder
 			if(!buildOutputFolder())
 				return;
-			// index contigs
-//			if(!this.indexCnt())
-//				return;
 			// building edges 
 			this.buildEdges();
 			if(edges == null || edges.size() == 0)
@@ -74,18 +73,9 @@ public class Scaffolder2 {
 		return ofb.building();
 	}
 	
-	private boolean indexCnt()
-	{
-		ContigIndexer ci = new ContigIndexer(paras);
-		boolean isValid = ci.indexing();
-		ci = null;
-		return isValid;
-	}
-	
 	// building edges
 	private void buildEdges()
 	{
-//		long start = System.currentTimeMillis();
 		String type = paras.getType();
 		if(type.equalsIgnoreCase("m5"))
 		{
@@ -107,8 +97,6 @@ public class Scaffolder2 {
 			logger.info(this.getClass().getName() + "The aligned parameter do not set! only <m5>, <m4>, <sam> or <bam>");
 			return;
 		}
-//		long end = System.currentTimeMillis();
-//		logger.info("Building edges, erase time " + (end - start) + " ms");
 	}
 	
 	private void writeEdgesInfo(List<Edge> edges, boolean isPesudo) {
@@ -126,8 +114,6 @@ public class Scaffolder2 {
 	private void writeScaffolds(Parameter paras, List<NodePath> paths)
 	{
 		ScaffoldWriter sw = new ScaffoldWriter(paras, paths, cntfile);
-//		sw.write3();
-//		sw.write2file();
 		sw.writeByContigFileEncapsulate();
 	}
 	

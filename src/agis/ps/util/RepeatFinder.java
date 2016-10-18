@@ -34,9 +34,6 @@ public class RepeatFinder {
 	private Parameter paras;
 	private List<String> repeats;
 	private Map<String, List<MRecord>> cntMaps; 
-	private int minCNTLen = 0;
-	private int minPBLen = 0;
-	private double identity = 0.0d;
 	
 	public RepeatFinder(Parameter paras)
 	{
@@ -152,7 +149,8 @@ public class RepeatFinder {
 		return repeats;
 	}
 	
-	 private static Map<String, List<MRecord>> sortByComparator(Map<String, List<MRecord>> unsortMap, final boolean order)
+	 @SuppressWarnings("unused")
+	private static Map<String, List<MRecord>> sortByComparator(Map<String, List<MRecord>> unsortMap, final boolean order)
 	    {
 
 	        List<Entry<String, List<MRecord>>> list = new LinkedList<Entry<String, List<MRecord>>>(unsortMap.entrySet());
@@ -160,20 +158,6 @@ public class RepeatFinder {
 	        // Sorting the list based on values
 	        Collections.sort(list, new Comparator<Entry<String, List<MRecord>>>()
 	        {
-//	            public int compare(Entry<String, Integer> o1,
-//	                    Entry<String, Integer> o2)
-//	            {
-//	                if (order)
-//	                {
-//	                    return o1.getValue().compareTo(o2.getValue());
-//	                }
-//	                else
-//	                {
-//	                    return o2.getValue().compareTo(o1.getValue());
-//
-//	                }
-//	            }
-
 				@Override
 				public int compare(Entry<String, List<MRecord>> o1, Entry<String, List<MRecord>> o2) {
 					 if (order)

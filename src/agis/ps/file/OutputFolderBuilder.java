@@ -53,6 +53,12 @@ public class OutputFolderBuilder {
 		return isValid;
 	}
 
+	/**
+	 * only delete file under the output folder and do not create new output folder now;
+	 * do not delete folder;
+	 * @param dir
+	 * @return
+	 */
 	private boolean deleteDir(File dir) {
 		boolean success = false;
 		if (dir.isDirectory()) {
