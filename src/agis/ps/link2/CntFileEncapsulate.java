@@ -184,7 +184,7 @@ public class CntFileEncapsulate {
 	public void add(String oid, String seq) {
 		if(!this.oids2nids.containsKey(oid))
 		{
-			logger.info(this.getClass().getName() + "\t" + "The origin id " + oid + " does not map to new id!");
+//			logger.info(this.getClass().getName() + "\t" + "The origin id " + oid + " does not map to new id!");
 			return;
 		}
 		int nid = this.oids2nids.get(oid);

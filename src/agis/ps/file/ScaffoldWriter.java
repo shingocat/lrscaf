@@ -1197,7 +1197,6 @@ public class ScaffoldWriter {
 				try {
 					value = cs.getConsensus(seqs);
 				} catch (CompoundNotFoundException e) {
-					// TODO Auto-generated catch block
 					logger.error(this.getClass().getName() + "\t" + e.getMessage());
 					if (t1.length() > t2.length())
 						value = t1;
