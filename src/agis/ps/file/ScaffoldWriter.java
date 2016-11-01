@@ -234,7 +234,10 @@ public class ScaffoldWriter {
 					seq = this.getReverseSeq(seq);
 				if(dist < 0)
 				{
-					String temp = concatenate(sb.toString(), seq, dist, sd);
+					// global sequence alignment method to concatenate two seqs;
+//					String temp = concatenate(sb.toString(), seq, dist, sd);
+					// directly concatencate two seqs;
+					String temp = concatenate2(sb.toString(), seq, dist, sd);
 					sb.delete(0, sb.length());
 					sb.append(temp);
 					dist = current.getMeanDist2Next();

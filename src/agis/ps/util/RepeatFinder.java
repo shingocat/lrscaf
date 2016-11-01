@@ -412,12 +412,13 @@ public class RepeatFinder {
 		logger.info("Pesudo repeat contigs");
 		if(repeats == null)
 			repeats = new Vector<String>(30);
+		//do not print this info 
 		for(String id : cntMaps.keySet())
 		{
 			if(cntMaps.get(id).size() > upper)
 			{
 				repeats.add(id);
-				logger.info(id + " might be repeat!");
+//				logger.info(id + " might be repeat!");
 			}
 		}
 		logger.info("Repeat count: " + repeats.size());

@@ -37,7 +37,7 @@ public class Consensusser {
 		{
 			String seq1 = seqs.get(0);
 			String seq2 = seqs.get(1);
-			return this.nw_2(seq1, seq2);
+			return this.needlemanWunsch(seq1, seq2);
 		} else
 		{
 			return this.getConsensus_biojava(seqs);
@@ -113,7 +113,7 @@ public class Consensusser {
 	public String getConsensus(String seq1, String seq2, String indicator)
 	{
 		if(indicator.equalsIgnoreCase("nw"))
-			return nw_2(seq1, seq2);
+			return needlemanWunsch(seq1, seq2);
 		else
 			return sw(seq1, seq2);
 	}
@@ -257,28 +257,20 @@ public class Consensusser {
 		return temp;
 	}
 	
-	private String nw_2(String seq1, String seq2)
+	private String needlemanWunsch(String seq1, String seq2)
 	{
 		int len1 = seq1.length();
 		int len2 = seq2.length();
 		// initiate the scores matrix
 		int [][] scores = new int[len1 + 1][len2 + 1];
-		//Pointers [][] indexMatrix = new Pointers[len1 + 1][len2 + 1];
 		for(int i = 0; i <= len1; i++) {
 			for(int j = 0; j <= len2; j++) {
-				//Pointers ps = new Pointers();
 				if(i == 0) {
 					scores[i][j] = 0;
-					//Pointer p = new Pointer(i, j);
-					//ps.addPointer(p);
-					//indexMatrix[i][j] = ps;
 					continue;
 				}
 				if(j == 0) {
 					scores[i][j] = 0;
-					//Pointer p = new Pointer(i, j);
-					//ps.addPointer(p);
-					//indexMatrix[i][j] = ps;
 					continue;
 				}
 
@@ -299,73 +291,38 @@ public class Consensusser {
 				          (upper >= diagonal ? upper : diagonal) :
 					          (left >= diagonal ? left : diagonal);
 				scores[i][j] = max;
-				/* if(max == upper) {
-					Pointer p = new Pointer();
-					p.setRow(i - 1);
-					p.setCol(j);
-					ps.addPointer(p);
-				}
-				if(max == left) {
-					Pointer p = new Pointer();
-					p.setRow(i);
-					p.setCol(j - 1);
-					ps.addPointer(p);
-				}
-				if(max == diagonal) {
-					Pointer p = new Pointer();
-					p.setRow(i - 1);
-					p.setCol(j - 1);
-					ps.addPointer(p);
-				}
-				indexMatrix[i][j] = ps; */
 			}
 		}
-		// print the matrix
-//		System.out.println("Aligned Matrix:");
-//		for(int i = 0; i <= len1; i++) {
-//			System.out.println(Arrays.toString(scores[i]));
-//		}
-		//System.out.println(Arrays.deepToString(scores));
 
 		// traceback the matrix by pointer;
-		String algSeq1 = "";
-		String algSeq2 = "";
-		String algPtn = "";
+		StringBuffer algSeq1 = new StringBuffer();
+		StringBuffer algSeq2 = new StringBuffer();
+		StringBuffer algPtn = new StringBuffer();
 		int i = len1;
 		int j = len2;
-		// System.out.println("seq 1 ===" + seq1);
-		// System.out.println("seq 2 ===" + seq2);
 		while(true) {
 			if(i == 0 && j == 0) {
 				break;
 			}
-			// System.out.println("i = " + i);
-			// System.out.println("j = " + j);
-			/* Pointers ps = indexMatrix[i][j];
-			Pointer p = ps.getPointer(0);
-			int row = p.getRow();
-			int col = p.getCol(); */
-			// System.out.println("row = " + row);
-			// System.out.println("col = " + col);
 			if(i == 0 && j !=0) {
-				algSeq1 += "_";
-				algSeq2 += seq2.charAt(j - 1);
-				algPtn += "*";
+				algSeq1.append("_");
+				algSeq2.append(seq2.charAt(j - 1));
+				algPtn.append("*");
 				j--;
 				continue;
 			} else if (i != 0 && j == 0) {
-				algSeq1 += seq1.charAt(i - 1);
-				algSeq2 += "_";
-				algPtn += "*";
+				algSeq1.append(seq1.charAt(i - 1));
+				algSeq2.append("_");
+				algPtn.append("*");
 				i--;
 				continue;
 			} else
 			{
 				if(seq1.charAt(i-1) == (seq2.charAt(j-1)))
 				{
-					algSeq1 += seq1.charAt(i-1);
-					algSeq2 += seq2.charAt(j-1);
-					algPtn += "|";
+					algSeq1.append(seq1.charAt(i-1));
+					algSeq2.append(seq2.charAt(j-1));
+					algPtn.append("|");
 					i--;
 					j--;
 				} else
@@ -378,52 +335,28 @@ public class Consensusser {
 					          (lScore >= dScore ? lScore : dScore);
 					if(max == dScore)
 					{
-						algSeq1 += seq1.charAt(i-1);
-						algSeq2 += seq2.charAt(j-1);
-						algPtn += "*";
+						algSeq1.append(seq1.charAt(i-1));
+						algSeq2.append(seq2.charAt(j-1));
+						algPtn.append("*");
 						i--;
 						j--;
 					} else if(max == uScore)
 					{
-						algSeq1 += seq1.charAt(i-1);
-						algSeq2 += "_";
-						algPtn += "*";
+						algSeq1.append(seq1.charAt(i-1));
+						algSeq2.append("_");
+						algPtn.append("*");
 						i--;
 					} else{
-						algSeq1 += "_";
-						algSeq2 += seq2.charAt(j-1);
-						algPtn += "*";
+						algSeq1.append("_");
+						algSeq2.append(seq2.charAt(j-1));
+						algPtn.append("*");
 						j--;
 					}
 				}
 			}
-			
-			/* if(row == i - 1 && col == j - 1) {
-				if(scores[i][j] == scores[row][col] + match) {
-					algSeq1 += seq1.charAt(i - 1);
-					algSeq2 += seq2.charAt(j - 1);
-					algPtn += "|";
-				} else {
-					algSeq1 += seq1.charAt(i - 1);
-					algSeq2 += seq2.charAt(j - 1);
-					algPtn += "*";
-				}
-				i--;
-				j--;
-			} else if(row == i && col == j - 1) {
-				algSeq1 += "_";
-				algSeq2 += seq2.charAt(j - 1);
-				algPtn += "*";
-				j--;
-			} else if(row == i - 1 && col == j) {
-				algSeq1 += seq1.charAt(i - 1);
-				algSeq2 += "_";
-				algPtn += "*";
-				i--;
-			} */
 		}
 		
-		String temp = consesus(algSeq1, algPtn, algSeq2);
+		String temp = consesus(algSeq1.toString(), algPtn.toString(), algSeq2.toString());
 		scores = null;
 		System.gc();
 		return temp;
@@ -579,24 +512,82 @@ public class Consensusser {
 		return consesus(algSeq1, algPtn, algSeq2);
 	}
 	
+	private void hirschbery(String x, String y)
+	{
+		StringBuffer z = new StringBuffer();
+		StringBuffer w = new StringBuffer();
+		if(x.length() == 0)
+		{
+			for(int i = 0; i < y.length(); i++)
+			{
+				z.append('-');
+				w.append(y.charAt(i));
+			}
+		} else if(y.length() == 0)
+		{
+			for(int i = 0; i < x.length(); i++)
+			{
+				z.append(x.charAt(i));
+				w.append('-');
+			}
+		} else if(x.length() == 1 || y.length() == 1)
+		{
+			
+		} else
+		{
+			int xlen = x.length();
+			int xmid = xlen/2;
+			int ylen = y.length();
+			
+			int scoreL = NWScore(x.substring(0, xmid),y);
+			int scoreR = NWScore(new StringBuffer(x.substring(xmid + 1)).reverse().toString(),
+					new StringBuffer(y).reverse().toString());
+			
+		}
+	}
+	
+	private int NWScore(String x, String y)
+	{
+		return 0;
+	} 
+	
 	private String consesus(String seq1, String pattern, String seq2) {
 		int len = pattern.length();
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
+		char [] sc1 = seq1.toCharArray();
+		char [] sc2 = seq2.toCharArray();
+		char [] p = pattern.toCharArray();
 		for(int i = 0; i < len; i++) {
-			String s1 = String.valueOf(seq1.charAt(i));
-			String s2 = String.valueOf(seq2.charAt(i));
-			String p = String.valueOf(pattern.charAt(i));
-			if(p.equalsIgnoreCase("|")) {
-				sb.append(s1);
-			} else {
-				if(s1.equalsIgnoreCase("_")) {
-					sb.append(s2);
-				} else if(s2.equalsIgnoreCase("_")) {
-					sb.append(s1);
-				} else {
-					sb.append(s1);
+			if(p[i] == '|')
+			{
+				sb.append(sc1[i]);
+			} else
+			{
+				if(sc1[i] == '_')
+				{
+					sb.append(sc2[i]);
+				} else if(sc2[i] == '_')
+				{
+					sb.append(sc1[i]);
+				} else
+				{
+					sb.append(sc1[i]);
 				}
 			}
+//			String s1 = String.valueOf(seq1.charAt(i));
+//			String s2 = String.valueOf(seq2.charAt(i));
+//			String p = String.valueOf(pattern.charAt(i));
+//			if(p.equalsIgnoreCase("|")) {
+//				sb.append(s1);
+//			} else {
+//				if(s1.equalsIgnoreCase("_")) {
+//					sb.append(s2);
+//				} else if(s2.equalsIgnoreCase("_")) {
+//					sb.append(s1);
+//				} else {
+//					sb.append(s1);
+//				}
+//			}
 		}
 		String temp = sb.reverse().toString();
 		sb = null;
