@@ -117,7 +117,14 @@ public class TriadLink {
 		{
 			if(other.middle == null)
 			{
-				return false;
+//				change this equal method
+				if(previous.equals(other.previous) && last.equals(other.last))
+					return true;
+				else if(previous.equals(other.last) && last.equals(other.previous))
+					return true;
+				else
+					return false;
+//				return false;
 			} else
 			{
 				if(previous.equals(other.previous) && last.equals(other.last))
