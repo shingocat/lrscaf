@@ -53,7 +53,10 @@ public class Scaffolder2 {
 			// building edges 
 			this.buildEdges();
 			if(edges == null || edges.size() == 0)
+			{
+				logger.error("Empty edges to build scaffolds!");
 				return;
+			}
 			this.writeEdgesInfo(edges, false);
 			logger.info("Original Edges size: " + edges.size());
 			PathBuilder pathBuilder = new PathBuilder(edges, paras, cntfile);

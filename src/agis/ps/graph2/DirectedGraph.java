@@ -617,6 +617,11 @@ public class DirectedGraph extends Graph implements Serializable {
 		return len;
 	}
 	
+	
+	/**
+	 * 
+	 * the method interface for the call on deleting tips
+	 */
 	@Override
 	public void delTips()
 	{
@@ -632,7 +637,9 @@ public class DirectedGraph extends Graph implements Serializable {
 					continue;
 				int adjCount = adjs.size();
 				// only considering divergence point
-				if(adjCount > 2)
+				// and considering the odd number diverence point
+//				if(adjCount > 2)
+				if((adjCount % 2) != 0)
 				{
 					for(int i = 0; i < adjCount; i++)
 					{
@@ -664,7 +671,16 @@ public class DirectedGraph extends Graph implements Serializable {
 		logger.info("Tip edge deleting, erase time: " + (end - start) + " ms");
 	}
 	
-	public void delTips(Contig current, Contig former, int depth, LinkedList<Contig> path, List<Edge> removes)
+	/**
+	 * The inner method for deleting tips
+	 * 
+	 * @param current
+	 * @param former
+	 * @param depth
+	 * @param path
+	 * @param removes
+	 */
+	private void delTips(Contig current, Contig former, int depth, LinkedList<Contig> path, List<Edge> removes)
 	{
 		path.addLast(current);
 		List<Contig> nexts = this.getNextVertices(current, former);

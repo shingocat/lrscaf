@@ -6,15 +6,32 @@
 */
 package agis.ps.link2;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import agis.ps.link.M5Record;
+import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 
+/**
+ * Encapsulate m5 file into a class;
+ * all the data store in array separately;
+ * @author mqin
+ *
+ */
+
 public class M5FileEncapsulate {
+	
+	private static Logger logger = LoggerFactory.getLogger(M5FileEncapsulate.class);
 	private int [] qIds;
 	private int [] qLengths;
 	private int [] qStart;
@@ -38,13 +55,14 @@ public class M5FileEncapsulate {
 	private Map<String, Integer> cIdHashForward = new LinkedHashMap<String, Integer>();
 	private Map<String, Integer> cntLens = new HashMap<String, Integer>();
 //	private Map<Integer, String> cIdHashReverse = new HashMap<Integer, String>();
+	private Parameter paras;
 	
 	public M5FileEncapsulate()
 	{
 		
 	}
 	
-	public M5FileEncapsulate(int size)
+	public M5FileEncapsulate(int size, Parameter paras)
 	{
 		this.qIds = new int[size];
 		this.qLengths = new int[size];
@@ -59,6 +77,7 @@ public class M5FileEncapsulate {
 		this.misMatchs = new int[size];
 		this.inserts = new int[size];
 		this.deletes = new int[size];
+		this.paras = paras;
 	}
 	
 	public M5Record getM5Record(int index)
@@ -136,20 +155,49 @@ public class M5FileEncapsulate {
 	
 	/**
 	 * build contig file encapsulate from the aligned record.
-	 * It will be only had id and length, omitted seq data;
-	 * adding seq data in ScaffoldWriter class.
+	 * There will be only id and length, omitted seq data;
+	 * And adding sequence data in ScaffoldWriter class later.
+	 * write this recode contig id's map relationship into file;
 	 * @return
 	 */
 	public CntFileEncapsulate getCntFileEncapsulate()
 	{
 		CntFileEncapsulate cntFile = new CntFileEncapsulate();
 		Iterator<String> it = cIdHashForward.keySet().iterator();
-		while(it.hasNext())
+		File file = null;
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try
 		{
-			String oid = it.next();
-			Integer nid = this.cIdHashForward.get(oid);
-			int len = cntLens.get(oid);
-			cntFile.addLength(nid, oid, len);
+			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "CntIdsMap.info");
+			fw = new FileWriter(file);
+			bw = new BufferedWriter(fw);
+			while(it.hasNext())
+			{
+				String oid = it.next();
+				Integer nid = this.cIdHashForward.get(oid);
+				int len = cntLens.get(oid);
+				cntFile.addLength(nid, oid, len);
+				bw.write(nid + " => " + oid);
+				bw.newLine();
+			}
+			bw.flush();
+			bw.close();
+		}catch(IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		}catch(Exception e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+		}finally
+		{
+			try{
+				if(bw != null)
+					bw.close();
+			} catch(Exception e)
+			{
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			}
 		}
 		return cntFile;
 	}

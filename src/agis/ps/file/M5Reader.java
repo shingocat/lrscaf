@@ -34,6 +34,7 @@ public class M5Reader {
 	private int minPBLen = 5000; // minimum pacbio read length
 	private int minCNTLen = 3000; // minimum contig length;
 	private double identity = 0.8;
+	private Parameter paras;
 	
 	
 	public M5Reader(Parameter paras)
@@ -42,6 +43,7 @@ public class M5Reader {
 		this.minPBLen = paras.getMinPBLen();
 		this.minCNTLen = paras.getMinContLen();
 		this.identity = paras.getIdentity();
+		this.paras = paras;
 	}
 	
 	// original reading method with some filtered parameters;
@@ -185,7 +187,7 @@ public class M5Reader {
 				{
 					if(!isInit)
 					{
-						m5FileEncapsulate = new M5FileEncapsulate(size);
+						m5FileEncapsulate = new M5FileEncapsulate(size, paras);
 						isInit = true;
 					}
 					M5Record m5 = this.initM5Record(arrs);

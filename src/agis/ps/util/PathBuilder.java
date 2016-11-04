@@ -154,16 +154,20 @@ public class PathBuilder {
 					// if the next and the next next contig is selected, 
 					// then this point is not legal point
 //					Contig nNext = diGraph.getNextVertex(next, current);
-					if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
-					{
-						Node node = new Node();
-						node.setCnt(current);
-						node.setOrphan(false);
-						diGraph.setVertexAsSelected(current);
-						path.push(node);
-						paths.add(path);
-						continue;
-					}
+					/*
+					 * it used to defined not to travel again the divergence point;
+					 * but it should be considered the non-divergence point;
+					 */
+//					if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
+//					{
+//						Node node = new Node();
+//						node.setCnt(current);
+//						node.setOrphan(false);
+//						diGraph.setVertexAsSelected(current);
+//						path.push(node);
+//						paths.add(path);
+//						continue;
+//					}
 					while (true) {
 						Node node = new Node();
 						node.setCnt(current);
@@ -174,19 +178,23 @@ public class PathBuilder {
 						Contig previous = current;
 						current = next;
 						next = diGraph.getNextVertex(current, previous);
-						if(next != null){
-							if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
-							{
-								Node iNode = new Node();
-								iNode.setCnt(current);
-								iNode.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.push(iNode);
-//								paths.add(path);
-								break;
-							}
-						}
-						if (next == null) { // for the divergence point
+						/*
+						 * It used to define not travel again the same divergenece point;
+						 */
+//						if(next != null){
+//							if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
+//							{
+//								Node iNode = new Node();
+//								iNode.setCnt(current);
+//								iNode.setOrphan(false);
+//								diGraph.setVertexAsSelected(current);
+//								path.push(iNode);
+////								paths.add(path);
+//								break;
+//							}
+//						}
+						// for the divergence point which could not determine how-to get next
+						if (next == null) { 
 							List<Contig> formers = new Vector<Contig>(3);
 							if(path.getPathSize() > 2 )
 							{
