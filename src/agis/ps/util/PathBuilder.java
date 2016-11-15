@@ -118,9 +118,9 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-				INDEX++;
-				if(INDEX == 33)
-					logger.debug("breakpoint");
+//				INDEX++;
+//				if(INDEX == 33)
+//					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false then break;
@@ -230,7 +230,7 @@ public class PathBuilder {
 					Contig previous = startPoint;
 					current = c1;
 					Contig next = diGraph.getNextVertex(current, previous);
-OUTER:					while (true) {
+					while (true) {
 						if (next != null) {
 							if (next.equals(startPoint)) {
 								this.addNode(current, path, true);
@@ -308,7 +308,7 @@ OUTER:					while (true) {
 					previous = startPoint;
 					current = c2;
 					next = diGraph.getNextVertex(current, previous);
-OUTER:					while (true) {
+					while (true) {
 						if (next != null) {
 							if (next.equals(startPoint)) {
 								this.addNode(current, path, false);
