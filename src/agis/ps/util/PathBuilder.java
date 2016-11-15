@@ -118,18 +118,14 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-				INDEX++;
-				if(INDEX == 17)
-					logger.debug("breakpoint");
-//				Contig current = new Contig();
-//				current.setID("981");
-				 Contig current = diGraph.getRandomVertex();
+//				INDEX++;
+//				if(INDEX == 1)
+//					logger.debug("breakpoint");
+				Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false then break;
 				if (current == null)
 					break;
-				// if(current.getID().equals("1145"))
-				// logger.debug("null exception");
 				List<Contig> adjs = diGraph.getAdjVertices(current);
 				if (adjs == null) {
 					diGraph.setVertexAsSelected(current);
@@ -139,60 +135,33 @@ public class PathBuilder {
 				// random selected the frist
 				if (adjsSize == 0) {
 					// orphan contig, only one element in path
-					path = new NodePath();
-					Node node = new Node();
-					node.setCnt(current);
-					node.setOrphan(true);
-					path.push(node);
-					paths.add(path);
-					diGraph.setVertexAsSelected(current);
+					if(this.isValidCnt(current))
+					{
+						path = new NodePath();
+						this.addNode(current, path, false);
+						paths.add(path);
+					} else
+					{
+						diGraph.setVertexAsSelected(current);
+					}
+					
 				} else if (adjsSize == 1) {
 					// normal start point, always on the linear end point;
 					path = new NodePath();
 					// Contig next = diGraph.getNextVertex(current, null);
 					Contig next = adjs.get(0);
-					// if the next and the next next contig is selected, 
-					// then this point is not legal point
-//					Contig nNext = diGraph.getNextVertex(next, current);
-					/*
-					 * it used to defined not to travel again the divergence point;
-					 * but it should be considered the non-divergence point;
-					 */
-//					if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
-//					{
-//						Node node = new Node();
-//						node.setCnt(current);
-//						node.setOrphan(false);
-//						diGraph.setVertexAsSelected(current);
-//						path.push(node);
-//						paths.add(path);
-//						continue;
-//					}
-					while (true) {
-						Node node = new Node();
-						node.setCnt(current);
-						node.setOrphan(false);
-						diGraph.setVertexAsSelected(current);
-						path.push(node);
-						node = null;
+
+	OUTER:				while (true) {
+						if(this.isValidCnt(current))
+						{
+							this.addNode(current, path, false);
+						} else
+						{
+							break;
+						}
 						Contig previous = current;
 						current = next;
 						next = diGraph.getNextVertex(current, previous);
-						/*
-						 * It used to define not travel again the same divergenece point;
-						 */
-//						if(next != null){
-//							if(diGraph.isDivergenceVertex(next) && diGraph.isVertexSelected(next))
-//							{
-//								Node iNode = new Node();
-//								iNode.setCnt(current);
-//								iNode.setOrphan(false);
-//								diGraph.setVertexAsSelected(current);
-//								path.push(iNode);
-////								paths.add(path);
-//								break;
-//							}
-//						}
 						// for the divergence point which could not determine how-to get next
 						if (next == null) { 
 							List<Contig> formers = new Vector<Contig>(3);
@@ -208,72 +177,39 @@ public class PathBuilder {
 							// this.getTriadLinkNext3(current, previous);
 							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
-								Node iNode = new Node();
-								iNode.setCnt(current);
-								iNode.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.push(iNode);
-								next = null;
-								current = null;
-								previous = null;
+								if(this.isValidCnt(current))
+									this.addNode(current, path, false);
 								break;
 							}
 							int size = selectedCnts.size();
 							if (size == 1) {
 								next = selectedCnts.get(0);
 							} else if (size == 2) {
-								Node iNode = new Node();
-								iNode.setCnt(current);
-								iNode.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.push(iNode);
+								if(this.isValidCnt(current))
+								{
+									this.addNode(current, path, false);
+								}
 								previous = current;
 								current = selectedCnts.get(0);
 								next = selectedCnts.get(1);
 							} else {
-								Node iNode = new Node();
-								iNode.setCnt(current);
-								iNode.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.push(iNode);
+								if(this.isValidCnt(current))
+									this.addNode(current, path, false);
 								for (int i = 0; i < size - 2; i++) {
 									current = selectedCnts.get(i);
-									iNode = new Node();
-									iNode.setCnt(current);
-									iNode.setOrphan(false);
-									diGraph.setVertexAsSelected(current);
-									path.push(iNode);
+									if(this.isValidCnt(current))
+										this.addNode(current, path, false);
+									else
+										break OUTER;
 								}
 								previous = current;
 								current = selectedCnts.get(size - 2);
 								next = selectedCnts.get(size - 1);
 							}
-							// next = getTriadLinkNext2(current, previous);
-							// // checking next is not null statement,
-							// // but the next will be not the adjacent vertex
-							// if (next != null) {
-							// List<Contig> tAdjs =
-							// diGraph.getAdjVertices(current);
-							// if (!tAdjs.contains(next))
-							// next = null;
-							// }
-							// if (next == null) {
-							// next = null;
-							// current = null;
-							// previous = null;
-							// break;
-							// }
 						}
 						if (next.equals(previous)) { // for the linear end point
-							Node n = new Node();
-							n.setCnt(current);
-							n.setOrphan(false);
-							diGraph.setVertexAsSelected(current);
-							path.push(n);
-							n = null;
-							next = null;
-							current = null;
-							previous = null;
+							if(this.isValidCnt(current))
+								this.addNode(current, path, false);
 							break;
 						}
 					}
@@ -282,10 +218,10 @@ public class PathBuilder {
 					// middle point; normal start point, located in the linear
 					// path
 					path = new NodePath();
-					Node node = new Node();
-					node.setCnt(current);
-					path.push(node);
-					diGraph.setVertexAsSelected(current);
+					if(this.isValidCnt(current))
+						this.addNode(current, path, true);
+					else
+						continue;
 					Contig startPoint = current;
 					Contig c1 = adjs.get(0);
 					Contig c2 = adjs.get(1);
@@ -295,39 +231,35 @@ public class PathBuilder {
 					// whether c1 is valid point
 					// all the element unshift into path;
 					// checking the c1 and c2 whether travel
-					if(diGraph.isVertexSelected(c1) && diGraph.isVertexSelected(c2))
+					if(!this.isValidCnt(c1) && !this.isValidCnt(c2))
 					{
 						paths.add(path);
 						continue;
 					}
 					Contig previous = startPoint;
 					current = c1;
-					diGraph.setVertexAsSelected(current);
 					Contig next = diGraph.getNextVertex(current, previous);
-					while (true) {
+OUTER:					while (true) {
 						if (next != null) {
 							if (next.equals(startPoint)) {
-								node = new Node();
-								node.setCnt(current);
-								path.unshift(node);
-								diGraph.setVertexAsSelected(current);
+								if(this.isValidCnt(current))
+									this.addNode(current, path, true);
 								break;
 							}
 							if (next.equals(previous)) {
-								node = new Node();
-								node.setCnt(current);
-								path.unshift(node);
-								diGraph.setVertexAsSelected(current);
+								if(this.isValidCnt(current))
+									this.addNode(current, path, true);
 								break;
 							}
-							node = new Node();
-							node.setCnt(current);
-							path.unshift(node);
-							diGraph.setVertexAsSelected(current);
+							if(this.isValidCnt(current))
+							{
+								this.addNode(current, path, true);
+							} else
+							{
+								break;
+							}
 							previous = current;
 							current = next;
-//							if(current.getID().equals("997"))
-//								logger.debug("breakpoint");
 							next = diGraph.getNextVertex(current, previous);
 						} else {
 							List<Contig> formers = new Vector<Contig>(3);
@@ -342,62 +274,39 @@ public class PathBuilder {
 							// to get the next point over the divergence point;
 							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
-								Node n = new Node();
-								n.setCnt(current);
-								n.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.unshift(n);
-								next = null;
-								current = null;
-								previous = null;
+								if(this.isValidCnt(current))
+									this.addNode(current, path, true);
 								break;
 							}
 							int size = selectedCnts.size();
 							if (size == 1) {
 								next = selectedCnts.get(0);
 							} else if (size == 2) {
-								Node iNode = new Node();
-								iNode.setCnt(current);
-								iNode.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.unshift(iNode);
+								if(this.isValidCnt(current))
+									this.addNode(current, path, true);
+								else
+									break;
 								previous = current;
 								current = selectedCnts.get(0);
 								next = selectedCnts.get(1);
 							} else {
 								// push right now current node
-								Node iNode = new Node();
-								iNode.setCnt(current);
-								iNode.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.unshift(iNode);
+								if(this.isValidCnt(current))
+									this.addNode(current, path, true);
+								else 
+									break;
 								for (int i = 0; i < size - 2; i++) {
 									current = selectedCnts.get(i);
-									iNode = new Node();
-									iNode.setCnt(current);
-									iNode.setOrphan(false);
-									diGraph.setVertexAsSelected(current);
-									path.unshift(iNode);
+									
+									if(this.isValidCnt(current))
+										this.addNode(current, path, true);
+									else 
+										break OUTER;
 								}
 								previous = current;
 								current = selectedCnts.get(size - 2);
 								next = selectedCnts.get(size - 1);
 							}
-							// List<Contig> unique =
-							// this.getTriadLinkNext3(current, previous);
-							// next = getTriadLinkNext2(current, previous);
-							// // checking next is not null statement,
-							// // but the next will be not the adjacent vertex
-							// if (next != null) {
-							// List<Contig> tAdjs =
-							// diGraph.getAdjVertices(current);
-							// if (!tAdjs.contains(next))
-							// next = null;
-							// }
-							// if (next == null) {
-							// diGraph.setVertexAsSelected(current);
-							// break;
-							// }
 						}
 					}
 					// for c2 direction; using c1 as previous point; checking
@@ -420,26 +329,22 @@ public class PathBuilder {
 					previous = startPoint;
 					current = c2;
 					next = diGraph.getNextVertex(current, previous);
-					while (true) {
+OUTER:					while (true) {
 						if (next != null) {
 							if (next.equals(startPoint)) {
-								node = new Node();
-								node.setCnt(current);
-								path.push(node);
-								diGraph.setVertexAsSelected(current);
+								if(this.isValidCnt(current))
+									this.addNode(current, path, false);
 								break;
 							}
 							if (next.equals(previous)) {
-								node = new Node();
-								node.setCnt(current);
-								path.push(node);
-								diGraph.setVertexAsSelected(current);
+								if(this.isValidCnt(current))
+									this.addNode(current, path, false);
 								break;
 							}
-							node = new Node();
-							node.setCnt(current);
-							path.push(node);
-							diGraph.setVertexAsSelected(current);
+							if(this.isValidCnt(current))
+								this.addNode(current, path, false);
+							else
+								break;
 							previous = current;
 							current = next;
 							next = diGraph.getNextVertex(current, previous);
@@ -455,61 +360,36 @@ public class PathBuilder {
 							}
 							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
-								Node n = new Node();
-								n.setCnt(current);
-								n.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.push(n);
-								next = null;
-								current = null;
-								previous = null;
+								this.addNode(current, path, false);
 								break;
 							}
 							int size = selectedCnts.size();
 							if (size == 1) {
 								next = selectedCnts.get(0);
 							} else if (size == 2) {
-								Node iNode = new Node();
-								iNode.setCnt(current);
-								iNode.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.push(iNode);
+								if(this.isValidCnt(current))
+									this.addNode(current, path, false);
+								else 
+									break;
 								previous = current;
 								current = selectedCnts.get(0);
 								next = selectedCnts.get(1);
 							} else {
-								Node iNode = new Node();
-								iNode.setCnt(current);
-								iNode.setOrphan(false);
-								diGraph.setVertexAsSelected(current);
-								path.push(iNode);
+								if(this.isValidCnt(current))
+									this.addNode(current, path, false);
+								else
+									break;
 								for (int i = 0; i < size - 2; i++) {
 									current = selectedCnts.get(i);
-									iNode = new Node();
-									iNode.setCnt(current);
-									iNode.setOrphan(false);
-									diGraph.setVertexAsSelected(current);
-									path.push(iNode);
+									if(this.isValidCnt(current))
+										this.addNode(current, path, false);
+									else
+										break OUTER;
 								}
 								previous = current;
 								current = selectedCnts.get(size - 2);
 								next = selectedCnts.get(size - 1);
 							}
-							// List<Contig> unique =
-							// this.getTriadLinkNext3(current, previous);
-							// next = getTriadLinkNext2(current, previous);
-							// // checking next is not null statement,
-							// // but the next will be not the adjacent vertex
-							// if (next != null) {
-							// List<Contig> tAdjs =
-							// diGraph.getAdjVertices(current);
-							// if (!tAdjs.contains(next))
-							// next = null;
-							// }
-							// if (next == null) {
-							// diGraph.setVertexAsSelected(current);
-							// break;
-							// }
 						}
 					}
 					paths.add(path);
@@ -1504,7 +1384,16 @@ public class PathBuilder {
 			tl.setLast(unique);
 
 			for (TriadLink t : tls) {
-				if(t.getMiddle() != null){
+				Contig middle = t.getMiddle();
+				Contig last = t.getLast();
+				// for special case when the middle is adjacent to internal point, it means
+				// this path is circle.
+				if(last != null && last.equals(unique))
+				{
+					if(middle != null && adjInternals.contains(middle))
+						continue;
+				}
+				if(middle != null){
 					if (t.isContain(internal)) {
 						if (t.getMiddle().equals(internal)) {
 							if(t.isContain(unique))
@@ -2126,6 +2015,50 @@ public class PathBuilder {
 			triads.remove(t);
 		}
 		return tl.getLast();
+	}
+	
+	/**
+	 * A method to push cnt as node into path;
+	 * @param cnt
+	 */
+	private void addNode(Contig cnt, NodePath path, boolean isForward)
+	{
+		if(isForward)
+		{ // unshift contig on the forward direction;
+			Node node = new Node();
+			node.setCnt(cnt);
+			node.setOrphan(false);
+			path.unshift(node);
+			diGraph.setVertexAsSelected(cnt);
+		} else
+		{ // push contig on the backward direction;
+			Node node = new Node();
+			node.setCnt(cnt);
+			node.setOrphan(false);
+			path.push(node);
+			diGraph.setVertexAsSelected(cnt);
+		}
+	}
+	
+	/**
+	 * The method used to check the next contig is not
+	 * the divergence point and did not select before.
+	 * If it is not the divergence point and do not seleect
+	 * former, return true; else it is return false;
+	 * @return
+	 */
+	private boolean isValidCnt(Contig cnt)
+	{
+		if(diGraph.isDivergenceVertex(cnt)){
+			return true;
+		} else
+		{
+			if(diGraph.isVertexSelected(cnt))
+				return false;
+			else
+				return true;
+			
+		}
 	}
 
 	// c1 for middle and c2 for two adjacent;
