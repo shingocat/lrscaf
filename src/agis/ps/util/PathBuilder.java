@@ -118,9 +118,9 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-//				INDEX++;
-//				if(INDEX == 1)
-//					logger.debug("breakpoint");
+				INDEX++;
+				if(INDEX == 33)
+					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false then break;
@@ -151,7 +151,7 @@ public class PathBuilder {
 					// Contig next = diGraph.getNextVertex(current, null);
 					Contig next = adjs.get(0);
 
-	OUTER:				while (true) {
+					while (true) {
 						if(this.isValidCnt(current))
 						{
 							this.addNode(current, path, false);
@@ -177,30 +177,22 @@ public class PathBuilder {
 							// this.getTriadLinkNext3(current, previous);
 							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, false);
+								this.addNode(current, path, false);
 								break;
 							}
 							int size = selectedCnts.size();
 							if (size == 1) {
 								next = selectedCnts.get(0);
 							} else if (size == 2) {
-								if(this.isValidCnt(current))
-								{
-									this.addNode(current, path, false);
-								}
+								this.addNode(current, path, false);
 								previous = current;
 								current = selectedCnts.get(0);
 								next = selectedCnts.get(1);
 							} else {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, false);
+								this.addNode(current, path, false);
 								for (int i = 0; i < size - 2; i++) {
 									current = selectedCnts.get(i);
-									if(this.isValidCnt(current))
-										this.addNode(current, path, false);
-									else
-										break OUTER;
+									this.addNode(current, path, false);
 								}
 								previous = current;
 								current = selectedCnts.get(size - 2);
@@ -208,8 +200,7 @@ public class PathBuilder {
 							}
 						}
 						if (next.equals(previous)) { // for the linear end point
-							if(this.isValidCnt(current))
-								this.addNode(current, path, false);
+							this.addNode(current, path, false);
 							break;
 						}
 					}
@@ -242,15 +233,15 @@ public class PathBuilder {
 OUTER:					while (true) {
 						if (next != null) {
 							if (next.equals(startPoint)) {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, true);
+								this.addNode(current, path, true);
 								break;
 							}
 							if (next.equals(previous)) {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, true);
+								this.addNode(current, path, true);
 								break;
 							}
+							// check the current contig whether selected befored
+							// if true break;
 							if(this.isValidCnt(current))
 							{
 								this.addNode(current, path, true);
@@ -274,34 +265,22 @@ OUTER:					while (true) {
 							// to get the next point over the divergence point;
 							List<Contig> selectedCnts = this.getTriadLinkNext4(current, previous, formers);
 							if (selectedCnts == null) {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, true);
+								this.addNode(current, path, true);
 								break;
 							}
 							int size = selectedCnts.size();
 							if (size == 1) {
 								next = selectedCnts.get(0);
 							} else if (size == 2) {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, true);
-								else
-									break;
+								this.addNode(current, path, true);
 								previous = current;
 								current = selectedCnts.get(0);
 								next = selectedCnts.get(1);
 							} else {
-								// push right now current node
-								if(this.isValidCnt(current))
-									this.addNode(current, path, true);
-								else 
-									break;
+								this.addNode(current, path, true);
 								for (int i = 0; i < size - 2; i++) {
 									current = selectedCnts.get(i);
-									
-									if(this.isValidCnt(current))
-										this.addNode(current, path, true);
-									else 
-										break OUTER;
+									this.addNode(current, path, true);
 								}
 								previous = current;
 								current = selectedCnts.get(size - 2);
@@ -332,15 +311,14 @@ OUTER:					while (true) {
 OUTER:					while (true) {
 						if (next != null) {
 							if (next.equals(startPoint)) {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, false);
+								this.addNode(current, path, false);
 								break;
 							}
 							if (next.equals(previous)) {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, false);
+								this.addNode(current, path, false);
 								break;
 							}
+							// check the current contig whether selected before
 							if(this.isValidCnt(current))
 								this.addNode(current, path, false);
 							else
@@ -367,24 +345,15 @@ OUTER:					while (true) {
 							if (size == 1) {
 								next = selectedCnts.get(0);
 							} else if (size == 2) {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, false);
-								else 
-									break;
+								this.addNode(current, path, false);
 								previous = current;
 								current = selectedCnts.get(0);
 								next = selectedCnts.get(1);
 							} else {
-								if(this.isValidCnt(current))
-									this.addNode(current, path, false);
-								else
-									break;
+								this.addNode(current, path, false);
 								for (int i = 0; i < size - 2; i++) {
 									current = selectedCnts.get(i);
-									if(this.isValidCnt(current))
-										this.addNode(current, path, false);
-									else
-										break OUTER;
+									this.addNode(current, path, false);
 								}
 								previous = current;
 								current = selectedCnts.get(size - 2);
