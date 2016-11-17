@@ -1168,12 +1168,17 @@ public class ScaffoldWriter {
 	{
 		long start = System.currentTimeMillis();
 		int range = Math.abs(len) + 3 * Math.abs(sd);
-		int len1 = seq1.length();
 		int len2 = seq2.length();
 		StringBuffer sb = new StringBuffer();
 		sb.append(seq1);
-		seq2 = seq2.substring(range, len2 - 1);
-		sb.append(seq2);
+		// for the case if the range is large than seq2 length, 
+		// we will directly used seq1.
+		if(range < len2) 
+		{	
+			seq2 = seq2.substring(range, len2 - 1);
+			sb.append(seq2);
+		}
+			
 		long end = System.currentTimeMillis();
 		concattime += (end - start);
 		return sb.toString();
