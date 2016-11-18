@@ -216,7 +216,6 @@ public class ScaffoldWriter {
 			if(i == 0)
 			{
 				cId = current.getCnt().getID();
-//				seq = this.indexSeq(cId);
 				seq = cntfile.getOriginalSeqByNewId(cId);
 				seq.trim();
 				if(current.getStrand().equals(Strand.REVERSE))
@@ -227,7 +226,6 @@ public class ScaffoldWriter {
 			} else
 			{
 				cId = current.getCnt().getID();
-//				seq = this.indexSeq(cId);
 				seq = cntfile.getOriginalSeqByNewId(cId);
 				seq.trim();
 				if(current.getStrand().equals(Strand.REVERSE))
@@ -254,7 +252,6 @@ public class ScaffoldWriter {
 		}
 		long end = System.currentTimeMillis();
 		buildscaftime += (end - start);
-//		logger.debug(index + " build scaffolds time " + (end - start) + " ms");
 		return sb.toString();
 	}
 	
@@ -1334,8 +1331,15 @@ public class ScaffoldWriter {
 		return seq;
 	}
 	
+	/**
+	 * get contig reverse sequence 
+	 * @param seq
+	 * @return
+	 */
 	private String getReverseSeq(String seq)
 	{
+		if(seq == null || seq.length() == 0)
+			return "";
 		StringBuffer sb = new StringBuffer();
 		seq.toUpperCase(); 
 		for (int j = (seq.length() - 1); j >= 0; j--) {
@@ -1351,6 +1355,9 @@ public class ScaffoldWriter {
 				break;
 			case 'G':
 				sb.append("C");
+				break;
+			default:
+				sb.append("N");
 				break;
 			}
 		}
