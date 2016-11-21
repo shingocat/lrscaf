@@ -1303,6 +1303,27 @@ public class PathBuilder {
 		uniques = tempUniques;
 		tempUniques = null;
 		
+		// checking whether the unique contigs link together,
+		// if it is true that mean it is a bubbles;
+		// if it is bubbles, when choose one path, delete other path link;
+		// a special case bubbles checking, the the next contig of 
+		// adjacent contigs is link together;
+		// bubble method should be improved; 
+		boolean isBubble = false;
+		Contig check = uniques.get(0);
+		for(Contig c  : uniques)
+		{
+			if(!c.equals(check))
+			{
+				List<Edge> edges = diGraph.getEdgesInfo(check, c);
+				if(edges != null && edges.size() != 0)
+				{
+					isBubble = true;
+					break;
+				}
+			}
+		}
+		
 		if(uniques.size() == 0)
 			return null;
 		// candidate triad link
@@ -1438,10 +1459,26 @@ public class PathBuilder {
 		LinkedList<Contig> path = new LinkedList<Contig>();
 		if (adjInternals.contains(tl.getLast())) {
 			path.addLast(tl.getLast());
-			return path;
 		} else {
-			return this.getInternalPath(external, internal, tl.getLast());
+			path = this.getInternalPath(external, internal, tl.getLast());
 		}
+		// if it is bubble, remove other path link;
+		if(isBubble)
+		{
+			for(Contig c : adjInternals)
+			{
+				if(!path.contains(c))
+				{
+					Contig unique = path.get(path.size() - 1);
+					List<Edge> te = diGraph.getEdgesInfo(unique, c);
+					if(te != null)
+					{
+						diGraph.removeEdges(te);
+					}
+				}
+			}
+		}
+		return path;
 	}
 	
 	
