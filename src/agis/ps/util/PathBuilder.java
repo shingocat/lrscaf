@@ -1262,6 +1262,32 @@ public class PathBuilder {
 		List<Contig> adjInternals = diGraph.getNextVertices(internal, external);
 		if (adjInternals.size() == 0)
 			return null;
+		// experience for yeast bubbles structure, if the adjInternals contig
+		// links path formers contigs then remove it;
+		List<Contig> tAdjInternals = new Vector<Contig>(adjInternals.size());
+		for(Contig c : adjInternals)
+		{
+			for(Contig i : formers)
+			{
+				List<Edge> tes = diGraph.getEdgesInfo(c, i);
+				if(tes != null && tes.size() > 0)
+				{
+					if(!tAdjInternals.contains(c))
+						tAdjInternals.add(c);
+				}
+			}
+		}
+		
+		Iterator<Contig> it = adjInternals.iterator();
+		while(it.hasNext())
+		{
+			Contig c = it.next();
+			if(tAdjInternals.contains(c))
+				it.remove();
+		}
+		if(adjInternals.size() == 1)
+			return adjInternals;
+		
 		// the unique contig list through path from external to internal;
 		List<Contig> uniques = new Vector<Contig>(5);
 		// loop the internal adjacent contigs
@@ -1302,27 +1328,6 @@ public class PathBuilder {
 		uniques = null;
 		uniques = tempUniques;
 		tempUniques = null;
-		
-		// checking whether the unique contigs link together,
-		// if it is true that mean it is a bubbles;
-		// if it is bubbles, when choose one path, delete other path link;
-		// a special case bubbles checking, the the next contig of 
-		// adjacent contigs is link together;
-		// bubble method should be improved; 
-		boolean isBubble = false;
-		Contig check = uniques.get(0);
-		for(Contig c  : uniques)
-		{
-			if(!c.equals(check))
-			{
-				List<Edge> edges = diGraph.getEdgesInfo(check, c);
-				if(edges != null && edges.size() != 0)
-				{
-					isBubble = true;
-					break;
-				}
-			}
-		}
 		
 		if(uniques.size() == 0)
 			return null;
@@ -1461,22 +1466,6 @@ public class PathBuilder {
 			path.addLast(tl.getLast());
 		} else {
 			path = this.getInternalPath(external, internal, tl.getLast());
-		}
-		// if it is bubble, remove other path link;
-		if(isBubble)
-		{
-			for(Contig c : adjInternals)
-			{
-				if(!path.contains(c))
-				{
-					Contig unique = path.get(path.size() - 1);
-					List<Edge> te = diGraph.getEdgesInfo(unique, c);
-					if(te != null)
-					{
-						diGraph.removeEdges(te);
-					}
-				}
-			}
 		}
 		return path;
 	}
