@@ -119,7 +119,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 33)
+//				if(INDEX == 40)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
@@ -386,7 +386,7 @@ public class PathBuilder {
 				} else {
 					for (int i = 0; i < pathSize - 1; i++) {
 //						INDEX++;
-//						if(INDEX == 66)
+//						if(INDEX == 963)
 //							logger.debug("breakpoint");
 						Node current = np.getElement(i);
 						Node next = np.getElement(i + 1);
@@ -1286,13 +1286,6 @@ public class PathBuilder {
 				it.remove();
 		}
 		
-		// experience for yeast tips structure, if there are two adjacent contigs of divergence 
-		// contig has triadlink link together and one of the contigs is end point;
-		// it will return the other adjacent cotnigs as the next contig in the path;
-		
-		
-		
-		
 		if(adjInternals.size() == 1)
 			return adjInternals;
 		
@@ -1470,10 +1463,15 @@ public class PathBuilder {
 //		}
 		// return the contig path;
 		LinkedList<Contig> path = new LinkedList<Contig>();
-		if (adjInternals.contains(tl.getLast())) {
-			path.addLast(tl.getLast());
-		} else {
-			path = this.getInternalPath(external, internal, tl.getLast());
+		try{
+			if (adjInternals.contains(tl.getLast())) {
+				path.addLast(tl.getLast());
+			} else {
+				path = this.getInternalPath(external, internal, tl.getLast());
+			}
+		} catch(Exception e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		return path;
 	}
@@ -1808,37 +1806,53 @@ public class PathBuilder {
 		List<Contig> nextAdjs = diGraph.getNextVertices(internal, external);
 		int depth = 5;
 		for (Contig c : nextAdjs) {
-			this.getInternalPath(internal, c, depth, unique, path);
-			if (path.contains(unique))
+			boolean isExist = this.getInternalPath(internal, c, depth, unique, path);
+			if (isExist)
 				break;
 		}
 		if (path.size() != 0)
+		{
 			return path;
+		}
 		else
+		{
 			return null;
+		}
 	}
 
-	private void getInternalPath(Contig previous, Contig current, int depth, Contig unique, LinkedList<Contig> path) {
+	private boolean getInternalPath(Contig previous, Contig current, int depth, Contig unique, LinkedList<Contig> path) {
 		path.addLast(current);
 		List<Contig> nextAdjs = diGraph.getNextVertices(current, previous);
+		boolean isExist = false;
 		if (nextAdjs == null || nextAdjs.size() == 0) {
-			path.clear();
-			return;
+			path.removeLast();
+			return false;
 		}
 		if (depth == 0) {
-			path.clear();
-			return;
+			path.removeLast();
+			return false;
 		}
 		if (nextAdjs.contains(unique)) {
 			path.addLast(unique);
-			return;
+			isExist = true;
+			return isExist;
 		}
 		if (nextAdjs.size() > 1) {
-			path.clear();
-			return;
+			for(Contig c : nextAdjs)
+			{
+				isExist = this.getInternalPath(current, c, depth - 1, unique, path);
+				if(isExist)
+					break;
+			}
+			if(!isExist)
+				path.removeLast();
+			return isExist;
 		}
 		Contig c = nextAdjs.get(0);
-		getInternalPath(current, c, depth - 1, unique, path);
+		isExist = getInternalPath(current, c, depth - 1, unique, path);
+		if(!isExist)
+			path.removeLast();
+		return isExist;
 	}
 
 	/**
@@ -1867,9 +1881,11 @@ public class PathBuilder {
 //			INTERNAL_LENGTH += this.indexLen(current.getID());
 			INTERNAL_LENGTH += cntfile.getLengthByNewId(Integer.valueOf(current.getID()));
 			if (INTERNAL_LENGTH <= MAXIMUM_INTERNAL_LENGTH) {
-				uniques.clear();
+				if(uniques != null && uniques.size() > 0)
+					uniques.remove(uniques.size() - 1);
 				for (Contig c : nextAdjs) {
 					uniques.add(c);
+					this.getNextUniqueContigs(c, current, depth - 1, uniques);
 				}
 				INTERNAL_LENGTH = 0;
 				return;
