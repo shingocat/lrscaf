@@ -633,6 +633,8 @@ public class DirectedGraph extends Graph implements Serializable {
 			while (it.hasNext()) {
 				Contig c = it.next();
 				String id = c.getID();
+//				if(id.equals("1791"))
+//					logger.debug("breakpoint");
 				List<Contig> adjs = adjTos.get(id);
 				if (adjs == null)
 					continue;
@@ -693,6 +695,12 @@ public class DirectedGraph extends Graph implements Serializable {
 	{
 		path.addLast(current);
 		List<Contig> nexts = this.getNextVertices(current, former);
+		if(nexts != null)
+		{
+			if(depth != 2 && nexts.size() > 1)
+				return false;
+		}
+				
 		if(nexts == null)
 		{
 			// check the tip length;
