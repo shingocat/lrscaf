@@ -1285,6 +1285,14 @@ public class PathBuilder {
 			if(tAdjInternals.contains(c))
 				it.remove();
 		}
+		
+		// experience for yeast tips structure, if there are two adjacent contigs of divergence 
+		// contig has triadlink link together and one of the contigs is end point;
+		// it will return the other adjacent cotnigs as the next contig in the path;
+		
+		
+		
+		
 		if(adjInternals.size() == 1)
 			return adjInternals;
 		

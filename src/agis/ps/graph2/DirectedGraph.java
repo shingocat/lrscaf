@@ -627,6 +627,7 @@ public class DirectedGraph extends Graph implements Serializable {
 	{
 		long start = System.currentTimeMillis();
 		List<Edge> rmEdges = new Vector<Edge>(100);
+		int totalDels = 0;
 		try {
 			Iterator<Contig> it = mimos.iterator();
 			while (it.hasNext()) {
@@ -660,13 +661,21 @@ public class DirectedGraph extends Graph implements Serializable {
 //						rmEdges.addAll(es);
 					}
 				}
+
 			}
 		} catch (Exception e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
-		logger.info(this.getClass().getName() + "\tDelete tip edges:" + rmEdges.size());
-		this.removeEdges(rmEdges);
-		this.updateGraph();
+		if(rmEdges.size() != 0)
+		{
+			totalDels += rmEdges.size();
+			this.removeEdges(rmEdges);
+			this.updateGraph();
+			rmEdges.clear();
+		}
+		logger.info(this.getClass().getName() + "\tDelete tip edges:" + totalDels);
+//		this.removeEdges(rmEdges);
+//		this.updateGraph();
 		long end = System.currentTimeMillis();
 		logger.info("Tip edge deleting, erase time: " + (end - start) + " ms");
 	}
@@ -680,7 +689,7 @@ public class DirectedGraph extends Graph implements Serializable {
 	 * @param path
 	 * @param removes
 	 */
-	private void delTips(Contig current, Contig former, int depth, LinkedList<Contig> path, List<Edge> removes)
+	private boolean delTips(Contig current, Contig former, int depth, LinkedList<Contig> path, List<Edge> removes)
 	{
 		path.addLast(current);
 		List<Contig> nexts = this.getNextVertices(current, former);
@@ -701,9 +710,14 @@ public class DirectedGraph extends Graph implements Serializable {
 			}
 			if(length <= TIP_LENGTH)
 			{
-				removes.addAll(all);
+				for(Edge e : all)
+				{
+					if(!removes.contains(e))
+						removes.add(e);
+				}
+				return true;
 			}
-			return;
+			return false;
 		}
 		if(depth == 0)
 		{
@@ -724,17 +738,38 @@ public class DirectedGraph extends Graph implements Serializable {
 				}
 				if(length <= TIP_LENGTH)
 				{
-					removes.addAll(all);
+					for(Edge e : all)
+					{
+						if(!removes.contains(e))
+							removes.add(e);
+					}
+					return true;
 				}
 			}
-			return;
+			return false;
 		}
+		// if the nexts contigs are large than 1;
+		// if all the path is less than specified tip length;
+		// then whole branch will be delete;
 		if(nexts.size() > 1)
 		{
-			return;
+			boolean isDel = true;
+			for(Contig c : nexts)
+			{
+				isDel = this.delTips(c, current, depth - 1, path, removes);
+				if(!isDel)
+					break;
+				else
+					path.removeLast();
+			}
+			if(isDel)
+				return true;
+			return false;
+		} else 
+		{
+			former = current;
+			current = nexts.get(0);
+			return this.delTips(current, former, depth - 1, path, removes);
 		}
-		former = current;
-		current = nexts.get(0);
-		this.delTips(current, former, depth - 1, path, removes);
 	}
 }
