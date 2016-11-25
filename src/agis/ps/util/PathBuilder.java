@@ -1279,13 +1279,15 @@ public class PathBuilder {
 		}
 		
 		Iterator<Contig> it = adjInternals.iterator();
-		while(it.hasNext())
+		if(tAdjInternals != null && tAdjInternals.size() > 0)
 		{
-			Contig c = it.next();
-			if(tAdjInternals.contains(c))
-				it.remove();
+			while(it.hasNext())
+			{
+				Contig c = it.next();
+				if(tAdjInternals.contains(c))
+					it.remove();
+			}
 		}
-		
 		if(adjInternals.size() == 1)
 			return adjInternals;
 		
@@ -1802,19 +1804,38 @@ public class PathBuilder {
 	}
 
 	private LinkedList<Contig> getInternalPath(Contig external, Contig internal, Contig unique) {
+		List<LinkedList<Contig>> paths = new Vector<LinkedList<Contig>>(5);
 		LinkedList<Contig> path = new LinkedList<Contig>();
 		List<Contig> nextAdjs = diGraph.getNextVertices(internal, external);
 		int depth = 5;
+		// for more than one path could get to unique;
+		// get all the paths and then choose the shortest one;
 		for (Contig c : nextAdjs) {
 			boolean isExist = this.getInternalPath(internal, c, depth, unique, path);
 			if (isExist)
-				break;
+			{
+				paths.add(path);
+				path = new LinkedList<Contig>();
+			}
 		}
-		if (path.size() != 0)
+		int sizes = paths.size();
+		// return the shortest one;
+		if (sizes != 0)
 		{
-			return path;
-		}
-		else
+			int index = 0;
+			int length = paths.get(0).size();
+			int next = 0;
+			for(int i = 1; i < sizes; i++)
+			{
+				next = paths.get(i).size();
+				if(next < length)
+				{
+					index = i;
+					length = next;
+				}
+			}
+			return paths.get(index);
+		} else
 		{
 			return null;
 		}
@@ -1884,7 +1905,8 @@ public class PathBuilder {
 				if(uniques != null && uniques.size() > 0)
 					uniques.remove(uniques.size() - 1);
 				for (Contig c : nextAdjs) {
-					uniques.add(c);
+					if(!uniques.contains(c))
+						uniques.add(c);
 					this.getNextUniqueContigs(c, current, depth - 1, uniques);
 				}
 				INTERNAL_LENGTH = 0;
