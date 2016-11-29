@@ -15,29 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.SimpleFSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.TriadLinkReader;
-import agis.ps.graph2.DirectedGraph;
-import agis.ps.graph2.Graph;
+import agis.ps.graph.DirectedGraph;
+import agis.ps.graph.Graph;
+import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
 import agis.ps.link.TriadLink;
 import agis.ps.link.TriadLinkComparator;
-import agis.ps.link2.CntFileEncapsulate;
 import agis.ps.path.Node;
 import agis.ps.path.NodePath;
 import agis.ps.seqs.Contig;
@@ -52,17 +40,11 @@ public class PathBuilder {
 	private Parameter paras;
 	private List<TriadLink> triads;
 	private Graph diGraph;
-	private Directory directory;
-	private IndexReader reader;
-	private Analyzer analyzer;
-	private QueryParser parser;
-	private IndexSearcher searcher;
 	private NodePath path;
 	private CntFileEncapsulate cntfile;
 
 	public PathBuilder() {
 		// do nothing;
-		this.initCntIndexer();
 	}
 
 	public PathBuilder(List<Edge> edges, Parameter paras) {
@@ -2233,33 +2215,4 @@ public class PathBuilder {
 		}
 		return next;
 	}
-
-	private void initCntIndexer() {
-		try {
-			directory = new SimpleFSDirectory(
-					new File(paras.getOutFolder() + System.getProperty("file.separator") + "cnt.index").toPath());
-			reader = DirectoryReader.open(directory);
-			searcher = new IndexSearcher(reader);
-			analyzer = new StandardAnalyzer();
-			parser = new QueryParser("id", analyzer);
-		} catch (Exception e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-		}
-	}
-
-	private int indexLen(String id) {
-		int len = 0;
-		try {
-			Query query = parser.parse(id);
-			TopDocs tds = searcher.search(query, 10);
-			for (ScoreDoc sd : tds.scoreDocs) {
-				Document doc = searcher.doc(sd.doc);
-				len = Integer.valueOf(doc.get("len"));
-			}
-		} catch (Exception e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-		}
-		return len;
-	}
-
 }

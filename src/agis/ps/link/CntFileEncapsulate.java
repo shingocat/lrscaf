@@ -4,7 +4,7 @@
 *Email: mqin@ymail.com
 *Date: 2016年10月11日
 */
-package agis.ps.link2;
+package agis.ps.link;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -18,9 +18,9 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.link.M5FileEncapsulate;
 import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
-import agis.ps.link2.M5FileEncapsulate;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 

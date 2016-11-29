@@ -51,7 +51,7 @@ public class Main {
 					paras = Main.parsering(cl, f, opts);
 				}
 				// The body for executing scaffolding process
-				Scaffolder2 scaffolder = new Scaffolder2(paras);
+				Scaffolder scaffolder = new Scaffolder(paras);
 				scaffolder.scaffolding();
 			}
 		} catch (MissingArgumentException e) {

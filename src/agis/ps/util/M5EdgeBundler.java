@@ -16,13 +16,13 @@ import agis.ps.file.M5Reader;
 import agis.ps.file.PBLinkReader;
 import agis.ps.file.PBLinkWriter;
 import agis.ps.file.TriadLinkWriter;
+import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
+import agis.ps.link.M5FileEncapsulate;
 import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM;
-import agis.ps.link2.CntFileEncapsulate;
-import agis.ps.link2.M5FileEncapsulate;
 
 public class M5EdgeBundler {
 

@@ -4,7 +4,7 @@
 *Email: mqin@ymail.com
 *Date: 2016年9月23日
 */
-package agis.ps.link2;
+package agis.ps.link;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,7 +18,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.link.M5Record;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 
