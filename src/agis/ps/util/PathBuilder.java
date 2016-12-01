@@ -347,32 +347,52 @@ public class PathBuilder {
 		}
 		// orientation contig in the paths;
 		// define the first element in path is forward;
+		// require to check the orientation conflict!
+		List<NodePath> tPaths = new Vector<NodePath>(paths.size());
 		try {
 			for (NodePath np : paths) {
 				int pathSize = np.getPathSize();
+				NodePath tNP = new NodePath();
 				if (pathSize == 1) {
 					Node current = np.getElement(0);
 					current.setStrand(Strand.FORWARD);
 					current.setMeanDist2Next(0);
 					current.setSdDist2Next(0);
 					current.setSupportLinkNum(0);
+					tNP.push(current);
 				} else {
+					Node current = null;
+					Node next = null;
 					for (int i = 0; i < pathSize - 1; i++) {
 //						INDEX++;
-//						if(INDEX == 963)
-//							logger.debug("breakpoint");
-						Node current = np.getElement(i);
-						Node next = np.getElement(i + 1);
+						current = np.getElement(i);
+						next = np.getElement(i + 1);
 						Contig cCnt = current.getCnt();
 						Contig nCnt = next.getCnt();
 						Edge e = null;
 						List<Edge> es = diGraph.getEdgesInfo(cCnt, nCnt);
 						for (Edge t : es) {
 							if (t.getOrigin().equals(cCnt) && t.getTerminus().equals(nCnt))
+							{
 								e = t;
+								break;
+							}
 						}
+						// checking whether the edges links this two contigs are conflict;
 						if (current.getStrand() == null)
+						{
 							current.setStrand(e.getoStrand());
+						} else
+						{
+							// conflict case;
+							if(!current.getStrand().equals(e.getoStrand()))
+							{
+								tNP.push(current);
+								tPaths.add(tNP);
+								tNP = new NodePath();
+								continue;
+							}
+						}
 						if (next.getStrand() == null)
 							next.setStrand(e.gettStrand());
 						int meanSum = e.getDistMean();
@@ -381,8 +401,14 @@ public class PathBuilder {
 						current.setMeanDist2Next(meanSum);
 						current.setSdDist2Next(sdSum);
 						current.setSupportLinkNum(slSum);
-					}
+						tNP.push(current);
+						// for the last node
+						if(i == (pathSize - 2))
+							tNP.push(next);
+					}	
 				}
+				if(tNP != null && tNP.getPathSize() > 0)
+					tPaths.add(tNP);
 			}
 		} catch (Exception e) {
 //			logger.debug("INDEX\t" + INDEX);
@@ -395,7 +421,7 @@ public class PathBuilder {
 		System.gc();
 		long end = System.currentTimeMillis();
 		logger.info("Path Building, erase time: " + (end - start) + " ms");
-		return paths;
+		return tPaths;
 	}
 
 	/**
@@ -899,132 +925,5 @@ public class PathBuilder {
 			
 		}
 	}
-
-	// c1 for middle and c2 for two adjacent;
-	public Contig getTriadLinkNext(Contig internal, Contig external) {
-		Contig next = null;
-		if (triads == null) {
-			TriadLinkReader tlr = new TriadLinkReader(paras);
-			triads = tlr.read();
-		}
-		List<TriadLink> tls = new Vector<TriadLink>();
-		List<Contig> adjs = diGraph.getAdjVertices(internal);
-		List<Contig> tempAdjs = new Vector<Contig>(10);
-		TriadLinkComparator tlc = new TriadLinkComparator();
-		// remove the external contig in adjs;
-		Iterator<Contig> itc = adjs.iterator();
-		while (itc.hasNext()) {
-			Contig c = itc.next();
-			if (!c.equals(external))
-				// itc.remove();
-				tempAdjs.add(c);
-		}
-		// divide into two cases;
-		// ideal case: the divergence contig is internal contig in triadlink and
-		// the external
-		// contig is beside to the internal contig;
-		// non-ideal case: the triad link is missing the internal contig, but
-		// connect to the
-		// other external contig;
-		// the ideal case:
-		for (TriadLink tl : triads) {
-			Contig pre = tl.getPrevious();
-			Contig mid = tl.getMiddle();
-			Contig lst = tl.getLast();
-			if (!internal.equals(mid))
-				continue;
-			if (external.equals(pre) || external.equals(lst)) {
-				tls.add(tl);
-			}
-		}
-
-		if (!tls.isEmpty()) { // ideal case if the triad link is not empty
-			// sort the collection from large to small based on supported link
-			Collections.sort(tls, tlc);
-			// merge the same path triad link
-			for (TriadLink t1 : tls) {
-				Contig pre = t1.getPrevious();
-				Contig mid = t1.getMiddle();
-				Contig lst = t1.getLast();
-
-				// temp contig to check adjacent contigs;
-				Contig temp = null;
-				if (pre.equals(external)) {
-					temp = lst;
-				} else {
-					temp = pre;
-				}
-				List<Contig> tAdjs = diGraph.getAdjVertices(temp);
-				List<Contig> cAdjs = new Vector<Contig>(10);
-				for (Contig c : tAdjs) {
-					if (!c.equals(mid))
-						cAdjs.add(c);
-				}
-				// check whether there are candidate path is in the triad link;
-				for (TriadLink t2 : tls) {
-					if (t1.equals(t2))
-						continue;
-					Contig p2 = t2.getPrevious();
-					Contig m2 = t2.getMiddle();
-					Contig l2 = t2.getLast();
-					Contig c2 = null;
-					if (p2.equals(external))
-						c2 = l2;
-					else
-						c2 = p2;
-					if (cAdjs.contains(c2)) {
-						t1.setSupLinks(t1.getSupLinks() + t2.getSupLinks());
-						triads.remove(t2);
-						tls.remove(t2);
-					}
-				}
-			}
-			// sort again
-			Collections.sort(tls, tlc);
-			// using the maximum triad link as the best;
-			TriadLink tl = tls.get(0);
-			if (tl.getPrevious().equals(external))
-				next = tl.getLast();
-			else if (tl.getLast().equals(external))
-				next = tl.getPrevious();
-			triads.remove(tl);
-		} else {
-			// if triads contain external have one of other contig;
-			for (TriadLink tl : triads) {
-				// if(external.equals(pre) || external.equals(lst))
-				if (tl.isContain(external)) {
-					for (Contig c : tempAdjs) {
-						if (tl.isContain(c))
-							tls.add(tl);
-					}
-				}
-			}
-			// if still null return;
-			if (tls.isEmpty())
-				return null;
-			// not always the maximum triad link is best;
-			// also considering the other external contig is the adjacent;
-			TriadLink tl = null;
-			OUTER: for (TriadLink t : tls) {
-				for (Contig c : tempAdjs) {
-					if (t.isContain(c)) {
-						tl = t;
-						break OUTER;
-					}
-				}
-			}
-			// if do not exist the best triad link, then the maximum is the best
-			if (tl == null)
-				tl = tls.get(0);
-			// next = tl.getMiddle();
-			Iterator<Contig> it = tempAdjs.iterator();
-			while (it.hasNext()) {
-				Contig c = it.next();
-				if (tl.isContain(c))
-					next = c;
-			}
-			triads.remove(tl);
-		}
-		return next;
-	}
+	
 }
