@@ -92,7 +92,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 40)
+//				if(INDEX == 14)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				// if the return conting is null and the
@@ -353,6 +353,8 @@ public class PathBuilder {
 			for (NodePath np : paths) {
 				int pathSize = np.getPathSize();
 				NodePath tNP = new NodePath();
+				Strand cStrand = null;
+				Strand nStrand = null;
 				if (pathSize == 1) {
 					Node current = np.getElement(0);
 					current.setStrand(Strand.FORWARD);
@@ -379,32 +381,65 @@ public class PathBuilder {
 							}
 						}
 						// checking whether the edges links this two contigs are conflict;
-						if (current.getStrand() == null)
+						if(cStrand == null)
+//						if (current.getStrand() == null)
 						{
-							current.setStrand(e.getoStrand());
+//							current.setStrand(e.getoStrand());
+							cStrand = e.getoStrand();
 						} else
 						{
 							// conflict case;
-							if(!current.getStrand().equals(e.getoStrand()))
+//							if(!current.getStrand().equals(e.getoStrand()))
+//							{
+//								tNP.push(current);
+//								tPaths.add(tNP);
+//								tNP = new NodePath();
+//								continue;
+//							}
+							if(!cStrand.equals(e.getoStrand()))
 							{
-								tNP.push(current);
+								Node cNode = new Node();
+								cNode.setCnt(cCnt);
+								cNode.setStrand(cStrand);
+								cNode.setOrphan(false);
+								tNP.push(cNode);
 								tPaths.add(tNP);
 								tNP = new NodePath();
+								cStrand = null;
+								nStrand = null;
+								i--;
 								continue;
 							}
 						}
-						if (next.getStrand() == null)
-							next.setStrand(e.gettStrand());
+//						if (next.getStrand() == null)
+//							next.setStrand(e.gettStrand());
+						if(nStrand == null)
+							nStrand = e.gettStrand();
 						int meanSum = e.getDistMean();
 						int sdSum = e.getDistSd();
 						int slSum = e.getLinkNum();
-						current.setMeanDist2Next(meanSum);
-						current.setSdDist2Next(sdSum);
-						current.setSupportLinkNum(slSum);
-						tNP.push(current);
+						Node cNode = new Node();
+						cNode.setCnt(cCnt);
+						cNode.setStrand(cStrand);
+						cNode.setMeanDist2Next(meanSum);
+						cNode.setSdDist2Next(sdSum);
+						cNode.setSupportLinkNum(slSum);
+						cNode.setOrphan(false);
+						tNP.push(cNode);
+//						current.setMeanDist2Next(meanSum);
+//						current.setSdDist2Next(sdSum);
+//						current.setSupportLinkNum(slSum);
+//						tNP.push(current);
 						// for the last node
 						if(i == (pathSize - 2))
-							tNP.push(next);
+						{
+							Node nNode = new Node();
+							nNode.setCnt(nCnt);
+							nNode.setStrand(nStrand);
+							tNP.push(nNode);
+						}
+						cStrand = nStrand;
+						nStrand = null;
 					}	
 				}
 				if(tNP != null && tNP.getPathSize() > 0)
