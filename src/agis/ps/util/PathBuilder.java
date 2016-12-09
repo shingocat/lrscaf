@@ -224,6 +224,8 @@ public class PathBuilder {
 							}
 							previous = current;
 							current = next;
+//							if(current.getID().equals("171"))
+//								logger.debug("Breakpoint");
 							next = diGraph.getNextVertex(current, previous);
 						} else {
 							List<Contig> formers = new Vector<Contig>(3);
@@ -298,6 +300,8 @@ public class PathBuilder {
 								break;
 							previous = current;
 							current = next;
+//							if(current.getID().equals("9"))
+//								logger.debug("breakpoint");
 							next = diGraph.getNextVertex(current, previous);
 						} else {
 							List<Contig> formers = new Vector<Contig>(3);
@@ -679,11 +683,14 @@ public class PathBuilder {
 		// return the contig path;
 		LinkedList<Contig> path = new LinkedList<Contig>();
 		try{
-			if (adjInternals.contains(tl.getLast())) {
-				path.addLast(tl.getLast());
-			} else {
-				path = this.getInternalPath(external, internal, tl.getLast());
-			}
+//			if (adjInternals.contains(tl.getLast())) {
+//				path.addLast(tl.getLast());
+//			} else {
+//				path = this.getInternalPath(external, internal, tl.getLast());
+//			}
+			path = this.getInternalPath(external, internal, tl.getLast());
+			if(path == null || path.size() == 0)
+				return null;
 		} catch(Exception e)
 		{
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
@@ -802,6 +809,21 @@ public class PathBuilder {
 		LinkedList<Contig> path = new LinkedList<Contig>();
 		List<Contig> nextAdjs = diGraph.getNextVertices(internal, external);
 		int depth = 5;
+		
+		// checking whether the nextAdjs contains the unique
+		if(nextAdjs != null && nextAdjs.size() > 0 )
+		{
+			if(nextAdjs.contains(unique))
+				path.add(unique);
+		}
+		// if it is valid;
+		if(this.validateInternalPath(external, internal, path))
+		{
+			return path;
+		} else
+		{
+			path = new LinkedList<Contig>();
+		}
 		// for more than one path could get to unique;
 		// get all the paths and then choose the shortest one;
 		for (Contig c : nextAdjs) {
@@ -814,21 +836,43 @@ public class PathBuilder {
 		}
 		int sizes = paths.size();
 		// return the shortest one;
-		if (sizes != 0)
+//		if (sizes != 0)
+//		{
+//			int index = 0;
+//			int length = paths.get(0).size();
+//			int next = 0;
+//			for(int i = 1; i < sizes; i++)
+//			{
+//				next = paths.get(i).size();
+//				if(next < length)
+//				{
+//					index = i;
+//					length = next;
+//				}
+//			}
+//			return paths.get(index);
+//		} else
+//		{
+//			return null;
+//		}
+		// if there are more than one path could be arrive at unique contig
+		// then if the path orientation is not conflict, return it;
+		
+		if(sizes != 0)
 		{
-			int index = 0;
-			int length = paths.get(0).size();
-			int next = 0;
-			for(int i = 1; i < sizes; i++)
+			path = new LinkedList<Contig>();
+			for(LinkedList<Contig> p : paths)
 			{
-				next = paths.get(i).size();
-				if(next < length)
+				if(this.validateInternalPath(external, internal, p))
 				{
-					index = i;
-					length = next;
+					path = p;
+					break;
 				}
 			}
-			return paths.get(index);
+			if(path != null && !path.isEmpty())
+				return path;
+			else 
+				return null;
 		} else
 		{
 			return null;
@@ -869,6 +913,57 @@ public class PathBuilder {
 			path.removeLast();
 		return isExist;
 	}
+	
+	/**
+	 * This method is used to check whether orientation of internal path is conflict;
+	 * @param path
+	 * @return
+	 */
+	private boolean validateInternalPath(Contig external, Contig internal, List<Contig> path)
+	{
+		boolean isValid = true;
+		if(path == null || path.isEmpty())
+			return false;
+		List<Contig> tpath = new LinkedList<Contig>();
+		tpath.add(external);
+		tpath.add(internal);
+		tpath.addAll(path);
+		Contig current = null;
+		Contig next = null;
+		Strand cStrand = null;
+		int pSize = tpath.size();
+		for(int i = 0; i < pSize - 1; i++)
+		{
+			current = tpath.get(i);
+			next = tpath.get(i + 1);
+			List<Edge> es = diGraph.getEdgesInfo(current, next);
+			Edge e = null;
+			for(Edge t : es)
+			{
+				if(t.getOrigin().equals(current) && t.getTerminus().equals(next))
+				{
+					e = t;
+					break;
+				}
+			}
+			if(cStrand == null)
+			{
+				cStrand = e.gettStrand();
+				continue;
+			} else
+			{
+				if(!e.getoStrand().equals(cStrand))
+				{
+					isValid = false;
+					break;
+				} else
+				{
+					cStrand = e.gettStrand();
+				}
+			}
+		}
+		return isValid;
+	}
 
 	/**
 	 * A method to get the unique contig aside to divergence contig;
@@ -886,6 +981,10 @@ public class PathBuilder {
 		}
 		if (depth == 0) {
 			//INTERNAL_LENGTH = 0;
+			return;
+		}
+		if(INTERNAL_LENGTH > MAXIMUM_INTERNAL_LENGTH)
+		{
 			return;
 		}
 		// two cases: 1) the next point is divergence; 2) the next point is
