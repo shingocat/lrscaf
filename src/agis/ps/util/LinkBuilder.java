@@ -863,6 +863,23 @@ public class LinkBuilder {
 					continue;
 				}
 				
+				// if the distance between contigs is large than one of the length, then 
+				// remove the overlap one;
+				int fCL = former.gettLength();
+				int cCL = current.gettLength();
+				if(Math.abs(dist) >= fCL)
+				{
+					removes.add(former);
+					former = current;
+					continue;
+				}
+				if(Math.abs(dist) >= cCL)
+				{
+					removes.add(current);
+					continue;
+				}
+			
+				
 				// former code
 				int fPS = former.getqStart();
 				int fPE = former.getqEnd();

@@ -475,15 +475,18 @@ public class PathBuilder {
 		// experience for yeast bubbles structure, if the adjInternals contig
 		// links path formers contigs then remove it;
 		List<Contig> tAdjInternals = new Vector<Contig>(adjInternals.size());
-		for(Contig c : adjInternals)
+		if(formers.size() > 0)
 		{
-			for(Contig i : formers)
+			for(Contig c : adjInternals)
 			{
-				List<Edge> tes = diGraph.getEdgesInfo(c, i);
-				if(tes != null && tes.size() > 0)
+				for(Contig i : formers)
 				{
-					if(!tAdjInternals.contains(c))
-						tAdjInternals.add(c);
+					List<Edge> tes = diGraph.getEdgesInfo(c, i);
+					if(tes != null && tes.size() > 0)
+					{
+						if(!tAdjInternals.contains(c))
+							tAdjInternals.add(c);
+					}
 				}
 			}
 		}
@@ -878,20 +881,22 @@ public class PathBuilder {
 		// List<Contig> uniques = new Vector<Contig>(5);
 		List<Contig> nextAdjs = diGraph.getNextVertices(current, previous);
 		if (nextAdjs == null || nextAdjs.size() == 0) {
-			INTERNAL_LENGTH = 0;
+			//INTERNAL_LENGTH = 0;
 			return;
 		}
 		if (depth == 0) {
-			INTERNAL_LENGTH = 0;
+			//INTERNAL_LENGTH = 0;
 			return;
 		}
 		// two cases: 1) the next point is divergence; 2) the next point is
 		// unique;
 		if (nextAdjs.size() > 1) {
 			List<Edge> egs = diGraph.getEdgesInfo(current, previous);
-			INTERNAL_LENGTH += egs.get(0).getDistMean();
+			int eLen = egs.get(0).getDistMean();
+			INTERNAL_LENGTH += eLen;
 //			INTERNAL_LENGTH += this.indexLen(current.getID());
-			INTERNAL_LENGTH += cntfile.getLengthByNewId(Integer.valueOf(current.getID()));
+			int cLen = cntfile.getLengthByNewId(Integer.valueOf(current.getID()));
+			INTERNAL_LENGTH += cLen;
 			if (INTERNAL_LENGTH <= MAXIMUM_INTERNAL_LENGTH) {
 				if(uniques != null && uniques.size() > 0)
 					uniques.remove(uniques.size() - 1);
@@ -900,20 +905,41 @@ public class PathBuilder {
 						uniques.add(c);
 					this.getNextUniqueContigs(c, current, depth - 1, uniques);
 				}
-				INTERNAL_LENGTH = 0;
+				INTERNAL_LENGTH -= cLen;
+				INTERNAL_LENGTH -= eLen;
 				return;
 			} else {
-				// do nothing, the first next point is unique;
-				INTERNAL_LENGTH = 0;
+				// current unique contig is divergence
+				if(nextAdjs != null && nextAdjs.size() > 1)
+				{
+					if(cntfile.getLengthByNewId(Integer.valueOf(current.getID())) >= 5000)
+					{
+						// large than 5k, then this contig could be as unique;
+					} else
+					{
+						// if less than 5k, then remove it and used the next adjacent as unique;
+						if(uniques != null && uniques.size() > 0)
+							uniques.remove(uniques.size() - 1);
+						for(Contig c : nextAdjs)
+							uniques.add(c);
+					}
+				}
+				INTERNAL_LENGTH -= eLen;
+				INTERNAL_LENGTH -= cLen;
 				return;
 			}
 		} else {
 			Contig c = nextAdjs.get(0);
 			List<Edge> egs = diGraph.getEdgesInfo(current, previous);
-			INTERNAL_LENGTH += egs.get(0).getDistMean();
+			int eLen = egs.get(0).getDistMean();
+			INTERNAL_LENGTH += eLen;
 //			INTERNAL_LENGTH += this.indexLen(current.getID());
-			INTERNAL_LENGTH += cntfile.getLengthByNewId(Integer.valueOf(current.getID()));
+			int cLen = cntfile.getLengthByNewId(Integer.valueOf(current.getID()));
+			INTERNAL_LENGTH += cLen;
 			this.getNextUniqueContigs(c, current, depth - 1, uniques);
+			INTERNAL_LENGTH -= cLen;
+			INTERNAL_LENGTH -= eLen;
+			
 		}
 	}
 
