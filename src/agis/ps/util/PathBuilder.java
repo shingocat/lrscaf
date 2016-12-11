@@ -134,6 +134,8 @@ public class PathBuilder {
 						}
 						Contig previous = current;
 						current = next;
+						if(current.getID().equals("2735"))
+							logger.debug("breakpoint");
 						next = diGraph.getNextVertex(current, previous);
 						// for the divergence point which could not determine how-to get next
 						if (next == null) { 
@@ -224,8 +226,8 @@ public class PathBuilder {
 							}
 							previous = current;
 							current = next;
-//							if(current.getID().equals("171"))
-//								logger.debug("Breakpoint");
+							if(current.getID().equals("2734"))
+								logger.debug("Breakpoint");
 							next = diGraph.getNextVertex(current, previous);
 						} else {
 							List<Contig> formers = new Vector<Contig>(3);
@@ -300,8 +302,8 @@ public class PathBuilder {
 								break;
 							previous = current;
 							current = next;
-//							if(current.getID().equals("9"))
-//								logger.debug("breakpoint");
+							if(current.getID().equals("178"))
+								logger.debug("breakpoint");
 							next = diGraph.getNextVertex(current, previous);
 						} else {
 							List<Contig> formers = new Vector<Contig>(3);
@@ -640,40 +642,48 @@ public class PathBuilder {
 		// if there are two best links, it will check the revered direction 
 		// and decide which one is the best else return null;
 		TriadLink tl = null;
-		if (canTls.size() > 1) {
-			// right now we only considered if there two best links;
-			// the more complex case will implement if there are exist;
-			TriadLink first = canTls.get(0);
-			TriadLink second = canTls.get(1);
-			if (first.getSupLinks() == second.getSupLinks())
+		for(TriadLink t : canTls)
+		{
+			if(isBestSupportLink(t, uniques))
 			{
-				// logic to check which one is the best;
-				boolean p1 = isBestSupportLink(canTls.get(0), uniques);
-				boolean p2 = isBestSupportLink(canTls.get(1), uniques);
-				if(p1 && p2)
-				{ // both is the best case;
-					return null;
-				} else if(p1 && (!p2))
-				{ // the first one is the best;
-					tl = first;
-				} else if((!p1) && p2)
-				{ // the second one is the best;
-					tl = second;
-				} else
-				{
-					return null;
-				}
-			}else
-			{
-				tl = canTls.get(0);
+				tl = t;
+				break;
 			}
-		} else {
-			if (canTls.size() != 0)
-				tl = canTls.get(0);
-			else
-				return null;
 		}
-		if (tl.getSupLinks() == 0)
+//		if (canTls.size() > 1) {
+//			// right now we only considered if there two best links;
+//			// the more complex case will implement if there are exist;
+//			TriadLink first = canTls.get(0);
+//			TriadLink second = canTls.get(1);
+//			if (first.getSupLinks() == second.getSupLinks())
+//			{
+//				// logic to check which one is the best;
+//				boolean p1 = isBestSupportLink(canTls.get(0), uniques);
+//				boolean p2 = isBestSupportLink(canTls.get(1), uniques);
+//				if(p1 && p2)
+//				{ // both is the best case;
+//					return null;
+//				} else if(p1 && (!p2))
+//				{ // the first one is the best;
+//					tl = first;
+//				} else if((!p1) && p2)
+//				{ // the second one is the best;
+//					tl = second;
+//				} else
+//				{
+//					return null;
+//				}
+//			}else
+//			{
+//				tl = canTls.get(0);
+//			}
+//		} else {
+//			if (canTls.size() != 0)
+//				tl = canTls.get(0);
+//			else
+//				return null;
+//		}
+		if (tl == null || tl.getSupLinks() == 0)
 			return null;
 		// remove the supported triadlinks
 //		List<TriadLink> dels = delLinksMap.get(tl.getLast().getID());
@@ -727,13 +737,18 @@ public class PathBuilder {
 //				System.out.println(t.toString());
 				if(t.equals(temp))
 					temp.setSupLinks(temp.getSupLinks() + t.getSupLinks());
+				if(temp.getSupLinks() > oSL)
+				{
+					uniques.add(lst);
+					return false;
+				}
 			}
 //			System.out.println(temp.toString());
-			if(temp.getSupLinks() > oSL)
-			{
-				uniques.add(lst);
-				return false;
-			}
+//			if(temp.getSupLinks() > oSL)
+//			{
+//				uniques.add(lst);
+//				return false;
+//			}
 		}
 		uniques.add(lst);
 		return true;
