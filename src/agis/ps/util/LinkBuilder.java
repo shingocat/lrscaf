@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -164,6 +163,9 @@ public class LinkBuilder {
 			valids = this.validateSimilarityContigs(valids);
 			valids = validateOverlapContigs(valids);
 			int cpSize = valids.size();
+			
+			if(cpSize < 2)
+				return null;
 
 			// build only the successive link; A->B->C, it will build A->B
 			// and B->C, omitted A->C

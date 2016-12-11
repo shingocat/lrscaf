@@ -6,7 +6,6 @@
 */
 package agis.ps.util;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +34,7 @@ public class PathBuilder {
 	private static int MAXIMUM_INTERNAL_LENGTH = 5000; // 5000 bp for validating
 														// segement duplication;
 	private static int INTERNAL_LENGTH = 0; // store the internal length;
+	@SuppressWarnings("unused")
 	private static int INDEX = 0;
 	private List<Edge> edges;
 	private Parameter paras;
