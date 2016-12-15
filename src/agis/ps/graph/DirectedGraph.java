@@ -587,7 +587,7 @@ public class DirectedGraph extends Graph implements Serializable {
 			while (it.hasNext()) {
 				Contig c = it.next();
 				String id = c.getID();
-//				if(id.equals("1791"))
+//				if(id.equals("132"))
 //					logger.debug("breakpoint");
 				List<Contig> adjs = adjTos.get(id);
 				if (adjs == null)
@@ -672,10 +672,35 @@ public class DirectedGraph extends Graph implements Serializable {
 			}
 			if(length <= TIP_LENGTH)
 			{
-				for(Edge e : all)
+//				for(Edge e : all)
+//				{
+//					if(!removes.contains(e))
+//						removes.add(e);
+//				}
+				// reverse to check the path could be delete or not;
+				// if meet the divergence point then break;
+				for(int j = path.size() - 1; j > 0; j--)
 				{
-					if(!removes.contains(e))
-						removes.add(e);
+					Contig c = path.get(j);
+					Contig f = path.get(j - 1);
+					if(this.isDivergenceVertex(f))
+					{
+						List<Edge> es = this.getEdgesInfo(c, f);
+						for(Edge e : es)
+						{
+							if(!removes.contains(e))
+								removes.add(e);
+						}
+						break;
+					} else
+					{
+						List<Edge> es = this.getEdgesInfo(c, f);
+						for(Edge e : es)
+						{
+							if(!removes.contains(e))
+								removes.add(e);
+						}
+					}
 				}
 				return true;
 			}
@@ -700,10 +725,35 @@ public class DirectedGraph extends Graph implements Serializable {
 				}
 				if(length <= TIP_LENGTH)
 				{
-					for(Edge e : all)
+//					for(Edge e : all)
+//					{
+//						if(!removes.contains(e))
+//							removes.add(e);
+//					}
+					// reverse to check the path could be delete or not;
+					// if meet the divergence point then break;
+					for(int j = path.size() - 1; j > 0; j--)
 					{
-						if(!removes.contains(e))
-							removes.add(e);
+						Contig c = path.get(j);
+						Contig f = path.get(j - 1);
+						if(this.isDivergenceVertex(f))
+						{
+							List<Edge> es = this.getEdgesInfo(c, f);
+							for(Edge e : es)
+							{
+								if(!removes.contains(e))
+									removes.add(e);
+							}
+							break;
+						} else
+						{
+							List<Edge> es = this.getEdgesInfo(c, f);
+							for(Edge e : es)
+							{
+								if(!removes.contains(e))
+									removes.add(e);
+							}
+						}
 					}
 					return true;
 				}
