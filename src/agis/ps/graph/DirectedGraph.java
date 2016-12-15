@@ -22,6 +22,7 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.file.SimilarityCntReader;
 import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
@@ -733,4 +734,65 @@ public class DirectedGraph extends Graph implements Serializable {
 			return this.delTips(current, former, depth - 1, path, removes);
 		}
 	}
+
+	@Override
+	public void delSimCntEdges() {
+		List<LinkedList<String>> simcnts = this.getSimCnts();
+		List<Edge> removeEdges = new Vector<Edge>();
+		for(LinkedList<String> sims : simcnts)
+		{
+			int simsize = sims.size();
+			// only considering two elements case now
+			if(simsize == 2)
+			{
+				Contig s1 = new Contig();
+				s1.setID(sims.get(0));
+				Contig s2 = new Contig();
+				s2.setID(sims.get(1));
+				
+				List<Contig> s1adjs = this.getAdjVertices(s1);
+				List<Contig> s2adjs = this.getAdjVertices(s2);
+				for(Contig cs1 : s1adjs)
+				{
+					for(Contig cs2 : s2adjs)
+					{
+						if(cs1.equals(cs2))
+						{
+							if(this.isDivergenceVertex(cs1))
+							{
+								List<Edge> es1s = this.getEdgesInfo(s1, cs1);
+								List<Edge> es2s = this.getEdgesInfo(s2, cs2);
+								if(es1s.get(0).getLinkNum() > es2s.get(0).getLinkNum())
+								{
+									for(Edge e : es2s)
+									{
+										removeEdges.add(e);
+									}
+								} else if(es1s.get(0).getLinkNum() < es2s.get(0).getLinkNum())
+								{
+									for(Edge e: es1s)
+									{
+										removeEdges.add(e);
+									}
+								} else
+								{
+									// do nothing
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		this.removeEdges(removeEdges);
+	}
+	
+	private List<LinkedList<String>> getSimCnts()
+	{
+		List<LinkedList<String>> simcnts = new Vector<LinkedList<String>>();
+		SimilarityCntReader scr = new SimilarityCntReader(paras);
+		simcnts = scr.read();
+		return simcnts;
+	}
+	
 }

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import agis.ps.file.M5Reader;
 import agis.ps.file.PBLinkReader;
 import agis.ps.file.PBLinkWriter;
+import agis.ps.file.SimilarityCntWriter;
 import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
@@ -90,6 +91,8 @@ public class M5EdgeBundler {
 			int index = 0;
 			while (true) {
 				m5 = m5file.getM5Record(index);
+//				if(m5.getqName().equals("10639"))
+//					logger.debug("breakpoint");
 				if(m5 != null)
 				{
 					if (id == null) {
@@ -138,6 +141,9 @@ public class M5EdgeBundler {
 		tlWriter.write2(linkBuilder.getTriadLinks());
 		tlWriter.close();
 		linkWriter.close();
+		// write similarity contigs into file;
+		SimilarityCntWriter scw = new SimilarityCntWriter(paras);
+		scw.write(linkBuilder.getSimCnts());
 		// Repeats finder;
 		long end = System.currentTimeMillis();
 		logger.info("Links building, erase time : " + (end - start) + " ms");

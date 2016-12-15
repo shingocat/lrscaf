@@ -200,4 +200,9 @@ public abstract class Graph implements Serializable, IUntangler {
 	
 	// remove edges;
 	public abstract void removeEdges(List<Edge> e);
+
+	public void delSimCntEdges() {
+		// TODO Auto-generated method stub
+		
+	}
 }
