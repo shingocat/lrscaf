@@ -43,15 +43,18 @@ public class DotGraphFileWriter {
 				String color = "";
 				if (!e.isFake()) {
 					if (e.getoStrand().equals(Strand.FORWARD) && e.gettStrand().equals(Strand.FORWARD))
-						color = "red";
+//						color = "red";
+						color = "blue";
 					else if (e.getoStrand().equals(Strand.FORWARD) && e.gettStrand().equals(Strand.REVERSE))
 						color = "green";
 					else if (e.getoStrand().equals(Strand.REVERSE) && e.gettStrand().equals(Strand.REVERSE))
-						color = "blue";
+//						color = "blue";
+						color = "gray";
 					else if (e.getoStrand().equals(Strand.REVERSE) && e.gettStrand().equals(Strand.FORWARD))
-						color = "yellow";
+//						color = "yellow";
+						color = "red";
 				} else {
-					color = "gray";
+					color = "black";
 				}
 				bw.write(e.getOrigin().getID() + " -> " + e.getTerminus().getID() + " [label=\""
 						+ e.getoStrand().toString() + " " + e.gettStrand().toString() + ":" + e.getLinkNum() + ":"
