@@ -101,6 +101,8 @@ public class PathBuilder {
 //				if(INDEX == 14)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
+//				if(current.getID().equals("801"))
+//					logger.debug("breakpoint");
 				// if the return conting is null and the
 				// isExistUnSelectedVertices equal false then break;
 				if (current == null)
@@ -140,7 +142,7 @@ public class PathBuilder {
 						}
 						Contig previous = current;
 						current = next;
-//						if(current.getID().equals("2735"))
+//						if(current.getID().equals("243"))
 //							logger.debug("breakpoint");
 						next = diGraph.getNextVertex(current, previous);
 						// for the divergence point which could not determine how-to get next
@@ -232,7 +234,7 @@ public class PathBuilder {
 							}
 							previous = current;
 							current = next;
-//							if(current.getID().equals("2734"))
+//							if(current.getID().equals("243"))
 //								logger.debug("Breakpoint");
 							next = diGraph.getNextVertex(current, previous);
 						} else {
@@ -244,6 +246,9 @@ public class PathBuilder {
 							} else if (path.getPathSize() == 2)
 							{
 								formers.add(path.getElement(1).getCnt());
+							} else if (path.getPathSize() == 1)
+							{
+								formers.add(c2);
 							}
 							// to get the next point over the divergence point;
 							List<Contig> selectedCnts = this.getTriadLinkNext(current, previous, formers);
@@ -308,7 +313,7 @@ public class PathBuilder {
 								break;
 							previous = current;
 							current = next;
-//							if(current.getID().equals("178"))
+//							if(current.getID().equals("243"))
 //								logger.debug("breakpoint");
 							next = diGraph.getNextVertex(current, previous);
 						} else {
