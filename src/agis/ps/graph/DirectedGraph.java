@@ -519,6 +519,8 @@ public class DirectedGraph extends Graph implements Serializable {
 
 	@Override
 	public List<Edge> getEdgesInfo(Contig start, Contig end) {
+		if(start == null || end == null)
+			return null;
 		List<Edge> info = new Vector<Edge>(2);
 		String id1 = start.getID() + "->" + end.getID();
 		String id2 = end.getID() + "->" + start.getID();

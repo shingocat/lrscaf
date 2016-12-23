@@ -17,21 +17,37 @@ public class NodePath implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private LinkedList<Node> path = new LinkedList<Node>();
 	
+	/**
+	 *  push a node into path at the last position
+	 * @param node
+	 */
 	public void push(Node node)
 	{
 		path.addLast(node);
 	}
 	
+	/**
+	 * pop a node from path at the last position
+	 * @return
+	 */
 	public Node pop()
 	{
 		return path.pollLast();
 	}
 	
+	/**
+	 * shift a node from path at the first position 
+	 * @return
+	 */
 	public Node shift()
 	{
 		return path.pollFirst();
 	}
 	
+	/**
+	 * add a node into path at the first position
+	 * @param node
+	 */
 	public void unshift(Node node)
 	{
 		path.addFirst(node);
@@ -114,6 +130,8 @@ public class NodePath implements Serializable{
 	
 	public Node getElement(int index)
 	{
+		if(index < 0 || index >= this.getPathSize())
+			return null;
 		return path.get(index);
 	}
 	
