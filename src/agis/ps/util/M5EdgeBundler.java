@@ -142,8 +142,8 @@ public class M5EdgeBundler {
 		tlWriter.close();
 		linkWriter.close();
 		// write similarity contigs into file;
-		SimilarityCntWriter scw = new SimilarityCntWriter(paras);
-		scw.write(linkBuilder.getSimCnts());
+//		SimilarityCntWriter scw = new SimilarityCntWriter(paras);
+//		scw.write(linkBuilder.getSimCnts());
 		// Repeats finder;
 		long end = System.currentTimeMillis();
 		logger.info("Links building, erase time : " + (end - start) + " ms");

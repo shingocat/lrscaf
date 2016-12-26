@@ -32,6 +32,8 @@ public class Contig extends DNASequence {
 
 	@Override
 	public boolean equals(Object o) {
+		if(o == null)
+			return false;
 		Contig c = (Contig) o;
 		if (c.getID().equals(this.getID()))
 			return true;

@@ -27,7 +27,7 @@ import agis.ps.seqs.Contig;
 public class LinkBuilder {
 	private static Logger logger = LoggerFactory.getLogger(LinkBuilder.class);
 	private List<TriadLink> tls = new Vector<TriadLink>(100); 
-	private LinkedList<String> simcnts = new LinkedList<String>();
+//	private LinkedList<String> simcnts = new LinkedList<String>();
 	private Parameter paras;
 	
 	public LinkBuilder(Parameter paras)
@@ -566,37 +566,37 @@ public class LinkBuilder {
 		}
 		// store the similarity contig into file simcnt.txt;
 		// ?????
-		if(!sims.isEmpty())
-		{
-			for(Vector<MRecord> ms : sims.values())
-			{
-				if(simcnts.isEmpty())
-				{
-					for(MRecord m : ms)
-					{
-						simcnts.add(m.gettName());
-					}
-					simcnts.add(";");
-				} else
-				{
-					boolean isExist = false;
-					for(MRecord m : ms)
-					{
-						String id = m.gettName();
-						if(simcnts.contains(id))
-						{
-							isExist = true;
-							break;
-						} else
-						{
-							simcnts.add(id);
-						}
-					}
-					if(!isExist)
-						simcnts.add(";");
-				}
-			}
-		}
+//		if(!sims.isEmpty())
+//		{
+//			for(Vector<MRecord> ms : sims.values())
+//			{
+//				if(simcnts.isEmpty())
+//				{
+//					for(MRecord m : ms)
+//					{
+//						simcnts.add(m.gettName());
+//					}
+//					simcnts.add(";");
+//				} else
+//				{
+//					boolean isExist = false;
+//					for(MRecord m : ms)
+//					{
+//						String id = m.gettName();
+//						if(simcnts.contains(id))
+//						{
+//							isExist = true;
+//							break;
+//						} else
+//						{
+//							simcnts.add(id);
+//						}
+//					}
+//					if(!isExist)
+//						simcnts.add(";");
+//				}
+//			}
+//		}
 		return sims;
 	}
 
@@ -605,10 +605,10 @@ public class LinkBuilder {
 		return tls;
 	}
 	
-	public LinkedList<String> getSimCnts()
-	{
-		return simcnts;
-	}
+//	public LinkedList<String> getSimCnts()
+//	{
+//		return simcnts;
+//	}
 }
 
 class ByLocOrderComparator implements Comparator<Object> {

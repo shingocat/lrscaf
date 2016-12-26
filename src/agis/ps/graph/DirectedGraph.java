@@ -92,9 +92,11 @@ public class DirectedGraph extends Graph implements Serializable {
 	}
 
 	public int getVertexAdjVerticesNum(Contig cnt) {
-		int num = 0;
-		num = getAdjVertices(cnt).size();
-		return num;
+		List<Contig> adjCnts = this.getAdjVertices(cnt);
+		if(adjCnts == null)
+			return 0;
+		else
+			return adjCnts.size();
 	}
 	
 	@Override

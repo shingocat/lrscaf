@@ -100,6 +100,9 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
+//				INDEX++;
+//				if(INDEX == 18)
+//					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
 					break;
@@ -107,7 +110,7 @@ public class PathBuilder {
 				if (adjs == null) {
 					if (this.isValidCnt(current)) {
 						path = new NodePath();
-						this.addNode2(current, null, null, path, true);
+						this.addNode2(null, current, null, null, null, path, true, true);
 						paths.add(path);
 					} else {
 						diGraph.setVertexAsSelected(current);
@@ -119,7 +122,7 @@ public class PathBuilder {
 					// orphan contig, only one element in path
 					if (this.isValidCnt(current)) {
 						path = new NodePath();
-						this.addNode2(current, null, null, path, true);
+						this.addNode2(null, current, null, null, null, path, true, true);
 						paths.add(path);
 					} else {
 						diGraph.setVertexAsSelected(current);
@@ -128,26 +131,30 @@ public class PathBuilder {
 					// normal start point, always on the linear end point;
 					path = new NodePath();
 					Contig next = adjs.get(0);
-					this.travelgraph(current, next, path, true);
+					this.travelgraph(null, current, next, path, true);
 					paths.add(path);
 				} else if (adjsSize == 2) {
 					// normal start point, located in the linear path
 					path = new NodePath();
 					Contig c1 = adjs.get(0);
-					// travel backward 
-					this.travelgraph(current, c1, path, false);
-					// travel forward
 					Contig c2 = adjs.get(1);
+					// travel backward 
+					this.travelgraph(c2, current, c1, path, false);
+					// travel forward
 					// checking whether is cicle case;
-					Contig last = path.getElement(path.getPathSize() - 1).getCnt();
-					if(last.equals(c2))
+					Contig last = null;
+					if(path.getPathSize() != 0)
+						last = path.getElement(path.getPathSize() - 1).getCnt();
+					if(c2.equals(last))
 					{
 						// circle case
-						this.addNode2(current, null, null, path, true);
+						this.addNode2(null, current, null, null, null, path, true, false);
 					} else
 					{
 						// normal case
-						this.travelgraph(current, c2, path, true);
+						if(last == null) // if last is not exist
+							c1 = null;
+						this.travelgraph(c1, current, c2, path, true);
 					}
 					paths.add(path);
 				} else if (adjsSize > 2) { 
@@ -173,14 +180,26 @@ public class PathBuilder {
 		return paths;
 	}
 	
-	private void travelgraph(Contig current, Contig next, NodePath path, boolean isForward)
+	private void travelgraph(Contig previous, Contig current, Contig next, NodePath path, boolean isForward)
 	{
+		boolean isFirstStart = true;
 		Contig startpoint = current;
-		Contig previous = null;
 		List<Edge> p2ces = null; // previous to current edges;
 		Edge p2ce = null; // previous to current edge;
 		List<Edge> c2nes = null; // current to next edges;
 		Edge c2ne = null; // current to next edge;
+		if(previous != null)
+		{
+			p2ces = diGraph.getEdgesInfo(previous, current);
+			for(Edge e : p2ces)
+			{
+				if(e.getOrigin().equals(previous) && e.getTerminus().equals(current))
+				{
+					p2ce = e;
+					break;
+				}
+			}
+		}
 		// get current to next edges;
 		c2nes = diGraph.getEdgesInfo(current, next);
 		for(Edge e : c2nes)
@@ -194,24 +213,26 @@ public class PathBuilder {
 		// try to extend the path;
 		while (true) {
 			if (this.validateOrientation(previous, current, next, p2ce, c2ne)) {
-//				if (this.isValidCnt(current)) {
-//					this.addNode2(current, next, c2ne, path, isForward);
-//				} else {
-//					break;
-//				}
-				this.addNode2(current, next, c2ne, path, isForward);
+				if (this.isValidCnt(current)) {
+					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
+					isFirstStart = false;
+				} else {
+					break;
+				}
+
 			} else
 			{
 				next = null;
-//				if (this.isValidCnt(current)) {
-					this.addNode2(current, next, c2ne, path, isForward);
-//				} 
+				if (this.isValidCnt(current)) {
+					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
+					isFirstStart = false;
+				} 
 				break;
 			}
 			previous = current;
 			current = next;
-			if(current.getID().equals("483"))
-				logger.debug("breakpoint");
+//			if(current.getID().equals("1419"))
+//				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
 			p2ces = c2nes;
@@ -242,7 +263,7 @@ public class PathBuilder {
 				{
 					while(true)
 					{
-						Node node = path.getElement((num + 2));
+						Node node = path.getElement((num + 1));
 						if(node != null)
 						{
 							formers.addLast(node.getCnt());
@@ -260,7 +281,7 @@ public class PathBuilder {
 				List<Contig> selectedCnts = this.getTriadLinkNext2(current, previous, formers);
 				if (selectedCnts == null) {
 					next = null;
-					this.addNode2(current, next, c2ne, path, isForward);
+					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
 					break;
 				}
 				int size = selectedCnts.size();
@@ -283,18 +304,18 @@ public class PathBuilder {
 							}
 						}
 						if (this.validateOrientation(previous, current, next, p2ce, c2ne)) {
-//							if (this.isValidCnt(current)) {
-								this.addNode2(current, next, c2ne, path, isForward);
-//							} else {
-//								isConflict = true;
-//								break;
-//							}
+							if (this.isValidCnt(current)) {
+							this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
+							} else {
+								isConflict = true;
+								break;
+							}
 						} else
 						{
 							next = null;
-//							if (this.isValidCnt(current)) {
-								this.addNode2(current, next, c2ne, path, isForward);
-//							} 
+							if (this.isValidCnt(current)) {
+							this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
+							} 
 							isConflict = true;
 							break;
 						}
@@ -323,14 +344,14 @@ public class PathBuilder {
 			// check whether is reverse to path
 			if (next.equals(previous)) { // for the linear end point
 				next = null;
-				this.addNode2(current, next, c2ne,  path, isForward);
+				this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
 				break;
 			}
 			// for the circle case 
 			if (next.equals(startpoint))
 			{
 				next = null;
-				this.addNode2(current, next, c2ne,  path, isForward);
+				this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
 				break;
 			}
 		}
@@ -1641,9 +1662,18 @@ public class PathBuilder {
 	 * A method to push cnt as node into path directly compute orientation and
 	 * distance parameter
 	 * 
-	 * @param cnt
+	 * @param previous
+	 * @param current
+	 * @param next
+	 * @param p2ce
+	 * @param c2ne
+	 * @param path
+	 * @param isForward
+	 * @param isFirstStart
+	 *  
 	 */
-	private void addNode2(Contig current, Contig next, Edge c2ne, NodePath path, boolean isForward) {
+	private void addNode2(Contig previous, Contig current, Contig next, Edge p2ce, Edge c2ne, NodePath path, 
+			boolean isForward, boolean isFirstStart){
 		// if it is forward direction, it will adding next contig into path and
 		// their parameter of
 		// current contig
@@ -1654,7 +1684,10 @@ public class PathBuilder {
 				node.setOrphan(false);
 				// node.setMeanDist2Next(c2ne.getDistMean());
 				// node.setSdDist2Next(c2ne.getDistSd());
-				// node.setStrand(c2ne.getoStrand());
+				if(p2ce != null)
+					node.setStrand(p2ce.gettStrand());
+				else
+					node.setStrand(Strand.FORWARD);
 				path.push(node);
 				diGraph.setVertexAsSelected(current);
 			} else {
@@ -1668,21 +1701,19 @@ public class PathBuilder {
 				diGraph.setVertexAsSelected(current);
 			}
 		} else {
-			if(next != null)
+			if(!isFirstStart)
 			{
 				Node node = new Node();
-				node.setCnt(next);
+				node.setCnt(current);
 				node.setOrphan(false);
-				node.setMeanDist2Next(c2ne.getDistMean());
-				node.setSdDist2Next(c2ne.getDistSd());
-				Strand strand = c2ne.gettStrand();
-				if (strand.equals(Strand.FORWARD))
+				node.setMeanDist2Next(p2ce.getDistMean());
+				node.setSdDist2Next(p2ce.getDistSd());
+				if(p2ce.gettStrand().equals(Strand.FORWARD))
 					node.setStrand(Strand.REVERSE);
 				else
 					node.setStrand(Strand.FORWARD);
-				node.setSupportLinkNum(c2ne.getLinkNum());
 				path.unshift(node);
-				diGraph.setVertexAsSelected(next);
+				diGraph.setVertexAsSelected(current);
 			}
 		}
 	}
