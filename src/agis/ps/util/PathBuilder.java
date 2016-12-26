@@ -100,9 +100,9 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-//				INDEX++;
-//				if(INDEX == 18)
-//					logger.debug("breakpoint");
+				INDEX++;
+				if(INDEX == 7)
+					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
 					break;
@@ -801,51 +801,92 @@ public class PathBuilder {
 		}
 		// build the path from internal node list;
 		List<InternalPath> ips = buildInternalPathFromInternalNode(ins);
+		// external uniques 
+		LinkedList<Contig> extUniqs = new LinkedList<Contig>();
+		extUniqs.addLast(external);
+		for(Contig c : formers)
+		{
+			extUniqs.addLast(c);
+		}
 		// scoring each path;
 		for (InternalPath ip : ips) {
 			// adding the external and formers contig in the internal path
-			ip.addFirst(external);
-			for (Contig c : formers) {
-				ip.addFirst(c);
-			}
+//			ip.addFirst(external);
+//			for (Contig c : formers) {
+//				ip.addFirst(c);
+//			}
 			// logger.debug(ip.toString());
 			for (TriadLink tl : triads) {
 				Contig pre = tl.getPrevious();
 				Contig mid = tl.getMiddle();
 				Contig lst = tl.getLast();
-				if (ip.isContain(pre)) {
-					if (mid == null) {
-						if (ip.isContain(lst)) {
-							// logger.debug(tl.toString());
+				if(extUniqs.contains(pre))
+				{
+					if(mid == null)
+					{
+						if(ip.isContain(lst))
 							ip.addScore(tl.getSupLinks());
-						}
-					} else {
-						if (ip.isContain(mid)) {
-							if (ip.isContain(lst)) {
-								int pIndex = ip.getIndex(pre);
-								int mIndex = ip.getIndex(mid);
-								int lIndex = ip.getIndex(lst);
-								if (pIndex < mIndex && mIndex < lIndex) {
-									// logger.debug(tl.toString());
-									ip.addScore(tl.getSupLinks());
-								} else if (pIndex > mIndex && mIndex > lIndex) {
-									// logger.debug(tl.toString());
-									ip.addScore(tl.getSupLinks());
-								} else {
-									// logger.debug(tl.toString());
-									ip.subtractScore(tl.getSupLinks());
-								}
-							} else {
-								// do not considering;
-							}
-						} else {
-							if (ip.isContain(lst)) {
-								// logger.debug(tl.toString());
-								ip.addScore(tl.getSupLinks());
-							}
-						}
+					} else
+					{
+						if(ip.isContain(mid) || ip.isContain(lst))
+						{
+							ip.addScore(tl.getSupLinks());
+						} 
 					}
+				} else if(extUniqs.contains(mid))
+				{
+					if(ip.isContain(pre) || ip.isContain(lst))
+						ip.addScore(tl.getSupLinks());
+				} else if(extUniqs.contains(lst))
+				{
+					if(mid == null)
+					{
+						if(ip.isContain(pre))
+							ip.addScore(tl.getSupLinks());
+					} else
+					{
+						if(ip.isContain(mid) || ip.isContain(pre))
+						{
+							ip.addScore(tl.getSupLinks());
+						} 
+					}
+				} else
+				{
+					// do nothing 
 				}
+//				if (ip.isContain(pre)) {
+//					if (mid == null) {
+//						if (ip.isContain(lst)) {
+//							// logger.debug(tl.toString());
+//							ip.addScore(tl.getSupLinks());
+//						}
+//					} else {
+//						if (ip.isContain(mid)) {
+//							if (ip.isContain(lst)) {
+//								int pIndex = ip.getIndex(pre);
+//								int mIndex = ip.getIndex(mid);
+//								int lIndex = ip.getIndex(lst);
+//								if (pIndex < mIndex && mIndex < lIndex) {
+//									// logger.debug(tl.toString());
+//									ip.addScore(tl.getSupLinks());
+//								} else if (pIndex > mIndex && mIndex > lIndex) {
+//									// logger.debug(tl.toString());
+//									ip.addScore(tl.getSupLinks());
+//								} else {
+//									// logger.debug(tl.toString());
+//									ip.subtractScore(tl.getSupLinks());
+//								}
+//							} else {
+//								// do not considering;
+//							}
+//						} else {
+//							if (ip.isContain(lst)) {
+//								// logger.debug(tl.toString());
+//								ip.addScore(tl.getSupLinks());
+//							}
+//						}
+//					}
+//				}
 			}
 			// logger.debug("/n");
 		}
