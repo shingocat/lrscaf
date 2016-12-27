@@ -100,9 +100,9 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-				INDEX++;
-				if(INDEX == 7)
-					logger.debug("breakpoint");
+//				INDEX++;
+//				if(INDEX == 28)
+//					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
 					break;
@@ -231,7 +231,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("1419"))
+//			if(current.getID().equals("156"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -304,18 +304,21 @@ public class PathBuilder {
 							}
 						}
 						if (this.validateOrientation(previous, current, next, p2ce, c2ne)) {
-							if (this.isValidCnt(current)) {
+							// because internal path will segment duplication;
+							// so validate contig is travel again which is not divergence point
+							// will not apply into this case;
+//							if (this.isValidCnt(current)) {
 							this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
-							} else {
-								isConflict = true;
-								break;
-							}
+//							} else {
+//								isConflict = true;
+//								break;
+//							}
 						} else
 						{
 							next = null;
-							if (this.isValidCnt(current)) {
+//							if (this.isValidCnt(current)) {
 							this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
-							} 
+//							} 
 							isConflict = true;
 							break;
 						}
@@ -801,95 +804,7 @@ public class PathBuilder {
 		}
 		// build the path from internal node list;
 		List<InternalPath> ips = buildInternalPathFromInternalNode(ins);
-		// external uniques 
-		LinkedList<Contig> extUniqs = new LinkedList<Contig>();
-		extUniqs.addLast(external);
-		for(Contig c : formers)
-		{
-			extUniqs.addLast(c);
-		}
-		// scoring each path;
-		for (InternalPath ip : ips) {
-			// adding the external and formers contig in the internal path
-//			ip.addFirst(external);
-//			for (Contig c : formers) {
-//				ip.addFirst(c);
-//			}
-			// logger.debug(ip.toString());
-			for (TriadLink tl : triads) {
-				Contig pre = tl.getPrevious();
-				Contig mid = tl.getMiddle();
-				Contig lst = tl.getLast();
-				if(extUniqs.contains(pre))
-				{
-					if(mid == null)
-					{
-						if(ip.isContain(lst))
-							ip.addScore(tl.getSupLinks());
-					} else
-					{
-						if(ip.isContain(mid) || ip.isContain(lst))
-						{
-							ip.addScore(tl.getSupLinks());
-						} 
-					}
-				} else if(extUniqs.contains(mid))
-				{
-					if(ip.isContain(pre) || ip.isContain(lst))
-						ip.addScore(tl.getSupLinks());
-				} else if(extUniqs.contains(lst))
-				{
-					if(mid == null)
-					{
-						if(ip.isContain(pre))
-							ip.addScore(tl.getSupLinks());
-					} else
-					{
-						if(ip.isContain(mid) || ip.isContain(pre))
-						{
-							ip.addScore(tl.getSupLinks());
-						} 
-					}
-				} else
-				{
-					// do nothing 
-				}
-//				if (ip.isContain(pre)) {
-//					if (mid == null) {
-//						if (ip.isContain(lst)) {
-//							// logger.debug(tl.toString());
-//							ip.addScore(tl.getSupLinks());
-//						}
-//					} else {
-//						if (ip.isContain(mid)) {
-//							if (ip.isContain(lst)) {
-//								int pIndex = ip.getIndex(pre);
-//								int mIndex = ip.getIndex(mid);
-//								int lIndex = ip.getIndex(lst);
-//								if (pIndex < mIndex && mIndex < lIndex) {
-//									// logger.debug(tl.toString());
-//									ip.addScore(tl.getSupLinks());
-//								} else if (pIndex > mIndex && mIndex > lIndex) {
-//									// logger.debug(tl.toString());
-//									ip.addScore(tl.getSupLinks());
-//								} else {
-//									// logger.debug(tl.toString());
-//									ip.subtractScore(tl.getSupLinks());
-//								}
-//							} else {
-//								// do not considering;
-//							}
-//						} else {
-//							if (ip.isContain(lst)) {
-//								// logger.debug(tl.toString());
-//								ip.addScore(tl.getSupLinks());
-//							}
-//						}
-//					}
-//				}
-			}
-			// logger.debug("/n");
-		}
+		this.computeInternalPathSupported(ips, external, formers);
 		InternalPathComparator ic = new InternalPathComparator();
 		Collections.sort(ips, ic);
 		LinkedList<Contig> path = null;
@@ -903,6 +818,85 @@ public class PathBuilder {
 			}
 		}
 		return path;
+	}
+	
+	private void computeInternalPathSupported(List<InternalPath> ips, Contig external, List<Contig> formers)
+	{
+		// external uniques 
+		LinkedList<Contig> extUniqs = new LinkedList<Contig>();
+		extUniqs.addLast(external);
+		for(Contig c : formers)
+		{
+			extUniqs.addLast(c);
+		}
+		List<TriadLink> selectedTLs = new Vector<TriadLink>();
+		// scoring each path;
+		for (InternalPath ip : ips) {
+			// logger.debug(ip.toString());
+			for (TriadLink tl : triads) {
+				if(tl.isValid())
+				{
+					Contig pre = tl.getPrevious();
+					Contig mid = tl.getMiddle();
+					Contig lst = tl.getLast();
+					if(extUniqs.contains(pre))
+					{
+						if(mid == null)
+						{
+							if(ip.isContain(lst))
+							{
+								ip.addScore(tl.getSupLinks());
+								if(!selectedTLs.contains(tl))
+									selectedTLs.add(tl);
+							}
+						} else
+						{
+							if(ip.isContain(mid) || ip.isContain(lst))
+							{
+								ip.addScore(tl.getSupLinks());
+								if(!selectedTLs.contains(tl))
+									selectedTLs.add(tl);
+							} 
+						}
+					} else if(extUniqs.contains(mid))
+					{
+						if(ip.isContain(pre) || ip.isContain(lst))
+						{
+							ip.addScore(tl.getSupLinks());
+							if(!selectedTLs.contains(tl))
+								selectedTLs.add(tl);
+						}
+					} else if(extUniqs.contains(lst))
+					{
+						if(mid == null)
+						{
+							if(ip.isContain(pre))
+							{
+								ip.addScore(tl.getSupLinks());
+								if(!selectedTLs.contains(tl))
+									selectedTLs.add(tl);
+							}
+						} else
+						{
+							if(ip.isContain(mid) || ip.isContain(pre))
+							{
+								ip.addScore(tl.getSupLinks());
+								if(!selectedTLs.contains(tl))
+									selectedTLs.add(tl);
+							} 
+						}
+					} else
+					{
+						// do nothing 
+					}
+				}
+			}
+		}
+		
+		for(TriadLink tl : selectedTLs)
+		{
+			tl.setValid(false);
+		}
 	}
 
 	private boolean validateInternalPath2(InternalPath path) {

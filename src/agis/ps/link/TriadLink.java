@@ -13,6 +13,7 @@ public class TriadLink {
 	private Contig middle; // middle contig in link;
 	private Contig last; // last contig in link
 	private int supLinks; // support triad link nums;
+	private boolean isValid = true; // indicator for used or not;
 	
 	public TriadLink(){
 		
@@ -23,6 +24,20 @@ public class TriadLink {
 		this.previous = previous;
 		this.middle = middle;
 		this.last = last;
+	}
+	
+	public TriadLink(Contig previous, Contig middle, Contig last, boolean isValid)
+	{
+		this(previous, middle, middle);
+		this.isValid = isValid;
+	}
+
+	public boolean isValid() {
+		return isValid;
+	}
+
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
 	}
 
 	public Contig getPrevious() {
@@ -140,7 +155,7 @@ public class TriadLink {
 	@Override
 	public String toString() {
 		return "TriadLink [previous=" + previous + ", middle=" + middle + ", last=" + last + ", supLinks=" + supLinks
-				+ "]";
+				+ ", valid=" + isValid +"]";
 	}
 
 }
