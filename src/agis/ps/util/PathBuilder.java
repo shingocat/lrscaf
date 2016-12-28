@@ -231,7 +231,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("2469"))
+//			if(current.getID().equals("2041"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -877,12 +877,23 @@ public class PathBuilder {
 							}
 						} else
 						{
-							if(ip.isContain(mid) || ip.isContain(lst))
+							if(ip.isContain(mid))
 							{
-								ip.addScore(tl.getSupLinks());
-								if(!selectedTLs.contains(tl))
-									selectedTLs.add(tl);
-							} 
+								if(ip.isContain(lst))
+								{
+									ip.addScore(tl.getSupLinks());
+									if(!selectedTLs.contains(tl))
+										selectedTLs.add(tl);
+								}
+							} else
+							{
+								if(ip.isContain(lst))
+								{
+									ip.addScore(tl.getSupLinks());
+									if(!selectedTLs.contains(tl))
+										selectedTLs.add(tl);
+								}
+							}
 						}
 					} else if(extUniqs.contains(mid))
 					{
@@ -904,12 +915,23 @@ public class PathBuilder {
 							}
 						} else
 						{
-							if(ip.isContain(mid) || ip.isContain(pre))
+							if(ip.isContain(mid))
 							{
-								ip.addScore(tl.getSupLinks());
-								if(!selectedTLs.contains(tl))
-									selectedTLs.add(tl);
-							} 
+								if(ip.isContain(pre))
+								{
+									ip.addScore(tl.getSupLinks());
+									if(!selectedTLs.contains(tl))
+										selectedTLs.add(tl);
+								}
+							} else
+							{
+								if(ip.isContain(pre))
+								{
+									ip.addScore(tl.getSupLinks());
+									if(!selectedTLs.contains(tl))
+										selectedTLs.add(tl);
+								}
+							}
 						}
 					} else
 					{
