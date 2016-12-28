@@ -231,7 +231,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("2041"))
+//			if(current.getID().equals("346"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -834,16 +834,40 @@ public class PathBuilder {
 				ip2score = ipt.getScore();
 				if(ip1score > ip2score)
 				{
-					path = ip.getPath();
-					path.removeAll(formers);
-					path.remove(external);
-					path.remove(internal);
 					break;
+				} else
+				{
+					ip = getBestInternalPath(ip, ipt);
 				}
 				index++;
-			}		
+			}
+			path = ip.getPath();
+			path.removeAll(formers);
+			path.remove(external);
+			path.remove(internal);
 		}
 		return path;
+	}
+	
+	private InternalPath getBestInternalPath(InternalPath ip1, InternalPath ip2)
+	{
+		LinkedList<Contig> ip1cnts = ip1.getPath();
+		Contig ip1c1 = ip1cnts.get(0);
+		Contig ip1c2 = ip1cnts.get(1);
+		LinkedList<Contig> ip2cnts = ip2.getPath();
+		Contig ip2c1 = ip2cnts.get(0);
+		Contig ip2c2 = ip2cnts.get(1);
+		
+		List<Edge> ip1es = diGraph.getEdgesInfo(ip1c1, ip1c2);
+		int ip1esl = ip1es.get(0).getLinkNum();
+		List<Edge> ip2es = diGraph.getEdgesInfo(ip2c1, ip2c2);
+		int ip2esl = ip2es.get(0).getLinkNum();
+		
+		if(ip1esl > ip2esl)
+			return ip1;
+		else
+			return ip2;
+		
 	}
 	
 	private void computeInternalPathSupported(List<InternalPath> ips, Contig external, List<Contig> formers)
