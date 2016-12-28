@@ -231,7 +231,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("156"))
+//			if(current.getID().equals("2814"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -768,16 +768,6 @@ public class PathBuilder {
 		return tPaths;
 	}
 
-	private List<Contig> getTraidLinkNext3(Contig internal, Contig external, List<Contig> formers) {
-		// get adjacent contigs of internal excluding external;
-		List<Contig> adjInternals = diGraph.getNextVertices(internal, external);
-		if (adjInternals == null || adjInternals.isEmpty())
-			return null;
-		List<InternalPath> ips = new Vector<InternalPath>();
-
-		return null;
-	}
-
 	private List<Contig> getTriadLinkNext2(Contig internal, Contig external, List<Contig> formers) {
 		// get adjacent contigs of internal excluding external;
 		List<Contig> adjInternals = diGraph.getNextVertices(internal, external);
@@ -800,7 +790,13 @@ public class PathBuilder {
 			}
 		}
 		for (Contig c : adjInternals) {
-			this.getNextUniqueContigs2(c, internal, null, strand, 3, ins);
+			List<Contig> temp = new Vector<Contig>(adjInternals.size() - 1);
+			for(Contig t : adjInternals)
+			{
+				if(!t.equals(c))
+					temp.add(t);
+			}
+			this.getNextUniqueContigs2(c, internal, null, strand, 3, ins, temp);
 		}
 		// build the path from internal node list;
 		List<InternalPath> ips = buildInternalPathFromInternalNode(ins);
@@ -808,14 +804,42 @@ public class PathBuilder {
 		InternalPathComparator ic = new InternalPathComparator();
 		Collections.sort(ips, ic);
 		LinkedList<Contig> path = null;
-		for (InternalPath ip : ips) {
-			if (this.validateInternalPath2(ip)) {
-				path = ip.getPath();
-				path.removeAll(formers);
-				path.remove(external);
-				path.remove(internal);
-				break;
-			}
+		if(ips == null || ips.isEmpty())
+			return null;
+		// check whether the larger one supported links is zero;
+		if(ips.get(0).getScore() == 0)
+			return null;
+		int size = ips.size() - 1;
+		if(size == 0)
+		{
+			InternalPath ip = ips.get(0);
+			path = ip.getPath();
+			path.removeAll(formers);
+			path.remove(external);
+			path.remove(internal);
+		} else
+		{
+			int index = 1;
+			InternalPath ip = ips.get(index - 1); // ip need to keep
+			int ip1score = 0;
+			InternalPath ipt = null; // ip need to test
+			int ip2score = 0;
+			while(true)
+			{
+				if(index <= size)
+					ipt = ips.get(index);
+				ip1score = ip.getScore();
+				ip2score = ipt.getScore();
+				if(ip1score > ip2score)
+				{
+					path = ip.getPath();
+					path.removeAll(formers);
+					path.remove(external);
+					path.remove(internal);
+					break;
+				}
+				index++;
+			}		
 		}
 		return path;
 	}
@@ -993,9 +1017,12 @@ public class PathBuilder {
 	 *            - the check depth
 	 * @param uniques
 	 *            - the list to store the uniques contigs;
+	 *@param  otherAdjacentCnts
+	 *			  - the other adjacent contigs           
+	 *
 	 */
 	private void getNextUniqueContigs2(Contig child, Contig father, Contig grandfather, Strand fatherStrand, int depth,
-			List<InternalNode> ins) {
+			List<InternalNode> ins, List<Contig> otherAdjacentCnts) {
 		// check orientation conflict
 		Map<String, Object> checks = this.validateInternalPathOrientation(child, father, fatherStrand);
 		if (!(boolean) checks.get("VALID"))
@@ -1012,11 +1039,6 @@ public class PathBuilder {
 			return;
 		}
 		if (depth == 0) {
-			in.setLeaf(true);
-			ins.add(in);
-			return;
-		}
-		if (INTERNAL_LENGTH > MAXIMUM_INTERNAL_LENGTH) {
 			in.setLeaf(true);
 			ins.add(in);
 			return;
@@ -1068,16 +1090,32 @@ public class PathBuilder {
 			// INTERNAL_LENGTH += this.indexLen(current.getID());
 			int cLen = cntfile.getLengthByNewId(Integer.valueOf(child.getID()));
 			INTERNAL_LENGTH += cLen;
+			// if the internal length of path already large than MAXIMUM_INTERNAL_LENGTH
+			if (INTERNAL_LENGTH > MAXIMUM_INTERNAL_LENGTH) {
+				in.setLeaf(true);
+				ins.add(in);
+				INTERNAL_LENGTH -= cLen;
+				INTERNAL_LENGTH -= eLen;
+				return;
+			}
+			// checking whether the next contig is one of the other adjacent contigs;
+			if(otherAdjacentCnts.contains(c))
+			{
+				in.setLeaf(true);
+				ins.add(in);
+				INTERNAL_LENGTH -= cLen;
+				INTERNAL_LENGTH -= eLen;
+				return;
+			}
 			Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 			if ((boolean) nValues.get("VALID")) {
-				this.getNextUniqueContigs2(c, child, father, childStrand, depth - 1, ins);
+				this.getNextUniqueContigs2(c, child, father, childStrand, depth - 1, ins, otherAdjacentCnts);
 			} else {
 				in.setLeaf(true);
 			}
 			ins.add(in);
 			INTERNAL_LENGTH -= cLen;
 			INTERNAL_LENGTH -= eLen;
-
 		}
 	}
 
