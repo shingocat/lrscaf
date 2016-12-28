@@ -231,7 +231,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("346"))
+//			if(current.getID().equals("2041"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -774,13 +774,7 @@ public class PathBuilder {
 		if (adjInternals == null || adjInternals.isEmpty())
 			return null;
 		// build the list InternalNode
-		List<InternalNode> ins = new Vector<InternalNode>(30);
-		InternalNode in = new InternalNode();
-		in.setGrandfather(null);
-		in.setParent(null);
-		in.setChildren(internal);
-		in.setLeaf(false);
-		ins.add(in);
+		List<List<InternalNode>> inss = new Vector<List<InternalNode>>(); 
 		List<Edge> es = diGraph.getEdgesInfo(external, internal);
 		Strand strand = null;
 		for (Edge e : es) {
@@ -790,6 +784,13 @@ public class PathBuilder {
 			}
 		}
 		for (Contig c : adjInternals) {
+			List<InternalNode> ins = new Vector<InternalNode>(30);
+			InternalNode in = new InternalNode();
+			in.setGrandfather(null);
+			in.setParent(null);
+			in.setChildren(internal);
+			in.setLeaf(false);
+			ins.add(in);
 			List<Contig> temp = new Vector<Contig>(adjInternals.size() - 1);
 			for(Contig t : adjInternals)
 			{
@@ -797,9 +798,10 @@ public class PathBuilder {
 					temp.add(t);
 			}
 			this.getNextUniqueContigs2(c, internal, null, strand, 3, ins, temp);
+			inss.add(ins);
 		}
 		// build the path from internal node list;
-		List<InternalPath> ips = buildInternalPathFromInternalNode(ins);
+		List<InternalPath> ips = buildInternalPathFromInternalNode(inss);
 		this.computeInternalPathSupported(ips, external, formers);
 		InternalPathComparator ic = new InternalPathComparator();
 		Collections.sort(ips, ic);
@@ -1006,25 +1008,29 @@ public class PathBuilder {
 		return isValid;
 	}
 
-	private List<InternalPath> buildInternalPathFromInternalNode(List<InternalNode> ins) {
-		if (ins == null || ins.isEmpty())
+	private List<InternalPath> buildInternalPathFromInternalNode(List<List<InternalNode>> inss) {
+		if (inss == null || inss.isEmpty())
 			return null;
 		List<InternalPath> ips = new Vector<InternalPath>();
-		Iterator<InternalNode> it = ins.iterator();
-		while (it.hasNext()) {
-			InternalNode in = it.next();
-			if (in.isLeaf()) {
-				InternalPath ip = new InternalPath();
-				while (true) {
-					Contig child = in.getChildren();
-					Contig parent = in.getParent();
-					Contig grandfather = in.getGrandfather();
-					ip.addFirst(child);
-					if (parent == null)
-						break;
-					in = findReverseInternalNode(parent, grandfather, ins);
+		for(int i = 0; i < inss.size(); i++)
+		{
+			List<InternalNode> ins = inss.get(i);
+			Iterator<InternalNode> it = ins.iterator();
+			while (it.hasNext()) {
+				InternalNode in = it.next();
+				if (in.isLeaf()) {
+					InternalPath ip = new InternalPath();
+					while (true) {
+						Contig child = in.getChildren();
+						Contig parent = in.getParent();
+						Contig grandfather = in.getGrandfather();
+						ip.addFirst(child);
+						if (parent == null)
+							break;
+						in = findReverseInternalNode(parent, grandfather, ins);
+					}
+					ips.add(ip);
 				}
-				ips.add(ip);
 			}
 		}
 		return ips;
@@ -1105,14 +1111,9 @@ public class PathBuilder {
 				for (Contig c : nextAdjs) {
 					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 					if ((boolean) nValues.get("VALID")) {
-						InternalNode iin = new InternalNode();
-						iin.setChildren(c);
-						iin.setParent(child);
-						iin.setGrandfather(father);
-						iin.setLeaf(true);
-						ins.add(iin);
+						this.getNextUniqueContigs2(c, child, father, childStrand, depth - 1, ins, otherAdjacentCnts);
 						validAlls = true;
-					}
+					} 
 				}
 				if (!validAlls)
 					in.setLeaf(true);
