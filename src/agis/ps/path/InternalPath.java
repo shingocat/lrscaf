@@ -39,12 +39,21 @@ public class InternalPath {
 		return this.score;
 	}
 	
+	/**
+	 * path is contain the divergence point as the first contig;
+	 * but it should not be considering this one;
+	 * so if there is no such element or index == 0, it will 
+	 * return false;
+	 * @param c
+	 * @return
+	 */
 	public boolean isContain(Contig c)
 	{
-		if(path.contains(c))
-			return true;
-		else 
+		int index = path.indexOf(c);
+		if(index == -1 || index == 0)
 			return false;
+		else 
+			return true;
 	}
 	
 	public int getIndex(Contig c)

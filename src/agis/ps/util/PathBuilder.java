@@ -101,7 +101,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 28)
+//				if(INDEX == 2)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
@@ -231,7 +231,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("2041"))
+//			if(current.getID().equals("1538"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -797,7 +797,7 @@ public class PathBuilder {
 				if(!t.equals(c))
 					temp.add(t);
 			}
-			this.getNextUniqueContigs2(c, internal, null, strand, 3, ins, temp);
+			this.getNextUniqueContigs2(c, internal, null, strand, 4, ins, temp);
 			inss.add(ins);
 		}
 		// build the path from internal node list;
@@ -1109,6 +1109,8 @@ public class PathBuilder {
 			if (INTERNAL_LENGTH <= MAXIMUM_INTERNAL_LENGTH) {
 				boolean validAlls = false;
 				for (Contig c : nextAdjs) {
+					if(otherAdjacentCnts.contains(c))
+						continue;
 					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 					if ((boolean) nValues.get("VALID")) {
 						this.getNextUniqueContigs2(c, child, father, childStrand, depth - 1, ins, otherAdjacentCnts);
@@ -1122,11 +1124,24 @@ public class PathBuilder {
 				INTERNAL_LENGTH -= eLen;
 				return;
 			} else {
-				// current unique contig is divergence
-				if (nextAdjs != null && nextAdjs.size() > 1) {
-					in.setLeaf(true);
-					ins.add(in);
+				boolean validAlls = false;
+				for (Contig c : nextAdjs) {
+					if(otherAdjacentCnts.contains(c))
+						continue;
+					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
+					if ((boolean) nValues.get("VALID")) {
+						InternalNode iin = new InternalNode();
+						iin.setChildren(c);
+						iin.setParent(child);
+						iin.setGrandfather(father);
+						iin.setLeaf(true);
+						ins.add(iin);
+						validAlls = true;
+					} 
 				}
+				if (!validAlls)
+					in.setLeaf(true);
+				ins.add(in);
 				INTERNAL_LENGTH -= eLen;
 				INTERNAL_LENGTH -= cLen;
 				return;
