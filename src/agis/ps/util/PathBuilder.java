@@ -231,7 +231,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("2814"))
+//			if(current.getID().equals("2469"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -828,6 +828,8 @@ public class PathBuilder {
 			{
 				if(index <= size)
 					ipt = ips.get(index);
+				else
+					break;
 				ip1score = ip.getScore();
 				ip2score = ipt.getScore();
 				if(ip1score > ip2score)
