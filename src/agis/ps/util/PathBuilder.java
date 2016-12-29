@@ -101,7 +101,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 2)
+//				if(INDEX == 10)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
@@ -231,7 +231,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("1538"))
+//			if(current.getID().equals("2814"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -784,6 +784,8 @@ public class PathBuilder {
 			}
 		}
 		for (Contig c : adjInternals) {
+			if(!(diGraph.isDivergenceVertex(c)) && path.isContain(c))
+				continue;
 			List<InternalNode> ins = new Vector<InternalNode>(30);
 			InternalNode in = new InternalNode();
 			in.setGrandfather(null);
@@ -805,7 +807,7 @@ public class PathBuilder {
 		this.computeInternalPathSupported(ips, external, formers);
 		InternalPathComparator ic = new InternalPathComparator();
 		Collections.sort(ips, ic);
-		LinkedList<Contig> path = null;
+		LinkedList<Contig> internalPath = null;
 		if(ips == null || ips.isEmpty())
 			return null;
 		// check whether the larger one supported links is zero;
@@ -815,10 +817,10 @@ public class PathBuilder {
 		if(size == 0)
 		{
 			InternalPath ip = ips.get(0);
-			path = ip.getPath();
-			path.removeAll(formers);
-			path.remove(external);
-			path.remove(internal);
+			internalPath = ip.getPath();
+			internalPath.removeAll(formers);
+			internalPath.remove(external);
+			internalPath.remove(internal);
 		} else
 		{
 			int index = 1;
@@ -843,12 +845,12 @@ public class PathBuilder {
 				}
 				index++;
 			}
-			path = ip.getPath();
-			path.removeAll(formers);
-			path.remove(external);
-			path.remove(internal);
+			internalPath = ip.getPath();
+			internalPath.removeAll(formers);
+			internalPath.remove(external);
+			internalPath.remove(internal);
 		}
-		return path;
+		return internalPath;
 	}
 	
 	private InternalPath getBestInternalPath(InternalPath ip1, InternalPath ip2)
@@ -874,6 +876,8 @@ public class PathBuilder {
 	
 	private void computeInternalPathSupported(List<InternalPath> ips, Contig external, List<Contig> formers)
 	{
+		if(ips == null || ips.isEmpty())
+			return;
 		// external uniques 
 		LinkedList<Contig> extUniqs = new LinkedList<Contig>();
 		extUniqs.addLast(external);
@@ -891,6 +895,9 @@ public class PathBuilder {
 					Contig pre = tl.getPrevious();
 					Contig mid = tl.getMiddle();
 					Contig lst = tl.getLast();
+					// there are two cases: 
+					// 1)connect between unique contig and internal path;
+					// 2)support internal path;
 					if(extUniqs.contains(pre))
 					{
 						if(mid == null)
@@ -961,7 +968,35 @@ public class PathBuilder {
 						}
 					} else
 					{
-						// do nothing 
+						//support internal path case
+//						if(ip.isInternalPathContain(pre))
+//						{
+//							if(mid == null)
+//							{
+//								if(ip.isInternalPathContain(lst))
+//								{
+//									ip.addScore(tl.getSupLinks());
+//									if(!selectedTLs.contains(tl))
+//										selectedTLs.add(tl);
+//								}
+//							} else
+//							{
+//								if(ip.isInternalPathContain(mid))
+//								{
+//									ip.addScore(tl.getSupLinks());
+//									if(!selectedTLs.contains(tl))
+//										selectedTLs.add(tl);
+//								}
+//							}
+//						} else if(ip.isInternalPathContain(mid))
+//						{
+//							if(ip.isInternalPathContain(lst))
+//							{
+//								ip.addScore(tl.getSupLinks());
+//								if(!selectedTLs.contains(tl))
+//									selectedTLs.add(tl);
+//							}
+//						} 
 					}
 				}
 			}
@@ -970,6 +1005,7 @@ public class PathBuilder {
 		for(TriadLink tl : selectedTLs)
 		{
 			tl.setValid(false);
+//			logger.debug(tl.toString());
 		}
 	}
 
@@ -1111,11 +1147,19 @@ public class PathBuilder {
 				for (Contig c : nextAdjs) {
 					if(otherAdjacentCnts.contains(c))
 						continue;
+					List<Contig> innerOtherAdjacentCnts = new Vector<Contig>(nextAdjs.size() - 1);
+					for(Contig c1 : nextAdjs)
+					{
+						if(!c1.equals(c) && !(otherAdjacentCnts.contains(c1)))
+							innerOtherAdjacentCnts.add(c1);
+					}
+					otherAdjacentCnts.addAll(innerOtherAdjacentCnts);
 					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 					if ((boolean) nValues.get("VALID")) {
 						this.getNextUniqueContigs2(c, child, father, childStrand, depth - 1, ins, otherAdjacentCnts);
 						validAlls = true;
 					} 
+					otherAdjacentCnts.removeAll(innerOtherAdjacentCnts);
 				}
 				if (!validAlls)
 					in.setLeaf(true);

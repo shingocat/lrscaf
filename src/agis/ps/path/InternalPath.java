@@ -56,6 +56,11 @@ public class InternalPath {
 			return true;
 	}
 	
+	public boolean isInternalPathContain(Contig c)
+	{
+		return path.contains(c);
+	}
+	
 	public int getIndex(Contig c)
 	{
 		return path.indexOf(c);

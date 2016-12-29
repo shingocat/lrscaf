@@ -586,12 +586,13 @@ public class DirectedGraph extends Graph implements Serializable {
 		long start = System.currentTimeMillis();
 		List<Edge> rmEdges = new Vector<Edge>(100);
 		int totalDels = 0;
+		Contig c = null;
 		try {
 			Iterator<Contig> it = mimos.iterator();
 			while (it.hasNext()) {
-				Contig c = it.next();
+				c = it.next();
 				String id = c.getID();
-//				if(id.equals("132"))
+//				if(id.equals("331"))
 //					logger.debug("breakpoint");
 				List<Contig> adjs = adjTos.get(id);
 				if (adjs == null)
@@ -599,7 +600,6 @@ public class DirectedGraph extends Graph implements Serializable {
 				int adjCount = adjs.size();
 				// only considering divergence point
 				// and considering the odd number diverence point
-//				if(adjCount > 2)
 				if((adjCount % 2) != 0)
 				{
 					for(int i = 0; i < adjCount; i++)
@@ -608,22 +608,12 @@ public class DirectedGraph extends Graph implements Serializable {
 						LinkedList<Contig> path = new LinkedList<Contig>();
 						path.addLast(c);
 						this.delTips(next, c, 2, path, rmEdges);
-//						Contig next = adjs.get(i);
-//						List<Contig> nextAdjs = adjTos.get(next.getID());
-//						if(nextAdjs == null)
-//							continue;
-//						if(nextAdjs.size() != 1)
-//							continue;
-//						// if the next adjacent is not equal to former divergence point;
-//						if(!nextAdjs.get(0).equals(c))
-//							continue;
-//						List<Edge> es = this.getEdgesInfo(c, next);
-//						rmEdges.addAll(es);
 					}
 				}
 
 			}
 		} catch (Exception e) {
+			logger.debug("Contig " + c.getID());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		if(rmEdges.size() != 0)
@@ -634,8 +624,6 @@ public class DirectedGraph extends Graph implements Serializable {
 			rmEdges.clear();
 		}
 		logger.info(this.getClass().getName() + "\tDelete tip edges:" + totalDels);
-//		this.removeEdges(rmEdges);
-//		this.updateGraph();
 		long end = System.currentTimeMillis();
 		logger.info("Tip edge deleting, erase time: " + (end - start) + " ms");
 	}
@@ -653,61 +641,35 @@ public class DirectedGraph extends Graph implements Serializable {
 	{
 		path.addLast(current);
 		List<Contig> nexts = this.getNextVertices(current, former);
-		if(nexts != null)
-		{
-			if(depth != 2 && nexts.size() > 1)
-				return false;
-		}
-				
 		if(nexts == null)
 		{
 			// check the tip length;
 			int length = 0;
-			List<Edge> all = new Vector<Edge>(6);
-			for(int i = 0; i < path.size() - 1; i++)
+			int size = path.size() - 1; 
+			List<Edge> all = new Vector<Edge>(size * 2);
+			for(int i = 0; i < size; i++)
 			{
 				Contig f = path.get(i);
 				Contig n = path.get(i + 1);
 				List<Edge> es = this.getEdgesInfo(f, n);
 				all.addAll(es);
 				length += es.get(0).getDistMean();
-//				length += this.indexCntLength(n.getID());
 				length += cntfile.getLengthByNewId(n.getID());
 			}
 			if(length <= TIP_LENGTH)
 			{
-//				for(Edge e : all)
-//				{
-//					if(!removes.contains(e))
-//						removes.add(e);
-//				}
 				// reverse to check the path could be delete or not;
 				// if meet the divergence point then break;
-				for(int j = path.size() - 1; j > 0; j--)
-				{
-					Contig c = path.get(j);
-					Contig f = path.get(j - 1);
-					if(this.isDivergenceVertex(f))
-					{
-						List<Edge> es = this.getEdgesInfo(c, f);
-						for(Edge e : es)
-						{
-							if(!removes.contains(e))
-								removes.add(e);
-						}
-						break;
-					} else
-					{
-						List<Edge> es = this.getEdgesInfo(c, f);
-						for(Edge e : es)
-						{
-							if(!removes.contains(e))
-								removes.add(e);
-						}
-					}
-				}
+				Contig c = path.get(size);
+				Contig f = path.get(size - 1);
+				List<Edge> es = this.getEdgesInfo(c, f);
+				for(Edge e : es)
+					if(!removes.contains(e))
+						removes.add(e);
+				path.removeLast();
 				return true;
 			}
+			path.removeLast();
 			return false;
 		}
 		if(depth == 0)
@@ -716,52 +678,32 @@ public class DirectedGraph extends Graph implements Serializable {
 			{
 				// check the tip length;
 				int length = 0;
-				List<Edge> all = new Vector<Edge>(6);
-				for(int i = 0; i < path.size() - 1; i++)
+				int size = path.size() - 1; 
+				List<Edge> all = new Vector<Edge>(size * 2);
+				for(int i = 0; i < size; i++)
 				{
 					Contig f = path.get(i);
 					Contig n = path.get(i + 1);
 					List<Edge> es = this.getEdgesInfo(f, n);
 					all.addAll(es);
 					length += es.get(0).getDistMean();
-//					length += this.indexCntLength(n.getID());
 					length += cntfile.getLengthByNewId(n.getID());
 				}
 				if(length <= TIP_LENGTH)
 				{
-//					for(Edge e : all)
-//					{
-//						if(!removes.contains(e))
-//							removes.add(e);
-//					}
 					// reverse to check the path could be delete or not;
 					// if meet the divergence point then break;
-					for(int j = path.size() - 1; j > 0; j--)
-					{
-						Contig c = path.get(j);
-						Contig f = path.get(j - 1);
-						if(this.isDivergenceVertex(f))
-						{
-							List<Edge> es = this.getEdgesInfo(c, f);
-							for(Edge e : es)
-							{
-								if(!removes.contains(e))
-									removes.add(e);
-							}
-							break;
-						} else
-						{
-							List<Edge> es = this.getEdgesInfo(c, f);
-							for(Edge e : es)
-							{
-								if(!removes.contains(e))
-									removes.add(e);
-							}
-						}
-					}
+					Contig c = path.get(size);
+					Contig f = path.get(size - 1);
+					List<Edge> es = this.getEdgesInfo(c, f);
+					for(Edge e : es)
+						if(!removes.contains(e))
+							removes.add(e);
+					path.removeLast();
 					return true;
 				}
 			}
+			path.removeLast();
 			return false;
 		}
 		// if the nexts contigs are large than 1;
@@ -772,20 +714,40 @@ public class DirectedGraph extends Graph implements Serializable {
 			boolean isDel = true;
 			for(Contig c : nexts)
 			{
-				isDel = this.delTips(c, current, depth - 1, path, removes);
-				if(!isDel)
-					break;
-				else
-					path.removeLast();
+				boolean isTrueDel = this.delTips(c, current, depth - 1, path, removes);
+				if(!isTrueDel)
+					isDel = false;
 			}
 			if(isDel)
+			{
+				int size = path.size() - 1;
+				Contig c = path.get(size);
+				Contig f = path.get(size - 1);
+				List<Edge> es = this.getEdgesInfo(c, f);
+				for(Edge e : es)
+					if(!removes.contains(e))
+						removes.add(e);
 				return true;
+			}
+			path.removeLast();
 			return false;
 		} else 
 		{
 			former = current;
 			current = nexts.get(0);
-			return this.delTips(current, former, depth - 1, path, removes);
+			boolean isDel = this.delTips(current, former, depth - 1, path, removes);
+			if(isDel)
+			{
+				int size = path.size() - 1;
+				Contig c = path.get(size);
+				Contig f = path.get(size - 1);
+				List<Edge> es = this.getEdgesInfo(c, f);
+				for(Edge e : es)
+					if(!removes.contains(e))
+						removes.add(e);
+			}
+			path.removeLast();
+			return isDel;
 		}
 	}
 

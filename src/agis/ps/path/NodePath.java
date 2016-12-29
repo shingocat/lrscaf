@@ -107,9 +107,7 @@ public class NodePath implements Serializable{
 		for(Node n : path)
 		{
 			if(n.getCnt().equals(c))
-			{
 				return true;
-			} 
 		}
 		return false;
 	}
