@@ -613,7 +613,6 @@ public class DirectedGraph extends Graph implements Serializable {
 
 			}
 		} catch (Exception e) {
-			logger.debug("Contig " + c.getID());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		if(rmEdges.size() != 0)

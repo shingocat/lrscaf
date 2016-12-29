@@ -784,8 +784,9 @@ public class PathBuilder {
 			}
 		}
 		for (Contig c : adjInternals) {
-			if(!(diGraph.isDivergenceVertex(c)) && path.isContain(c))
-				continue;
+			if(adjInternals.size() > 2)
+				if(!(diGraph.isDivergenceVertex(c)) && path.isContain(c))
+					continue;
 			List<InternalNode> ins = new Vector<InternalNode>(30);
 			InternalNode in = new InternalNode();
 			in.setGrandfather(null);

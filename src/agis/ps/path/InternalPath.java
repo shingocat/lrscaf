@@ -49,11 +49,12 @@ public class InternalPath {
 	 */
 	public boolean isContain(Contig c)
 	{
-		int index = path.indexOf(c);
-		if(index == -1 || index == 0)
-			return false;
-		else 
-			return true;
+		return path.contains(c);
+//		int index = path.indexOf(c);
+//		if(index == -1 || index == 0)
+//			return false;
+//		else 
+//			return true;
 	}
 	
 	public boolean isInternalPathContain(Contig c)
