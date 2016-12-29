@@ -231,7 +231,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("2814"))
+//			if(current.getID().equals("671"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -1147,7 +1147,8 @@ public class PathBuilder {
 				boolean validAlls = false;
 				for (Contig c : nextAdjs) {
 					if(otherAdjacentCnts.contains(c))
-						continue;
+						if(!diGraph.isDivergenceVertex(c))
+							continue;
 					List<Contig> innerOtherAdjacentCnts = new Vector<Contig>(nextAdjs.size() - 1);
 					for(Contig c1 : nextAdjs)
 					{
@@ -1172,7 +1173,8 @@ public class PathBuilder {
 				boolean validAlls = false;
 				for (Contig c : nextAdjs) {
 					if(otherAdjacentCnts.contains(c))
-						continue;
+						if(!diGraph.isDivergenceVertex(c))
+							continue;
 					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 					if ((boolean) nValues.get("VALID")) {
 						InternalNode iin = new InternalNode();
@@ -1210,11 +1212,14 @@ public class PathBuilder {
 			// checking whether the next contig is one of the other adjacent contigs;
 			if(otherAdjacentCnts.contains(c))
 			{
-				in.setLeaf(true);
-				ins.add(in);
-				INTERNAL_LENGTH -= cLen;
-				INTERNAL_LENGTH -= eLen;
-				return;
+				if(!diGraph.isDivergenceVertex(c))
+				{
+					in.setLeaf(true);
+					ins.add(in);
+					INTERNAL_LENGTH -= cLen;
+					INTERNAL_LENGTH -= eLen;
+					return;
+				}
 			}
 			Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 			if ((boolean) nValues.get("VALID")) {
