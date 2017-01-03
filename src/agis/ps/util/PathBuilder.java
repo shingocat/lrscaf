@@ -101,7 +101,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 3)
+//				if(INDEX == 4)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
@@ -847,8 +847,8 @@ public class PathBuilder {
 				index++;
 			}
 			internalPath = ip.getPath();
-			internalPath.removeAll(formers);
-			internalPath.remove(external);
+//			internalPath.removeAll(formers);
+//			internalPath.remove(external);
 			internalPath.remove(internal);
 		}
 		return internalPath;
