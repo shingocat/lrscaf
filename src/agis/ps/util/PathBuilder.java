@@ -101,7 +101,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 10)
+//				if(INDEX == 3)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
@@ -794,10 +794,10 @@ public class PathBuilder {
 			in.setChildren(internal);
 			in.setLeaf(false);
 			ins.add(in);
-			List<Contig> temp = new Vector<Contig>(adjInternals.size() - 1);
+			List<Contig> temp = new Vector<Contig>(adjInternals.size());
 			for(Contig t : adjInternals)
 			{
-				if(!t.equals(c))
+//				if(!t.equals(c))
 					temp.add(t);
 			}
 			this.getNextUniqueContigs2(c, internal, null, strand, 4, ins, temp);
