@@ -234,7 +234,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("878"))
+//			if(current.getID().equals("2814"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -806,16 +806,11 @@ public class PathBuilder {
 		LinkedList<Contig> internalPath = null;
 		if(ips == null || ips.isEmpty())
 			return null;
-		// check whether the larger one supported links is zero;
-		if(ips.get(0).getScore() == 0)
-			return null;
 		int size = ips.size() - 1;
 		if(size == 0)
 		{
 			InternalPath ip = ips.get(0);
 			internalPath = ip.getPath();
-//			internalPath.removeAll(formers);
-//			internalPath.remove(external);
 			internalPath.remove(internal);
 		} else
 		{
@@ -826,27 +821,88 @@ public class PathBuilder {
 			int ip2score = 0;
 			while(true)
 			{
+				ip1score = ip.getScore();
+				if(ip.getScore() <= 0)
+				{
+					ip = null;
+					break;
+				}
 				if(index <= size)
 					ipt = ips.get(index);
 				else
 					break;
-				ip1score = ip.getScore();
 				ip2score = ipt.getScore();
-				if(ip1score > ip2score)
+				
+				LinkedList<Contig> ip1p = ip.getPath();
+				LinkedList<Contig> ip2p = ipt.getPath();
+				Contig ip1lstcnt = ip1p.getLast();
+				Contig ip2lstcnt = ip2p.getLast();
+				// bubble case, two internal path convergence into same contig
+				if(ip1lstcnt.equals(ip2lstcnt))
 				{
-					break;
+					boolean isip1traveled = isInternalPathTraveled(ip1p);
+					boolean isip2traveled = isInternalPathTraveled(ip2p);
+					if(isip1traveled && isip2traveled)
+					{
+						if(index < size)
+						{  
+							index++;
+							ip = ips.get(index);
+						}
+					} else if(isip1traveled && !isip2traveled)
+					{
+						ip = ipt;
+					} else
+					{
+						if(ip1score > ip2score)
+						{
+							break;
+						} else
+						{
+							ip = getBestInternalPath(ip, ipt);
+						}
+					}
 				} else
 				{
-					ip = getBestInternalPath(ip, ipt);
+					if(ip1score > ip2score)
+					{
+						break;
+					} else
+					{
+						ip = getBestInternalPath(ip, ipt);
+					}
 				}
 				index++;
 			}
-			internalPath = ip.getPath();
-//			internalPath.removeAll(formers);
-//			internalPath.remove(external);
-			internalPath.remove(internal);
+			if(ip != null)
+			{
+				internalPath = ip.getPath();
+				internalPath.remove(internal);
+			}
 		}
 		return internalPath;
+	}
+	
+	private boolean isInternalPathTraveled(List<Contig> ip)
+	{
+		if(ip == null || ip.isEmpty())
+			return false;
+		// do not considering the last point;
+		boolean isTraveled = true;
+		int size = ip.size() - 2;
+		for(int i = 0; i <= size; i++)
+		{
+			Contig c = ip.get(i);
+			if(!diGraph.isDivergenceVertex(c))
+			{
+				if(!diGraph.isVertexSelected(c))
+				{
+					isTraveled = false;
+					break;
+				}
+			}
+		}
+		return isTraveled;
 	}
 	
 	private InternalPath getBestInternalPath(InternalPath ip1, InternalPath ip2)
