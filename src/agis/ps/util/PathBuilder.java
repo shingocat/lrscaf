@@ -101,7 +101,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 70)
+//				if(INDEX == 34)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
@@ -153,15 +153,15 @@ public class PathBuilder {
 						count++;
 					}
 					// checking whether is cicle case;
-					Contig last = null;
-					if(path.getPathSize() != 0)
-						last = path.getElement(path.getPathSize() - 1).getCnt();
-					
-
-					if(!c2.equals(last))
-					{
+//					Contig last = null;
+//					if(path.getPathSize() != 0)
+//						last = path.getElement(path.getPathSize() - 1).getCnt();
+//					
+//
+//					if(!c2.equals(last))
+//					{
 						this.travelgraph(c1, current, c2, path, true);
-					}
+//					}
 					paths.add(path);
 				} else if (adjsSize > 2) { 
 					// divergence point, do not considering
@@ -351,7 +351,8 @@ public class PathBuilder {
 			if (next.equals(startpoint))
 			{
 				next = null;
-				this.addNode2(previous, current, next, p2ce, c2ne, path, isForward);
+				if(this.isValidCnt(current))
+					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward);
 				break;
 			}
 		}
