@@ -234,7 +234,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("2814"))
+//			if(current.getID().equals("2041"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -780,11 +780,12 @@ public class PathBuilder {
 				break;
 			}
 		}
+		List<Contig> innercnts = new Vector<Contig>();
+		innercnts.add(internal);
 		for (Contig c : adjInternals) {
 			// do not travel against the normal point in the path!
 //			if(!(diGraph.isDivergenceVertex(c)) && diGraph.isVertexSelected(c))
 //				continue;
-			List<Contig> innercnts = new Vector<Contig>();
 			List<InternalNode> ins = new Vector<InternalNode>(30);
 			InternalNode in = new InternalNode();
 			in.setGrandfather(null);
@@ -792,7 +793,6 @@ public class PathBuilder {
 			in.setChildren(internal);
 			in.setLeaf(false);
 			ins.add(in);
-			innercnts.add(internal);
 			this.getNextUniqueContigs2(c, internal, null, strand, 4, ins, innercnts);
 			inss.add(ins);
 		}
