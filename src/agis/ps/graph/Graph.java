@@ -152,6 +152,17 @@ public abstract class Graph implements Serializable, IUntangler {
 		if (!this.selectedVertices.containsKey(cnt.getID()))
 			this.selectedVertices.put(cnt.getID(), cnt);
 	}
+	
+	// set vertext as unselect;
+	public void setVertextUnselected(Contig cnt)
+	{
+		if (this.selectedVertices == null)
+			return;
+		if (this.selectedVertices.containsKey(cnt.getID()))
+			this.selectedVertices.remove(cnt.getID());
+		if (!this.unselectedVertices.containsKey(cnt.getID()))
+			this.unselectedVertices.put(cnt.getID(), cnt);
+	}
 
 	// return random vertex from graph
 	public Contig getRandomVertex() {

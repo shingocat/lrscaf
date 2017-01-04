@@ -53,6 +53,14 @@ public class NodePath implements Serializable{
 		path.addFirst(node);
 	}
 	
+	public boolean hasLast()
+	{
+		if(path.isEmpty())
+			return false;
+		else
+			return true;
+	}
+	
 	public int getPathSize()
 	{
 		return path.size();

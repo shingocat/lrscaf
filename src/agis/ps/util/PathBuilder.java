@@ -101,7 +101,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 4)
+//				if(INDEX == 70)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
@@ -110,7 +110,7 @@ public class PathBuilder {
 				if (adjs == null) {
 					if (this.isValidCnt(current)) {
 						path = new NodePath();
-						this.addNode2(null, current, null, null, null, path, true, true);
+						this.addNode2(null, current, null, null, null, path, true);
 						paths.add(path);
 					} else {
 						diGraph.setVertexAsSelected(current);
@@ -122,7 +122,7 @@ public class PathBuilder {
 					// orphan contig, only one element in path
 					if (this.isValidCnt(current)) {
 						path = new NodePath();
-						this.addNode2(null, current, null, null, null, path, true, true);
+						this.addNode2(null, current, null, null, null, path, true);
 						paths.add(path);
 					} else {
 						diGraph.setVertexAsSelected(current);
@@ -138,22 +138,28 @@ public class PathBuilder {
 					path = new NodePath();
 					Contig c1 = adjs.get(0);
 					Contig c2 = adjs.get(1);
+					// adding the c2 into path first
+					this.addNode2(null, c2, null, null, null,  path, false);
 					// travel backward 
 					this.travelgraph(c2, current, c1, path, false);
 					// travel forward
+					int count = 0;
+					while(path.hasLast())
+					{
+						if(count > 1)
+							break;
+						Node node = path.pop();
+						diGraph.setVertextUnselected(node.getCnt());
+						count++;
+					}
 					// checking whether is cicle case;
 					Contig last = null;
 					if(path.getPathSize() != 0)
 						last = path.getElement(path.getPathSize() - 1).getCnt();
-					if(c2.equals(last))
+					
+
+					if(!c2.equals(last))
 					{
-						// circle case
-						this.addNode2(null, current, null, null, null, path, true, false);
-					} else
-					{
-						// normal case
-						if(last == null) // if last is not exist
-							c1 = null;
 						this.travelgraph(c1, current, c2, path, true);
 					}
 					paths.add(path);
@@ -182,7 +188,6 @@ public class PathBuilder {
 	
 	private void travelgraph(Contig previous, Contig current, Contig next, NodePath path, boolean isForward)
 	{
-		boolean isFirstStart = true;
 		Contig startpoint = current;
 		List<Edge> p2ces = null; // previous to current edges;
 		Edge p2ce = null; // previous to current edge;
@@ -214,8 +219,7 @@ public class PathBuilder {
 		while (true) {
 			if (this.validateOrientation(previous, current, next, p2ce, c2ne)) {
 				if (this.isValidCnt(current)) {
-					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
-					isFirstStart = false;
+					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward);
 				} else {
 					break;
 				}
@@ -223,15 +227,14 @@ public class PathBuilder {
 			} else
 			{
 				next = null;
-				if (this.isValidCnt(current)) {
-					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
-					isFirstStart = false;
-				} 
+//				if (this.isValidCnt(current)) {
+					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward);
+//				} 
 				break;
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("671"))
+//			if(current.getID().equals("878"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -249,12 +252,9 @@ public class PathBuilder {
 					{
 						Node node = path.getElement(path.getPathSize() - (num + 2));
 						if(node != null)
-						{
 							formers.addLast(node.getCnt());
-						} else
-						{
+						else
 							break;
-						}
 						num++;
 						if(num == 2)
 							break;
@@ -265,12 +265,9 @@ public class PathBuilder {
 					{
 						Node node = path.getElement((num + 1));
 						if(node != null)
-						{
 							formers.addLast(node.getCnt());
-						} else
-						{
+						else
 							break;
-						}
 						num++;
 						if(num == 2)
 							break;
@@ -281,7 +278,7 @@ public class PathBuilder {
 				List<Contig> selectedCnts = this.getTriadLinkNext2(current, previous, formers);
 				if (selectedCnts == null) {
 					next = null;
-					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
+					this.addNode2(previous, current, next, p2ce, c2ne, path, isForward);
 					break;
 				}
 				int size = selectedCnts.size();
@@ -308,7 +305,7 @@ public class PathBuilder {
 							// so validate contig is travel again which is not divergence point
 							// will not apply into this case;
 //							if (this.isValidCnt(current)) {
-							this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
+							this.addNode2(previous, current, next, p2ce, c2ne, path, isForward);
 //							} else {
 //								isConflict = true;
 //								break;
@@ -317,7 +314,7 @@ public class PathBuilder {
 						{
 							next = null;
 //							if (this.isValidCnt(current)) {
-							this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
+							this.addNode2(previous, current, next, p2ce, c2ne, path, isForward);
 //							} 
 							isConflict = true;
 							break;
@@ -347,14 +344,14 @@ public class PathBuilder {
 			// check whether is reverse to path
 			if (next.equals(previous)) { // for the linear end point
 				next = null;
-				this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
+				this.addNode2(previous, current, next, p2ce, c2ne, path, isForward);
 				break;
 			}
 			// for the circle case 
 			if (next.equals(startpoint))
 			{
 				next = null;
-				this.addNode2(previous, current, next, p2ce, c2ne, path, isForward, isFirstStart);
+				this.addNode2(previous, current, next, p2ce, c2ne, path, isForward);
 				break;
 			}
 		}
@@ -784,9 +781,10 @@ public class PathBuilder {
 			}
 		}
 		for (Contig c : adjInternals) {
-			if(adjInternals.size() > 2)
-				if(!(diGraph.isDivergenceVertex(c)) && path.isContain(c))
-					continue;
+			// do not travel against the normal point in the path!
+//			if(!(diGraph.isDivergenceVertex(c)) && diGraph.isVertexSelected(c))
+//				continue;
+			List<Contig> innercnts = new Vector<Contig>();
 			List<InternalNode> ins = new Vector<InternalNode>(30);
 			InternalNode in = new InternalNode();
 			in.setGrandfather(null);
@@ -794,17 +792,14 @@ public class PathBuilder {
 			in.setChildren(internal);
 			in.setLeaf(false);
 			ins.add(in);
-			List<Contig> temp = new Vector<Contig>(adjInternals.size());
-			for(Contig t : adjInternals)
-			{
-//				if(!t.equals(c))
-					temp.add(t);
-			}
-			this.getNextUniqueContigs2(c, internal, null, strand, 4, ins, temp);
+			innercnts.add(internal);
+			this.getNextUniqueContigs2(c, internal, null, strand, 4, ins, innercnts);
 			inss.add(ins);
 		}
 		// build the path from internal node list;
 		List<InternalPath> ips = buildInternalPathFromInternalNode(inss);
+		if(ips == null)
+			return null;
 		this.computeInternalPathSupported(ips, external, formers);
 		InternalPathComparator ic = new InternalPathComparator();
 		Collections.sort(ips, ic);
@@ -819,8 +814,8 @@ public class PathBuilder {
 		{
 			InternalPath ip = ips.get(0);
 			internalPath = ip.getPath();
-			internalPath.removeAll(formers);
-			internalPath.remove(external);
+//			internalPath.removeAll(formers);
+//			internalPath.remove(external);
 			internalPath.remove(internal);
 		} else
 		{
@@ -1066,16 +1061,35 @@ public class PathBuilder {
 							break;
 						in = findReverseInternalNode(parent, grandfather, ins);
 					}
-					ips.add(ip);
+					//checking whether internal path is already travel;
+					List<Contig> path = ip.getPath();
+					boolean isTravel = true;
+					for(Contig c : path)
+					{
+						if(!diGraph.isDivergenceVertex(c))
+						{
+							if(!diGraph.isVertexSelected(c))
+							{
+								isTravel = false;
+								break;
+							}
+						}
+					}
+					if(!isTravel)
+						ips.add(ip);
 				}
 			}
 		}
+		if(ips.isEmpty())
+			return null;
 		return ips;
 	}
 
 	private InternalNode findReverseInternalNode(Contig parent, Contig grandfather, List<InternalNode> ins) {
 		InternalNode value = null;
 		for (InternalNode in : ins) {
+			if(in.isLeaf())
+				continue;
 			if (in.getChildren().equals(parent)) {
 				if (grandfather == null) {
 					if (in.getParent() == null) {
@@ -1106,14 +1120,16 @@ public class PathBuilder {
 	 *            - former contig strand.
 	 * @param depth
 	 *            - the check depth
-	 * @param uniques
-	 *            - the list to store the uniques contigs;
-	 *@param  otherAdjacentCnts
-	 *			  - the other adjacent contigs           
+	 * @param ins
+	 *            - the list to store the internal node;
+	 *@param  innercnts
+	 *			  - the list to store already travel contigs;          
 	 *
 	 */
 	private void getNextUniqueContigs2(Contig child, Contig father, Contig grandfather, Strand fatherStrand, int depth,
-			List<InternalNode> ins, List<Contig> otherAdjacentCnts) {
+			List<InternalNode> ins, List<Contig> innercnts) {
+		if(!innercnts.contains(child))
+			innercnts.add(child);
 		// check orientation conflict
 		Map<String, Object> checks = this.validateInternalPathOrientation(child, father, fatherStrand);
 		if (!(boolean) checks.get("VALID"))
@@ -1134,6 +1150,7 @@ public class PathBuilder {
 			ins.add(in);
 			return;
 		}
+
 		// two cases: 1) the next point is divergence; 2) the next point is
 		// unique;
 		if (nextAdjs.size() > 1) {
@@ -1146,22 +1163,14 @@ public class PathBuilder {
 			if (INTERNAL_LENGTH <= MAXIMUM_INTERNAL_LENGTH) {
 				boolean validAlls = false;
 				for (Contig c : nextAdjs) {
-					if(otherAdjacentCnts.contains(c))
-						if(!diGraph.isDivergenceVertex(c))
-							continue;
-					List<Contig> innerOtherAdjacentCnts = new Vector<Contig>(nextAdjs.size() - 1);
-					for(Contig c1 : nextAdjs)
-					{
-						if(!c1.equals(c) && !(otherAdjacentCnts.contains(c1)))
-							innerOtherAdjacentCnts.add(c1);
-					}
-					otherAdjacentCnts.addAll(innerOtherAdjacentCnts);
+					// do not travel against the normal point in the internal path!
+					if(!(diGraph.isDivergenceVertex(c)) && innercnts.contains(c))
+						continue;
 					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 					if ((boolean) nValues.get("VALID")) {
-						this.getNextUniqueContigs2(c, child, father, childStrand, depth - 1, ins, otherAdjacentCnts);
+						this.getNextUniqueContigs2(c, child, father, childStrand, depth - 1, ins, innercnts);
 						validAlls = true;
 					} 
-					otherAdjacentCnts.removeAll(innerOtherAdjacentCnts);
 				}
 				if (!validAlls)
 					in.setLeaf(true);
@@ -1172,9 +1181,9 @@ public class PathBuilder {
 			} else {
 				boolean validAlls = false;
 				for (Contig c : nextAdjs) {
-					if(otherAdjacentCnts.contains(c))
-						if(!diGraph.isDivergenceVertex(c))
-							continue;
+					// do not travel against the normal point in the internal path!
+					if(!(diGraph.isDivergenceVertex(c)) && innercnts.contains(c))
+						continue;
 					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 					if ((boolean) nValues.get("VALID")) {
 						InternalNode iin = new InternalNode();
@@ -1183,6 +1192,7 @@ public class PathBuilder {
 						iin.setGrandfather(father);
 						iin.setLeaf(true);
 						ins.add(iin);
+						innercnts.add(c);
 						validAlls = true;
 					} 
 				}
@@ -1209,21 +1219,19 @@ public class PathBuilder {
 				INTERNAL_LENGTH -= eLen;
 				return;
 			}
-			// checking whether the next contig is one of the other adjacent contigs;
-			if(otherAdjacentCnts.contains(c))
+			// do not travel against the normal point in the internal path!
+			if(!(diGraph.isDivergenceVertex(c)) && innercnts.contains(c))
 			{
-				if(!diGraph.isDivergenceVertex(c))
-				{
-					in.setLeaf(true);
-					ins.add(in);
-					INTERNAL_LENGTH -= cLen;
-					INTERNAL_LENGTH -= eLen;
-					return;
-				}
+				in.setLeaf(true);
+				ins.add(in);
+				INTERNAL_LENGTH -= cLen;
+				INTERNAL_LENGTH -= eLen;
+				return;
 			}
+			
 			Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 			if ((boolean) nValues.get("VALID")) {
-				this.getNextUniqueContigs2(c, child, father, childStrand, depth - 1, ins, otherAdjacentCnts);
+				this.getNextUniqueContigs2(c, child, father, childStrand, depth - 1, ins, innercnts);
 			} else {
 				in.setLeaf(true);
 			}
@@ -1860,7 +1868,7 @@ public class PathBuilder {
 	 *  
 	 */
 	private void addNode2(Contig previous, Contig current, Contig next, Edge p2ce, Edge c2ne, NodePath path, 
-			boolean isForward, boolean isFirstStart){
+			boolean isForward){
 		// if it is forward direction, it will adding next contig into path and
 		// their parameter of
 		// current contig
@@ -1888,20 +1896,20 @@ public class PathBuilder {
 				diGraph.setVertexAsSelected(current);
 			}
 		} else {
-			if(!isFirstStart)
+			Node node = new Node();
+			node.setCnt(current);
+			node.setOrphan(false);
+			if(p2ce != null)
 			{
-				Node node = new Node();
-				node.setCnt(current);
-				node.setOrphan(false);
 				node.setMeanDist2Next(p2ce.getDistMean());
 				node.setSdDist2Next(p2ce.getDistSd());
 				if(p2ce.gettStrand().equals(Strand.FORWARD))
 					node.setStrand(Strand.REVERSE);
 				else
 					node.setStrand(Strand.FORWARD);
-				path.unshift(node);
-				diGraph.setVertexAsSelected(current);
 			}
+			path.unshift(node);
+			diGraph.setVertexAsSelected(current);
 		}
 	}
 
