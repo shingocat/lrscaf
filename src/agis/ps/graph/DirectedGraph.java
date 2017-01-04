@@ -610,7 +610,6 @@ public class DirectedGraph extends Graph implements Serializable {
 						this.delTips(next, c, 2, path, rmEdges);
 					}
 				}
-
 			}
 		} catch (Exception e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
@@ -726,6 +725,7 @@ public class DirectedGraph extends Graph implements Serializable {
 				for(Edge e : es)
 					if(!removes.contains(e))
 						removes.add(e);
+				path.removeLast();
 				return true;
 			}
 			path.removeLast();
