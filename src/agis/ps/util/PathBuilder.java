@@ -101,7 +101,7 @@ public class PathBuilder {
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
 //				INDEX++;
-//				if(INDEX == 34)
+//				if(INDEX == 7)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
@@ -234,7 +234,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("132"))
+//			if(current.getID().equals("1388"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -796,7 +796,7 @@ public class PathBuilder {
 			in.setChildren(internal);
 			in.setLeaf(false);
 			ins.add(in);
-			this.getInternalPath(c, internal, null, strand, convergence, 4, ins);
+			this.getInternalPath(c, internal, null, strand, isBubble, convergence, 4, ins);
 			inss.add(ins);
 		}
 		// build the path from internal node list;
@@ -1254,7 +1254,7 @@ public class PathBuilder {
 	 *
 	 */
 	private void getInternalPath(Contig child, Contig father, Contig grandfather, Strand fatherStrand, 
-			Contig convergence, int depth, List<InternalNode> ins) {
+			boolean isBubble, Contig convergence, int depth, List<InternalNode> ins) {
 		// check orientation conflict
 		Map<String, Object> checks = this.validateInternalPathOrientation(child, father, fatherStrand);
 		if (!(boolean) checks.get("VALID"))
@@ -1281,7 +1281,7 @@ public class PathBuilder {
 			ins.add(in);
 			return;
 		}
-		if(father.equals(convergence))
+		if(isBubble && father.equals(convergence))
 		{
 			in.setLeaf(true);
 			ins.add(in);
@@ -1304,7 +1304,7 @@ public class PathBuilder {
 						continue;
 					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 					if ((boolean) nValues.get("VALID")) {
-						this.getInternalPath(c, child, father, childStrand, convergence, depth - 1, ins);
+						this.getInternalPath(c, child, father, childStrand, isBubble, convergence, depth - 1, ins);
 						validAlls = true;
 					} 
 				}
@@ -1363,7 +1363,7 @@ public class PathBuilder {
 			}
 			Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
 			if ((boolean) nValues.get("VALID")) {
-				this.getInternalPath(c, child, father, childStrand, convergence, depth - 1, ins);
+				this.getInternalPath(c, child, father, childStrand, isBubble, convergence, depth - 1, ins);
 			} else {
 				in.setLeaf(true);
 			}
