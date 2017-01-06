@@ -234,7 +234,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("1388"))
+//			if(current.getID().equals("2276"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -809,48 +809,80 @@ public class PathBuilder {
 		LinkedList<Contig> internalPath = null;
 		if(ips == null || ips.isEmpty())
 			return null;
+		
+		InternalPath ip1 = ips.get(0);
 		int size = ips.size() - 1;
-		if(size == 0)
+		int ip1score = 0;
+		int ip2score = 0;
+		InternalPath ip2 = null; // ip need to test
+		while(true)
 		{
-			InternalPath ip = ips.get(0);
-			internalPath = ip.getPath();
-			internalPath.remove(internal);
-		} else
-		{
-			int index = 1;
-			InternalPath ip = ips.get(index - 1); // ip need to keep
-			int ip1score = 0;
-			InternalPath ipt = null; // ip need to test
-			int ip2score = 0;
-			while(true)
+			ip1score = ip1.getScore();
+			if(ip1.getScore() <= 0)
 			{
-				ip1score = ip.getScore();
-				if(ip.getScore() <= 0)
-				{
-					ip = null;
-					break;
-				}
-				if(index <= size)
-					ipt = ips.get(index);
-				else
-					break;
-				ip2score = ipt.getScore();
+				ip1 = null;
+				break;
+			}
+			for(int index = 1; index <= size; index++)
+			{
+				ip2 = ips.get(index);
+				ip2score = ip2.getScore();
 				if(ip1score > ip2score)
 				{
 					break;
 				} else
 				{
-					ip = getBestInternalPath(ip, ipt);
+					ip1 = getBestInternalPath(ip1, ip2);
 				}
-				index++;
 			}
-			if(ip != null)
+			if(isBestSupportedInternalPath(ip1, adjInternals))
 			{
-				internalPath = ip.getPath();
-				internalPath.remove(internal);
+				break;
+			} else
+			{
+				ips.remove(ip1);
+				if(ips == null || ips.isEmpty())
+				{
+					ip1 = null;
+					break;
+				}
+				size = ips.size() - 1;
+				ip1 = ips.get(0);
 			}
 		}
+		if(ip1 != null)
+		{
+			internalPath = ip1.getPath();
+			internalPath.remove(internal);
+		}
 		return internalPath;
+	}
+	
+	private boolean isBestSupportedInternalPath(InternalPath ip, List<Contig> adjs)
+	{
+		int score = ip.getScore();
+		int value = 0;
+		for(Contig c : adjs)
+		{
+			for(TriadLink tl : triads)
+			{
+				if(tl.isContain(c))
+				{
+					Contig pre = tl.getPrevious();
+					Contig mid = tl.getMiddle();
+					Contig lst = tl.getLast();
+					if(ip.isContain(pre))
+						value += tl.getSupLinks();
+					else if(ip.isContain(lst))
+						value += tl.getSupLinks();
+					else if(mid != null && ip.isContain(mid))
+						value += tl.getSupLinks();
+				}
+				if(value > score)
+					return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
