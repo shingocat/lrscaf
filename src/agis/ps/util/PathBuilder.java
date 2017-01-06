@@ -234,7 +234,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("2180"))
+//			if(current.getID().equals("1388"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -863,9 +863,15 @@ public class PathBuilder {
 		int size = ip.getPath().size();
 		if(size <= 1)
 			return true;
+		// only considering the uniques contigs
 		List<Contig> temp = new LinkedList<Contig>();
-		for(int i = 1; i < size; i++)
-			temp.add(ip.getCnt(i));
+		for(int i = size - 1; i >= 0; i--)
+		{
+			Contig c = ip.getCnt(i);
+			if(diGraph.isDivergenceVertex(c))
+				break;
+			temp.add(c);
+		}
 		int score = ip.getScore();
 		int value = 0;
 		for(Contig c : adjs)
