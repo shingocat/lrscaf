@@ -57,6 +57,13 @@ public class InternalPath {
 //			return true;
 	}
 	
+	public Contig getCnt(int index)
+	{
+		if(index < 0 || index >= path.size())
+			return null;
+		return path.get(index);
+	}
+	
 	public int getIndex(Contig c)
 	{
 		return path.indexOf(c);

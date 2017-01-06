@@ -234,7 +234,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("2276"))
+//			if(current.getID().equals("2180"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -860,10 +860,18 @@ public class PathBuilder {
 	
 	private boolean isBestSupportedInternalPath(InternalPath ip, List<Contig> adjs)
 	{
+		int size = ip.getPath().size();
+		if(size <= 1)
+			return true;
+		List<Contig> temp = new LinkedList<Contig>();
+		for(int i = 1; i < size; i++)
+			temp.add(ip.getCnt(i));
 		int score = ip.getScore();
 		int value = 0;
 		for(Contig c : adjs)
 		{
+			if(ip.isContain(c))
+				continue;
 			for(TriadLink tl : triads)
 			{
 				if(tl.isContain(c))
@@ -871,11 +879,11 @@ public class PathBuilder {
 					Contig pre = tl.getPrevious();
 					Contig mid = tl.getMiddle();
 					Contig lst = tl.getLast();
-					if(ip.isContain(pre))
+					if(temp.contains(pre))
 						value += tl.getSupLinks();
-					else if(ip.isContain(lst))
+					else if(temp.contains(lst))
 						value += tl.getSupLinks();
-					else if(mid != null && ip.isContain(mid))
+					else if(mid != null && temp.contains(mid))
 						value += tl.getSupLinks();
 				}
 				if(value > score)
