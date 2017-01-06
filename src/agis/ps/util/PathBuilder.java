@@ -34,7 +34,7 @@ import agis.ps.seqs.Contig;
 
 public class PathBuilder {
 	public static Logger logger = LoggerFactory.getLogger(PathBuilder.class);
-	private static int MAXIMUM_INTERNAL_LENGTH = 5000; // 5000 bp for validating
+	private static int MAXIMUM_INTERNAL_LENGTH = 10000; // 5000 bp for validating
 														// segement duplication;
 	private static int INTERNAL_LENGTH = 0; // store the internal length;
 	@SuppressWarnings("unused")
@@ -796,7 +796,7 @@ public class PathBuilder {
 			in.setChildren(internal);
 			in.setLeaf(false);
 			ins.add(in);
-			this.getInternalPath(c, internal, null, strand, isBubble, convergence, 4, ins);
+			this.getInternalPath(c, internal, null, strand, isBubble, convergence, 6, ins);
 			inss.add(ins);
 		}
 		// build the path from internal node list;
