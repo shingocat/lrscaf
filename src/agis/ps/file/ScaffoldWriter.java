@@ -22,6 +22,7 @@ import org.biojava.nbio.core.sequence.DNASequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.align.SmithWaterman;
 import agis.ps.link.CntFileEncapsulate;
 import agis.ps.path.Node;
 import agis.ps.path.NodePath;
@@ -78,7 +79,10 @@ public class ScaffoldWriter {
 			int index = 0;
 			for(NodePath np : paths)
 			{
-				bw.write(this.buildScaffoldByCntFileEncapsulate(np, index));
+				String seqs = this.buildScaffoldByCntFileEncapsulate(np, index);
+				bw.write(">Scaffolds_" + index + "  " + seqs.length());
+				bw.newLine();
+				bw.write(seqs);
 				bw.newLine();
 				index++;
 			}		
@@ -105,19 +109,18 @@ public class ScaffoldWriter {
 			}
 		}
 		long end = System.currentTimeMillis();
-		logger.debug("concatenate time : " + concattime + " ms");
-		logger.debug("build scaffolds time : " + buildscaftime + " ms");
+//		logger.debug("concatenate time : " + concattime + " ms");
+//		logger.debug("build scaffolds time : " + buildscaftime + " ms");
 		logger.info("Scaffold writing, erase time: " + (end - start) + " ms");
 	}
 	
 	
 	public String buildScaffoldByCntFileEncapsulate(NodePath path, int index)
 	{
-		long start = System.currentTimeMillis();
+//		long start = System.currentTimeMillis();
 		StringBuffer sb = new StringBuffer();
 		int size = path.getPathSize();
 		Node current =  null;
-		sb.append(">Scaffolds_" + index + "\n");
 		String cId = null;
 		String seq = null;
 		int dist = 0;
@@ -147,7 +150,7 @@ public class ScaffoldWriter {
 					// global sequence alignment method to concatenate two seqs;
 //					String temp = concatenate(sb.toString(), seq, dist, sd);
 					// directly concatencate two seqs;
-					String temp = concatenate2(sb.toString(), seq, dist, sd);
+					String temp = concatenate(sb.toString(), seq, dist, sd);
 					sb.delete(0, sb.length());
 					sb.append(temp);
 					dist = current.getMeanDist2Next();
@@ -162,8 +165,8 @@ public class ScaffoldWriter {
 				}
 			}
 		}
-		long end = System.currentTimeMillis();
-		buildscaftime += (end - start);
+//		long end = System.currentTimeMillis();
+//		buildscaftime += (end - start);
 		return sb.toString();
 	}
 	
@@ -516,142 +519,88 @@ public class ScaffoldWriter {
 	
 	private String concatenate2 (String seq1, String seq2, int len, int sd)
 	{
-		long start = System.currentTimeMillis();
-		int range = Math.abs(len) + 3 * Math.abs(sd);
+//		long start = System.currentTimeMillis();
+		int range = Math.abs(len) + 5 * Math.abs(sd);
+		int len1 = seq1.length();
 		int len2 = seq2.length();
 		StringBuffer sb = new StringBuffer();
+		String subSeq1 = null;
+		String subSeq2 = null;
+		File file = null;
+		FileWriter fw = null;
+		BufferedWriter fbw = null;
+		try{
+		file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "overlapseqs.out");
+		fw = new FileWriter(file, true);
+		fbw = new BufferedWriter(fw);
+		if(len1 < range)
+			subSeq1 = seq1;
+		else
+			subSeq1 = seq1.substring(len1 - range);
 		sb.append(seq1);
 		// for the case if the range is large than seq2 length, 
 		// we will directly used seq1.
 		if(range < len2) 
-		{	
+		{	subSeq2 = seq2.substring(0, range);
 			seq2 = seq2.substring(range, len2 - 1);
 			sb.append(seq2);
+		} else
+		{
+			subSeq2 = seq2;
 		}
-			
-		long end = System.currentTimeMillis();
-		concattime += (end - start);
+//		logger.debug(subSeq1 + "\t" + subSeq2); 
+		fbw.write(subSeq1 + "\t" + subSeq2);
+		fbw.newLine();
+		fbw.flush();
+		} catch(IOException e)
+		{
+			logger.debug(e.getMessage());
+		} catch(Exception e)
+		{
+			logger.debug(e.getMessage());
+		}
+//		long end = System.currentTimeMillis();
+//		concattime += (end - start);
 		return sb.toString();
 	}
 
 	private String concatenate(String seq1, String seq2, int len, int sd) {
-		long start = System.currentTimeMillis();
+//		long startTime = System.currentTimeMillis();
 		// 99% region
-		int range = Math.abs(len) + 3 * Math.abs(sd);
-		String t1 = null;
-		String t2 = null;
-		Consensusser cs = new Consensusser();
-		List<String> seqs = new Vector<String>(2);
-		// four different status;
-		if (seq1.length() <= range) {
-			t1 = seq1;
-			if (seq2.length() <= range) {
-				// seq1 and seq2 less than range;
-				// return consensus directly;
-				t2 = seq2;
-				seqs.add(t1);
-				seqs.add(t2);
-				String value;
-				try {
-					value = cs.getConsensus(seqs);
-				} catch (CompoundNotFoundException e) {
-					logger.error(this.getClass().getName() + "\t" + e.getMessage());
-					if (t1.length() > t2.length())
-						value = t1;
-					else
-						value = t2;
-				}
-				// String value = cs.getConsensus(t1, t2, "nw");
-				long end = System.currentTimeMillis();
-				concattime += (end - start);
-				return value;
-			} else {
-				// seq1 less than range, but seq2 large than range;
-				// return consensus + seq2 remainder;
-				t2 = seq2.substring(0, range);
-				seqs.add(t1);
-				seqs.add(t2);
-				String value;
-				try {
-					value = cs.getConsensus(seqs);
-				} catch (CompoundNotFoundException e) {
-					logger.error(this.getClass().getName() + "\t" + e.getMessage());
-					if (t1.length() > t2.length())
-						value = t1;
-					else
-						value = t2;
-				}
-				// String value = cs.getConsensus(t1, t2, "nw");
-				StringBuffer sb = new StringBuffer();
-				sb.append(value);
-				sb.append(seq2.substring(range));
-				// logger.debug(sb.toString());
-				long end = System.currentTimeMillis();
-				concattime += (end - start);
-				return sb.toString();
-			}
-		} else {
-			t1 = seq1.substring(seq1.length() - range);
-			if (seq2.length() <= range) {
-				// seq1 large than range, but seq2 less than range;
-				// return seq1 remainder + consensus;
-				t2 = seq2;
-				seqs.add(t1);
-				seqs.add(t2);
-				String value;
-				try {
-					value = cs.getConsensus(seqs);
-				} catch (CompoundNotFoundException e) {
-					logger.error(this.getClass().getName() + "\t" + e.getMessage());
-					if (t1.length() > t2.length())
-						value = t1;
-					else
-						value = t2;
-				}
-				// String value = cs.getConsensus(t1, t2, "nw");
-				StringBuffer sb = new StringBuffer();
-				sb.append(seq1.substring(0, seq1.length() - range));
-				sb.append(value);
-				// logger.debug(sb.toString());
-				long end = System.currentTimeMillis();
-				concattime += (end - start);
-				return sb.toString();
-			} else {
-				// seq1 and seq2 large than range;
-				// return seq1 remainder + consensus + seq2 remainder;
-				t2 = seq2.substring(0, range);
-				seqs.add(t1);
-				seqs.add(t2);
-				String value;
-				try {
-					value = cs.getConsensus(seqs);
-				} catch (CompoundNotFoundException e) {
-					logger.error(this.getClass().getName() + "\t" + e.getMessage());
-					if (t1.length() > t2.length())
-						value = t1;
-					else
-						value = t2;
-				}
-				// String value = cs.getConsensus(t1, t2, "nw");
-				StringBuffer sb = new StringBuffer();
-				sb.append(seq1.substring(0, seq1.length() - range));
-				sb.append(value);
-				sb.append(seq2.substring(range));
-				// logger.debug(sb.toString());
-				long end = System.currentTimeMillis();
-				concattime += (end - start);
-				return sb.toString();
-			}
+		int range = Math.abs(len) + 5 * Math.abs(sd);
+		StringBuffer sb = new StringBuffer();
+		String subRestSeq1 = null;
+		String subSeq1 = null;
+		String subSeq2 = null;
+		String subRestSeq2 = null;
+		int s1Len = seq1.length();
+		int s2Len = seq2.length();
+		if(range >= s1Len)
+		{
+			subSeq1 = seq1;
+			subRestSeq1 = "";
+		} else
+		{
+			int index = s1Len - range;
+			subSeq1 = seq1.substring(index);
+			subRestSeq1 = seq1.substring(0, index);
 		}
-
-		// Consensusser cs = new Consensusser();
-		// String value = cs.getConsensus(t1, t2, "nw");
-		// cs = null;
-		// StringBuffer sb = new StringBuffer();
-		// sb.append(seq1.substring(0, seq1.length() - range));
-		// sb.append(value);
-		// sb.append(seq2.substring(range));
-		// return sb.toString();
+		if(range >= s2Len)
+		{
+			subSeq2 = seq2;
+			subRestSeq2 = "";
+		} else
+		{
+			subSeq2 = seq2.substring(0, range);
+			subRestSeq2 = seq2.substring(range);
+		}
+		SmithWaterman sw = new SmithWaterman(subSeq1, subSeq2);
+		sb.append(subRestSeq1);
+		sb.append(sw.getConsensus());
+		sb.append(subRestSeq2);
+//		long endTime = System.currentTimeMillis();
+//		concattime += (endTime - startTime);
+		return sb.toString();
 	}
 
 	
