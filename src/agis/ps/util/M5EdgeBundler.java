@@ -42,15 +42,15 @@ public class M5EdgeBundler {
 		this.paras = paras;
 		this.linkBuilder = new LinkBuilder(paras);
 		this.linkWriter = new PBLinkWriter(paras);
-		this.linkWriter.init();
+//		this.linkWriter.init();
 		this.tlWriter = new TriadLinkWriter(paras);
-		this.tlWriter.init();
+//		this.tlWriter.init();
 	}
 
 	public List<Edge> building() {
 		this.readAlignFile();
 		this.findingRepeats();
-		this.buildingLinks();
+//		this.buildingLinks();
 		// clear raw data;
 		m5file = null;
 		// link to edges;
@@ -66,89 +66,89 @@ public class M5EdgeBundler {
 	{
 		M5Reader reader = new M5Reader(paras);
 //		m5file = reader.readByArrayCopy();
-		m5file = reader.readByLineNumberReader();
+//		m5file = reader.readByLineNumberReader();
 		cntfile = m5file.getCntFileEncapsulate();
 	}
 	
 	private void findingRepeats()
 	{
-		RepeatFinder rf = new RepeatFinder(paras);
-//		repeats = rf.findRepeat2();
-		repeats = rf.findByFileEncapsulate(m5file);
-		rf = null;
+//		RepeatFinder rf = new RepeatFinder(paras);
+////		repeats = rf.findRepeat2();
+//		repeats = rf.findByFileEncapsulate(m5file);
+//		rf = null;
 	}
 	
-	
-	private void buildingLinks()
-	{
-		long start = System.currentTimeMillis();
-		try {
-
-			List<MRecord> records = new Vector<MRecord>(10);
-			String id = null; // pacbio long read id
-			MRecord m = null;
-			M5Record m5 = null;
-			int index = 0;
-			while (true) {
-				m5 = m5file.getM5Record(index);
-//				if(m5.getqName().equals("10639"))
-//					logger.debug("breakpoint");
-				if(m5 != null)
-				{
-					if (id == null) {
-						id = m5.getqName();
-						m = MRecordValidator.validate(m5, paras);
-						if (m != null)
-						{
-							records.add(m);
-						}
-					} else { // id != null
-						if (id.equals(m5.getqName())) {
-							m = MRecordValidator.validate(m5, paras);
-							if (m != null)
-							{
-								records.add(m);
-							}
-						} else {
-							if (records.size() >= 2) {
-								List<PBLinkM> links = linkBuilder.mRecord2Link(records, repeats);
-								if (links != null && links.size() > 0)
-									linkWriter.write(links);
-							}
-							records.clear();
-							id = m5.getqName();
-							m = MRecordValidator.validate(m5, paras);
-							if (m != null)
-							{
-								records.add(m);
-							}
-						}
-					}
-				} else {
-					if (records.size() >= 2) {
-						List<PBLinkM> links = linkBuilder.mRecord2Link(records, repeats);
-						if (links != null && links.size() > 0)
-							linkWriter.write(links);
-					}
-					break;
-				}					
-				index++;			
-			}
-		} catch (Exception e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-		} 
-		// write triadlink to file
-		tlWriter.write2(linkBuilder.getTriadLinks());
-		tlWriter.close();
-		linkWriter.close();
-		// write similarity contigs into file;
-//		SimilarityCntWriter scw = new SimilarityCntWriter(paras);
-//		scw.write(linkBuilder.getSimCnts());
-		// Repeats finder;
-		long end = System.currentTimeMillis();
-		logger.info("Links building, erase time : " + (end - start) + " ms");
-		return;
-	}
+//	
+//	private void buildingLinks()
+//	{
+//		long start = System.currentTimeMillis();
+//		try {
+//
+//			List<MRecord> records = new Vector<MRecord>(10);
+//			String id = null; // pacbio long read id
+//			MRecord m = null;
+//			M5Record m5 = null;
+//			int index = 0;
+//			while (true) {
+//				m5 = m5file.getM5Record(index);
+////				if(m5.getqName().equals("10639"))
+////					logger.debug("breakpoint");
+//				if(m5 != null)
+//				{
+//					if (id == null) {
+//						id = m5.getqName();
+//						m = MRecordValidator.validate(m5, paras);
+//						if (m != null)
+//						{
+//							records.add(m);
+//						}
+//					} else { // id != null
+//						if (id.equals(m5.getqName())) {
+//							m = MRecordValidator.validate(m5, paras);
+//							if (m != null)
+//							{
+//								records.add(m);
+//							}
+//						} else {
+//							if (records.size() >= 2) {
+//								List<PBLinkM> links = linkBuilder.mRecord2Link(records, repeats);
+//								if (links != null && links.size() > 0)
+//									linkWriter.write(links);
+//							}
+//							records.clear();
+//							id = m5.getqName();
+//							m = MRecordValidator.validate(m5, paras);
+//							if (m != null)
+//							{
+//								records.add(m);
+//							}
+//						}
+//					}
+//				} else {
+//					if (records.size() >= 2) {
+//						List<PBLinkM> links = linkBuilder.mRecord2Link(records, repeats);
+//						if (links != null && links.size() > 0)
+//							linkWriter.write(links);
+//					}
+//					break;
+//				}					
+//				index++;			
+//			}
+//		} catch (Exception e) {
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//		} 
+//		// write triadlink to file
+//		tlWriter.write2(linkBuilder.getTriadLinks());
+//		tlWriter.close();
+//		linkWriter.close();
+//		// write similarity contigs into file;
+////		SimilarityCntWriter scw = new SimilarityCntWriter(paras);
+////		scw.write(linkBuilder.getSimCnts());
+//		// Repeats finder;
+//		long end = System.currentTimeMillis();
+//		logger.info("Links building, erase time : " + (end - start) + " ms");
+//		return;
+//	}
 	// return the ContigFileEncapsulate
 	public CntFileEncapsulate getCntFile()
 	{

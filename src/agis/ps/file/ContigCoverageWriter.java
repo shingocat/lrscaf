@@ -37,6 +37,49 @@ public class ContigCoverageWriter {
 		this.paras = paras;
 	}
 	
+	public void write2(Map<String, Integer> args)
+	{
+		String outFolder = paras.getOutFolder();
+		String fileName = outFolder + System.getProperty("file.separator") + "contig_coverage.info";
+		File file = null; 
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try
+		{
+			file = new File(fileName);
+			if (file.exists()) {
+				logger.info("The output file of scaffold is exist! It will not be overwrited!");
+				return;
+			}
+			if(!file.createNewFile())
+			{
+				logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
+				return;
+			}
+			fw = new FileWriter(file);
+			bw = new BufferedWriter(fw);
+			for(String s : args.keySet())
+			{
+				bw.write(s + "\t" + args.get(s));
+				bw.newLine();
+			}
+			bw.flush();
+			bw.close();
+		} catch(IOException e)
+		{
+			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} finally
+		{
+			try{
+				if(bw != null)
+					bw.close();
+			} catch(IOException e)
+			{
+				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			}
+		}
+	}
+	
 	public void write(Map<String, List<MRecord>> args)
 	{
 		String outFolder = paras.getOutFolder();

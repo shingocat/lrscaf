@@ -77,6 +77,11 @@ public class PBLink implements ILink {
 			oStrand = Strand.REVERSE;
 	}
 	
+	public void setOStrand(Strand strand)
+	{
+		oStrand = strand;
+	}
+	
 	public Strand getOStrand()
 	{
 		return oStrand;
@@ -88,6 +93,11 @@ public class PBLink implements ILink {
 			tStrand = Strand.FORWARD;
 		else
 			tStrand = Strand.REVERSE;
+	}
+	
+	public void setTStrand(Strand strand)
+	{
+		tStrand = strand;
 	}
 	
 	public Strand getTStrand()

@@ -31,23 +31,12 @@ public class ContigReader {
 	public static Logger logger = LoggerFactory.getLogger(ContigReader.class);
 	public Map<String, Contig> cnts = new HashMap<String, Contig>();
 	private String filePath;
-	private int cntLen = 3000; // default large than 3000 bp;
-
-	public ContigReader(String filePath) {
-		this.filePath = filePath;
-	}
 	
 	public ContigReader(Parameter paras)
 	{
 		this.filePath = paras.getCntFile();
-		this.cntLen = paras.getMinContLen();
 	}
 	
-	public ContigReader(String filePath, int cntLen)
-	{
-		this.filePath = filePath;
-		this.cntLen = cntLen;
-	}
 	
 	// original method for reading contigs with filtering parameters
 	public Map<String, Contig> read() {
@@ -75,9 +64,12 @@ public class ContigReader {
 				line = br.readLine();
 				if(line == null)
 				{
-					if(id != null && sb.length() >= cntLen)
+					int length = sb.length();
+					if(id != null && length >= 0)
 					{
-						Contig cnt = new Contig(sb.toString());
+						Contig cnt = new Contig();
+						cnt.setSeqs(sb.toString());
+						cnt.setLength(length);
 						id = id.replaceAll("^>", "");
 						id = id.split("\\s")[0];
 						id = id.trim();
@@ -95,12 +87,15 @@ public class ContigReader {
 				if (line.startsWith(">")) {
 					temp = id;
 					id = line;
-					if(temp != null && sb.length() >= cntLen)
+					int length = sb.length();
+					if(temp != null && length >= 0)
 					{
 						temp = temp.replaceFirst("^>", "");
 						temp = temp.split("\\s")[0];
 						temp = temp.trim();
-						Contig cnt = new Contig(sb.toString());
+						Contig cnt = new Contig();
+						cnt.setSeqs(sb.toString());
+						cnt.setLength(length);
 						cnt.setID(temp);
 						cnts.put(temp, cnt);
 						sb = null;
@@ -114,29 +109,20 @@ public class ContigReader {
 			}
 
 		} catch (ArrayIndexOutOfBoundsException e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (FileNotFoundException e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (IOException e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
-			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
-		} catch (CompoundNotFoundException e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (PatternSyntaxException e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (Exception e) {
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} finally {
 			try {
 				if (br != null)
 					br.close();
 			} catch (IOException e) {
-				logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}

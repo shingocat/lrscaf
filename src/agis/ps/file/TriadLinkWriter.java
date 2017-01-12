@@ -34,10 +34,10 @@ public class TriadLinkWriter {
 		this.paras = paras;
 	}
 
-	public TriadLinkWriter(Parameter paras, List<TriadLink> triads) {
-		this.paras = paras;
-		this.triads = triads;
-	}
+//	public TriadLinkWriter(Parameter paras, List<TriadLink> triads) {
+//		this.paras = paras;
+//		this.triads = triads;
+//	}
 
 	public void init() {
 		try {
@@ -53,53 +53,53 @@ public class TriadLinkWriter {
 		}
 	}
 
-	public void write() {
-		String outFolder = paras.getOutFolder();
-		String fileName = outFolder + System.getProperty("file.separator") + "triad_link.info";
-		File file = null;
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-		try {
-			file = new File(fileName);
-			if (file.exists()) {
-				logger.debug(this.getClass().getName() + " The output file " + fileName
-						+ " is exist! It will not be overwrited!");
-				logger.info(this.getClass().getName() + " The output file " + fileName
-						+ " is exist! It will not be overwrited!");
-				return;
-			}
-			if (!file.createNewFile()) {
-				logger.debug(this.getClass().getName() + " The output file " + fileName + " could not be created!");
-				logger.info(this.getClass().getName() + " The output file " + fileName + " could not be created!");
-				return;
-			}
-			fw = new FileWriter(file);
-			bw = new BufferedWriter(fw);
-			for (TriadLink tl : triads) {
-				Contig pre = tl.getPrevious();
-				Contig mid = tl.getMiddle();
-				Contig lst = tl.getLast();
-				bw.write(pre.getID() + "," + mid.getID() + "," + lst.getID() + "," + tl.getSupLinks());
-				// bw.write(pre.getID() + "(length=" + pre.getLength() + ")," +
-				// mid.getID() + "(length=" + mid.getLength() + ")," +
-				// lst.getID() + "(length=" + lst.getLength() + ")," +
-				// "supLinks=" + tl.getSupLinks());
-				bw.newLine();
-			}
-			bw.flush();
-		} catch (IOException e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
-		} finally {
-			try {
-				if (bw != null)
-					bw.close();
-			} catch (IOException e) {
-				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
-			}
-		}
-	}
+//	public void write() {
+//		String outFolder = paras.getOutFolder();
+//		String fileName = outFolder + System.getProperty("file.separator") + "triad_link.info";
+//		File file = null;
+//		FileWriter fw = null;
+//		BufferedWriter bw = null;
+//		try {
+//			file = new File(fileName);
+//			if (file.exists()) {
+//				logger.debug(this.getClass().getName() + " The output file " + fileName
+//						+ " is exist! It will not be overwrited!");
+//				logger.info(this.getClass().getName() + " The output file " + fileName
+//						+ " is exist! It will not be overwrited!");
+//				return;
+//			}
+//			if (!file.createNewFile()) {
+//				logger.debug(this.getClass().getName() + " The output file " + fileName + " could not be created!");
+//				logger.info(this.getClass().getName() + " The output file " + fileName + " could not be created!");
+//				return;
+//			}
+//			fw = new FileWriter(file);
+//			bw = new BufferedWriter(fw);
+//			for (TriadLink tl : triads) {
+//				Contig pre = tl.getPrevious();
+//				Contig mid = tl.getMiddle();
+//				Contig lst = tl.getLast();
+//				bw.write(pre.getID() + "," + mid.getID() + "," + lst.getID() + "," + tl.getSupLinks());
+//				// bw.write(pre.getID() + "(length=" + pre.getLength() + ")," +
+//				// mid.getID() + "(length=" + mid.getLength() + ")," +
+//				// lst.getID() + "(length=" + lst.getLength() + ")," +
+//				// "supLinks=" + tl.getSupLinks());
+//				bw.newLine();
+//			}
+//			bw.flush();
+//		} catch (IOException e) {
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+//		} finally {
+//			try {
+//				if (bw != null)
+//					bw.close();
+//			} catch (IOException e) {
+//				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+//			}
+//		}
+//	}
 
-	public void write2(List<TriadLink> triads) {
+	public void write(List<TriadLink> triads) {
 		try {
 			for (TriadLink tl : triads) {
 				Contig pre = tl.getPrevious();
@@ -114,30 +114,33 @@ public class TriadLinkWriter {
 				bw.newLine();
 			}
 			bw.flush();
+			bw.close();
 		} catch (IOException e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+		} catch (Exception e) {
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 	}
 
-	public void write2(TriadLink triad) {
-		try {
-
-			Contig pre = triad.getPrevious();
-			Contig mid = triad.getMiddle();
-			Contig lst = triad.getLast();
-			String line = null;
-			if (mid == null)
-				line = pre.getID() + ",-" + "," + lst.getID() + "," + triad.getSupLinks();
-			else
-				line = pre.getID() + "," + mid.getID() + "," + lst.getID() + "," + triad.getSupLinks();
-			bw.write(line);
-			bw.newLine();
-			bw.flush();
-		} catch (IOException e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
-		}
-	}
-	
+//	public void write2(TriadLink triad) {
+//		try {
+//
+//			Contig pre = triad.getPrevious();
+//			Contig mid = triad.getMiddle();
+//			Contig lst = triad.getLast();
+//			String line = null;
+//			if (mid == null)
+//				line = pre.getID() + ",-" + "," + lst.getID() + "," + triad.getSupLinks();
+//			else
+//				line = pre.getID() + "," + mid.getID() + "," + lst.getID() + "," + triad.getSupLinks();
+//			bw.write(line);
+//			bw.newLine();
+//			bw.flush();
+//		} catch (IOException e) {
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+//		}
+//	}
+//	
 	public void write4Edges(List<Edge> edges)
 	{
 		try
@@ -162,7 +165,7 @@ public class TriadLinkWriter {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
 	}
-
+//
 	public void close() {
 		try {
 			if (bw != null)

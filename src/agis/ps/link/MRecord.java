@@ -24,9 +24,9 @@ public class MRecord implements Serializable{
 	private Integer tStart;
 	private Integer tEnd;
 	private Strand tStrand;
-	private Integer score;
+//	private Integer score;
 	private Double identity;
-	private Integer mapQV;
+//	private Integer mapQV;
 	
 	public String getqName() {
 		return qName;
@@ -37,20 +37,21 @@ public class MRecord implements Serializable{
 	public Integer getqLength() {
 		return qLength;
 	}
-	public void setqLength(Integer qLength) {
-		this.qLength = qLength;
+	public void setqLength(String qLength)
+	{
+		this.qLength = Integer.valueOf(qLength);
 	}
 	public Integer getqStart() {
 		return qStart;
 	}
-	public void setqStart(Integer qStart) {
-		this.qStart = qStart;
+	public void setqStart(String qStart) {
+		this.qStart = Integer.valueOf(qStart);
 	}
 	public Integer getqEnd() {
 		return qEnd;
 	}
-	public void setqEnd(Integer qEnd) {
-		this.qEnd = qEnd;
+	public void setqEnd(String qEnd) {
+		this.qEnd = Integer.valueOf(qEnd);
 	}
 	public Strand getqStrand() {
 		return qStrand;
@@ -67,19 +68,31 @@ public class MRecord implements Serializable{
 	public Integer gettLength() {
 		return tLength;
 	}
-	public void settLength(Integer tLength) {
+	public void settLength(String tLength) {
+		this.tLength = Integer.valueOf(tLength);
+	}
+	public void settLength(Integer tLength)
+	{
 		this.tLength = tLength;
 	}
 	public Integer gettStart() {
 		return tStart;
 	}
-	public void settStart(Integer tStart) {
+	public void settStart(String tStart) {
+		this.tStart = Integer.valueOf(tStart);
+	}
+	public void settStart(Integer tStart)
+	{
 		this.tStart = tStart;
 	}
 	public Integer gettEnd() {
 		return tEnd;
 	}
-	public void settEnd(Integer tEnd) {
+	public void settEnd(String tEnd) {
+		this.tEnd = Integer.valueOf(tEnd);
+	}
+	public void settEnd(Integer tEnd)
+	{
 		this.tEnd = tEnd;
 	}
 	public Strand gettStrand() {
@@ -88,33 +101,35 @@ public class MRecord implements Serializable{
 	public void settStrand(Strand tStrand) {
 		this.tStrand = tStrand;
 	}
-	public Integer getScore() {
-		return score;
-	}
-	public void setScore(Integer score) {
-		this.score = score;
-	}
+//	public Integer getScore() {
+//		return score;
+//	}
+//	public void setScore(Integer score) {
+//		this.score = score;
+//	}
 	public Double getIdentity() {
 		return identity;
 	}
 	public void setIdentity(Double identity) {
 		this.identity = identity;
 	}
-	public Integer getMapQV() {
-		return mapQV;
-	}
-	public void setMapQV(Integer mapQV) {
-		this.mapQV = mapQV;
-	}
+//	public Integer getMapQV() {
+//		return mapQV;
+//	}
+//	public void setMapQV(Integer mapQV) {
+//		this.mapQV = mapQV;
+//	}
 	
 	
-	@Override
-	public String toString() {
-		return "MRecord [qName=" + qName + ", qLength=" + qLength + ", qStart=" + qStart + ", qEnd=" + qEnd
-				+ ", qStrand=" + qStrand + ", tName=" + tName + ", tLength=" + tLength + ", tStart=" + tStart
-				+ ", tEnd=" + tEnd + ", tStrand=" + tStrand + ", score=" + score + ", identity=" + identity + ", mapQV="
-				+ mapQV + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "MRecord [qName=" + qName + ", qLength=" + qLength + ", qStart=" + qStart + ", qEnd=" + qEnd
+//				+ ", qStrand=" + qStrand + ", tName=" + tName + ", tLength=" + tLength + ", tStart=" + tStart
+//				+ ", tEnd=" + tEnd + ", tStrand=" + tStrand + ", score=" + score + ", identity=" + identity + ", mapQV="
+//				+ mapQV + "]";
+//	}
+	
+	
 	
 	@Override
 	public int hashCode() {
@@ -125,6 +140,12 @@ public class MRecord implements Serializable{
 		return result;
 	}
 	
+	@Override
+	public String toString() {
+		return "MRecord [qName=" + qName + ", qLength=" + qLength + ", qStart=" + qStart + ", qEnd=" + qEnd
+				+ ", qStrand=" + qStrand + ", tName=" + tName + ", tLength=" + tLength + ", tStart=" + tStart
+				+ ", tEnd=" + tEnd + ", tStrand=" + tStrand + ", identity=" + identity + "]";
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

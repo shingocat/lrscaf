@@ -6,28 +6,23 @@
 */
 package agis.ps.seqs;
 
-import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
-import org.biojava.nbio.core.sequence.AccessionID;
-import org.biojava.nbio.core.sequence.DNASequence;
-import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
-import org.biojava.nbio.core.sequence.template.SequenceView;
 
-public class Contig extends DNASequence {
+public class Contig {
+	
+	private String id;
+	private int length;
+	private byte [] seqs;
 	
 	public Contig() {
-		this.setDNAType(DNAType.CHROMOSOME);
-	}
-
-	public Contig(String seq) throws CompoundNotFoundException {
-		super(seq);
+		
 	}
 
 	public String getID() {
-		return this.getAccession().getID();
+		return this.id;
 	}
 
 	public void setID(String iD) {
-		this.setAccession(new AccessionID(iD));
+		this.id = iD;
 	}
 
 	@Override
@@ -40,45 +35,131 @@ public class Contig extends DNASequence {
 		return false;
 	}
 
-	public String getReverseComplementSeq() {
-		return 
-				this.getReverseComplement().getSequenceAsString();
-//		StringBuffer sb = new StringBuffer();
-//		String originalSeq = this.getSequenceAsString();
-//		for (int j = originalSeq.length() - 1; j >= 0; j--) {
-//			switch (originalSeq.charAt(j)) {
-//			case 'A':
-//				sb.append("T");
-//				break;
-//			case 'T':
-//				sb.append("A");
-//				break;
-//			case 'C':
-//				sb.append("G");
-//				break;
-//			case 'G':
-//				sb.append("C");
-//				break;
-//			case 'a':
-//				sb.append("t");
-//				break;
-//			case 't':
-//				sb.append("a");
-//				break;
-//			case 'c':
-//				sb.append("g");
-//				break;
-//			case 'g':
-//				sb.append("c");
-//				break;
-//			}
-//		}
-//		return sb.toString();
-	}
-
 	@Override
 	public String toString() {
-//		return "Contig [ID=" + this.getAccession().getID() + ", length=" + this.getLength() + "]";
-		return "Contig [ID=" + this.getAccession().getID() + "]";
+		return "Contig [ID=" + this.id + "]";
+	}
+	
+	public int getLength()
+	{
+		return this.length;
+	}
+	
+	public void setLength(int length)
+	{
+		this.length = length;
+	}
+	
+	public void setSeqs(String seqs)
+	{
+		this.seqs = this.encode(seqs);
+	}
+	
+	public String getForwardSeqs()
+	{
+		return this.decode(seqs, length);
+	}
+	
+	// need to modify;
+	public String getComplementReverseSeqs()
+	{
+		String seq = this.decode(seqs, length);
+		if(seq == null || seq.length() == 0)
+			return "";
+		StringBuffer sb = new StringBuffer();
+		seq.toUpperCase(); 
+		for (int j = (seq.length() - 1); j >= 0; j--) {
+			switch (seq.charAt(j)) {
+			case 'A':
+				sb.append("T");
+				break;
+			case 'T':
+				sb.append("A");
+				break;
+			case 'C':
+				sb.append("G");
+				break;
+			case 'G':
+				sb.append("C");
+				break;
+			default:
+				sb.append("N");
+				break;
+			}
+		}
+		return sb.toString();
+	}
+	
+	private String decode(byte[] seq, int length)
+	{
+		StringBuffer sb = new StringBuffer();
+		for(int i = 0; i < seq.length; i++)
+		{
+			byte value = seq[i];
+			for(int j = 3; j >= 0; j--)
+			{
+				byte base = (byte) ((value >> (2*j)) & 0x03);
+				switch(base){
+				case 0x00:
+					sb.append("A");
+					break;
+				case 0x01:
+					sb.append("C");
+					break;
+				case 0x02:
+					sb.append("G");
+					break;
+				case 0x03:
+					sb.append("T");
+					break;
+				}
+			}
+		}
+		return sb.substring(0, length);
+	}
+	
+	private byte[] encode(String origin)
+	{
+		int olen = origin.length();
+		int length = olen / 4 + 1;
+		byte [] byteSeq = new byte[length];
+		int start = 0;
+		for(int i = 0; i <= origin.length()/4; i++)
+		{
+			String subSeq = null;
+			if((start + 4) > olen)
+				subSeq = origin.substring(start, olen);
+			else
+				subSeq = origin.substring(start, start + 4);
+			byteSeq[i] = toByte(subSeq);
+			start = start + 4;
+		}
+		return byteSeq;
+	}
+	
+	private byte toByte(String subSeq)
+	{
+		subSeq = subSeq.toUpperCase();
+		char [] os = subSeq.toCharArray();
+	    byte [] bs = new byte[4] ;
+		byte d = 0;
+		for(int i = 0; i < os.length; i++ )
+		{
+			byte value = 0;
+			switch(os[i])
+			{
+			case 'A' : value = 0x00;
+			break;
+			case 'T' : value = 0x03;
+			break;
+			case 'C' : value = 0x01;
+			break;
+			case 'G' : value = 0x02;
+			break;
+			}
+			bs[i] = value;
+		}		
+		d = (byte) (((bs[0])<<6) | ((bs[1])<<4) |((bs[2]) << 2) |((bs[3]) << 0));
+		return (byte) (d & 0xff);
 	}
 }

@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.MRecord;
+import agis.ps.link.PBLink;
 import agis.ps.link.PBLinkM;
 import agis.ps.util.Parameter;
 
@@ -33,56 +34,94 @@ public class PBLinkWriter {
 		this.paras = paras;
 	}
 	
-	public void init()
+//	public void init()
+//	{
+//		try{
+//			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "links.info");
+//			fw = new FileWriter(file, true);
+//			bw = new BufferedWriter(fw);
+//		} catch(IOException e)
+//		{
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//		} catch(Exception e)
+//		{
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//		}
+//	}
+//	
+//	public void write(List<PBLinkM> links)
+//	{
+//		if(links != null && links.size() > 0)
+//		{
+//			Iterator<PBLinkM> it = links.iterator();
+//			while(it.hasNext())
+//			{
+//				PBLinkM link = it.next();
+//				MRecord origin = link.getOrigin();
+//				MRecord terminus = link.getTerminus();
+//				String id = link.getId();
+//				int dist = link.getDistance();
+//				String line = origin.gettName() + "\t" + origin.gettStrand() + "\t" + terminus.gettName() + "\t" +
+//				terminus.gettStrand() + "\t" + dist + "\t" + id + "\t" + origin.getqStart() + "\t" + origin.getqEnd()
+//				+ "\t" + terminus.getqStart() + "\t" + terminus.getqEnd();
+//				try {
+//					bw.write(line);
+//					bw.newLine();
+//				} catch (IOException e) {
+//					logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//				}
+//			}
+//		}
+//	}
+	
+	public void write(List<PBLink> links)
 	{
 		try{
 			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "links.info");
 			fw = new FileWriter(file, true);
 			bw = new BufferedWriter(fw);
+			if(links != null && links.size() > 0)
+			{
+				Iterator<PBLink> it = links.iterator();
+				while(it.hasNext())
+				{
+					PBLink link = it.next();
+					String line = link.getOrigin() + "\t" + link.getOStrand() + "\t" + link.getTerminus() + "\t" +
+					link.getTStrand() + "\t" + link.getDist() + "\t" + link.getPbId() + "\t" + link.getOPStart() + "\t" 
+					+ link.getOPEnd() + "\t" + link.getTPStart() + "\t" + link.getTPEnd();
+					bw.write(line);
+					bw.newLine();
+				}
+			}
 		} catch(IOException e)
 		{
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch(Exception e)
 		{
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-		}
-	}
-	
-	public void write(List<PBLinkM> links)
-	{
-		if(links != null && links.size() > 0)
+		} finally
 		{
-			Iterator<PBLinkM> it = links.iterator();
-			while(it.hasNext())
+			try{
+				if(bw != null)
+					bw.close();
+			} catch(Exception e)
 			{
-				PBLinkM link = it.next();
-				MRecord origin = link.getOrigin();
-				MRecord terminus = link.getTerminus();
-				String id = link.getId();
-				int dist = link.getDistance();
-				String line = origin.gettName() + "\t" + origin.gettStrand() + "\t" + terminus.gettName() + "\t" +
-				terminus.gettStrand() + "\t" + dist + "\t" + id + "\t" + origin.getqStart() + "\t" + origin.getqEnd()
-				+ "\t" + terminus.getqStart() + "\t" + terminus.getqEnd();
-				try {
-					bw.write(line);
-					bw.newLine();
-				} catch (IOException e) {
-					logger.error(this.getClass().getName() + "\t" + e.getMessage());
-				}
+				logger.error(this.getClass().getName() + "\t" + e.getMessage());
 			}
 		}
+		
 	}
 	
-	public void close()
-	{
-		try{
-			if(bw != null)
-				bw.close();
-		} catch(Exception e)
-		{
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-		}
-	}
+//	public void close()
+//	{
+//		try{
+//			if(bw != null)
+//				bw.close();
+//		} catch(Exception e)
+//		{
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//		}
+//	}
 
 }
 

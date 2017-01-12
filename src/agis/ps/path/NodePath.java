@@ -9,7 +9,6 @@ package agis.ps.path;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-import agis.ps.exception.EmptyPathException;
 import agis.ps.seqs.Contig;
 
 
@@ -72,7 +71,7 @@ public class NodePath implements Serializable{
 	// such as index == 1, means checking the first element,
 	// index == negative number, denoted as checking the reverse specified index,
 	// such as index == -1, means, checking the last element,
-	public boolean isNextExist(Contig next, int index) throws EmptyPathException {
+	public boolean isNextExist(Contig next, int index){
 		// TODO Auto-generated method stub
 		if(path == null)
 			path = new LinkedList<Node>();

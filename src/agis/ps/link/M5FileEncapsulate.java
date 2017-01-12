@@ -85,9 +85,9 @@ public class M5FileEncapsulate {
 			return null;
 		M5Record m5 = new M5Record();
 		m5.setqName(String.valueOf(qIds[index]));
-		m5.setqLength(qLengths[index]);
-		m5.setqStart(qStart[index]);
-		m5.setqEnd(qEnd[index]);
+//		m5.setqLength(qLengths[index]);
+//		m5.setqStart(qStart[index]);
+//		m5.setqEnd(qEnd[index]);
 		m5.settName(String.valueOf(tIds[index]));
 		m5.settLength(tLengths[index]);
 		m5.settStart(tStart[index]);
