@@ -6,15 +6,15 @@
 */
 package agis.ps.file;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import agis.ps.link.MRecord;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 
 public class M4Reader extends AlignmentFileReader{
-	private final static Logger logger = LoggerFactory.getLogger(M4Reader.class);
+//	private final static Logger logger = LoggerFactory.getLogger(M4Reader.class);
 	
 	public M4Reader(Parameter paras) {
 		super(paras);

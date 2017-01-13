@@ -7,9 +7,9 @@
 package agis.ps.link;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
+//import java.text.DecimalFormat;
 
-import agis.ps.util.Strand;
+//import agis.ps.util.Strand;
 
 public class M5Record extends MRecord implements Serializable {
 	

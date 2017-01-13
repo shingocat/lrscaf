@@ -10,9 +10,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ import agis.ps.util.Parameter;
 public class TriadLinkWriter {
 	public static Logger logger = LoggerFactory.getLogger(TriadLinkWriter.class);
 	private Parameter paras;
-	private List<TriadLink> triads;
+//	private List<TriadLink> triads;
 	private File file = null;
 	private FileWriter fw = null;
 	private BufferedWriter bw = null;
@@ -114,7 +114,7 @@ public class TriadLinkWriter {
 				bw.newLine();
 			}
 			bw.flush();
-			bw.close();
+//			bw.close();
 		} catch (IOException e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (Exception e) {
@@ -156,7 +156,6 @@ public class TriadLinkWriter {
 				bw.newLine();
 				bw.flush();
 			}
-
 		} catch(IOException e)
 		{
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());

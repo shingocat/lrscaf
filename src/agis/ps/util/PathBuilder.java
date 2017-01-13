@@ -24,7 +24,7 @@ import agis.ps.graph.Graph;
 import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
 import agis.ps.link.TriadLink;
-import agis.ps.link.TriadLinkComparator;
+//import agis.ps.link.TriadLinkComparator;
 import agis.ps.path.InternalNode;
 import agis.ps.path.InternalPath;
 import agis.ps.path.InternalPathComparator;

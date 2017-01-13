@@ -6,9 +6,9 @@
 */
 package agis.ps.link;
 
-import java.io.Serializable;
+//import java.io.Serializable;
 
-import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Contig;
 import agis.ps.util.Strand;
 
 // PacBio link model 

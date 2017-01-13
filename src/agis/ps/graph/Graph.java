@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import agis.ps.link.Edge;
 import agis.ps.seqs.Contig;
@@ -27,7 +27,7 @@ import agis.ps.util.MathTool;
 public abstract class Graph implements Serializable, IUntangler {
 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = LoggerFactory.getLogger(Graph.class);
+//	private static Logger logger = LoggerFactory.getLogger(Graph.class);
 	protected Map<String, Edge> edges = new HashMap<String, Edge>();
 	protected Map<String, Contig> vertices = new HashMap<String, Contig>();
 	protected Map<String, Contig> selectedVertices = new HashMap<String, Contig>();

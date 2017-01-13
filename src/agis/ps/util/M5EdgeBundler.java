@@ -7,43 +7,43 @@
 package agis.ps.util;
 
 import java.util.List;
-import java.util.Vector;
+//import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.file.M5Reader;
+//import agis.ps.file.M5Reader;
 import agis.ps.file.PBLinkReader;
-import agis.ps.file.PBLinkWriter;
-import agis.ps.file.SimilarityCntWriter;
-import agis.ps.file.TriadLinkWriter;
+//import agis.ps.file.PBLinkWriter;
+//import agis.ps.file.SimilarityCntWriter;
+//import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
 import agis.ps.link.M5FileEncapsulate;
-import agis.ps.link.M5Record;
-import agis.ps.link.MRecord;
+//import agis.ps.link.M5Record;
+//import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
-import agis.ps.link.PBLinkM;
+//import agis.ps.link.PBLinkM;
 
 public class M5EdgeBundler {
 
 	private static Logger logger = LoggerFactory.getLogger(M5EdgeBundler.class);
 	private Parameter paras = null;
-	private LinkBuilder linkBuilder = null;
-	private PBLinkWriter linkWriter = null;
-	private TriadLinkWriter tlWriter = null;
+//	private LinkBuilder linkBuilder = null;
+//	private PBLinkWriter linkWriter = null;
+//	private TriadLinkWriter tlWriter = null;
 	private List<Edge> edges = null;
 	// for finding repeat contigs
-	private List<String> repeats;
+//	private List<String> repeats;
 	private M5FileEncapsulate m5file;
 	private CntFileEncapsulate cntfile;
 
 	public M5EdgeBundler(Parameter paras) {
 		this.paras = paras;
-		this.linkBuilder = new LinkBuilder(paras);
-		this.linkWriter = new PBLinkWriter(paras);
+//		this.linkBuilder = new LinkBuilder(paras);
+//		this.linkWriter = new PBLinkWriter(paras);
 //		this.linkWriter.init();
-		this.tlWriter = new TriadLinkWriter(paras);
+//		this.tlWriter = new TriadLinkWriter(paras);
 //		this.tlWriter.init();
 	}
 
@@ -57,14 +57,14 @@ public class M5EdgeBundler {
 		PBLinkReader linkReader = new PBLinkReader(paras);
 		List<PBLink> links = linkReader.read();
 		logger.info(this.getClass().getName() + "\tFlitered links: " + links.size());
-		EdgeBundler eb = new EdgeBundler(paras);
-		edges = eb.pbLink2Edges(links, cntfile);
+//		EdgeBundler eb = new EdgeBundler(paras);
+//		edges = eb.pbLink2Edges(links, cntfile);
 		return edges;
 	}
 	
 	private void readAlignFile()
 	{
-		M5Reader reader = new M5Reader(paras);
+//		M5Reader reader = new M5Reader(paras);
 //		m5file = reader.readByArrayCopy();
 //		m5file = reader.readByLineNumberReader();
 		cntfile = m5file.getCntFileEncapsulate();

@@ -6,29 +6,15 @@
 */
 package agis.ps.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.file.ContigCoverageWriter;
-import agis.ps.link.M5FileEncapsulate;
-import agis.ps.link.M5Record;
-import agis.ps.link.MRecord;
 
 public class RepeatFinder {
 	

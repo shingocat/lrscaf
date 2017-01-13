@@ -17,8 +17,8 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.link.M4Record;
-import agis.ps.link.MRecord;
+//import agis.ps.link.M4Record;
+//import agis.ps.link.MRecord;
 import agis.ps.seqs.PBGapSeq;
 import agis.ps.util.GapRecord;
 import agis.ps.util.Parameter;
@@ -26,7 +26,7 @@ import agis.ps.util.Strand;
 
 public class GapRecordReader {
 	private final static Logger logger = LoggerFactory.getLogger(GapRecordWriter.class);
-	private Parameter paras;
+//	private Parameter paras;
 	private String path;
 	private List<GapRecord> gaps;
 	
@@ -37,7 +37,7 @@ public class GapRecordReader {
 	
 	public GapRecordReader(Parameter paras)
 	{
-		this.paras = paras;
+//		this.paras = paras;
 		this.path = paras.getOutFolder() + System.getProperty("file.separator") + "gap_record.info";
 	}
 	
@@ -46,7 +46,7 @@ public class GapRecordReader {
 	{
 		FileReader fr = null;
 		BufferedReader br = null;
-		int count = 0;
+//		int count = 0;
 		try
 		{
 			File mFile = new File(path);

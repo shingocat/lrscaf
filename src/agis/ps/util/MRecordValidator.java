@@ -9,14 +9,14 @@ package agis.ps.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
-import agis.ps.link.M5Record;
+//import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
 
 public class MRecordValidator {
-	private static Logger logger = LoggerFactory.getLogger(MRecordValidator.class);
+//	private static Logger logger = LoggerFactory.getLogger(MRecordValidator.class);
 	
 //	public static MRecord validate(M5Record m5, Parameter paras) {
 //		try{ 

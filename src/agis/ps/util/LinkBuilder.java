@@ -6,12 +6,10 @@
 */
 package agis.ps.util;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -21,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
-import agis.ps.link.PBLinkM;
 import agis.ps.link.TriadLink;
 import agis.ps.seqs.Contig;
 
@@ -31,10 +28,22 @@ public class LinkBuilder {
 	private List<PBLink> links = null;
 //	private LinkedList<String> simcnts = new LinkedList<String>();
 	private Parameter paras;
+	private int minOLLen;
+	private double minOLRatio;
+	private int maxOHLen;
+	private double maxOHRatio;
+	private int maxEndLen;
+	private double maxEndRatio;
 	
 	public LinkBuilder(Parameter paras)
 	{
 		this.paras = paras;
+		minOLLen = paras.getMinOLLen();
+		minOLRatio = paras.getMinOLRatio();
+		maxOHLen = paras.getMaxOHLen();
+		maxOHRatio = paras.getMaxOHRatio();
+		maxEndLen = paras.getMaxEndLen();
+		maxEndRatio = paras.getMaxEndRatio();
 	}
 	
 	public List<PBLink> mRecords2Links(Map<String, List<MRecord>> records, List<String> repeats)
@@ -42,12 +51,17 @@ public class LinkBuilder {
 		if(links == null)
 			links = new Vector<PBLink>();
 		links.clear();
-		for(String s : records.keySet())
+		try{
+			for(String s : records.keySet())
+			{
+				List<MRecord> rs = records.get(s);
+				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
+				if(temp != null)
+					links.addAll(temp);
+			}
+		}catch(Exception e)
 		{
-			List<MRecord> rs = records.get(s);
-			List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
-			if(temp != null)
-				links.addAll(temp);
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		return links;
 	}
@@ -62,12 +76,6 @@ public class LinkBuilder {
 		List<MRecord> valids = new Vector<MRecord>(records.size());
 		while (it.hasNext()) {
 			MRecord m = it.next();
-			int minOLLen = paras.getMinOLLen();
-			double minOLRatio = paras.getMinOLRatio();
-			int maxOHLen = paras.getMaxOHLen();
-			double maxOHRatio = paras.getMaxOHRatio();
-			int maxEndLen = paras.getMaxEndLen();
-			double maxEndRatio = paras.getMaxEndRatio();
 
 			int pbLen = m.getqLength();
 			int pbStart = m.getqStart();
@@ -78,13 +86,14 @@ public class LinkBuilder {
 			Strand tStrand = m.gettStrand();
 
 			boolean isInner = false;
+			int endLen = maxEndLen;
 			int endDefLen = (int) Math.round(pbLen * maxEndRatio);
 			// if max end length larger than the endDefLen, used the endDefLen
 			// as threshold
 			if (endDefLen < maxEndLen)
-				maxEndLen = endDefLen;
-			if (pbStart >= maxEndLen && pbStart <= (pbLen - maxEndLen)) {
-				if (pbEnd <= (pbLen - maxEndLen))
+				endLen = endDefLen;
+			if (pbStart >= endLen && pbStart <= (pbLen - endLen)) {
+				if (pbEnd <= (pbLen - endLen))
 					isInner = true;
 			}
 			// the overlap length of contig
@@ -100,9 +109,10 @@ public class LinkBuilder {
 				contLeftLen = contRigthLen;
 				contRigthLen = temp;
 			}
+			int ohLen = maxOHLen;
 			int ohDefLen = (int) Math.round(contLen * maxOHRatio);
 			if (ohDefLen < maxOHLen)
-				maxOHLen = ohDefLen;
+				ohLen = ohDefLen;
 			if (isInner) {
 				// the overlap length less than specified value, next;
 				if (ol_len < minOLLen)
@@ -112,34 +122,34 @@ public class LinkBuilder {
 				if (ratio < minOLRatio)
 					continue;
 				// for two end length of contig not allow larger than maxOHLen
-				if (contLeftLen > maxOHLen || contRigthLen > maxOHLen)
+				if (contLeftLen > ohLen || contRigthLen > ohLen)
 					continue;
 			} else {
-				if(pbStart <= maxEndLen && pbEnd <= maxEndLen)
+				if(pbStart <= endLen && pbEnd <= endLen)
 				{ // checking the right side, for the end point in p1-p2
-					if(contRigthLen > maxOHLen)
+					if(contRigthLen > ohLen)
 						continue;
-				} else if(pbStart <= maxEndLen && pbEnd <= (pbLen - maxEndLen))
+				} else if(pbStart <= endLen && pbEnd <= (pbLen - endLen))
 				{
 					if(ol_len < minOLLen)
 						continue;
-					if(contRigthLen > maxOHLen)
+					if(contRigthLen > ohLen)
 						continue;
-				} else if(pbStart <= maxEndLen && pbEnd >= (pbLen - maxEndLen))
+				} else if(pbStart <= endLen && pbEnd >= (pbLen - endLen))
 				{
 					// start point in p1-p2 and end point in p3-p4
 					// do no afford info, discard
 					continue;
-				} else if(pbStart >= maxEndLen && pbStart <= (pbLen - maxEndLen) 
-						&& pbEnd >= (pbLen - maxEndLen))
+				} else if(pbStart >= endLen && pbStart <= (pbLen - endLen) 
+						&& pbEnd >= (pbLen - endLen))
 				{ // start point in p2-p3 and end point in p3-p4
 					if(ol_len < minOLLen)
 						continue;
-					if(contLeftLen > maxOHLen)
+					if(contLeftLen > ohLen)
 						continue;
-				} else if(pbStart >= (pbLen - maxEndLen) && pbEnd >= (pbLen - maxEndLen))
+				} else if(pbStart >= (pbLen - endLen) && pbEnd >= (pbLen - endLen))
 				{
-					if(contLeftLen > maxOHLen)
+					if(contLeftLen > ohLen)
 						continue;
 				}
 			}
@@ -148,7 +158,7 @@ public class LinkBuilder {
 		}
 		
 		// deleting repeats;
-		if(paras.isRepMask())
+		if(paras.isRepMask() && !repeats.isEmpty())
 		{
 			Iterator<MRecord> iterator = valids.iterator();
 			while(iterator.hasNext())
@@ -718,13 +728,13 @@ public class LinkBuilder {
 	private int getDistance(MRecord origin, MRecord terminus)
 	{
 		int dist = 0;
-		int oPBS = origin.getqStart(); // origin pacbio start point;
+//		int oPBS = origin.getqStart(); // origin pacbio start point;
 		int oCntS = origin.gettStart(); // origin contig start point;
 		int oPBE = origin.getqEnd(); // origin pacbio end point;
 		int oCntE = origin.gettEnd(); // origin contig end point;
 		int tPBS = terminus.getqStart(); // terminus pacbio start point;
 		int tCntS = terminus.gettStart(); // terminus contig start point;
-		int tPBE = terminus.getqEnd(); // terminus pacbio end point;
+//		int tPBE = terminus.getqEnd(); // terminus pacbio end point;
 		int tCntE = terminus.gettEnd(); // terminus contig end point;
 		int oCntLen = origin.gettLength();// origin contig length;
 		int tCntLen = terminus.gettLength(); // terminus contig length

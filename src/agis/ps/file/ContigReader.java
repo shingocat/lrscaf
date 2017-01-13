@@ -13,16 +13,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+//import java.util.Vector;
+//import java.util.regex.Matcher;
+//import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
+//import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.link.M5Record;
+//import agis.ps.link.M5Record;
 import agis.ps.seqs.Contig;
 import agis.ps.util.Parameter;
 

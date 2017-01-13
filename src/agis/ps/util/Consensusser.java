@@ -6,22 +6,20 @@
 */
 package agis.ps.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+//import java.util.ArrayList;
+//import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
 import org.biojava.nbio.alignment.Alignments;
 import org.biojava.nbio.alignment.template.AlignedSequence;
 import org.biojava.nbio.alignment.template.Profile;
-import org.biojava.nbio.alignment.template.Profile.StringFormat;
+//import org.biojava.nbio.alignment.template.Profile.StringFormat;
 import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
 import org.biojava.nbio.core.sequence.DNASequence;
 import org.biojava.nbio.core.sequence.compound.DNACompoundSet;
 import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
 import org.biojava.nbio.core.util.ConcurrencyTools;
-
-import com.sun.media.jfxmedia.logging.Logger;
 
 // if indicator equal to nw, specific the global alignment, abbreviation of Needleman-Wunsch; 
 // else indicator equal to sw, specific the local alignment, abbreviation of Smith-Waterman; 
@@ -119,143 +117,143 @@ public class Consensusser {
 	}
 	
 	// global alignment
-	private String nw(String seq1, String seq2)
-	{
-		int len1 = seq1.length();
-		int len2 = seq2.length();
-		// initiate the scores matrix
-		int [][] scores = new int[len1 + 1][len2 + 1];
-		Pointers [][] indexMatrix = new Pointers[len1 + 1][len2 + 1];
-		for(int i = 0; i <= len1; i++) {
-			for(int j = 0; j <= len2; j++) {
-				Pointers ps = new Pointers();
-				if(i == 0) {
-					scores[i][j] = 0;
-					Pointer p = new Pointer(i, j);
-					ps.addPointer(p);
-					indexMatrix[i][j] = ps;
-					continue;
-				}
-				if(j == 0) {
-					scores[i][j] = 0;
-					Pointer p = new Pointer(i, j);
-					ps.addPointer(p);
-					indexMatrix[i][j] = ps;
-					continue;
-				}
-
-				int left = scores[i][j - 1];
-				int upper = scores[i - 1][j];
-				int diagonal = scores[i - 1][j - 1];
-				// for the diagonal value;
-				if(seq1.charAt(i - 1) == seq2.charAt(j - 1))
-					diagonal += match;
-				else
-					diagonal += mismatch;
-				// the above value of gap
-				upper += gap;
-				// the left value of gap
-				left += gap;
-				// compute the maximum;
-				int max = upper >= left ?
-				          (upper >= diagonal ? upper : diagonal) :
-					          (left >= diagonal ? left : diagonal);
-				scores[i][j] = max;
-				if(max == upper) {
-					Pointer p = new Pointer();
-					p.setRow(i - 1);
-					p.setCol(j);
-					ps.addPointer(p);
-				}
-				if(max == left) {
-					Pointer p = new Pointer();
-					p.setRow(i);
-					p.setCol(j - 1);
-					ps.addPointer(p);
-				}
-				if(max == diagonal) {
-					Pointer p = new Pointer();
-					p.setRow(i - 1);
-					p.setCol(j - 1);
-					ps.addPointer(p);
-				}
-				indexMatrix[i][j] = ps;
-			}
-		}
-		// print the matrix
-//		System.out.println("Aligned Matrix:");
+//	private String nw(String seq1, String seq2)
+//	{
+//		int len1 = seq1.length();
+//		int len2 = seq2.length();
+//		// initiate the scores matrix
+//		int [][] scores = new int[len1 + 1][len2 + 1];
+//		Pointers [][] indexMatrix = new Pointers[len1 + 1][len2 + 1];
 //		for(int i = 0; i <= len1; i++) {
-//			System.out.println(Arrays.toString(scores[i]));
+//			for(int j = 0; j <= len2; j++) {
+//				Pointers ps = new Pointers();
+//				if(i == 0) {
+//					scores[i][j] = 0;
+//					Pointer p = new Pointer(i, j);
+//					ps.addPointer(p);
+//					indexMatrix[i][j] = ps;
+//					continue;
+//				}
+//				if(j == 0) {
+//					scores[i][j] = 0;
+//					Pointer p = new Pointer(i, j);
+//					ps.addPointer(p);
+//					indexMatrix[i][j] = ps;
+//					continue;
+//				}
+//
+//				int left = scores[i][j - 1];
+//				int upper = scores[i - 1][j];
+//				int diagonal = scores[i - 1][j - 1];
+//				// for the diagonal value;
+//				if(seq1.charAt(i - 1) == seq2.charAt(j - 1))
+//					diagonal += match;
+//				else
+//					diagonal += mismatch;
+//				// the above value of gap
+//				upper += gap;
+//				// the left value of gap
+//				left += gap;
+//				// compute the maximum;
+//				int max = upper >= left ?
+//				          (upper >= diagonal ? upper : diagonal) :
+//					          (left >= diagonal ? left : diagonal);
+//				scores[i][j] = max;
+//				if(max == upper) {
+//					Pointer p = new Pointer();
+//					p.setRow(i - 1);
+//					p.setCol(j);
+//					ps.addPointer(p);
+//				}
+//				if(max == left) {
+//					Pointer p = new Pointer();
+//					p.setRow(i);
+//					p.setCol(j - 1);
+//					ps.addPointer(p);
+//				}
+//				if(max == diagonal) {
+//					Pointer p = new Pointer();
+//					p.setRow(i - 1);
+//					p.setCol(j - 1);
+//					ps.addPointer(p);
+//				}
+//				indexMatrix[i][j] = ps;
+//			}
 //		}
-		//System.out.println(Arrays.deepToString(scores));
-
-		// traceback the matrix by pointer;
-		String algSeq1 = "";
-		String algSeq2 = "";
-		String algPtn = "";
-		int i = len1;
-		int j = len2;
-		// System.out.println("seq 1 ===" + seq1);
-		// System.out.println("seq 2 ===" + seq2);
-		Pointers ps = null;
-		Pointer p = null;
-		while(true) {
-			if(i == 0 && j == 0) {
-				break;
-			}
-			// System.out.println("i = " + i);
-			// System.out.println("j = " + j);
-			ps = indexMatrix[i][j];
-			p = ps.getPointer(0);
-			int row = p.getRow();
-			int col = p.getCol();
-			// System.out.println("row = " + row);
-			// System.out.println("col = " + col);
-			if(i == 0 && j !=0) {
-				algSeq1 += "_";
-				algSeq2 += seq2.charAt(j - 1);
-				algPtn += "*";
-				j--;
-				continue;
-			} else if (i != 0 && j == 0) {
-				algSeq1 += seq1.charAt(i - 1);
-				algSeq2 += "_";
-				algPtn += "*";
-				i--;
-				continue;
-			}
-			if(row == i - 1 && col == j - 1) {
-				if(scores[i][j] == scores[row][col] + match) {
-					algSeq1 += seq1.charAt(i - 1);
-					algSeq2 += seq2.charAt(j - 1);
-					algPtn += "|";
-				} else {
-					algSeq1 += seq1.charAt(i - 1);
-					algSeq2 += seq2.charAt(j - 1);
-					algPtn += "*";
-				}
-				i--;
-				j--;
-			} else if(row == i && col == j - 1) {
-				algSeq1 += "_";
-				algSeq2 += seq2.charAt(j - 1);
-				algPtn += "*";
-				j--;
-			} else if(row == i - 1 && col == j) {
-				algSeq1 += seq1.charAt(i - 1);
-				algSeq2 += "_";
-				algPtn += "*";
-				i--;
-			}
-		}
-		String temp = consesus(algSeq1, algPtn, algSeq2);
-		indexMatrix = null;
-		scores = null;
-		ps = null;
-		p = null;
-		System.gc();
-		return temp;
-	}
+//		// print the matrix
+////		System.out.println("Aligned Matrix:");
+////		for(int i = 0; i <= len1; i++) {
+////			System.out.println(Arrays.toString(scores[i]));
+////		}
+//		//System.out.println(Arrays.deepToString(scores));
+//
+//		// traceback the matrix by pointer;
+//		String algSeq1 = "";
+//		String algSeq2 = "";
+//		String algPtn = "";
+//		int i = len1;
+//		int j = len2;
+//		// System.out.println("seq 1 ===" + seq1);
+//		// System.out.println("seq 2 ===" + seq2);
+//		Pointers ps = null;
+//		Pointer p = null;
+//		while(true) {
+//			if(i == 0 && j == 0) {
+//				break;
+//			}
+//			// System.out.println("i = " + i);
+//			// System.out.println("j = " + j);
+//			ps = indexMatrix[i][j];
+//			p = ps.getPointer(0);
+//			int row = p.getRow();
+//			int col = p.getCol();
+//			// System.out.println("row = " + row);
+//			// System.out.println("col = " + col);
+//			if(i == 0 && j !=0) {
+//				algSeq1 += "_";
+//				algSeq2 += seq2.charAt(j - 1);
+//				algPtn += "*";
+//				j--;
+//				continue;
+//			} else if (i != 0 && j == 0) {
+//				algSeq1 += seq1.charAt(i - 1);
+//				algSeq2 += "_";
+//				algPtn += "*";
+//				i--;
+//				continue;
+//			}
+//			if(row == i - 1 && col == j - 1) {
+//				if(scores[i][j] == scores[row][col] + match) {
+//					algSeq1 += seq1.charAt(i - 1);
+//					algSeq2 += seq2.charAt(j - 1);
+//					algPtn += "|";
+//				} else {
+//					algSeq1 += seq1.charAt(i - 1);
+//					algSeq2 += seq2.charAt(j - 1);
+//					algPtn += "*";
+//				}
+//				i--;
+//				j--;
+//			} else if(row == i && col == j - 1) {
+//				algSeq1 += "_";
+//				algSeq2 += seq2.charAt(j - 1);
+//				algPtn += "*";
+//				j--;
+//			} else if(row == i - 1 && col == j) {
+//				algSeq1 += seq1.charAt(i - 1);
+//				algSeq2 += "_";
+//				algPtn += "*";
+//				i--;
+//			}
+//		}
+//		String temp = consesus(algSeq1, algPtn, algSeq2);
+//		indexMatrix = null;
+//		scores = null;
+//		ps = null;
+//		p = null;
+//		System.gc();
+//		return temp;
+//	}
 	
 	private String needlemanWunsch(String seq1, String seq2)
 	{
@@ -512,45 +510,45 @@ public class Consensusser {
 		return consesus(algSeq1, algPtn, algSeq2);
 	}
 	
-	private void hirschbery(String x, String y)
-	{
-		StringBuffer z = new StringBuffer();
-		StringBuffer w = new StringBuffer();
-		if(x.length() == 0)
-		{
-			for(int i = 0; i < y.length(); i++)
-			{
-				z.append('-');
-				w.append(y.charAt(i));
-			}
-		} else if(y.length() == 0)
-		{
-			for(int i = 0; i < x.length(); i++)
-			{
-				z.append(x.charAt(i));
-				w.append('-');
-			}
-		} else if(x.length() == 1 || y.length() == 1)
-		{
-			
-		} else
-		{
-			int xlen = x.length();
-			int xmid = xlen/2;
-			int ylen = y.length();
-			
-			int scoreL = NWScore(x.substring(0, xmid),y);
-			int scoreR = NWScore(new StringBuffer(x.substring(xmid + 1)).reverse().toString(),
-					new StringBuffer(y).reverse().toString());
-			
-		}
-	}
+//	private void hirschbery(String x, String y)
+//	{
+//		StringBuffer z = new StringBuffer();
+//		StringBuffer w = new StringBuffer();
+//		if(x.length() == 0)
+//		{
+//			for(int i = 0; i < y.length(); i++)
+//			{
+//				z.append('-');
+//				w.append(y.charAt(i));
+//			}
+//		} else if(y.length() == 0)
+//		{
+//			for(int i = 0; i < x.length(); i++)
+//			{
+//				z.append(x.charAt(i));
+//				w.append('-');
+//			}
+//		} else if(x.length() == 1 || y.length() == 1)
+//		{
+//			
+//		} else
+//		{
+//			int xlen = x.length();
+//			int xmid = xlen/2;
+//			int ylen = y.length();
+//			
+//			int scoreL = NWScore(x.substring(0, xmid),y);
+//			int scoreR = NWScore(new StringBuffer(x.substring(xmid + 1)).reverse().toString(),
+//					new StringBuffer(y).reverse().toString());
+//			
+//		}
+//	}
 	
-	private int NWScore(String x, String y)
-	{
-		return 0;
-	} 
-	
+//	private int NWScore(String x, String y)
+//	{
+//		return 0;
+//	} 
+//	
 	private String consesus(String seq1, String pattern, String seq2) {
 		int len = pattern.length();
 		StringBuffer sb = new StringBuffer();

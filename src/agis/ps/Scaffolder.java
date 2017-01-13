@@ -8,7 +8,6 @@ package agis.ps;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,16 +20,13 @@ import agis.ps.file.OutputFolderBuilder;
 import agis.ps.file.PBLinkWriter;
 import agis.ps.file.ScaffoldWriter;
 import agis.ps.file.TriadLinkWriter;
-import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
 import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
-import agis.ps.link.PBLinkM;
 import agis.ps.link.TriadLink;
 import agis.ps.path.NodePath;
 import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
-import agis.ps.util.M5EdgeBundler;
 import agis.ps.util.Parameter;
 import agis.ps.util.PathBuilder;
 import agis.ps.util.RepeatFinder;
@@ -52,7 +48,6 @@ public class Scaffolder {
 	private List<TriadLink> triads;
 	private List<Edge> edges;
 	private List<NodePath> paths;
-	private CntFileEncapsulate cntfile;
 	
 	public Scaffolder(Parameter paras)
 	{
@@ -66,9 +61,8 @@ public class Scaffolder {
 			if(!buildOutputFolder())
 				return;
 			this.buildEdges();
-			this.buildPaths2();
+			this.buildPaths();
 			this.writeNodePathInfo();
-//			this.writeScaffolds(paras, paths);	
 			this.writeScaffolds();
 		} catch(Exception e)
 		{
@@ -76,24 +70,18 @@ public class Scaffolder {
 		}
 	}
 	
-	// building output folder 
 	private boolean buildOutputFolder()
 	{
 		OutputFolderBuilder ofb = new OutputFolderBuilder(paras);
 		return ofb.building();
 	}
 	
-	// building edges
 	private void buildEdges()
 	{
 		String type = paras.getType();
 		AlignmentFileReader reader = null;
 		if(type.equalsIgnoreCase("m5"))
 		{
-			// using m5 format to build edges;
-//			M5EdgeBundler bundler = new M5EdgeBundler(paras);
-//			this.edges = bundler.building();
-//			this.cntfile = bundler.getCntFile();
 			reader = new M5Reader(paras);
 		} else if(type.equalsIgnoreCase("m4"))
 		{
@@ -114,8 +102,6 @@ public class Scaffolder {
 		RepeatFinder rf = new RepeatFinder(paras);
 		repeats = rf.findRepeats(cntCovs);
 		LinkBuilder linkBuilder = new LinkBuilder(paras);
-		if(links == null)
-			links = new Vector<PBLink>();
 		links = linkBuilder.mRecords2Links(records, repeats);
 		PBLinkWriter pblw = new PBLinkWriter(paras);
 		pblw.write(links);
@@ -124,40 +110,23 @@ public class Scaffolder {
 		tlw.init();
 		tlw.write(triads);
 		tlw.close();
-		if(edges == null)
-			edges = new Vector<Edge>();
 		EdgeBundler eb = new EdgeBundler(paras);
 		edges = eb.pbLink2Edges(links, cntLens);
-	}
-	
-	private void buildPaths2()
-	{
-		PathBuilder pb = new PathBuilder(edges, paras, cntLens);
-		paths = pb.buildPath();
+		links = null;
+		triads = null;
 	}
 	
 	private void buildPaths()
 	{
-		PathBuilder pathBuilder = new PathBuilder(edges, paras, cntfile);
-		paths = pathBuilder.buildPath();
+		PathBuilder pb = new PathBuilder(edges, paras, cntLens);
+		paths = pb.buildPath();
+		cntLens = null;
 	}
-	
-//	private void findRepeats()
-//	{
-//		RepeatFinder rf = new RepeatFinder(paras);
-//		repeats = rf.findRepeat();
-//	}
 	
 	private void writeNodePathInfo()
 	{
 		String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "nodePaths.info";
 		DotGraphFileWriter.writeNodePaths(pathFile, paths);
-	}
-
-	private void writeScaffolds(Parameter paras, List<NodePath> paths)
-	{
-		ScaffoldWriter sw = new ScaffoldWriter(paras, paths, cntfile);
-//		sw.writeByContigFileEncapsulate();
 	}
 	
 	private void writeScaffolds()

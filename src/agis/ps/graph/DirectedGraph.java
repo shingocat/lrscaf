@@ -6,8 +6,8 @@
 */
 package agis.ps.graph;
 
-import java.io.File;
-import java.io.IOException;
+//import java.io.File;
+//import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.file.SimilarityCntReader;
 import agis.ps.file.TriadLinkWriter;
-import agis.ps.link.CntFileEncapsulate;
+//import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
 import agis.ps.seqs.Contig;
 import agis.ps.util.MathTool;

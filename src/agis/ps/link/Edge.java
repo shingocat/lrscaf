@@ -12,6 +12,7 @@ import agis.ps.seqs.Contig;
 import agis.ps.util.Strand;
 
 public class Edge implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Contig origin;
 	private Contig terminus;
 	private Strand oStrand;

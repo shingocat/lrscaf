@@ -16,9 +16,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.link.MRecord;
+//import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
-import agis.ps.link.PBLinkM;
+//import agis.ps.link.PBLinkM;
 import agis.ps.util.Parameter;
 
 public class PBLinkWriter {
@@ -92,6 +92,8 @@ public class PBLinkWriter {
 					bw.write(line);
 					bw.newLine();
 				}
+				bw.flush();
+				bw.close();
 			}
 		} catch(IOException e)
 		{

@@ -6,19 +6,19 @@
 */
 package agis.ps.file;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import agis.ps.util.Parameter;
 
 public class MiniMapReader {
 	
-	private static Logger logger = LoggerFactory.getLogger(MiniMapReader.class);
-	private Parameter paras;
+//	private static Logger logger = LoggerFactory.getLogger(MiniMapReader.class);
+//	private Parameter paras;
 	
 	public MiniMapReader(Parameter paras)
 	{
-		this.paras = paras;
+//		this.paras = paras;
 	}
 
 }

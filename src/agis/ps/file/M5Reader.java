@@ -6,32 +6,32 @@
 */
 package agis.ps.file;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.util.List;
-import java.util.Vector;
+//import java.io.BufferedReader;
+//import java.io.File;
+//import java.io.FileNotFoundException;
+//import java.io.FileReader;
+//import java.io.IOException;
+//import java.io.LineNumberReader;
+//import java.util.List;
+//import java.util.Vector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
-import agis.ps.link.M5FileEncapsulate;
-import agis.ps.link.M5Record;
+//import agis.ps.link.M5FileEncapsulate;
+//import agis.ps.link.M5Record;
 import agis.ps.link.MRecord;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 
 public class M5Reader extends AlignmentFileReader{
 	
-	private final static Logger logger = LoggerFactory.getLogger(M5Reader.class);
+//	private final static Logger logger = LoggerFactory.getLogger(M5Reader.class);
 	
-	private String path;
-	private List<MRecord> m5List;
-	private M5FileEncapsulate m5FileEncapsulate;
-	private Parameter paras;
+//	private String path;
+//	private List<MRecord> m5List;
+//	private M5FileEncapsulate m5FileEncapsulate;
+//	private Parameter paras;
 	
 	
 	public M5Reader(Parameter paras)

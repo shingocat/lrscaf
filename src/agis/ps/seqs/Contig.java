@@ -63,31 +63,62 @@ public class Contig {
 	// need to modify;
 	public String getComplementReverseSeqs()
 	{
-		String seq = this.decode(seqs, length);
-		if(seq == null || seq.length() == 0)
+		if(seqs == null || length == 0)
 			return "";
 		StringBuffer sb = new StringBuffer();
-		seq.toUpperCase(); 
-		for (int j = (seq.length() - 1); j >= 0; j--) {
-			switch (seq.charAt(j)) {
-			case 'A':
-				sb.append("T");
-				break;
-			case 'T':
-				sb.append("A");
-				break;
-			case 'C':
-				sb.append("G");
-				break;
-			case 'G':
-				sb.append("C");
-				break;
-			default:
-				sb.append("N");
-				break;
+		for(int i = seqs.length - 1; i >= 0; i--)
+		{
+			byte value = seqs[i];
+			StringBuffer temp = new StringBuffer();
+			for(int j = 3; j >= 0; j--)
+			{
+				byte base = (byte) ((value >> (2*j)) & 0x03);
+				switch(base){
+				case 0x00:
+					temp.append("T");
+					break;
+				case 0x01:
+					temp.append("G");
+					break;
+				case 0x02:
+					temp.append("C");
+					break;
+				case 0x03:
+					temp.append("A");
+					break;
+				}
 			}
+			sb.append(temp.reverse());
 		}
-		return sb.toString();
+		int size = sb.length();
+		return sb.toString().substring(size - length);
+		
+		// original method
+//		String seq = this.decode(seqs, length);
+//		if(seq == null || seq.length() == 0)
+//			return "";
+//		StringBuffer sb = new StringBuffer();
+//		seq.toUpperCase(); 
+//		for (int j = (seq.length() - 1); j >= 0; j--) {
+//			switch (seq.charAt(j)) {
+//			case 'A':
+//				sb.append("T");
+//				break;
+//			case 'T':
+//				sb.append("A");
+//				break;
+//			case 'C':
+//				sb.append("G");
+//				break;
+//			case 'G':
+//				sb.append("C");
+//				break;
+//			default:
+//				sb.append("N");
+//				break;
+//			}
+//		}
+//		return sb.toString();
 	}
 	
 	private String decode(byte[] seq, int length)

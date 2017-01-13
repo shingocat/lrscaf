@@ -29,13 +29,13 @@ public class PBLinkM implements ILink {
 	@Override
 	public int getDistance() {
 		int dist = 0;
-		int oPBS = origin.getqStart(); // origin pacbio start point;
+//		int oPBS = origin.getqStart(); // origin pacbio start point;
 		int oCntS = origin.gettStart(); // origin contig start point;
 		int oPBE = origin.getqEnd(); // origin pacbio end point;
 		int oCntE = origin.gettEnd(); // origin contig end point;
 		int tPBS = terminus.getqStart(); // terminus pacbio start point;
 		int tCntS = terminus.gettStart(); // terminus contig start point;
-		int tPBE = terminus.getqEnd(); // terminus pacbio end point;
+//		int tPBE = terminus.getqEnd(); // terminus pacbio end point;
 		int tCntE = terminus.gettEnd(); // terminus contig end point;
 		int oCntLen = origin.gettLength();// origin contig length;
 		int tCntLen = terminus.gettLength(); // terminus contig length
