@@ -43,7 +43,7 @@ public class RepeatFinder {
 		logger.info("Mean Range 99%: [" + (mean - 3 * sd) + " : " + (mean + 3 * sd) + "]");
 		logger.info("Median Range 95%: [" + (median - 2 * sd) + " : " + (median + 2 * sd) + "]");
 		logger.info("Median Range 99%: [" + (median - 3 * sd) + " : " + (median + 3 * sd) + "]");
-		logger.info("Pesudo repeat contigs");
+//		logger.info("Pesudo repeat contigs");
 //		Map<String, List<String>> repeat = new HashMap<String, List<String>>();
 		if(repeats == null)
 			repeats = new Vector<String>(30);

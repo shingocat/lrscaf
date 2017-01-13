@@ -559,11 +559,11 @@ public class ScaffoldWriter {
 	// read the contigs file;
 	private void readCntFile()
 	{
-		long start = System.currentTimeMillis();
+//		long start = System.currentTimeMillis();
 		ContigReader cr = new ContigReader(paras);
 		cnts = cr.read();
-		long end = System.currentTimeMillis();
-		logger.info("Reading Contig file, erase time: " +  (end - start) + " ms.");
+//		long end = System.currentTimeMillis();
+//		logger.info("Reading Contig file, erase time: " +  (end - start) + " ms.");
 	}
 
 	// if times larger than or equal to 0, used N indicated
