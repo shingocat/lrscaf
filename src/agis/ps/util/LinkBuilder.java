@@ -48,6 +48,7 @@ public class LinkBuilder {
 	
 	public List<PBLink> mRecords2Links(Map<String, List<MRecord>> records, List<String> repeats)
 	{
+		long start = System.currentTimeMillis();
 		if(links == null)
 			links = new Vector<PBLink>();
 		links.clear();
@@ -63,6 +64,9 @@ public class LinkBuilder {
 		{
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
+		long end = System.currentTimeMillis();
+		logger.info("Valid Links Acount: " + links.size());
+		logger.info("Building Link, erase time : " + (end - start) + " ms");
 		return links;
 	}
 	
