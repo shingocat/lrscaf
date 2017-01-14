@@ -25,7 +25,7 @@ import agis.ps.seqs.Contig;
 
 public class LinkBuilder {
 	private static Logger logger = LoggerFactory.getLogger(LinkBuilder.class);
-	private List<TriadLink> tls = new Vector<TriadLink>(100);
+	private LinkedList<TriadLink> triadlinks = new LinkedList<TriadLink>();
 	private List<PBLink> links = null;
 	// private LinkedList<String> simcnts = new LinkedList<String>();
 	private Parameter paras;
@@ -35,6 +35,9 @@ public class LinkBuilder {
 	private double maxOHRatio;
 	private int maxEndLen;
 	private double maxEndRatio;
+	private double olRatio = 0.5;
+	private double olweight = 0.6;
+	private double identweight = 0.4;
 
 	public LinkBuilder(Parameter paras) {
 		this.paras = paras;
@@ -51,23 +54,263 @@ public class LinkBuilder {
 		if (links == null)
 			links = new Vector<PBLink>();
 		links.clear();
+		int bug = 0;
 		try {
 			for (String s : records.keySet()) {
 //				if(s.equals("m130605_000141_42207_c100515142550000001823076608221372_s1_p0/144577/0_7266"))
 //					logger.debug("breakpoint");
+				if(bug == 346)
+					logger.debug("breakpoint");
 				List<MRecord> rs = records.get(s);
-				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
+				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
 				if (temp != null)
 					links.addAll(temp);
+				bug++;
 			}
 		} catch (Exception e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(bug + this.getClass().getName() + "\t" + e.getMessage());
 		}
 		long end = System.currentTimeMillis();
 		logger.info("Valid Links Acount: " + links.size());
 		logger.info("Building Link, erase time : " + (end - start) + " ms");
 		return links;
 	}
+	
+	private List<PBLink> mRecord2PBLink2(List<MRecord> records, List<String> repeats)
+	{
+		LinkedList<PBLink> links = new LinkedList<PBLink>();
+		LinkedList<MRecord> valids = new LinkedList<MRecord>();
+		int size = valids.size();
+		MRecord former = null;
+		MRecord current = null;
+		Iterator<MRecord> it = records.iterator();
+		Collections.sort(records, new ByLocOrderComparator());
+		int index = 0;
+		boolean isRemove = false;
+		while(it.hasNext())
+		{
+			current = it.next();
+			String currentCNTId = current.gettName();
+			// check whether is repeats;
+			if(repeats.contains(currentCNTId))
+				continue;
+			String currentPBId = current.getqName();
+			int currentPBLen = current.getqLength();
+			int currentPBStart = current.getqStart();
+			int currentPBEnd = current.getqEnd() - 1;
+			int currentCNTLen = current.gettLength();
+			int currentCNTStart = current.gettStart();
+			int currentCNTEnd = current.gettEnd() - 1;
+			Strand currentStrand = current.gettStrand();
+			boolean isInner = false;
+			int endLen = maxEndLen;
+			int endDefLen = (int) Math.round(currentPBLen * maxEndRatio);
+			// if max end length larger than the endDefLen, used the endDefLen
+			// as threshold
+			if (endDefLen < maxEndLen)
+				endLen = endDefLen;
+			if (currentPBStart >= endLen && currentPBStart <= (currentPBLen - endLen)) {
+				if (currentPBEnd <= (currentPBLen - endLen))
+					isInner = true;
+			}
+			// the overlap length of contig
+			int ol_len = currentCNTEnd - currentCNTStart + 1;
+			double ratio = (double) ol_len / currentCNTLen;
+			// the overhang length
+			int contLeftLen = currentCNTStart;
+			int contRigthLen = currentCNTLen - currentCNTEnd - 1;
+			// for the reversed strand, BLASR define the coordinate according to
+			// aligned seq
+			if (currentStrand.equals(Strand.REVERSE)) {
+				int temp = contLeftLen;
+				contLeftLen = contRigthLen;
+				contRigthLen = temp;
+			}
+			int ohLen = maxOHLen;
+			int ohDefLen = (int) Math.round(currentCNTLen * maxOHRatio);
+			if (ohDefLen < maxOHLen)
+				ohLen = ohDefLen;
+			if (isInner) {
+				// the overlap length less than specified value, next;
+				if (ol_len < minOLLen)
+					continue;
+				// if the overlap length enough for specified value, the ratio
+				// is less than specified value, also next;
+				if (ratio < minOLRatio)
+					continue;
+				// for two end length of contig not allow larger than maxOHLen
+				if (contLeftLen > ohLen || contRigthLen > ohLen)
+					continue;
+			} else {
+				if (currentPBStart <= endLen && currentPBEnd <= endLen) {
+					// checking the right side, for the end point in p1-p2
+					if (contRigthLen > ohLen)
+						continue;
+				} else if (currentPBStart <= endLen && currentPBEnd <= (currentPBLen - endLen)) {
+					if (ol_len < minOLLen)
+						continue;
+					if (contRigthLen > ohLen)
+						continue;
+				} else if (currentPBStart <= endLen && currentPBEnd >= (currentPBLen - endLen)) {
+					// start point in p1-p2 and end point in p3-p4
+					// do no afford info, discard
+					continue;
+				} else if (currentPBStart >= endLen && currentPBStart <= (currentPBLen - endLen) && currentPBEnd >= (currentPBLen - endLen)) {
+					// start point in p2-p3 and end point in p3-p4
+					if (ol_len < minOLLen)
+						continue;
+					if (contLeftLen > ohLen)
+						continue;
+				} else if (currentPBStart >= (currentPBLen - endLen) && currentPBEnd >= (currentPBLen - endLen)) {
+					if (contLeftLen > ohLen)
+						continue;
+				}
+			}
+			
+			// building PBLink
+			if(former == null)
+			{
+				valids.add(current);
+				former = current;
+				continue;
+			} else
+			{
+				int dist = this.getDistance(former, current);
+				int formerPBStart = former.getqStart();
+				int formerPBEnd = former.getqEnd();
+				if(dist >= 0)
+				{
+					PBLink link = new PBLink();
+					link.setPbId(currentPBId);
+					link.setDist(dist);
+					link.setOrigin(former.gettName());
+					link.setOStrand(former.gettStrand());
+					link.setOPStart(formerPBStart);
+					link.setOPEnd(formerPBEnd);
+					link.setTerminus(currentCNTId);
+					link.setTStrand(currentStrand);
+					link.setTPStart(currentPBStart);
+					link.setTPEnd(currentPBEnd);
+					links.add(link);
+					valids.add(current);
+					former = current;
+				} else
+				{
+					int formerPBOLLen = formerPBEnd - formerPBStart;
+					int currentPBOLLen = currentPBEnd - currentPBStart;
+					double formerRatio  = (double)(Math.abs(dist))/formerPBOLLen;
+					double currentRatio = (double)(Math.abs(dist))/currentPBOLLen;
+					if(formerRatio >= olRatio || currentRatio >= olRatio)
+					{
+						double formerIdentity = former.getIdentity();
+						double currentIdentity = current.getIdentity();
+						int formerScore = (int)Math.round(formerPBOLLen * olweight + 
+								formerIdentity * 1000 * identweight);
+						int currentScore = (int)Math.round(currentPBOLLen * olweight +
+								currentIdentity * 1000 * identweight);
+						if(formerScore >= currentScore)
+						{
+							continue;
+						} else
+						{
+							isRemove = true;
+							if(!links.isEmpty())
+								links.removeLast(); // delete the last link
+							if(!valids.isEmpty())
+								valids.removeLast(); // delete the former from valids;
+							if(valids.isEmpty())
+							{
+								valids.add(current);
+								former = current;
+								continue;
+							} else
+							{
+								former = valids.getLast();
+								dist = this.getDistance(former, current);
+								PBLink link = new PBLink();
+								link.setPbId(currentPBId);
+								link.setDist(dist);
+								link.setOrigin(former.gettName());
+								link.setOStrand(former.gettStrand());
+								link.setOPStart(formerPBStart);
+								link.setOPEnd(formerPBEnd);
+								link.setTerminus(currentCNTId);
+								link.setTStrand(currentStrand);
+								link.setTPStart(currentPBStart);
+								link.setTPEnd(currentPBEnd);
+								links.add(link);
+								valids.add(current);
+								former = current;
+							}
+						}
+					} else
+					{
+						PBLink link = new PBLink();
+						link.setPbId(currentPBId);
+						link.setDist(dist);
+						link.setOrigin(former.gettName());
+						link.setOStrand(former.gettStrand());
+						link.setOPStart(formerPBStart);
+						link.setOPEnd(formerPBEnd);
+						link.setTerminus(currentCNTId);
+						link.setTStrand(currentStrand);
+						link.setTPStart(currentPBStart);
+						link.setTPEnd(currentPBEnd);
+						links.add(link);
+						valids.add(current);
+						former = current;
+					}
+				}
+			}
+			
+			// building triadlink
+			size = valids.size();
+			if(size >= 3)
+			{
+				// delete the corresponding triadlink;
+				if(isRemove)
+				{ 
+					for(int i = 0; i <= index; i++)
+						if(!triadlinks.isEmpty())
+							triadlinks.removeLast();
+					index--;
+					isRemove = false;
+				}
+				for(int i = 0; i <= index; i++)
+				{
+					TriadLink tl = new TriadLink();
+					Contig pre = new Contig();
+					pre.setID(valids.get(i).gettName());
+					tl.setPrevious(pre);
+					Contig lst = new Contig();
+					lst.setID(valids.get(size - 1).gettName());
+					tl.setLast(lst);
+					if((i - index) == 0)
+					{
+						Contig mid = new Contig();
+						mid.setID(valids.get(size - 2).gettName());
+						tl.setMiddle(mid);
+					}
+					tl.setSupLinks(1);
+					if(triadlinks.contains(tl))
+					{
+						int loc = triadlinks.indexOf(tl);
+						int supLink = triadlinks.get(loc).getSupLinks();
+						supLink += 1;
+						triadlinks.get(loc).setSupLinks(supLink);
+					} else
+					{
+						triadlinks.add(tl);
+					}
+				}
+				index++;
+			}
+		}
+		if(links.isEmpty())
+			return null;
+		return links;
+	}
+	
 
 	private List<PBLink> mRecord2PBLink(List<MRecord> records, List<String> repeats) {
 		int size = records.size();
@@ -245,11 +488,11 @@ public class LinkBuilder {
 				// lst.setLength(m3.gettLength());
 				TriadLink tl = new TriadLink(pre, mid, lst);
 				tl.setSupLinks(1);
-				if (tls.contains(tl)) {
-					int index = tls.indexOf(tl);
-					int supLink = tls.get(index).getSupLinks();
+				if (triadlinks.contains(tl)) {
+					int index = triadlinks.indexOf(tl);
+					int supLink = triadlinks.get(index).getSupLinks();
 					supLink += 1;
-					tls.get(index).setSupLinks(supLink);
+					triadlinks.get(index).setSupLinks(supLink);
 					m1 = null;
 					m2 = null;
 					m3 = null;
@@ -258,7 +501,7 @@ public class LinkBuilder {
 					lst = null;
 					tl = null;
 				} else {
-					tls.add(tl);
+					triadlinks.add(tl);
 					m1 = null;
 					m2 = null;
 					m3 = null;
@@ -281,18 +524,18 @@ public class LinkBuilder {
 			tl.setPrevious(first);
 			tl.setLast(last);
 			tl.setSupLinks(1);
-			if (tls.contains(tl)) {
-				int index = tls.indexOf(tl);
-				int supLink = tls.get(index).getSupLinks();
+			if (triadlinks.contains(tl)) {
+				int index = triadlinks.indexOf(tl);
+				int supLink = triadlinks.get(index).getSupLinks();
 				supLink += 1;
-				tls.get(index).setSupLinks(supLink);
+				triadlinks.get(index).setSupLinks(supLink);
 				m1 = null;
 				m2 = null;
 				first = null;
 				last = null;
 				tl = null;
 			} else {
-				tls.add(tl);
+				triadlinks.add(tl);
 				m1 = null;
 				m2 = null;
 				first = null;
@@ -361,52 +604,6 @@ public class LinkBuilder {
 					}
 				}
 				current = next;
-				
-//				if (Math.abs(dist) >= currentCNTLen) {
-//					if (currentCNTLen < nextCNTLen) {
-//						removes.add(current);
-//						current = next;
-//						continue;
-//					} else {
-//						removes.add(next);
-//						continue;
-//					}
-//				}
-//				if (Math.abs(dist) >= nextCNTLen) {
-//					removes.add(next);
-//					continue;
-//				}
-				
-
-//				if(nextPE <= currentPE)
-//				{
-//					removes.add(next);
-//					continue;
-//				} else
-//				{
-//					int left = nextPS - currentPS;
-//					int right = nextPE - currentPE;
-//					if(left <= constant && right <= constant)
-//					{
-//						double currentIdentity = current.getIdentity();
-//						double nextIdentity = current.getIdentity();
-//						int currentScore = (int) Math.round(currentPBOLLen * olweight + currentIdentity * 1000 * identweight);
-//						int nextScore = (int) Math.round(nextPBOLLen * olweight + nextIdentity * 1000 * identweight);
-//						if(currentScore >= nextScore)
-//						{
-//							removes.add(next);
-//							continue;
-//						} else
-//						{
-//							removes.add(current);
-//							current = next;
-//							continue;
-//						}
-//					} else
-//					{
-//						current = next;
-//					}
-//				}
 			} //  end if(isFirst)
 		} // end while(it.hasNext)
 		if(!removes.isEmpty())
@@ -812,8 +1009,8 @@ public class LinkBuilder {
 	// test in yeast for some pacbio read do not valid by the filter parameter
 	// but it provide some link info!
 	private void pesudoTriadLink(List<MRecord> ms) {
-		if (tls == null)
-			tls = new Vector<TriadLink>(100);
+		if (triadlinks == null)
+			triadlinks = new LinkedList<TriadLink>();
 		Collections.sort(ms, new ByLocOrderComparator());
 		int cpSize = ms.size();
 		MRecord m1 = ms.get(0);
@@ -826,18 +1023,18 @@ public class LinkBuilder {
 		tl.setPrevious(first);
 		tl.setLast(last);
 		tl.setSupLinks(1);
-		if (tls.contains(tl)) {
-			int index = tls.indexOf(tl);
-			int supLink = tls.get(index).getSupLinks();
+		if (triadlinks.contains(tl)) {
+			int index = triadlinks.indexOf(tl);
+			int supLink = triadlinks.get(index).getSupLinks();
 			supLink += 1;
-			tls.get(index).setSupLinks(supLink);
+			triadlinks.get(index).setSupLinks(supLink);
 			m1 = null;
 			m2 = null;
 			first = null;
 			last = null;
 			tl = null;
 		} else {
-			tls.add(tl);
+			triadlinks.add(tl);
 			m1 = null;
 			m2 = null;
 			first = null;
@@ -901,7 +1098,7 @@ public class LinkBuilder {
 //	}
 
 	public List<TriadLink> getTriadLinks() {
-		return tls;
+		return triadlinks;
 	}
 }
 
