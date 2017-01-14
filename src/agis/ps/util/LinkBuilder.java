@@ -85,6 +85,7 @@ public class LinkBuilder {
 		MRecord current = null;
 		Iterator<MRecord> it = records.iterator();
 		Collections.sort(records, new ByLocOrderComparator());
+//		this.pesudoTriadLink(records);
 		int index = 0;
 		boolean isRemove = false;
 		while(it.hasNext())
@@ -312,304 +313,304 @@ public class LinkBuilder {
 	}
 	
 
-	private List<PBLink> mRecord2PBLink(List<MRecord> records, List<String> repeats) {
-		int size = records.size();
-		if (records == null || size <= 1)
-			return null;
-		if (size >= 3)
-			this.pesudoTriadLink(records);
-		Iterator<MRecord> it = records.iterator();
-		List<PBLink> pbLinks = new Vector<PBLink>();
-		List<MRecord> valids = new Vector<MRecord>(records.size());
-		while (it.hasNext()) {
-			MRecord m = it.next();
-			int pbLen = m.getqLength();
-			int pbStart = m.getqStart();
-			int pbEnd = m.getqEnd() - 1;
-			int contLen = m.gettLength();
-			int contStart = m.gettStart();
-			int contEnd = m.gettEnd() - 1;
-			Strand tStrand = m.gettStrand();
-			boolean isInner = false;
-			int endLen = maxEndLen;
-			int endDefLen = (int) Math.round(pbLen * maxEndRatio);
-			// if max end length larger than the endDefLen, used the endDefLen
-			// as threshold
-			if (endDefLen < maxEndLen)
-				endLen = endDefLen;
-			if (pbStart >= endLen && pbStart <= (pbLen - endLen)) {
-				if (pbEnd <= (pbLen - endLen))
-					isInner = true;
-			}
-			// the overlap length of contig
-			int ol_len = contEnd - contStart + 1;
-			double ratio = (double) ol_len / contLen;
-			// the overhang length
-			int contLeftLen = contStart;
-			int contRigthLen = contLen - contEnd - 1;
-			// for the reversed strand, BLASR define the coordinate according to
-			// aligned seq
-			if (tStrand.equals(Strand.REVERSE)) {
-				int temp = contLeftLen;
-				contLeftLen = contRigthLen;
-				contRigthLen = temp;
-			}
-			int ohLen = maxOHLen;
-			int ohDefLen = (int) Math.round(contLen * maxOHRatio);
-			if (ohDefLen < maxOHLen)
-				ohLen = ohDefLen;
-			if (isInner) {
-				// the overlap length less than specified value, next;
-				if (ol_len < minOLLen)
-					continue;
-				// if the overlap length enough for specified value, the ratio
-				// is less than specified value, also next;
-				if (ratio < minOLRatio)
-					continue;
-				// for two end length of contig not allow larger than maxOHLen
-				if (contLeftLen > ohLen || contRigthLen > ohLen)
-					continue;
-			} else {
-				if (pbStart <= endLen && pbEnd <= endLen) {
-					// checking the right side, for the end point in p1-p2
-					if (contRigthLen > ohLen)
-						continue;
-				} else if (pbStart <= endLen && pbEnd <= (pbLen - endLen)) {
-					if (ol_len < minOLLen)
-						continue;
-					if (contRigthLen > ohLen)
-						continue;
-				} else if (pbStart <= endLen && pbEnd >= (pbLen - endLen)) {
-					// start point in p1-p2 and end point in p3-p4
-					// do no afford info, discard
-					continue;
-				} else if (pbStart >= endLen && pbStart <= (pbLen - endLen) && pbEnd >= (pbLen - endLen)) {
-					// start point in p2-p3 and end point in p3-p4
-					if (ol_len < minOLLen)
-						continue;
-					if (contLeftLen > ohLen)
-						continue;
-				} else if (pbStart >= (pbLen - endLen) && pbEnd >= (pbLen - endLen)) {
-					if (contLeftLen > ohLen)
-						continue;
-				}
-			}
-			// if the mrecord is valid;
-			valids.add(m);
-		}
-		
-		size = valids.size();
-		if (size < 2)
-			return null;
-
-		// deleting repeats;
-		if (paras.isRepMask() && !repeats.isEmpty()) {
-			Iterator<MRecord> iterator = valids.iterator();
-			while (iterator.hasNext()) {
-				MRecord m = iterator.next();
-				String cntId = m.gettName();
-				if (repeats.contains(cntId))
-					iterator.remove();
-			}
-		}
-
-		// sorting the contig_pairs;
-		Collections.sort(valids, new ByLocOrderComparator());
-		// checking the similarity contigs
-		// valids = validateContigPair(valids);
-//		valids = this.validateSimilarityContigs(valids);
-//		valids = validateOverlapContigs(valids);
-		valids = this.deleteOverlaps(valids);
-		size = valids.size();
-
-		if (size < 2)
-			return null;
-
-		// build only the successive link; A->B->C, it will build A->B
-		// and B->C, omitted A->C
-		for (int i = 0; i <= size - 2; i++) {
-			MRecord m1 = valids.get(i);
-			MRecord m2 = valids.get(i + 1);
-
-			if (m1.gettName().equalsIgnoreCase(m2.gettName())) {
-				m1 = null;
-				m2 = null;
-				continue;
-			}
-			// // do not considering contain case
-			String pId = m1.getqName();
-			String oId = m1.gettName();
-			int oPBS = m1.getqStart(); // origin pacbio start point;
-//			int oCntS = m1.gettStart(); // origin contig start point;
-			int oPBE = m1.getqEnd(); // origin pacbio end point;
-//			int oCntE = m1.gettEnd(); // origin contig end point;
-//			int oCntLen = m1.gettLength();// origin contig length;
-			Strand oStrand = m1.gettStrand();
-			String tId = m2.gettName();
-			int tPBS = m2.getqStart(); // terminus pacbio start point;
-//			int tCntS = m2.gettStart(); // terminus contig start point;
-			int tPBE = m2.getqEnd(); // terminus pacbio end point;
-//			int tCntE = m2.gettEnd(); // terminus contig end point;
-//			int tCntLen = m2.gettLength(); // terminus contig length
-			Strand tStrand = m2.gettStrand();
-			int dist = this.getDistance(m1, m2);
-
-			PBLink p = new PBLink();
-			p.setPbId(pId);
-			p.setOrigin(oId);
-			p.setOPStart(oPBS);
-			p.setOPEnd(oPBE);
-			p.setOStrand(oStrand);
-			p.setTerminus(tId);
-			p.setTPStart(tPBS);
-			p.setTPEnd(tPBE);
-			p.setTStrand(tStrand);
-			p.setDist(dist);
-			pbLinks.add(p);
-			p = null;
-			m1 = null;
-			m2 = null;
-		}
-		// build TriadLink
-		if (size >= 3) {
-			// List<TriadLink> triad = new Vector<TriadLink>();
-			for (int i = 0; i <= size - 3; i++) {
-				MRecord m1 = valids.get(i);
-				MRecord m2 = valids.get(i + 1);
-				MRecord m3 = valids.get(i + 2);
-				Contig pre = new Contig();
-				pre.setID(m1.gettName());
-				// pre.setLength(m1.gettLength());
-				Contig mid = new Contig();
-				mid.setID(m2.gettName());
-				// mid.setLength(m2.gettLength());
-				Contig lst = new Contig();
-				lst.setID(m3.gettName());
-				// lst.setLength(m3.gettLength());
-				TriadLink tl = new TriadLink(pre, mid, lst);
-				tl.setSupLinks(1);
-				if (triadlinks.contains(tl)) {
-					int index = triadlinks.indexOf(tl);
-					int supLink = triadlinks.get(index).getSupLinks();
-					supLink += 1;
-					triadlinks.get(index).setSupLinks(supLink);
-					m1 = null;
-					m2 = null;
-					m3 = null;
-					pre = null;
-					mid = null;
-					lst = null;
-					tl = null;
-				} else {
-					triadlinks.add(tl);
-					m1 = null;
-					m2 = null;
-					m3 = null;
-					pre = null;
-					mid = null;
-					lst = null;
-					tl = null;
-				}
-			}
-		}
-		// build crossing links
-		if (size >= 4) {
-			MRecord m1 = valids.get(0);
-			MRecord m2 = valids.get(size - 1);
-			Contig first = new Contig();
-			first.setID(m1.gettName());
-			Contig last = new Contig();
-			last.setID(m2.gettName());
-			TriadLink tl = new TriadLink();
-			tl.setPrevious(first);
-			tl.setLast(last);
-			tl.setSupLinks(1);
-			if (triadlinks.contains(tl)) {
-				int index = triadlinks.indexOf(tl);
-				int supLink = triadlinks.get(index).getSupLinks();
-				supLink += 1;
-				triadlinks.get(index).setSupLinks(supLink);
-				m1 = null;
-				m2 = null;
-				first = null;
-				last = null;
-				tl = null;
-			} else {
-				triadlinks.add(tl);
-				m1 = null;
-				m2 = null;
-				first = null;
-				last = null;
-				tl = null;
-			}
-		}
-		return pbLinks;
-	}
+//	private List<PBLink> mRecord2PBLink(List<MRecord> records, List<String> repeats) {
+//		int size = records.size();
+//		if (records == null || size <= 1)
+//			return null;
+//		if (size >= 3)
+//			this.pesudoTriadLink(records);
+//		Iterator<MRecord> it = records.iterator();
+//		List<PBLink> pbLinks = new Vector<PBLink>();
+//		List<MRecord> valids = new Vector<MRecord>(records.size());
+//		while (it.hasNext()) {
+//			MRecord m = it.next();
+//			int pbLen = m.getqLength();
+//			int pbStart = m.getqStart();
+//			int pbEnd = m.getqEnd() - 1;
+//			int contLen = m.gettLength();
+//			int contStart = m.gettStart();
+//			int contEnd = m.gettEnd() - 1;
+//			Strand tStrand = m.gettStrand();
+//			boolean isInner = false;
+//			int endLen = maxEndLen;
+//			int endDefLen = (int) Math.round(pbLen * maxEndRatio);
+//			// if max end length larger than the endDefLen, used the endDefLen
+//			// as threshold
+//			if (endDefLen < maxEndLen)
+//				endLen = endDefLen;
+//			if (pbStart >= endLen && pbStart <= (pbLen - endLen)) {
+//				if (pbEnd <= (pbLen - endLen))
+//					isInner = true;
+//			}
+//			// the overlap length of contig
+//			int ol_len = contEnd - contStart + 1;
+//			double ratio = (double) ol_len / contLen;
+//			// the overhang length
+//			int contLeftLen = contStart;
+//			int contRigthLen = contLen - contEnd - 1;
+//			// for the reversed strand, BLASR define the coordinate according to
+//			// aligned seq
+//			if (tStrand.equals(Strand.REVERSE)) {
+//				int temp = contLeftLen;
+//				contLeftLen = contRigthLen;
+//				contRigthLen = temp;
+//			}
+//			int ohLen = maxOHLen;
+//			int ohDefLen = (int) Math.round(contLen * maxOHRatio);
+//			if (ohDefLen < maxOHLen)
+//				ohLen = ohDefLen;
+//			if (isInner) {
+//				// the overlap length less than specified value, next;
+//				if (ol_len < minOLLen)
+//					continue;
+//				// if the overlap length enough for specified value, the ratio
+//				// is less than specified value, also next;
+//				if (ratio < minOLRatio)
+//					continue;
+//				// for two end length of contig not allow larger than maxOHLen
+//				if (contLeftLen > ohLen || contRigthLen > ohLen)
+//					continue;
+//			} else {
+//				if (pbStart <= endLen && pbEnd <= endLen) {
+//					// checking the right side, for the end point in p1-p2
+//					if (contRigthLen > ohLen)
+//						continue;
+//				} else if (pbStart <= endLen && pbEnd <= (pbLen - endLen)) {
+//					if (ol_len < minOLLen)
+//						continue;
+//					if (contRigthLen > ohLen)
+//						continue;
+//				} else if (pbStart <= endLen && pbEnd >= (pbLen - endLen)) {
+//					// start point in p1-p2 and end point in p3-p4
+//					// do no afford info, discard
+//					continue;
+//				} else if (pbStart >= endLen && pbStart <= (pbLen - endLen) && pbEnd >= (pbLen - endLen)) {
+//					// start point in p2-p3 and end point in p3-p4
+//					if (ol_len < minOLLen)
+//						continue;
+//					if (contLeftLen > ohLen)
+//						continue;
+//				} else if (pbStart >= (pbLen - endLen) && pbEnd >= (pbLen - endLen)) {
+//					if (contLeftLen > ohLen)
+//						continue;
+//				}
+//			}
+//			// if the mrecord is valid;
+//			valids.add(m);
+//		}
+//		
+//		size = valids.size();
+//		if (size < 2)
+//			return null;
+//
+//		// deleting repeats;
+//		if (paras.isRepMask() && !repeats.isEmpty()) {
+//			Iterator<MRecord> iterator = valids.iterator();
+//			while (iterator.hasNext()) {
+//				MRecord m = iterator.next();
+//				String cntId = m.gettName();
+//				if (repeats.contains(cntId))
+//					iterator.remove();
+//			}
+//		}
+//
+//		// sorting the contig_pairs;
+//		Collections.sort(valids, new ByLocOrderComparator());
+//		// checking the similarity contigs
+//		// valids = validateContigPair(valids);
+////		valids = this.validateSimilarityContigs(valids);
+////		valids = validateOverlapContigs(valids);
+//		valids = this.deleteOverlaps(valids);
+//		size = valids.size();
+//
+//		if (size < 2)
+//			return null;
+//
+//		// build only the successive link; A->B->C, it will build A->B
+//		// and B->C, omitted A->C
+//		for (int i = 0; i <= size - 2; i++) {
+//			MRecord m1 = valids.get(i);
+//			MRecord m2 = valids.get(i + 1);
+//
+//			if (m1.gettName().equalsIgnoreCase(m2.gettName())) {
+//				m1 = null;
+//				m2 = null;
+//				continue;
+//			}
+//			// // do not considering contain case
+//			String pId = m1.getqName();
+//			String oId = m1.gettName();
+//			int oPBS = m1.getqStart(); // origin pacbio start point;
+////			int oCntS = m1.gettStart(); // origin contig start point;
+//			int oPBE = m1.getqEnd(); // origin pacbio end point;
+////			int oCntE = m1.gettEnd(); // origin contig end point;
+////			int oCntLen = m1.gettLength();// origin contig length;
+//			Strand oStrand = m1.gettStrand();
+//			String tId = m2.gettName();
+//			int tPBS = m2.getqStart(); // terminus pacbio start point;
+////			int tCntS = m2.gettStart(); // terminus contig start point;
+//			int tPBE = m2.getqEnd(); // terminus pacbio end point;
+////			int tCntE = m2.gettEnd(); // terminus contig end point;
+////			int tCntLen = m2.gettLength(); // terminus contig length
+//			Strand tStrand = m2.gettStrand();
+//			int dist = this.getDistance(m1, m2);
+//
+//			PBLink p = new PBLink();
+//			p.setPbId(pId);
+//			p.setOrigin(oId);
+//			p.setOPStart(oPBS);
+//			p.setOPEnd(oPBE);
+//			p.setOStrand(oStrand);
+//			p.setTerminus(tId);
+//			p.setTPStart(tPBS);
+//			p.setTPEnd(tPBE);
+//			p.setTStrand(tStrand);
+//			p.setDist(dist);
+//			pbLinks.add(p);
+//			p = null;
+//			m1 = null;
+//			m2 = null;
+//		}
+//		// build TriadLink
+//		if (size >= 3) {
+//			// List<TriadLink> triad = new Vector<TriadLink>();
+//			for (int i = 0; i <= size - 3; i++) {
+//				MRecord m1 = valids.get(i);
+//				MRecord m2 = valids.get(i + 1);
+//				MRecord m3 = valids.get(i + 2);
+//				Contig pre = new Contig();
+//				pre.setID(m1.gettName());
+//				// pre.setLength(m1.gettLength());
+//				Contig mid = new Contig();
+//				mid.setID(m2.gettName());
+//				// mid.setLength(m2.gettLength());
+//				Contig lst = new Contig();
+//				lst.setID(m3.gettName());
+//				// lst.setLength(m3.gettLength());
+//				TriadLink tl = new TriadLink(pre, mid, lst);
+//				tl.setSupLinks(1);
+//				if (triadlinks.contains(tl)) {
+//					int index = triadlinks.indexOf(tl);
+//					int supLink = triadlinks.get(index).getSupLinks();
+//					supLink += 1;
+//					triadlinks.get(index).setSupLinks(supLink);
+//					m1 = null;
+//					m2 = null;
+//					m3 = null;
+//					pre = null;
+//					mid = null;
+//					lst = null;
+//					tl = null;
+//				} else {
+//					triadlinks.add(tl);
+//					m1 = null;
+//					m2 = null;
+//					m3 = null;
+//					pre = null;
+//					mid = null;
+//					lst = null;
+//					tl = null;
+//				}
+//			}
+//		}
+//		// build crossing links
+//		if (size >= 4) {
+//			MRecord m1 = valids.get(0);
+//			MRecord m2 = valids.get(size - 1);
+//			Contig first = new Contig();
+//			first.setID(m1.gettName());
+//			Contig last = new Contig();
+//			last.setID(m2.gettName());
+//			TriadLink tl = new TriadLink();
+//			tl.setPrevious(first);
+//			tl.setLast(last);
+//			tl.setSupLinks(1);
+//			if (triadlinks.contains(tl)) {
+//				int index = triadlinks.indexOf(tl);
+//				int supLink = triadlinks.get(index).getSupLinks();
+//				supLink += 1;
+//				triadlinks.get(index).setSupLinks(supLink);
+//				m1 = null;
+//				m2 = null;
+//				first = null;
+//				last = null;
+//				tl = null;
+//			} else {
+//				triadlinks.add(tl);
+//				m1 = null;
+//				m2 = null;
+//				first = null;
+//				last = null;
+//				tl = null;
+//			}
+//		}
+//		return pbLinks;
+//	}
 	
-	private List<MRecord> deleteOverlaps(List<MRecord> data)
-	{
-//		List<MRecord> valids = new LinkedList<MRecord>();
-		int size = data.size();
-		List<MRecord> removes = new Vector<MRecord>(size);
-		Iterator<MRecord> it = data.iterator();
-		MRecord current = null;
-		MRecord next = null;
-		boolean isFirst = true;
-		double olRatio = 0.5; // larger than this value, it will remove;
-//		int constant = 100; // 100 bp to defined whether contigs is similarity
-		double olweight = 0.6;
-		double identweight = 0.4;
-		while(it.hasNext())
-		{
-			if(isFirst)
-			{
-				current = it.next();
-				isFirst = false;
-			} else
-			{
-				next = it.next();
-				int dist = this.getDistance(current, next);
-				if(dist >= 0)
-				{
-					current = next;
-					continue;
-				}
-				// it the distance is large than one of the cnt length, remove it;
-//				int currentCNTLen = current.gettLength();
-//				int nextCNTLen = next.gettLength();
-				int currentPS = current.getqStart();
-				int currentPE = current.getqEnd();
-				int currentPBOLLen = currentPE - currentPS;
-				int nextPS = next.getqStart();
-				int nextPE = next.getqEnd();
-				int nextPBOLLen = nextPE - nextPS;
-//				int ol = currentPE - currentPS;
-				double currentRatio = (double)(Math.abs(dist))/currentPBOLLen;
-				double nextRatio = (double)(Math.abs(dist))/nextPBOLLen;
-				if(currentRatio >= olRatio || nextRatio >= olRatio)
-				{
-					double currentIdentity = current.getIdentity();
-					double nextIdentity = next.getIdentity();
-					int currentScore = (int) Math.round(currentPBOLLen * olweight + currentIdentity * 1000 * identweight);
-					int nextScore = (int) Math.round(nextPBOLLen * olweight + nextIdentity * 1000 * identweight);
-					if(currentScore >= nextScore)
-					{
-						removes.add(next);
-						continue;
-					} else
-					{
-						removes.add(current);
-						current = next;
-						continue;
-					}
-				}
-				current = next;
-			} //  end if(isFirst)
-		} // end while(it.hasNext)
-		if(!removes.isEmpty())
-			data.removeAll(removes);
-		return data;
-	}
+//	private List<MRecord> deleteOverlaps(List<MRecord> data)
+//	{
+////		List<MRecord> valids = new LinkedList<MRecord>();
+//		int size = data.size();
+//		List<MRecord> removes = new Vector<MRecord>(size);
+//		Iterator<MRecord> it = data.iterator();
+//		MRecord current = null;
+//		MRecord next = null;
+//		boolean isFirst = true;
+//		double olRatio = 0.5; // larger than this value, it will remove;
+////		int constant = 100; // 100 bp to defined whether contigs is similarity
+//		double olweight = 0.6;
+//		double identweight = 0.4;
+//		while(it.hasNext())
+//		{
+//			if(isFirst)
+//			{
+//				current = it.next();
+//				isFirst = false;
+//			} else
+//			{
+//				next = it.next();
+//				int dist = this.getDistance(current, next);
+//				if(dist >= 0)
+//				{
+//					current = next;
+//					continue;
+//				}
+//				// it the distance is large than one of the cnt length, remove it;
+////				int currentCNTLen = current.gettLength();
+////				int nextCNTLen = next.gettLength();
+//				int currentPS = current.getqStart();
+//				int currentPE = current.getqEnd();
+//				int currentPBOLLen = currentPE - currentPS;
+//				int nextPS = next.getqStart();
+//				int nextPE = next.getqEnd();
+//				int nextPBOLLen = nextPE - nextPS;
+////				int ol = currentPE - currentPS;
+//				double currentRatio = (double)(Math.abs(dist))/currentPBOLLen;
+//				double nextRatio = (double)(Math.abs(dist))/nextPBOLLen;
+//				if(currentRatio >= olRatio || nextRatio >= olRatio)
+//				{
+//					double currentIdentity = current.getIdentity();
+//					double nextIdentity = next.getIdentity();
+//					int currentScore = (int) Math.round(currentPBOLLen * olweight + currentIdentity * 1000 * identweight);
+//					int nextScore = (int) Math.round(nextPBOLLen * olweight + nextIdentity * 1000 * identweight);
+//					if(currentScore >= nextScore)
+//					{
+//						removes.add(next);
+//						continue;
+//					} else
+//					{
+//						removes.add(current);
+//						current = next;
+//						continue;
+//					}
+//				}
+//				current = next;
+//			} //  end if(isFirst)
+//		} // end while(it.hasNext)
+//		if(!removes.isEmpty())
+//			data.removeAll(removes);
+//		return data;
+//	}
 
 	// public List<PBLinkM> mRecord2Link(List<MRecord> records, List<String>
 	// repeats)
