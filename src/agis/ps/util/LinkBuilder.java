@@ -57,10 +57,10 @@ public class LinkBuilder {
 		int bug = 0;
 		try {
 			for (String s : records.keySet()) {
-//				if(s.equals("m130605_000141_42207_c100515142550000001823076608221372_s1_p0/144577/0_7266"))
+//				if(s.equals("PB3577"))
 //					logger.debug("breakpoint");
-				if(bug == 346)
-					logger.debug("breakpoint");
+//				if(bug == 346)
+//					logger.debug("breakpoint");
 				List<MRecord> rs = records.get(s);
 				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
 				if (temp != null)
