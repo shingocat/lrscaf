@@ -612,8 +612,8 @@ public class DirectedGraph extends Graph implements Serializable {
 				int adjCount = adjs.size();
 				// only considering divergence point
 				// and considering the odd number diverence point
-				if((adjCount % 2) != 0)
-				{
+//				if((adjCount % 2) != 0)
+//				{
 					for(int i = 0; i < adjCount; i++)
 					{
 						Contig next = adjs.get(i);
@@ -621,7 +621,7 @@ public class DirectedGraph extends Graph implements Serializable {
 						path.addLast(c);
 						this.delTips(next, c, 2, path, rmEdges);
 					}
-				}
+//				}
 			}
 		} catch (Exception e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());

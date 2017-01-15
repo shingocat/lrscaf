@@ -377,7 +377,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("13832"))
+//			if(current.getID().equals("12554"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -978,20 +978,22 @@ public class PathBuilder {
 					ip1 = getBestInternalPath(ip1, ip2);
 				}
 			}
-			if(isBestSupportedInternalPath(ip1, adjInternals))
-			{
+			if(ip1 != null)
 				break;
-			} else
-			{
-				ips.remove(ip1);
-				if(ips == null || ips.isEmpty())
-				{
-					ip1 = null;
-					break;
-				}
-				size = ips.size() - 1;
-				ip1 = ips.get(0);
-			}
+//			if(isBestSupportedInternalPath(ip1, adjInternals))
+//			{
+//				break;
+//			} else
+//			{
+//				ips.remove(ip1);
+//				if(ips == null || ips.isEmpty())
+//				{
+//					ip1 = null;
+//					break;
+//				}
+//				size = ips.size() - 1;
+//				ip1 = ips.get(0);
+//			}
 		}
 		if(ip1 != null)
 		{

@@ -84,8 +84,10 @@ public class LinkBuilder {
 		MRecord former = null;
 		MRecord current = null;
 		Iterator<MRecord> it = records.iterator();
-		Collections.sort(records, new ByLocOrderComparator());
-//		this.pesudoTriadLink(records);
+//		if(size >= 3)
+			Collections.sort(records, new ByLocOrderComparator());
+//		if(size >= 3)
+//			this.pesudoTriadLink(records);
 		int index = 0;
 		boolean isRemove = false;
 		while(it.hasNext())
@@ -176,6 +178,9 @@ public class LinkBuilder {
 				continue;
 			} else
 			{
+				String formerCNTId = former.gettName();
+				if(formerCNTId.equals(currentCNTId))
+						continue;
 				int dist = this.getDistance(former, current);
 				int formerPBStart = former.getqStart();
 				int formerPBEnd = former.getqEnd();
@@ -184,7 +189,7 @@ public class LinkBuilder {
 					PBLink link = new PBLink();
 					link.setPbId(currentPBId);
 					link.setDist(dist);
-					link.setOrigin(former.gettName());
+					link.setOrigin(formerCNTId);
 					link.setOStrand(former.gettStrand());
 					link.setOPStart(formerPBStart);
 					link.setOPEnd(formerPBEnd);
@@ -1012,7 +1017,7 @@ public class LinkBuilder {
 	private void pesudoTriadLink(List<MRecord> ms) {
 		if (triadlinks == null)
 			triadlinks = new LinkedList<TriadLink>();
-		Collections.sort(ms, new ByLocOrderComparator());
+//		Collections.sort(ms, new ByLocOrderComparator());
 		int cpSize = ms.size();
 		MRecord m1 = ms.get(0);
 		MRecord m2 = ms.get(cpSize - 1);
