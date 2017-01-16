@@ -26,35 +26,81 @@ public class MathTool {
 		return sum;
 	}
 	
-	public static Integer median(List<Integer> nums)
+	public static Map<String, Double> summary(List<Integer> nums)
+	{
+		return MathTool.summary(nums.toArray(new Integer[nums.size()]));
+	}
+	
+	public static Map<String, Double> summary(Integer [] nums)
+	{
+		Map<String, Double> values = new HashMap<String, Double>();
+		int len = nums.length;
+		double min = 0;
+		double firstQ = 0;
+		double median = 0;
+		double thirdQ = 0;
+		double max = 0;
+		Arrays.sort(nums);
+		min = nums[0];
+		max = nums[len - 1];
+		if(((len + 1) % 4) != 0)
+		{
+//			double q1Index = Math.ceil(len + 1) * 0.25;
+			double q2Index = Math.ceil(len + 1) * 0.5;
+//			double q3Index = Math.ceil(len + 1) * 0.75;
+//			firstQ = (double)(nums[(int)q1Index - 1] + 
+//					(nums[(int)q1Index] - nums[(int)q1Index - 1]) * (q1Index - (int)q1Index));
+//			median = (double)(nums[(int)q2Index - 1] + 
+//					(nums[(int)q2Index] - nums[(int)q2Index - 1]) * (q2Index - (int)q2Index));
+//			thirdQ = (double)(nums[(int)q3Index - 1] + 
+//					(nums[(int)q3Index] - nums[(int)q3Index - 1]) * (q3Index - (int)q3Index));
+//			firstQ = (nums[(int)q1Index] + nums[(int)q1Index - 1]) * 0.5;
+			firstQ = median(Arrays.copyOfRange(nums, 0, (int)q2Index));
+			median = (nums[(int)q2Index] + nums[(int)q2Index - 1]) * 0.5;
+			thirdQ = median(Arrays.copyOfRange(nums, (int)q2Index, len));
+			
+		} else
+		{
+//			int q1Index = (int) Math.ceil((len + 1) * 0.25);
+			int q2Index = (int) ((int)(len + 1) * 0.5);
+//			int q3Index =  (int) Math.ceil((len * 1) * 0.75);
+			firstQ = median(Arrays.copyOfRange(nums, 0, (int)q2Index - 1));
+			median = nums[q2Index - 1];
+			thirdQ = median(Arrays.copyOfRange(nums, (int)q2Index, len));
+		}
+		values.put("MIN", min);
+		values.put("FIRSTQ", firstQ);
+		values.put("MEDIAN", median);
+		values.put("THIRDQ", thirdQ);
+		values.put("MAX", max);
+		return values;
+	}
+//	
+	public static double median(List<Integer> nums)
 	{
 		return MathTool.median(nums.toArray(new Integer[nums.size()]));
 	}
 	
-	public static Integer median(Integer [] nums)
+	public static double median(Integer [] nums)
 	{
-		int median = 0;
+		double median = 0;
 		int len = nums.length;
 		if(len == 0)
 			return median;
 		if(len == 1)
 			return median = nums[0];
-		int [] data = new int[len];
-		for(int i = 0; i < len; i ++)
-		{
-			data[i] = nums[i];
-		}
-		Arrays.sort(data);
+//		int [] data = new int[len];
+//		Arrays.sort(data);
 		if((len % 2) == 1)
 		{
 			int index = len / 2;
-			median = data[index];
+			median = nums[index];
 		} else
 		{
 			int n = len/2;
 			int f = n - 1;
-			int sum = data[n] + data[f];
-			median = sum / 2;
+			int sum = nums[n] + nums[f];
+			median = (double)sum / 2;
 		}
 		return median;
 	}
@@ -140,19 +186,19 @@ public class MathTool {
 		return min(arrs);
 	}
 
-	public static Map<String, Integer> summary(List<Integer> suptLinks) {
-		int mean = mean(suptLinks);
-		int median = median(suptLinks);
-		int min = min(suptLinks);
-		int max = max(suptLinks);
-		int sd = sd(suptLinks);
-		Map<String, Integer> values = new HashMap<String, Integer>();
-		values.put("MEAN", mean);
-		values.put("MEDIAN", median);
-		values.put("MIN", min);
-		values.put("MAX", max);
-		values.put("SD", sd);
-		return values;
-	}
+//	public static Map<String, Integer> summary(List<Integer> suptLinks) {
+//		int mean = mean(suptLinks);
+//		int median = median(suptLinks);
+//		int min = min(suptLinks);
+//		int max = max(suptLinks);
+//		int sd = sd(suptLinks);
+//		Map<String, Integer> values = new HashMap<String, Integer>();
+//		values.put("MEAN", mean);
+//		values.put("MEDIAN", median);
+//		values.put("MIN", min);
+//		values.put("MAX", max);
+//		values.put("SD", sd);
+//		return values;
+//	}
 
 }

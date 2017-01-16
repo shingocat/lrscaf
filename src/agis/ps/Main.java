@@ -113,6 +113,8 @@ public class Main {
 		opts.addOption("gf", "gf", false, "The indicator for gap filling! Default: <f>");
 		// tip length
 		opts.addOption("tl", "tiplength", false, "The maximum tip length!");
+		// iqr time
+		opts.addOption("iqrt", "iqrtime", false, "The IQR time for defined repeat outlier!");
 		return opts;
 	}
 	
@@ -247,6 +249,11 @@ public class Main {
 		if(cl.hasOption("tl"))
 		{
 			paras.setTipLength(Integer.valueOf(cl.getOptionValue("tl")));
+		}
+		// parsing iqr time
+		if(cl.hasOption("iqrt"))
+		{
+			paras.setIqrTime(Double.valueOf(cl.getOptionValue("iqrt")));
 		}
 		return paras;
 	}

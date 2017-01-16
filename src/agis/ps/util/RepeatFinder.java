@@ -21,28 +21,72 @@ public class RepeatFinder {
 	public static Logger logger = LoggerFactory.getLogger(RepeatFinder.class);
 	private Parameter paras;
 	private List<String> repeats;
+	private double iqrTime;
 //	private Map<String, List<MRecord>> cntMaps; 
 	
 	public RepeatFinder(Parameter paras)
 	{
 		this.paras = paras;
+		iqrTime = paras.getIqrTime();
 	}
 	
+//	public List<String> findRepeats(Map<String, Integer> cntCovs)
+//	{
+//		long start = System.currentTimeMillis();
+//		List<Integer> covs = new ArrayList<Integer>(cntCovs.values());
+//		int mean =  MathTool.mean(covs);
+//		int sd = MathTool.sd(covs);
+//		int median = (int) MathTool.median(covs);
+//		int upper = median + 2 * sd;
+//		logger.info("Mean cov = " + mean);
+//		logger.info("Median cov = " + median);
+//		logger.info("S.D. = " + sd);
+//		logger.info("Mean Range 95%: [" + (mean - 2 * sd) + " : " + (mean + 2 * sd) + "]");
+//		logger.info("Mean Range 99%: [" + (mean - 3 * sd) + " : " + (mean + 3 * sd) + "]");
+//		logger.info("Median Range 95%: [" + (median - 2 * sd) + " : " + (median + 2 * sd) + "]");
+//		logger.info("Median Range 99%: [" + (median - 3 * sd) + " : " + (median + 3 * sd) + "]");
+////		logger.info("Pesudo repeat contigs");
+////		Map<String, List<String>> repeat = new HashMap<String, List<String>>();
+//		if(repeats == null)
+//			repeats = new Vector<String>(30);
+//		for(String id : cntCovs.keySet())
+//		{
+//			if(cntCovs.get(id) > upper)
+//			{
+//				repeats.add(id);
+//			}
+//		}
+//		logger.info("Repeat count: " + repeats.size());
+//		ContigCoverageWriter ccw = new ContigCoverageWriter(paras);
+//		ccw.write2(cntCovs);
+//		long end = System.currentTimeMillis();
+//		logger.info("Finding repeat, erase time: " + (end - start) + " ms");
+//		return repeats;
+//	}
+//	
 	public List<String> findRepeats(Map<String, Integer> cntCovs)
 	{
 		long start = System.currentTimeMillis();
 		List<Integer> covs = new ArrayList<Integer>(cntCovs.values());
-		int mean =  MathTool.mean(covs);
-		int sd = MathTool.sd(covs);
-		int median = MathTool.median(covs);
-		int upper = median + 2 * sd;
-		logger.info("Mean cov = " + mean);
+//		int mean =  MathTool.mean(covs);
+//		int sd = MathTool.sd(covs);
+		Map<String, Double> values = MathTool.summary(covs);
+		double firstQ = values.get("FIRSTQ");
+		double thirdQ = values.get("THIRDQ");
+		double iqr = thirdQ - firstQ;
+		double upper = iqr * iqrTime + values.get("THIRDQ");
+		double median = values.get("MEDIAN");
+		logger.info("First Quartile: " + firstQ);
+//		logger.info("Mean cov = " + mean);
 		logger.info("Median cov = " + median);
-		logger.info("S.D. = " + sd);
-		logger.info("Mean Range 95%: [" + (mean - 2 * sd) + " : " + (mean + 2 * sd) + "]");
-		logger.info("Mean Range 99%: [" + (mean - 3 * sd) + " : " + (mean + 3 * sd) + "]");
-		logger.info("Median Range 95%: [" + (median - 2 * sd) + " : " + (median + 2 * sd) + "]");
-		logger.info("Median Range 99%: [" + (median - 3 * sd) + " : " + (median + 3 * sd) + "]");
+//		logger.info("S.D. = " + sd);
+//		logger.info("Mean Range 95%: [" + (mean - 2 * sd) + " : " + (mean + 2 * sd) + "]");
+//		logger.info("Mean Range 99%: [" + (mean - 3 * sd) + " : " + (mean + 3 * sd) + "]");
+//		logger.info("Median Range 95%: [" + (median - 2 * sd) + " : " + (median + 2 * sd) + "]");
+//		logger.info("Median Range 99%: [" + (median - 3 * sd) + " : " + (median + 3 * sd) + "]");
+		logger.info("Third Quartile: " + thirdQ);
+		logger.info("Interquartile Range: " + iqr);
+		logger.info(iqrTime + "'s IQR " + ", Outlier Threshold: " + upper);
 //		logger.info("Pesudo repeat contigs");
 //		Map<String, List<String>> repeat = new HashMap<String, List<String>>();
 		if(repeats == null)

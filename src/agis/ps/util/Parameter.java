@@ -32,7 +32,18 @@ public class Parameter implements Serializable {
 	private boolean isRepMask = false; // whether repeat is mask;
 	private boolean isGapFilling = false; // whether gap is filled;
 	private int tipLength = 1500; // tip length is 1500 bp, larger than this do not considering as tip
+	private double iqrTime = 1.5;
 	
+	
+
+	public double getIqrTime() {
+		return iqrTime;
+	}
+
+	public void setIqrTime(double iqrTime) {
+		this.iqrTime = iqrTime;
+	}
+
 	public boolean isGapFilling() {
 		return isGapFilling;
 	}

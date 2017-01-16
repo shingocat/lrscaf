@@ -115,8 +115,9 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-//				INDEX++;
-//				if(INDEX == 7)
+				INDEX++;
+//				logger.debug(""+INDEX);
+//				if(INDEX == 14)
 //					logger.debug("breakpoint");
 				Contig current = diGraph.getRandomVertex();
 				if (current == null)
@@ -377,7 +378,7 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("12554"))
+//			if(current.getID().equals("11548"))
 //				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
@@ -1075,26 +1076,36 @@ public class PathBuilder {
 		}
 		if(nexts.size() > 1)
 			convergence = current;
+		boolean isExist = false;
 		for(Contig c : nexts)
 		{
 			if(adjcents.contains(c))
 			{
+				isExist = true;
 				isBubble = true;
 				values.put("IsBubble", isBubble);
 				values.put("CNT", convergence);
 				break;
 			}
-			Map<String, Object> outcome = isBubbleAdjacent(current, c, depth - 1, adjcents);
-			if((boolean) outcome.get("IsBubble"))
+		}
+		if(isExist){
+			return values;
+		} else
+		{
+			for(Contig c : nexts)
 			{
-				isBubble = true;
-				convergence = (Contig) outcome.get("CNT");
+				Map<String, Object> outcome = isBubbleAdjacent(current, c, depth - 1, adjcents);
+				if((boolean) outcome.get("IsBubble"))
+				{
+					isBubble = true;
+					convergence = (Contig) outcome.get("CNT");
+					values.put("IsBubble", isBubble);
+					values.put("CNT", convergence);
+					break;
+				}
 				values.put("IsBubble", isBubble);
 				values.put("CNT", convergence);
-				break;
 			}
-			values.put("IsBubble", isBubble);
-			values.put("CNT", convergence);
 		}
 		return values;
 	}
