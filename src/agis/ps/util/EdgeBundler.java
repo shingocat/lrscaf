@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import org.slf4j.Logger;
@@ -31,10 +32,223 @@ public class EdgeBundler {
 //	private Map<String, Contig> contigs = null;
 	private List<GapRecord> gaps = new Vector<GapRecord>(50);
 //	private static int index = 0;
+	private int minSupLinks = 0;
+	private boolean isUseOL = false;
+	
 	
 	public EdgeBundler(Parameter paras)
 	{
 		this.paras = paras;
+		this.minSupLinks = paras.getMinSupLinks();
+		this.isUseOL = paras.isUseOLLink();
+	}
+	
+	public List<Edge> links2edges(List<PBLink> links, Map<String, Integer> cntLens)
+	{
+		if(links == null || links.isEmpty())
+			return null;
+		if(edges == null)
+			edges = new Vector<Edge>(links.size()/5); // optional, pesudo 5 link to be one edge
+		edges.clear();
+		logger.info("\tMinimum supported links: " + minSupLinks);
+		logger.info("\tUsed overlap link: " + isUseOL);
+		Iterator<PBLink> it = links.iterator();
+		Map<String, List<PBLink>> temp = new HashMap<String, List<PBLink>>();
+		while (it.hasNext()) {
+			PBLink pb = it.next();
+			String id1 = pb.getOrigin() + ":->:" + pb.getTerminus();
+			String id2 = pb.getTerminus() + ":->:" + pb.getOrigin();
+			if (temp.containsKey(id1)) {
+				temp.get(id1).add(pb);
+			} else if (temp.containsKey(id2)) {
+				temp.get(id2).add(pb);
+			} else {
+				List<PBLink> lins = new Vector<PBLink>(10);
+				lins.add(pb);
+				temp.put(id1, lins);
+			}
+		}
+		for(Entry<String, List<PBLink>> entry : temp.entrySet())
+		{
+			List<PBLink> vls = this.validateLinks(entry.getKey(), entry.getValue());
+			if(vls != null)
+			{
+				edges.addAll(buildEdge(vls));
+			}
+		}
+		return edges;
+	}
+	
+	private List<Edge> buildEdge(List<PBLink> links)
+	{
+		List<Edge> value = new Vector<Edge>(2);
+		int size = links.size();
+		Edge edge = new Edge();
+		int [] dists = new int[size];
+		String original = null;
+		String terminus = null;
+		Strand oStrand = null;
+		Strand tStrand = null;
+		for(int i = 0; i < size; i++)
+		{
+			PBLink link = links.get(i);
+			if(original == null)
+				original = link.getOrigin();
+			if(terminus == null)
+				terminus = link.getTerminus();
+			if(oStrand == null)
+				oStrand = link.getOStrand();
+			if(tStrand == null)
+				tStrand = link.getTStrand();
+			dists[i] = link.getDist();
+		}
+		int meanDist = MathTool.mean(dists);
+		int sd = MathTool.sd(dists);
+		if(!isUseOL && meanDist < 0)
+			return null;
+			
+		// forward edge
+		Contig oCnt = new Contig();
+		oCnt.setID(original);
+//		oCnt.setLength(length);
+		edge.setOrigin(oCnt);
+		edge.setoStrand(oStrand);
+		Contig tCnt = new Contig();
+		tCnt.setID(terminus);
+		edge.setTerminus(tCnt);
+		edge.settStrand(tStrand);
+		edge.setDistMean(meanDist);
+		edge.setDistSd(sd);
+		edge.setFake(false);
+		edge.setLinkNum(size);
+		if(meanDist < 0)
+		{	
+			edge.setOL(true);
+			if(isUseOL)
+				edge.setValid(true);
+		}
+		value.add(edge);
+		// reverse edge
+		edge = new Edge();
+		oCnt = new Contig();
+		oCnt.setID(terminus);
+//		oCnt.setLength(length);
+		edge.setOrigin(oCnt);
+		if(tStrand.equals(Strand.FORWARD))
+			edge.setoStrand(Strand.REVERSE);
+		else
+			edge.setoStrand(Strand.FORWARD);
+		tCnt = new Contig();
+		tCnt.setID(original);
+		edge.setTerminus(tCnt);
+		if(oStrand.equals(Strand.FORWARD))
+			edge.settStrand(Strand.REVERSE);
+		else
+			edge.settStrand(Strand.FORWARD);
+		edge.setDistMean(meanDist);
+		edge.setDistSd(sd);
+		edge.setFake(false);
+		edge.setLinkNum(size);
+		if(meanDist < 0)
+		{	
+			edge.setOL(true);
+			if(isUseOL)
+				edge.setValid(true);
+		}
+		value.add(edge);
+		return value;
+	}
+	
+	private List<PBLink> validateLinks(String id, List<PBLink> links)
+	{
+//		List<PBLink> values = new Vector<PBLink>();
+		// compute every case valid pblink
+		List<PBLink> caseA = new Vector<PBLink>(); // case +, +
+		List<PBLink> caseB = new Vector<PBLink>(); // case +, -
+		List<PBLink> caseC = new Vector<PBLink>(); // case -, +
+		List<PBLink> caseD = new Vector<PBLink>(); // case -, -
+		for(PBLink link : links)
+		{
+			String [] ids = id.split(":->:");
+			if(ids[0].equals(link.getOrigin()))
+			{
+				if(link.getOStrand().equals(Strand.FORWARD) && link.getTStrand().equals(Strand.FORWARD))
+					caseA.add(link);
+				else if(link.getOStrand().equals(Strand.FORWARD) && link.getTStrand().equals(Strand.REVERSE))
+					caseB.add(link);
+				else if(link.getOStrand().equals(Strand.REVERSE) && link.getTStrand().equals(Strand.FORWARD))
+					caseC.add(link);
+				else
+					caseD.add(link);
+			} else
+			{
+				if(link.getOStrand().equals(Strand.REVERSE) && link.getTStrand().equals(Strand.REVERSE))
+					caseA.add(link);
+				else if(link.getOStrand().equals(Strand.FORWARD) && link.getTStrand().equals(Strand.REVERSE))
+					caseB.add(link);
+				else if(link.getOStrand().equals(Strand.REVERSE) && link.getTStrand().equals(Strand.FORWARD))
+					caseC.add(link);
+				else
+					caseD.add(link);
+			}
+		}
+		caseA = removeOutlier(caseA);
+		caseB = removeOutlier(caseB);
+		caseC = removeOutlier(caseC);
+		caseD = removeOutlier(caseD);
+		int sizeA = caseA.size();
+		int sizeB = caseB.size();
+		int sizeC = caseC.size();
+		int sizeD = caseD.size();
+		int[] sizes = {sizeA, sizeB, sizeC, sizeD};
+		Arrays.sort(sizes);
+		int max = sizes[3];
+		if(max == sizes [2])
+			return null;
+		if(max == sizeA)
+			return caseA;
+		else if(max == sizeB)
+			return caseB;
+		else if(max == sizeC)
+			return caseC;
+		else
+			return caseD;
+	}
+	
+	private List<PBLink> removeOutlier(List<PBLink> links)
+	{
+		List<PBLink> removes = new Vector<PBLink>();
+		int size = links.size();
+		if(size == 0)
+			return links;
+		int [] dists = new int[size];
+		for(int i = 0; i < size; i++)
+			dists[i] = links.get(i).getDist();
+		double upper = 0;
+		double lower = 0;
+		if(size < 5)
+		{
+			int mean = MathTool.mean(dists);
+			int sd = MathTool.sd(dists);
+			upper = mean + 2 * sd;
+			lower = mean - 2 * sd;
+		} else
+		{
+			Map<String, Double> values = MathTool.summary(dists);
+			double q1 = values.get("FIRSTQ");
+			double q3 = values.get("THIRDQ");
+			double iqr = (q3 - q1) * 3;
+			upper = iqr + q3;
+			lower = q1 - iqr;
+		}
+		for(PBLink link : links)
+		{
+			if(link.getDist() > upper || link.getDist() < lower)
+				removes.add(link);
+		}
+		if(!removes.isEmpty())
+			links.removeAll(removes);
+		return links;
 	}
 
 //	public EdgeBundler(List<PBLinkM> links, Parameter paras, Map<String, Contig> contigs) {
@@ -1688,38 +1902,38 @@ public class EdgeBundler {
 //		gaps = null;
 //		return edges;
 //	}
-
-	public List<Edge> pesudoEdging() {
-		if (edges == null || edges.size() == 0)
-			throw new IllegalArgumentException(
-					this.getClass().getName() + "The Edges is empty, could not be pesudo edging!");
-		// define the original size of new Edge list is to be 1.5 folds;
-		List<Edge> values = new Vector<Edge>(edges.size() / 2 + edges.size());
-		for (Edge e : edges) {
-			values.add(e);
-			Edge tEdge = new Edge();
-			tEdge.setOrigin(e.getTerminus());
-			tEdge.setTerminus(e.getOrigin());
-			if (!edges.contains(tEdge)) {
-				tEdge.setFake(true);
-				tEdge.setDistMean(e.getDistMean());
-				tEdge.setDistSd(e.getDistSd());
-				tEdge.setLinkNum(e.getLinkNum());
-				tEdge.setOL(e.isOL());
-				tEdge.setValid(e.isValid());
-				if (e.getoStrand().equals(Strand.FORWARD))
-					tEdge.settStrand(Strand.REVERSE);
-				else
-					tEdge.settStrand(Strand.FORWARD);
-				if (e.gettStrand().equals(Strand.FORWARD))
-					tEdge.setoStrand(Strand.REVERSE);
-				else
-					tEdge.setoStrand(Strand.FORWARD);
-				values.add(tEdge);
-			}
-		}
-		return values;
-	}
+//
+//	public List<Edge> pesudoEdging() {
+//		if (edges == null || edges.size() == 0)
+//			throw new IllegalArgumentException(
+//					this.getClass().getName() + "The Edges is empty, could not be pesudo edging!");
+//		// define the original size of new Edge list is to be 1.5 folds;
+//		List<Edge> values = new Vector<Edge>(edges.size() / 2 + edges.size());
+//		for (Edge e : edges) {
+//			values.add(e);
+//			Edge tEdge = new Edge();
+//			tEdge.setOrigin(e.getTerminus());
+//			tEdge.setTerminus(e.getOrigin());
+//			if (!edges.contains(tEdge)) {
+//				tEdge.setFake(true);
+//				tEdge.setDistMean(e.getDistMean());
+//				tEdge.setDistSd(e.getDistSd());
+//				tEdge.setLinkNum(e.getLinkNum());
+//				tEdge.setOL(e.isOL());
+//				tEdge.setValid(e.isValid());
+//				if (e.getoStrand().equals(Strand.FORWARD))
+//					tEdge.settStrand(Strand.REVERSE);
+//				else
+//					tEdge.settStrand(Strand.FORWARD);
+//				if (e.gettStrand().equals(Strand.FORWARD))
+//					tEdge.setoStrand(Strand.REVERSE);
+//				else
+//					tEdge.setoStrand(Strand.FORWARD);
+//				values.add(tEdge);
+//			}
+//		}
+//		return values;
+//	}
 	
 //	public List<Edge> pbLink2Edges(List<PBLink> links, CntFileEncapsulate cntfile) {
 //		long start = System.currentTimeMillis();

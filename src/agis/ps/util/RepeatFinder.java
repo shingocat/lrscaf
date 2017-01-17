@@ -76,6 +76,7 @@ public class RepeatFinder {
 		double iqr = thirdQ - firstQ;
 		double upper = iqr * iqrTime + values.get("THIRDQ");
 		double median = values.get("MEDIAN");
+		logger.info("MIN: " + values.get("MIN"));
 		logger.info("First Quartile: " + firstQ);
 //		logger.info("Mean cov = " + mean);
 		logger.info("Median cov = " + median);
@@ -85,6 +86,7 @@ public class RepeatFinder {
 //		logger.info("Median Range 95%: [" + (median - 2 * sd) + " : " + (median + 2 * sd) + "]");
 //		logger.info("Median Range 99%: [" + (median - 3 * sd) + " : " + (median + 3 * sd) + "]");
 		logger.info("Third Quartile: " + thirdQ);
+		logger.info("MAX: " + values.get("MAX"));
 		logger.info("Interquartile Range: " + iqr);
 		logger.info(iqrTime + "'s IQR " + ", Outlier Threshold: " + upper);
 //		logger.info("Pesudo repeat contigs");

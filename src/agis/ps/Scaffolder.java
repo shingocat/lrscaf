@@ -30,6 +30,7 @@ import agis.ps.util.LinkBuilder;
 import agis.ps.util.Parameter;
 import agis.ps.util.PathBuilder;
 import agis.ps.util.RepeatFinder;
+import sun.util.logging.resources.logging_zh_TW;
 
 /**
  * The scaffolder
@@ -60,6 +61,7 @@ public class Scaffolder {
 		{
 			if(!buildOutputFolder())
 				return;
+			this.buildLinks();
 			this.buildEdges();
 			this.buildPaths();
 			this.writeNodePathInfo();
@@ -76,7 +78,7 @@ public class Scaffolder {
 		return ofb.building();
 	}
 	
-	private void buildEdges()
+	private void buildLinks()
 	{
 		String type = paras.getType();
 		AlignmentFileReader reader = null;
@@ -110,10 +112,18 @@ public class Scaffolder {
 		tlw.init();
 		tlw.write(triads);
 		tlw.close();
+	}
+	
+	private void buildEdges()
+	{
+		long start = System.currentTimeMillis();
 		EdgeBundler eb = new EdgeBundler(paras);
-		edges = eb.pbLink2Edges(links, cntLens);
+//		edges = eb.pbLink2Edges(links, cntLens);
+		edges = eb.links2edges(links, cntLens);
 		links = null;
 		triads = null;
+		long end = System.currentTimeMillis();
+		logger.info("Building Edges, Erase Time: " + (end - start) + " ms");
 	}
 	
 	private void buildPaths()

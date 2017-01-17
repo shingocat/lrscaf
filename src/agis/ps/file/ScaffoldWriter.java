@@ -196,7 +196,8 @@ public class ScaffoldWriter {
 //				seq = cntfile.getOriginalSeqByNewId(cId);
 //				seq = cnts.get(cId).getForwardSeqs();
 //				seq.trim();
-				if(current.getStrand().equals(Strand.FORWARD))
+				Strand cStrand = current.getStrand();
+				if(cStrand == null || cStrand.equals(Strand.FORWARD))
 					seq = cnts.get(cId).getForwardSeqs();
 				else
 					seq = cnts.get(cId).getComplementReverseSeqs();
