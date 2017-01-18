@@ -154,8 +154,8 @@ public class DirectedGraph extends Graph implements Serializable {
 		// node;
 		int depth = 5;
 		for (Contig origin : mimos) {
-			if(origin.getID().equals("13386"))
-				logger.debug("breakpoint");
+//			if(origin.getID().equals("13386"))
+//				logger.debug("breakpoint");
 			List<Contig> cnts = this.getAdjVertices(origin);
 			Iterator<Contig> it = cnts.iterator();
 			int indicator = cnts.size();
