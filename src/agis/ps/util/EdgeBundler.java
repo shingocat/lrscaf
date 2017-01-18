@@ -73,7 +73,9 @@ public class EdgeBundler {
 			List<PBLink> vls = this.validateLinks(entry.getKey(), entry.getValue());
 			if(vls != null)
 			{
-				edges.addAll(buildEdge(vls));
+				List<Edge> es = this.buildEdge(vls);
+				if(es != null)
+					edges.addAll(es);
 			}
 		}
 		return edges;
@@ -83,6 +85,8 @@ public class EdgeBundler {
 	{
 		List<Edge> value = new Vector<Edge>(2);
 		int size = links.size();
+		if(size < minSupLinks)
+			return null;
 		Edge edge = new Edge();
 		int [] dists = new int[size];
 		String original = null;
