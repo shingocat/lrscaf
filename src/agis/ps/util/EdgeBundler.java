@@ -50,8 +50,8 @@ public class EdgeBundler {
 		if(edges == null)
 			edges = new Vector<Edge>(links.size()/5); // optional, pesudo 5 link to be one edge
 		edges.clear();
-		logger.info("\tMinimum supported links: " + minSupLinks);
-		logger.info("\tUsed overlap link: " + isUseOL);
+		logger.info("Minimum supported links: " + minSupLinks);
+		logger.info("Used overlap link: " + isUseOL);
 		Iterator<PBLink> it = links.iterator();
 		Map<String, List<PBLink>> temp = new HashMap<String, List<PBLink>>();
 		while (it.hasNext()) {
