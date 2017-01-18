@@ -395,8 +395,8 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-			if(current.getID().equals("1317"))
-				logger.debug("breakpoint");
+//			if(current.getID().equals("1317"))
+//				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
 			p2ces = c2nes;
