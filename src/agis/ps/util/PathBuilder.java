@@ -60,8 +60,6 @@ public class PathBuilder {
 		this.edges = edges;
 		this.paras = paras;
 		this.cntLens = cntLens;
-		TriadLinkReader tlr = new TriadLinkReader(paras);
-		triads = tlr.read();
 	}
 
 	public List<NodePath> buildPath() {
@@ -397,8 +395,8 @@ public class PathBuilder {
 			}
 			previous = current;
 			current = next;
-//			if(current.getID().equals("12372"))
-//				logger.debug("breakpoint");
+			if(current.getID().equals("1317"))
+				logger.debug("breakpoint");
 			next = diGraph.getNextVertex(current, previous);
 			// get previous to current edges 
 			p2ces = c2nes;
@@ -1233,6 +1231,11 @@ public class PathBuilder {
 	{
 		if(ips == null || ips.isEmpty())
 			return;
+		if(triads == null)
+		{
+			TriadLinkReader tlr = new TriadLinkReader(paras);
+			triads = tlr.read();
+		}
 		// external uniques 
 		LinkedList<Contig> extUniqs = new LinkedList<Contig>();
 		extUniqs.addLast(external);
@@ -1245,11 +1248,18 @@ public class PathBuilder {
 		for (InternalPath ip : ips) {
 			// logger.debug(ip.toString());
 			for (TriadLink tl : triads) {
+				Contig pre = tl.getPrevious();
+				Contig mid = tl.getMiddle();
+				Contig lst = tl.getLast();
+//				if(pre.getID().equals("1317") || lst.getID().equals("1317"))
+//					logger.debug("breakpoint");
 				if(tl.isValid())
 				{
-					Contig pre = tl.getPrevious();
-					Contig mid = tl.getMiddle();
-					Contig lst = tl.getLast();
+//					Contig pre = tl.getPrevious();
+//					Contig mid = tl.getMiddle();
+//					Contig lst = tl.getLast();
+//					if(pre.getID().equals("1317") || lst.getID().equals("1317"))
+//						logger.debug("breakpoint");
 					// there are two cases: 
 					// 1)connect between unique contig and internal path;
 					// 2)support internal path;

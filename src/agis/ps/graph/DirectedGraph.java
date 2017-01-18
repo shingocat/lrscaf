@@ -179,7 +179,7 @@ public class DirectedGraph extends Graph implements Serializable {
 			}
 		}
 		long end = System.currentTimeMillis();
-//		tlWriter.close();
+		tlWriter.close();
 		logger.info("Transitive Reducing, erase time: " + (end - start) + " ms");
 		updateGraph();
 	}

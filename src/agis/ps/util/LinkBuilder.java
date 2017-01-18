@@ -35,7 +35,7 @@ public class LinkBuilder {
 	private double maxOHRatio;
 	private int maxEndLen;
 	private double maxEndRatio;
-	private double olRatio = 0.5;
+	private double olRatio = 0.4;
 	private double olweight = 0.6;
 	private double identweight = 0.4;
 
@@ -202,6 +202,47 @@ public class LinkBuilder {
 					former = current;
 				} else
 				{
+					int formerCNTLen = former.gettLength();
+					// check overlap ratio
+//					double formerOLRatio = Math.abs(dist) / formerCNTLen;
+//					double currentOLRatio = Math.abs(dist) / currentCNTLen;
+//					if(formerOLRatio > currentOLRatio && formerOLRatio >= 0.4)
+//					{
+//						isRemove = true;
+//						if(!links.isEmpty())
+//							links.removeLast(); // delete the last link
+//						if(!valids.isEmpty())
+//							valids.removeLast(); // delete the former from valids;
+//						if(valids.isEmpty())
+//						{
+//							valids.add(current);
+//							former = current;
+//							continue;
+//						}  else
+//						{
+//							former = valids.getLast();
+//							dist = this.getDistance(former, current);
+//							PBLink link = new PBLink();
+//							link.setPbId(currentPBId);
+//							link.setDist(dist);
+//							link.setOrigin(former.gettName());
+//							link.setOStrand(former.gettStrand());
+//							link.setOPStart(formerPBStart);
+//							link.setOPEnd(formerPBEnd);
+//							link.setTerminus(currentCNTId);
+//							link.setTStrand(currentStrand);
+//							link.setTPStart(currentPBStart);
+//							link.setTPEnd(currentPBEnd);
+//							links.add(link);
+//							valids.add(current);
+//							former = current;
+//						}
+//					} else if(currentOLRatio >= formerOLRatio && currentOLRatio >= 0.4)
+//					{
+//						continue;
+//					}
+					
+					// checking score;
 					int formerPBOLLen = formerPBEnd - formerPBStart;
 					int currentPBOLLen = currentPBEnd - currentPBStart;
 					double formerRatio  = (double)(Math.abs(dist))/formerPBOLLen;
@@ -1014,40 +1055,40 @@ public class LinkBuilder {
 
 	// test in yeast for some pacbio read do not valid by the filter parameter
 	// but it provide some link info!
-	private void pesudoTriadLink(List<MRecord> ms) {
-		if (triadlinks == null)
-			triadlinks = new LinkedList<TriadLink>();
-//		Collections.sort(ms, new ByLocOrderComparator());
-		int cpSize = ms.size();
-		MRecord m1 = ms.get(0);
-		MRecord m2 = ms.get(cpSize - 1);
-		Contig first = new Contig();
-		first.setID(m1.gettName());
-		Contig last = new Contig();
-		last.setID(m2.gettName());
-		TriadLink tl = new TriadLink();
-		tl.setPrevious(first);
-		tl.setLast(last);
-		tl.setSupLinks(1);
-		if (triadlinks.contains(tl)) {
-			int index = triadlinks.indexOf(tl);
-			int supLink = triadlinks.get(index).getSupLinks();
-			supLink += 1;
-			triadlinks.get(index).setSupLinks(supLink);
-			m1 = null;
-			m2 = null;
-			first = null;
-			last = null;
-			tl = null;
-		} else {
-			triadlinks.add(tl);
-			m1 = null;
-			m2 = null;
-			first = null;
-			last = null;
-			tl = null;
-		}
-	}
+//	private void pesudoTriadLink(List<MRecord> ms) {
+//		if (triadlinks == null)
+//			triadlinks = new LinkedList<TriadLink>();
+////		Collections.sort(ms, new ByLocOrderComparator());
+//		int cpSize = ms.size();
+//		MRecord m1 = ms.get(0);
+//		MRecord m2 = ms.get(cpSize - 1);
+//		Contig first = new Contig();
+//		first.setID(m1.gettName());
+//		Contig last = new Contig();
+//		last.setID(m2.gettName());
+//		TriadLink tl = new TriadLink();
+//		tl.setPrevious(first);
+//		tl.setLast(last);
+//		tl.setSupLinks(1);
+//		if (triadlinks.contains(tl)) {
+//			int index = triadlinks.indexOf(tl);
+//			int supLink = triadlinks.get(index).getSupLinks();
+//			supLink += 1;
+//			triadlinks.get(index).setSupLinks(supLink);
+//			m1 = null;
+//			m2 = null;
+//			first = null;
+//			last = null;
+//			tl = null;
+//		} else {
+//			triadlinks.add(tl);
+//			m1 = null;
+//			m2 = null;
+//			first = null;
+//			last = null;
+//			tl = null;
+//		}
+//	}
 
 //	private Map<String, Vector<MRecord>> findSimilarityCnts(List<MRecord> data) {
 //		Map<String, Vector<MRecord>> sims = new HashMap<String, Vector<MRecord>>();

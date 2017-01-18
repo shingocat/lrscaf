@@ -30,7 +30,7 @@ import agis.ps.util.LinkBuilder;
 import agis.ps.util.Parameter;
 import agis.ps.util.PathBuilder;
 import agis.ps.util.RepeatFinder;
-import sun.util.logging.resources.logging_zh_TW;
+//import sun.util.logging.resources.logging_zh_TW;
 
 /**
  * The scaffolder
