@@ -41,6 +41,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setIqrTime(double iqrTime) {
+		if(iqrTime <= 0)
+			throw new IllegalArgumentException("IQR Time could not be less than 0!");
 		this.iqrTime = iqrTime;
 	}
 
@@ -81,6 +83,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setIdentity(Double identity) {
+		if(identity <= 0)
+			throw new IllegalArgumentException("Identity could not be less than 0!");
 		this.identity = identity;
 	}
 
@@ -121,6 +125,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setMinContLen(Integer minContLen) {
+		if(minContLen <= 0)
+			throw new IllegalArgumentException("Minimum Contig Length could not be less than 0!");
 		this.minContLen = minContLen;
 	}
 
@@ -129,6 +135,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setMinPBLen(Integer minPBLen) {
+		if(minPBLen <= 0)
+			throw new IllegalArgumentException("Minimum Pacbio's Read Length could not be less than 0!");
 		this.minPBLen = minPBLen;
 	}
 
@@ -137,6 +145,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setMinOLLen(Integer minOLLen) {
+		if(minOLLen <= 0)
+			throw new IllegalArgumentException("Minimum Overlap Length could not be less than 0!");
 		this.minOLLen = minOLLen;
 	}
 
@@ -145,6 +155,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setMinOLRatio(Double minOLRatio) {
+		if(minOLRatio <= 0)
+			throw new IllegalArgumentException("Minimum Overlap Ratio could not be less than 0!");
 		this.minOLRatio = minOLRatio;
 	}
 
@@ -153,6 +165,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setMinSupLinks(Integer minSupLinks) {
+		if(minSupLinks <= 0)
+			throw new IllegalArgumentException("Minimum Supported Links Account could not be less than 0!");
 		this.minSupLinks = minSupLinks;
 	}
 
@@ -169,6 +183,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setMaxOHLen(Integer maxOHLen) {
+		if(maxOHLen <= 0)
+			throw new IllegalArgumentException("Maximum Overhang Length could not be less than 0!");
 		this.maxOHLen = maxOHLen;
 	}
 
@@ -177,6 +193,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setMaxOHRatio(Double maxOHRatio) {
+		if(maxOHRatio <= 0)
+			throw new IllegalArgumentException("Maximum Overhang Ratio could not be less than 0!");
 		this.maxOHRatio = maxOHRatio;
 	}
 	
@@ -185,6 +203,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setMaxEndLen(Integer maxEndLen) {
+		if(maxEndLen <= 0)
+			throw new IllegalArgumentException("Maximum Ending Length could not be less than 0!");
 		this.maxEndLen = maxEndLen;
 	}
 
@@ -193,6 +213,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setMaxEndRatio(Double maxEndRatio) {
+		if(maxEndRatio <= 0)
+			throw new IllegalArgumentException("Maximum Ending Ratio could not be less than 0!");
 		this.maxEndRatio = maxEndRatio;
 	}
 	
@@ -201,6 +223,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setRatio(Double ratio) {
+		if(ratio <= 0)
+			throw new IllegalArgumentException("Ratio could not be less than 0!");
 		this.ratio = ratio;
 	}	
 
@@ -209,6 +233,8 @@ public class Parameter implements Serializable {
 	}
 
 	public void setTipLength(int tipLength) {
+		if(tipLength <= 0)
+			throw new IllegalArgumentException("Tip Length could not be less than 0!");
 		this.tipLength = tipLength;
 	}
 
