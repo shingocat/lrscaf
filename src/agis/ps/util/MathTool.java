@@ -26,6 +26,15 @@ public class MathTool {
 		return sum;
 	}
 	
+	public static int sum(int [] nums)
+	{
+		int sum = 0;
+		for (int i = 0; i < nums.length; i++) {
+			sum += nums[i];
+		}
+		return sum;
+	}
+	
 	public static Map<String, Double> summary(List<Integer> nums)
 	{
 		return MathTool.summary(nums.toArray(new Integer[nums.size()]));

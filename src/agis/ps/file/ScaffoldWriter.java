@@ -87,17 +87,22 @@ public class ScaffoldWriter {
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);
 			int index = 0;
+			int [] lens = new int[paths.size()];
 			for(NodePath np : paths)
 			{
 				String seqs = this.buildScaffold(np, index);
-				bw.write(">Scaffolds_" + index + "  " + seqs.length());
+				int len = seqs.length(); 
+				bw.write(">Scaffolds_" + index + "  " + len);
 				bw.newLine();
 				bw.write(seqs);
 				bw.newLine();
+				lens[index] = len;
 				index++;
 			}
 			bw.flush();
 			bw.close();
+			N50Writer n50 = new N50Writer(paras, lens);
+			n50.write();
 		} catch(IOException e)
 		{
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
