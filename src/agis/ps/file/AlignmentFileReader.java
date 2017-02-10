@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,7 @@ public abstract class AlignmentFileReader {
 	private Map<String, Integer> cntCovs = null;
 	private Map<String, List<MRecord>> records = null;
 	private Map<String, Integer> cntLens = null;
+	private List<List<MRecord>> listRecords = null;
 	
 	public AlignmentFileReader(Parameter paras)
 	{
@@ -36,7 +38,8 @@ public abstract class AlignmentFileReader {
 		this.paras = paras;
 	}
 	
-	public Map<String, List<MRecord>> read()
+//	public Map<String, List<MRecord>> read()
+	public List<List<MRecord>> read()
 	{
 		long start = System.currentTimeMillis();
 		if(records == null)
@@ -45,6 +48,8 @@ public abstract class AlignmentFileReader {
 			cntCovs = new HashMap<String, Integer>();
 		if(cntLens == null)
 			cntLens = new HashMap<String, Integer>();
+		if(listRecords == null)
+			listRecords = new ArrayList<List<MRecord>>();
 		records.clear();
 		cntCovs.clear();
 		cntLens.clear();
@@ -84,6 +89,21 @@ public abstract class AlignmentFileReader {
 						cntCovs.put(tName, 1);
 					}
 				}
+//				if(values.get("RECORD"))
+//				{
+//					String qName = record.getqName();
+//					if(qName.equals(qId))
+//					{
+//						rs.add(record);
+//					} else
+//					{
+//						if(rs.size() > 1)
+//							records.put(qId, rs);
+//						rs = new LinkedList<MRecord>();
+//						rs.add(record);
+//						qId = record.getqName();
+//					}
+//				}
 				if(values.get("RECORD"))
 				{
 					String qName = record.getqName();
@@ -93,7 +113,7 @@ public abstract class AlignmentFileReader {
 					} else
 					{
 						if(rs.size() > 1)
-							records.put(qId, rs);
+							listRecords.add(rs);
 						rs = new LinkedList<MRecord>();
 						rs.add(record);
 						qId = record.getqName();
@@ -120,7 +140,8 @@ public abstract class AlignmentFileReader {
 		long end = System.currentTimeMillis();
 		logger.info("Valid Aligned Records: " + records.values().size());
 		logger.info("Reading Aligned Records, erase time: " + (end - start) + " ms");
-		return records;
+//		return records;
+		return listRecords;
 	}
 
 	protected abstract MRecord initMRecord(String arrs []);
@@ -133,6 +154,11 @@ public abstract class AlignmentFileReader {
 	public Map<String, Integer> getCntLengths()
 	{
 		return this.cntLens;
+	}
+	
+	public List<List<MRecord>> getListRecord()
+	{
+		return this.listRecords;
 	}
 }
 

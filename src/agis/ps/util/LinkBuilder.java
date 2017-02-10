@@ -48,6 +48,30 @@ public class LinkBuilder {
 		maxEndLen = paras.getMaxEndLen();
 		maxEndRatio = paras.getMaxEndRatio();
 	}
+	
+	public List<PBLink> mRecords2Links(List<List<MRecord>> records, List<String> repeats)
+	{
+		long start = System.currentTimeMillis();
+		if (links == null)
+			links = new Vector<PBLink>();
+		links.clear();
+		int bug = 0;
+		try {
+			for (List<MRecord> rs : records) {
+//				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + rs.get(0).getqName());
+				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
+				if (temp != null)
+					links.addAll(temp);
+				bug++;
+			}
+		} catch (Exception e) {
+			logger.error(bug + this.getClass().getName() + "\t" + e.getMessage());
+		}
+		long end = System.currentTimeMillis();
+		logger.info("Valid Links Acount: " + links.size());
+		logger.info("Building Link, erase time : " + (end - start) + " ms");
+		return links;
+	}
 
 	public List<PBLink> mRecords2Links(Map<String, List<MRecord>> records, List<String> repeats) {
 		long start = System.currentTimeMillis();

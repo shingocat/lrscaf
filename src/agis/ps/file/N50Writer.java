@@ -78,7 +78,7 @@ public class N50Writer {
 				values += lens[i];
 				while(values >= threshold)
 				{
-					bw.write("N" + count + "0:" + lens[i]);
+					bw.write("N" + count + "0:\t" + lens[i]);
 					bw.newLine();
 					index += 0.1;
 					count++;
