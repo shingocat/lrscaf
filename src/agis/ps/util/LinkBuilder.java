@@ -61,8 +61,8 @@ public class LinkBuilder {
 //					logger.debug("breakpoint");
 //				if(bug == 346)
 //					logger.debug("breakpoint");
-				logger.debug(bug + "\tPBID\t" + s);
 				List<MRecord> rs = records.get(s);
+				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + s);
 				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
 				if (temp != null)
 					links.addAll(temp);
