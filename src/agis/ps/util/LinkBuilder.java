@@ -58,7 +58,7 @@ public class LinkBuilder {
 		int bug = 0;
 		try {
 			for (List<MRecord> rs : records) {
-//				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + rs.get(0).getqName());
+				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + rs.get(0).getqName());
 				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
 				if (temp != null)
 					links.addAll(temp);
