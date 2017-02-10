@@ -28,10 +28,13 @@ public abstract class Graph implements Serializable, IUntangler {
 
 	private static final long serialVersionUID = 1L;
 //	private static Logger logger = LoggerFactory.getLogger(Graph.class);
-	protected Map<String, Edge> edges = new HashMap<String, Edge>();
-	protected Map<String, Contig> vertices = new HashMap<String, Contig>();
-	protected Map<String, Contig> selectedVertices = new HashMap<String, Contig>();
-	protected Map<String, Contig> unselectedVertices = new HashMap<String, Contig>();
+	protected Map<String, Edge> edges = null;
+//	protected Map<String, Contig> vertices = new HashMap<String, Contig>();
+//	protected Map<String, Contig> selectedVertices = new HashMap<String, Contig>();
+//	protected Map<String, Contig> unselectedVertices = new HashMap<String, Contig>();
+	protected List<Contig> vertices = null;
+	protected List<Contig> selectedVertices = null;
+	protected List<Contig> unselectedVertices = null;
 
 	public Graph(List<Edge> edges) {
 		if (edges == null || edges.size() == 0)
@@ -39,11 +42,14 @@ public abstract class Graph implements Serializable, IUntangler {
 		if (this.edges == null)
 			this.edges = new HashMap<String, Edge>();
 		if (this.vertices == null)
-			this.vertices = new HashMap<String, Contig>();
+//			this.vertices = new HashMap<String, Contig>();
+			this.vertices = new ArrayList<Contig>();
 		if (this.selectedVertices == null)
-			this.selectedVertices = new HashMap<String, Contig>();
+//			this.selectedVertices = new HashMap<String, Contig>();
+			this.selectedVertices = new ArrayList<Contig>();
 		if (this.unselectedVertices == null)
-			this.unselectedVertices = new HashMap<String, Contig>();
+//			this.unselectedVertices = new HashMap<String, Contig>();
+			this.unselectedVertices = new ArrayList<Contig>();
 		this.edges.clear();
 		this.vertices.clear();
 		this.selectedVertices.clear();
@@ -55,10 +61,24 @@ public abstract class Graph implements Serializable, IUntangler {
 			String tId = terminus.getID();
 			String id = oId + "->" + tId;
 			this.edges.put(id, e);
-			this.vertices.put(oId, origin);
-			this.vertices.put(tId, terminus);
-			this.unselectedVertices.put(oId, origin);
-			this.unselectedVertices.put(tId, terminus);
+//			if(!this.vertices.containsKey(oId))
+//			{
+//				this.vertices.put(oId, origin);
+//				this.unselectedVertices.put(oId, origin);
+//			}
+//			if(!this.vertices.containsKey(tId))
+//			{
+//				this.vertices.put(tId, terminus);
+//				this.unselectedVertices.put(tId, terminus);
+//			}
+			if(!this.vertices.contains(origin))
+				this.vertices.add(origin);
+			if(!this.unselectedVertices.contains(origin))
+				this.unselectedVertices.add(origin);
+			if(!this.vertices.contains(terminus))
+				this.vertices.add(terminus);
+			if(!this.unselectedVertices.contains(terminus))
+				this.unselectedVertices.add(terminus);
 			origin = null;
 			terminus = null;
 			oId = null;
@@ -76,18 +96,20 @@ public abstract class Graph implements Serializable, IUntangler {
 	}
 
 	public List<Edge> getEdges() {
-		List<Edge> values = new Vector<Edge>(this.edges.size());
-		Collection<Edge> temp = this.edges.values();
-		Iterator<Edge> it = temp.iterator();
-		while(it.hasNext())
-		{
-			values.add(it.next());
-		}
-		return values;
+//		List<Edge> values = new Vector<Edge>(this.edges.size());
+//		Collection<Edge> temp = this.edges.values();
+//		Iterator<Edge> it = temp.iterator();
+//		while(it.hasNext())
+//		{
+//			values.add(it.next());
+//		}
+//		return values;
+		return new ArrayList<Edge>(edges.values());
 	}
 
 	public List<Contig> getVertices() {
-		return (List<Contig>) this.vertices.values();
+//		return new ArrayList<Contig>(this.vertices.values());
+		return this.vertices;
 	}
 
 	// return edges info in this graph
@@ -125,14 +147,7 @@ public abstract class Graph implements Serializable, IUntangler {
 		values.put("SUPPORT_LINKS_LOWER", lower);
 		return values;
 	}
-
-	// return true or false whether the graph has unselected edges
-	public boolean hasUnselectedEdges() {
-		boolean isTrue = false;
-
-		return isTrue;
-	}
-
+	
 	// checking whether there are existed unselected vertex
 	public boolean isExistUnSelectedVertices() {
 		boolean isExist = true;
@@ -145,40 +160,58 @@ public abstract class Graph implements Serializable, IUntangler {
 	// selectedVertices hashset;
 	// and remove this vertex id from unSelectedVertices hashset;
 	public void setVertexAsSelected(Contig cnt) {
-		if (this.selectedVertices == null)
-			this.selectedVertices = new HashMap<String, Contig>();
-		if (this.unselectedVertices.containsKey(cnt.getID()))
-			this.unselectedVertices.remove(cnt.getID());
-		if (!this.selectedVertices.containsKey(cnt.getID()))
-			this.selectedVertices.put(cnt.getID(), cnt);
+//		if (this.selectedVertices == null)
+//			this.selectedVertices = new HashMap<String, Contig>();
+//		if (this.unselectedVertices.containsKey(cnt.getID()))
+//			this.unselectedVertices.remove(cnt.getID());
+//		if (!this.selectedVertices.containsKey(cnt.getID()))
+//			this.selectedVertices.put(cnt.getID(), cnt);
+		if(this.selectedVertices == null)
+			this.selectedVertices = new ArrayList<Contig>();
+		if(this.unselectedVertices.contains(cnt))
+			this.unselectedVertices.remove(cnt);
+		if(!this.selectedVertices.contains(cnt))
+			this.selectedVertices.add(cnt);
 	}
 	
 	// set vertext as unselect;
 	public void setVertextUnselected(Contig cnt)
 	{
-		if (this.selectedVertices == null)
-			return;
-		if (this.selectedVertices.containsKey(cnt.getID()))
-			this.selectedVertices.remove(cnt.getID());
-		if (!this.unselectedVertices.containsKey(cnt.getID()))
-			this.unselectedVertices.put(cnt.getID(), cnt);
+//		if (this.selectedVertices == null)
+//			return;
+//		if (this.selectedVertices.containsKey(cnt.getID()))
+//			this.selectedVertices.remove(cnt.getID());
+//		if (!this.unselectedVertices.containsKey(cnt.getID()))
+//			this.unselectedVertices.put(cnt.getID(), cnt);
+//		if(this.selectedVertices == null)
+//			return;
+		if(this.selectedVertices.contains(cnt))
+			this.selectedVertices.remove(cnt);
+		if(!this.unselectedVertices.contains(cnt))
+			this.unselectedVertices.add(cnt);
 	}
 
 	// return random vertex from graph
 	public Contig getRandomVertex() {
 		Contig cnt = null;
 		if (this.isExistUnSelectedVertices()) {
-			Iterator<Contig> it = this.unselectedVertices.values().iterator();
-			if (it.hasNext())
-				cnt = it.next();
+//			cnt = new ArrayList<Contig>(this.unselectedVertices.values()).get(0);
+//			Iterator<Contig> it = this.unselectedVertices.values().iterator();
+//			if (it.hasNext())
+//				cnt = it.next();
+			cnt = this.unselectedVertices.get(0);
 		}
 		return cnt;
 	}
 	
 	public boolean isVertexSelected(Contig c)
 	{
-		String id = c.getID();
-		if(selectedVertices.containsKey(id))
+//		String id = c.getID();
+//		if(selectedVertices.containsKey(id))
+//			return true;
+//		else
+//			return false;
+		if(this.selectedVertices.contains(c))
 			return true;
 		else
 			return false;
