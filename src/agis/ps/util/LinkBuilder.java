@@ -204,9 +204,15 @@ public class LinkBuilder {
 		ArrayList<MRecord> ms = new ArrayList<MRecord>(valids.size());
 		MRecord former = valids.get(0);
 		MRecord current = null;
+		String formerCntId = null;
+		String currentCntId = null;
 		for(int i = 1; i < size; i++)
 		{
 			current = valids.get(i);
+			formerCntId = former.gettName();
+			currentCntId = current.gettName();
+			if(formerCntId.equals(currentCntId))
+				continue;
 			int dist = this.getDistance(former, current);
 			if(dist >= 0)
 			{
