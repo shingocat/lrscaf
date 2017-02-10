@@ -138,7 +138,8 @@ public abstract class AlignmentFileReader {
 			}
 		}
 		long end = System.currentTimeMillis();
-		logger.info("Valid Aligned Records: " + records.values().size());
+//		logger.info("Valid Aligned Records: " + records.values().size());
+		logger.info("Valid Aligned Records: " + listRecords.size());
 		logger.info("Reading Aligned Records, erase time: " + (end - start) + " ms");
 //		return records;
 		return listRecords;
