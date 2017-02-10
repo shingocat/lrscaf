@@ -38,8 +38,8 @@ public abstract class AlignmentFileReader {
 		this.paras = paras;
 	}
 	
-//	public Map<String, List<MRecord>> read()
-	public List<List<MRecord>> read()
+	public Map<String, List<MRecord>> read()
+//	public List<List<MRecord>> read()
 	{
 		long start = System.currentTimeMillis();
 		if(records == null)
@@ -89,21 +89,6 @@ public abstract class AlignmentFileReader {
 						cntCovs.put(tName, 1);
 					}
 				}
-//				if(values.get("RECORD"))
-//				{
-//					String qName = record.getqName();
-//					if(qName.equals(qId))
-//					{
-//						rs.add(record);
-//					} else
-//					{
-//						if(rs.size() > 1)
-//							records.put(qId, rs);
-//						rs = new LinkedList<MRecord>();
-//						rs.add(record);
-//						qId = record.getqName();
-//					}
-//				}
 				if(values.get("RECORD"))
 				{
 					String qName = record.getqName();
@@ -113,12 +98,27 @@ public abstract class AlignmentFileReader {
 					} else
 					{
 						if(rs.size() > 1)
-							listRecords.add(rs);
+							records.put(qId, rs);
 						rs = new LinkedList<MRecord>();
 						rs.add(record);
 						qId = record.getqName();
 					}
 				}
+//				if(values.get("RECORD"))
+//				{
+//					String qName = record.getqName();
+//					if(qName.equals(qId))
+//					{
+//						rs.add(record);
+//					} else
+//					{
+//						if(rs.size() > 1)
+//							listRecords.add(rs);
+//						rs = new LinkedList<MRecord>();
+//						rs.add(record);
+//						qId = record.getqName();
+//					}
+//				}
 			}
 			br.close();
 		} catch(IOException e)
@@ -138,11 +138,11 @@ public abstract class AlignmentFileReader {
 			}
 		}
 		long end = System.currentTimeMillis();
-//		logger.info("Valid Aligned Records: " + records.values().size());
-		logger.info("Valid Aligned Records: " + listRecords.size());
+		logger.info("Valid Aligned Records: " + records.values().size());
+//		logger.info("Valid Aligned Records: " + listRecords.size());
 		logger.info("Reading Aligned Records, erase time: " + (end - start) + " ms");
-//		return records;
-		return listRecords;
+		return records;
+//		return listRecords;
 	}
 
 	protected abstract MRecord initMRecord(String arrs []);

@@ -80,13 +80,12 @@ public class LinkBuilder {
 		links.clear();
 		int bug = 0;
 		try {
-			for (String s : records.keySet()) {
-//				if(s.equals("PB3577"))
-//					logger.debug("breakpoint");
-//				if(bug == 346)
-//					logger.debug("breakpoint");
-				List<MRecord> rs = records.get(s);
-				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + s);
+			Iterator<Map.Entry<String, List<MRecord>>> iter = records.entrySet().iterator();
+			while(iter.hasNext())
+			{
+				Map.Entry<String, List<MRecord>> entry = (Map.Entry<String, List<MRecord>>)iter.next();
+				List<MRecord> rs = entry.getValue();
+//				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" +entry.getKey());
 				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
 				if (temp != null)
 					links.addAll(temp);
