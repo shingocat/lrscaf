@@ -58,14 +58,21 @@ public class LinkBuilder {
 		links.clear();
 		int bug = 0;
 		try {
-			for (List<MRecord> rs : records) {
-				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + rs.get(0).getqName());
-//				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
-				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
-				if (temp != null)
+			Iterator<List<MRecord>> it = records.iterator();
+			while(it.hasNext())
+			{
+				List<PBLink> temp = this.mRecord2PBLink(it.next(), repeats);
+				if(temp != null)
 					links.addAll(temp);
-				bug++;
 			}
+//			for (List<MRecord> rs : records) {
+//				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + rs.get(0).getqName());
+////				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
+//				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
+//				if (temp != null)
+//					links.addAll(temp);
+//				bug++;
+//			}
 		} catch (Exception e) {
 			logger.error(bug + this.getClass().getName() + "\t" + e.getMessage());
 		}
@@ -88,7 +95,7 @@ public class LinkBuilder {
 				Map.Entry<String, List<MRecord>> entry = (Map.Entry<String, List<MRecord>>)iter.next();
 				List<MRecord> rs = entry.getValue();
 //				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" +entry.getKey());
-				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
+				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
 				if (temp != null)
 					links.addAll(temp);
 				bug++;
@@ -209,8 +216,8 @@ public class LinkBuilder {
 			{
 				int formerPBStart = former.getqStart();
 				int formerPBEnd = former.getqEnd();
-				int currentPBEnd = current.getqEnd();
 				int currentPBStart = current.getqStart();
+				int currentPBEnd = current.getqEnd();
 				// checking score;
 				int formerPBOLLen = formerPBEnd - formerPBStart;
 				int currentPBOLLen = currentPBEnd - currentPBStart;
@@ -226,6 +233,7 @@ public class LinkBuilder {
 							currentIdentity * 1000 * identweight);
 					if(formerScore >= currentScore)
 					{
+						current = null;
 						continue;
 					} else
 					{
@@ -239,6 +247,8 @@ public class LinkBuilder {
 				}
 			}
 		}
+		if(current != null)
+			ms.add(current);
 		size = ms.size();
 		if(size <= 1)
 			return null;
@@ -297,8 +307,7 @@ public class LinkBuilder {
 					index++;
 				}
 			}
-		}
-		
+		}		
 		return links;
 	}
 	
