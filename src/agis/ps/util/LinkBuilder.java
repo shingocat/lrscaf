@@ -6,6 +6,7 @@
 */
 package agis.ps.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class LinkBuilder {
 	private double maxOHRatio;
 	private int maxEndLen;
 	private double maxEndRatio;
-	private double olRatio = 0.7;
+	private double olRatio = 0.8;
 	private double olweight = 0.6;
 	private double identweight = 0.4;
 
@@ -59,7 +60,8 @@ public class LinkBuilder {
 		try {
 			for (List<MRecord> rs : records) {
 				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + rs.get(0).getqName());
-				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
+//				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
+				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
 				if (temp != null)
 					links.addAll(temp);
 				bug++;
@@ -97,6 +99,206 @@ public class LinkBuilder {
 		long end = System.currentTimeMillis();
 		logger.info("Valid Links Acount: " + links.size());
 		logger.info("Building Link, erase time : " + (end - start) + " ms");
+		return links;
+	}
+	
+	private List<PBLink> mRecord2PBLink(List<MRecord> records, List<String> repeats)
+	{
+		ArrayList<PBLink> links = new ArrayList<PBLink>();
+		ArrayList<MRecord> valids = new ArrayList<MRecord>(records.size());
+		// remove repeat;
+		Iterator<MRecord> it = records.iterator();
+		while(it.hasNext())
+		{
+			MRecord record = it.next();
+			String tId = record.gettName();
+			if(!repeats.contains(tId))
+			{
+				int currentPBLen = record.getqLength();
+				int currentPBStart = record.getqStart();
+				int currentPBEnd = record.getqEnd() - 1;
+				int currentCNTLen = record.gettLength();
+				int currentCNTStart = record.gettStart();
+				int currentCNTEnd = record.gettEnd() - 1;
+				Strand currentStrand = record.gettStrand();
+				boolean isInner = false;
+				int endLen = maxEndLen;
+				int endDefLen = (int) Math.round(currentPBLen * maxEndRatio);
+				// if max end length larger than the endDefLen, used the endDefLen
+				// as threshold
+				if (endDefLen < maxEndLen)
+					endLen = endDefLen;
+				if (currentPBStart >= endLen && currentPBStart <= (currentPBLen - endLen)) {
+					if (currentPBEnd <= (currentPBLen - endLen))
+						isInner = true;
+				}
+				// the overlap length of contig
+				int ol_len = currentCNTEnd - currentCNTStart + 1;
+				double ratio = (double) ol_len / currentCNTLen;
+				// the overhang length
+				int contLeftLen = currentCNTStart;
+				int contRigthLen = currentCNTLen - currentCNTEnd - 1;
+				// for the reversed strand, BLASR define the coordinate according to
+				// aligned seq
+				if (currentStrand.equals(Strand.REVERSE)) {
+					int temp = contLeftLen;
+					contLeftLen = contRigthLen;
+					contRigthLen = temp;
+				}
+				int ohLen = maxOHLen;
+				int ohDefLen = (int) Math.round(currentCNTLen * maxOHRatio);
+				if (ohDefLen < maxOHLen)
+					ohLen = ohDefLen;
+				if (isInner) {
+					// the overlap length less than specified value, next;
+					if (ol_len < minOLLen)
+						continue;
+					// if the overlap length enough for specified value, the ratio
+					// is less than specified value, also next;
+					if (ratio < minOLRatio)
+						continue;
+					// for two end length of contig not allow larger than maxOHLen
+					if (contLeftLen > ohLen || contRigthLen > ohLen)
+						continue;
+				} else {
+					if (currentPBStart <= endLen && currentPBEnd <= endLen) {
+						// checking the right side, for the end point in p1-p2
+						if (contRigthLen > ohLen)
+							continue;
+					} else if (currentPBStart <= endLen && currentPBEnd <= (currentPBLen - endLen)) {
+						if (ol_len < minOLLen)
+							continue;
+						if (contRigthLen > ohLen)
+							continue;
+					} else if (currentPBStart <= endLen && currentPBEnd >= (currentPBLen - endLen)) {
+						// start point in p1-p2 and end point in p3-p4
+						// do no afford info, discard
+						continue;
+					} else if (currentPBStart >= endLen && currentPBStart <= (currentPBLen - endLen) && currentPBEnd >= (currentPBLen - endLen)) {
+						// start point in p2-p3 and end point in p3-p4
+						if (ol_len < minOLLen)
+							continue;
+						if (contLeftLen > ohLen)
+							continue;
+					} else if (currentPBStart >= (currentPBLen - endLen) && currentPBEnd >= (currentPBLen - endLen)) {
+						if (contLeftLen > ohLen)
+							continue;
+					}
+				}
+				valids.add(record);
+			}
+		}
+		// remove overlap contigs large than threshold; 
+		// They are always similarity contigs;
+		int size = valids.size();
+		if(size <= 1)
+			return null;
+		Collections.sort(valids, new ByLocOrderComparator());
+		ArrayList<MRecord> ms = new ArrayList<MRecord>(valids.size());
+		MRecord former = valids.get(0);
+		MRecord current = null;
+		for(int i = 1; i < size; i++)
+		{
+			current = valids.get(i);
+			int dist = this.getDistance(former, current);
+			if(dist >= 0)
+			{
+				ms.add(former);
+				former = current;
+			} else
+			{
+				int formerPBStart = former.getqStart();
+				int formerPBEnd = former.getqEnd();
+				int currentPBEnd = current.getqEnd();
+				int currentPBStart = current.getqStart();
+				// checking score;
+				int formerPBOLLen = formerPBEnd - formerPBStart;
+				int currentPBOLLen = currentPBEnd - currentPBStart;
+				double formerRatio  = (double)(Math.abs(dist))/formerPBOLLen;
+				double currentRatio = (double)(Math.abs(dist))/currentPBOLLen;
+				if(formerRatio >= olRatio || currentRatio >= olRatio)
+				{
+					double formerIdentity = former.getIdentity();
+					double currentIdentity = current.getIdentity();
+					int formerScore = (int)Math.round(formerPBOLLen * olweight + 
+							formerIdentity * 1000 * identweight);
+					int currentScore = (int)Math.round(currentPBOLLen * olweight +
+							currentIdentity * 1000 * identweight);
+					if(formerScore >= currentScore)
+					{
+						continue;
+					} else
+					{
+						ms.add(current);
+						former = current;
+					}
+				}else
+				{
+					ms.add(former);
+					former = current;
+				}
+			}
+		}
+		size = ms.size();
+		if(size <= 1)
+			return null;
+		// building links
+		for(int i = 0; i < size - 1; i++)
+		{
+			former = ms.get(i);
+			current = ms.get(i + 1);
+			int dist = this.getDistance(former, current);
+			PBLink link = new PBLink();
+			link.setPbId(former.getqName());
+			link.setDist(dist);
+			link.setOrigin(former.gettName());
+			link.setOStrand(former.gettStrand());
+			link.setOPStart(former.getqStart());
+			link.setOPEnd(former.getqEnd());
+			link.setTerminus(current.gettName());
+			link.setTStrand(current.gettStrand());
+			link.setTPStart(current.getqStart());
+			link.setTPEnd(current.getqEnd());
+			links.add(link);
+		}
+		// building triadlinks
+		if(size >= 3)
+		{
+			int index = 0;
+			for(int i = 0; i < size - 2; i++)
+			{
+				TriadLink tl = new TriadLink();
+				MRecord pre = ms.get(i);
+				MRecord mid = ms.get(i + 1);
+				index = i + 2;
+				while((size - index) > 0)
+				{
+					MRecord lst = ms.get(index);
+					Contig preCnt = new Contig();
+					Contig midCnt = new Contig();
+					Contig lstCnt = new Contig();
+					preCnt.setID(pre.gettName());
+					midCnt.setID(mid.gettName());
+					lstCnt.setID(lst.gettName());
+					tl.setPrevious(preCnt);
+					tl.setMiddle(midCnt);
+					tl.setLast(lstCnt);
+					tl.setSupLinks(1);
+					if(triadlinks.contains(tl))
+					{
+						int loc = triadlinks.indexOf(tl);
+						int supLink = triadlinks.get(loc).getSupLinks();
+						supLink += 1;
+						triadlinks.get(loc).setSupLinks(supLink);
+					} else
+					{
+						triadlinks.add(tl);
+					}
+					index++;
+				}
+			}
+		}
+		
 		return links;
 	}
 	
