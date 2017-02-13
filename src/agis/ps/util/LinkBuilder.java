@@ -115,10 +115,13 @@ public class LinkBuilder {
 		ArrayList<MRecord> valids = new ArrayList<MRecord>(records.size());
 		// remove repeat;
 		Iterator<MRecord> it = records.iterator();
+		String tempId = null;
 		while(it.hasNext())
 		{
 			MRecord record = it.next();
 			String tId = record.gettName();
+			if(tempId != null && tempId.equals(tId))
+				continue;
 			if(!repeats.contains(tId))
 			{
 				int currentPBLen = record.getqLength();
@@ -192,6 +195,7 @@ public class LinkBuilder {
 							continue;
 					}
 				}
+				tempId = tId;
 				valids.add(record);
 			}
 		}
