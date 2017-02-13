@@ -36,7 +36,7 @@ public class LinkBuilder {
 	private double maxOHRatio;
 	private int maxEndLen;
 	private double maxEndRatio;
-	private double olRatio = 0.5;
+	private double olRatio = 0.6;
 	private double olweight = 0.6;
 	private double identweight = 0.4;
 
@@ -49,38 +49,38 @@ public class LinkBuilder {
 		maxEndLen = paras.getMaxEndLen();
 		maxEndRatio = paras.getMaxEndRatio();
 	}
-	
-	public List<PBLink> mRecords2Links(List<List<MRecord>> records, List<String> repeats)
-	{
-		long start = System.currentTimeMillis();
-		if (links == null)
-			links = new Vector<PBLink>();
-		links.clear();
-		int bug = 0;
-		try {
-			Iterator<List<MRecord>> it = records.iterator();
-			while(it.hasNext())
-			{
-				List<PBLink> temp = this.mRecord2PBLink(it.next(), repeats);
-				if(temp != null)
-					links.addAll(temp);
-			}
-//			for (List<MRecord> rs : records) {
-//				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + rs.get(0).getqName());
-////				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
-//				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
-//				if (temp != null)
+//	
+//	public List<PBLink> mRecords2Links(List<List<MRecord>> records, List<String> repeats)
+//	{
+//		long start = System.currentTimeMillis();
+//		if (links == null)
+//			links = new Vector<PBLink>();
+//		links.clear();
+//		int bug = 0;
+//		try {
+//			Iterator<List<MRecord>> it = records.iterator();
+//			while(it.hasNext())
+//			{
+//				List<PBLink> temp = this.mRecord2PBLink(it.next(), repeats);
+//				if(temp != null)
 //					links.addAll(temp);
-//				bug++;
 //			}
-		} catch (Exception e) {
-			logger.error(bug + this.getClass().getName() + "\t" + e.getMessage());
-		}
-		long end = System.currentTimeMillis();
-		logger.info("Valid Links Acount: " + links.size());
-		logger.info("Building Link, erase time : " + (end - start) + " ms");
-		return links;
-	}
+////			for (List<MRecord> rs : records) {
+////				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + rs.get(0).getqName());
+//////				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
+////				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
+////				if (temp != null)
+////					links.addAll(temp);
+////				bug++;
+////			}
+//		} catch (Exception e) {
+//			logger.error(bug + this.getClass().getName() + "\t" + e.getMessage());
+//		}
+//		long end = System.currentTimeMillis();
+//		logger.info("Valid Links Acount: " + links.size());
+//		logger.info("Building Link, erase time : " + (end - start) + " ms");
+//		return links;
+//	}
 
 	public List<PBLink> mRecords2Links(Map<String, List<MRecord>> records, List<String> repeats) {
 		long start = System.currentTimeMillis();
@@ -93,6 +93,8 @@ public class LinkBuilder {
 			while(iter.hasNext())
 			{
 				Map.Entry<String, List<MRecord>> entry = (Map.Entry<String, List<MRecord>>)iter.next();
+//				if(entry.getKey().equals("m130607_031915_42207_c100539492550000001823089611241310_s1_p0/35713/0_5365"))
+//					logger.debug("breakpoint");
 				List<MRecord> rs = entry.getValue();
 //				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" +entry.getKey());
 				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
@@ -115,13 +117,10 @@ public class LinkBuilder {
 		ArrayList<MRecord> valids = new ArrayList<MRecord>(records.size());
 		// remove repeat;
 		Iterator<MRecord> it = records.iterator();
-		String tempId = null;
 		while(it.hasNext())
 		{
 			MRecord record = it.next();
 			String tId = record.gettName();
-			if(tempId != null && tempId.equals(tId))
-				continue;
 			if(!repeats.contains(tId))
 			{
 				int currentPBLen = record.getqLength();
@@ -195,7 +194,6 @@ public class LinkBuilder {
 							continue;
 					}
 				}
-				tempId = tId;
 				valids.add(record);
 			}
 		}
@@ -221,7 +219,10 @@ public class LinkBuilder {
 			if(dist >= 0)
 			{
 				ms.add(former);
-				former = current;
+				if(i == (size - 1))
+					ms.add(current);
+				else
+					former = current;
 			} else
 			{
 				int formerPBStart = former.getqStart();
@@ -253,12 +254,13 @@ public class LinkBuilder {
 				}else
 				{
 					ms.add(former);
-					former = current;
+					if(i == (size - 1))
+						ms.add(current);
+					else
+						former = current;
 				}
 			}
 		}
-		if(current != null)
-			ms.add(current);
 		size = ms.size();
 		if(size <= 1)
 			return null;
