@@ -149,9 +149,11 @@ public class DirectedGraph extends Graph implements Serializable {
 		// the depth for searching, the alternative path could only accept 5
 		// node;
 		int depth = 5;
+		int index = 0;
 		for (Contig origin : mimos) {
-//			if(origin.getID().equals("13386"))
-//				logger.debug("breakpoint");
+			index++;
+			if(index == 11)
+				logger.debug("breakpoint");
 			List<Contig> cnts = this.getAdjVertices(origin);
 			Iterator<Contig> it = cnts.iterator();
 			int indicator = cnts.size();
@@ -171,7 +173,7 @@ public class DirectedGraph extends Graph implements Serializable {
 					// break;
 				}
 			} catch (Exception e) {
-				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+				logger.error(index + this.getClass().getName() + "\t" + e.getMessage());
 			}
 		}
 		long end = System.currentTimeMillis();

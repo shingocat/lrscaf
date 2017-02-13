@@ -99,15 +99,15 @@ public class Scaffolder {
 			logger.info(this.getClass().getName() + "The aligned parameter do not set! only <m5>, <m4>, <sam> or <bam>");
 			return;
 		}
-		records = reader.read();
-//		listRecords = reader.read();
+//		records = reader.read();
+		listRecords = reader.read();
 		cntCovs = reader.getCntCoverages();
 		cntLens = reader.getCntLengths();
 		RepeatFinder rf = new RepeatFinder(paras);
 		repeats = rf.findRepeats(cntCovs);
 		LinkBuilder linkBuilder = new LinkBuilder(paras);
-		links = linkBuilder.mRecords2Links(records, repeats);
-//		links = linkBuilder.mRecords2Links(listRecords, repeats);
+//		links = linkBuilder.mRecords2Links(records, repeats);
+		links = linkBuilder.mRecords2Links(listRecords, repeats);
 		PBLinkWriter pblw = new PBLinkWriter(paras);
 		pblw.write(links);
 		triads = linkBuilder.getTriadLinks();

@@ -49,58 +49,23 @@ public class LinkBuilder {
 		maxEndLen = paras.getMaxEndLen();
 		maxEndRatio = paras.getMaxEndRatio();
 	}
-//	
-//	public List<PBLink> mRecords2Links(List<List<MRecord>> records, List<String> repeats)
-//	{
-//		long start = System.currentTimeMillis();
-//		if (links == null)
-//			links = new Vector<PBLink>();
-//		links.clear();
-//		int bug = 0;
-//		try {
-//			Iterator<List<MRecord>> it = records.iterator();
-//			while(it.hasNext())
-//			{
-//				List<PBLink> temp = this.mRecord2PBLink(it.next(), repeats);
-//				if(temp != null)
-//					links.addAll(temp);
-//			}
-////			for (List<MRecord> rs : records) {
-////				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" + rs.get(0).getqName());
-//////				List<PBLink> temp = this.mRecord2PBLink2(rs, repeats);
-////				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
-////				if (temp != null)
-////					links.addAll(temp);
-////				bug++;
-////			}
-//		} catch (Exception e) {
-//			logger.error(bug + this.getClass().getName() + "\t" + e.getMessage());
-//		}
-//		long end = System.currentTimeMillis();
-//		logger.info("Valid Links Acount: " + links.size());
-//		logger.info("Building Link, erase time : " + (end - start) + " ms");
-//		return links;
-//	}
-
-	public List<PBLink> mRecords2Links(Map<String, List<MRecord>> records, List<String> repeats) {
+	
+	public List<PBLink> mRecords2Links(List<List<MRecord>> records, List<String> repeats)
+	{
 		long start = System.currentTimeMillis();
 		if (links == null)
 			links = new Vector<PBLink>();
 		links.clear();
 		int bug = 0;
 		try {
-			Iterator<Map.Entry<String, List<MRecord>>> iter = records.entrySet().iterator();
-			while(iter.hasNext())
+			int size = records.size();
+			for(int i = 0; i < size; i++)
 			{
-				Map.Entry<String, List<MRecord>> entry = (Map.Entry<String, List<MRecord>>)iter.next();
-//				if(entry.getKey().equals("m130607_031915_42207_c100539492550000001823089611241310_s1_p0/35713/0_5365"))
+//				if(records.get(i).get(0).getqName().equals("m130605_000141_42207_c100515142550000001823076608221372_s1_p0/48237/0_5269"))
 //					logger.debug("breakpoint");
-				List<MRecord> rs = entry.getValue();
-//				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" +entry.getKey());
-				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
-				if (temp != null)
+				List<PBLink> temp = this.mRecord2PBLink(records.get(i), repeats);
+				if(temp != null)
 					links.addAll(temp);
-				bug++;
 			}
 		} catch (Exception e) {
 			logger.error(bug + this.getClass().getName() + "\t" + e.getMessage());
@@ -110,16 +75,45 @@ public class LinkBuilder {
 		logger.info("Building Link, erase time : " + (end - start) + " ms");
 		return links;
 	}
+
+//	public List<PBLink> mRecords2Links(Map<String, List<MRecord>> records, List<String> repeats) {
+//		long start = System.currentTimeMillis();
+//		if (links == null)
+//			links = new Vector<PBLink>();
+//		links.clear();
+//		int bug = 0;
+//		try {
+//			Iterator<Map.Entry<String, List<MRecord>>> iter = records.entrySet().iterator();
+//			while(iter.hasNext())
+//			{
+//				Map.Entry<String, List<MRecord>> entry = (Map.Entry<String, List<MRecord>>)iter.next();
+////				if(entry.getKey().equals("m130607_031915_42207_c100539492550000001823089611241310_s1_p0/35713/0_5365"))
+////					logger.debug("breakpoint");
+//				List<MRecord> rs = entry.getValue();
+////				logger.debug(bug + "\tSize " + rs.size() + "\tPBID" +entry.getKey());
+//				List<PBLink> temp = this.mRecord2PBLink(rs, repeats);
+//				if (temp != null)
+//					links.addAll(temp);
+//				bug++;
+//			}
+//		} catch (Exception e) {
+//			logger.error(bug + this.getClass().getName() + "\t" + e.getMessage());
+//		}
+//		long end = System.currentTimeMillis();
+//		logger.info("Valid Links Acount: " + links.size());
+//		logger.info("Building Link, erase time : " + (end - start) + " ms");
+//		return links;
+//	}
 	
 	private List<PBLink> mRecord2PBLink(List<MRecord> records, List<String> repeats)
 	{
 		ArrayList<PBLink> links = new ArrayList<PBLink>();
 		ArrayList<MRecord> valids = new ArrayList<MRecord>(records.size());
 		// remove repeat;
-		Iterator<MRecord> it = records.iterator();
-		while(it.hasNext())
+		int size = records.size();
+		for(int i = 0; i < size; i++)
 		{
-			MRecord record = it.next();
+			MRecord record = records.get(i);
 			String tId = record.gettName();
 			if(!repeats.contains(tId))
 			{
@@ -199,7 +193,7 @@ public class LinkBuilder {
 		}
 		// remove overlap contigs large than threshold; 
 		// They are always similarity contigs;
-		int size = valids.size();
+		size = valids.size();
 		if(size <= 1)
 			return null;
 		Collections.sort(valids, new ByLocOrderComparator());
@@ -208,6 +202,7 @@ public class LinkBuilder {
 		MRecord current = null;
 		String formerCntId = null;
 		String currentCntId = null;
+//		boolean isAdded = false;
 		for(int i = 1; i < size; i++)
 		{
 			current = valids.get(i);
@@ -244,11 +239,11 @@ public class LinkBuilder {
 							currentIdentity * 1000 * identweight);
 					if(formerScore >= currentScore)
 					{
-						current = null;
+						if(i == (size -1))
+							ms.add(former);
 						continue;
 					} else
 					{
-						ms.add(current);
 						former = current;
 					}
 				}else
@@ -323,287 +318,287 @@ public class LinkBuilder {
 		return links;
 	}
 	
-	private List<PBLink> mRecord2PBLink2(List<MRecord> records, List<String> repeats)
-	{
-		LinkedList<PBLink> links = new LinkedList<PBLink>();
-		LinkedList<MRecord> valids = new LinkedList<MRecord>();
-		int size = valids.size();
-		MRecord former = null;
-		MRecord current = null;
-		Iterator<MRecord> it = records.iterator();
-//		if(size >= 3)
-			Collections.sort(records, new ByLocOrderComparator());
-//		if(size >= 3)
-//			this.pesudoTriadLink(records);
-		int index = 0;
-		boolean isRemove = false;
-		while(it.hasNext())
-		{
-			current = it.next();
-			String currentCNTId = current.gettName();
-			// check whether is repeats;
-			if(repeats.contains(currentCNTId))
-				continue;
-			String currentPBId = current.getqName();
-			int currentPBLen = current.getqLength();
-			int currentPBStart = current.getqStart();
-			int currentPBEnd = current.getqEnd() - 1;
-			int currentCNTLen = current.gettLength();
-			int currentCNTStart = current.gettStart();
-			int currentCNTEnd = current.gettEnd() - 1;
-			Strand currentStrand = current.gettStrand();
-			boolean isInner = false;
-			int endLen = maxEndLen;
-			int endDefLen = (int) Math.round(currentPBLen * maxEndRatio);
-			// if max end length larger than the endDefLen, used the endDefLen
-			// as threshold
-			if (endDefLen < maxEndLen)
-				endLen = endDefLen;
-			if (currentPBStart >= endLen && currentPBStart <= (currentPBLen - endLen)) {
-				if (currentPBEnd <= (currentPBLen - endLen))
-					isInner = true;
-			}
-			// the overlap length of contig
-			int ol_len = currentCNTEnd - currentCNTStart + 1;
-			double ratio = (double) ol_len / currentCNTLen;
-			// the overhang length
-			int contLeftLen = currentCNTStart;
-			int contRigthLen = currentCNTLen - currentCNTEnd - 1;
-			// for the reversed strand, BLASR define the coordinate according to
-			// aligned seq
-			if (currentStrand.equals(Strand.REVERSE)) {
-				int temp = contLeftLen;
-				contLeftLen = contRigthLen;
-				contRigthLen = temp;
-			}
-			int ohLen = maxOHLen;
-			int ohDefLen = (int) Math.round(currentCNTLen * maxOHRatio);
-			if (ohDefLen < maxOHLen)
-				ohLen = ohDefLen;
-			if (isInner) {
-				// the overlap length less than specified value, next;
-				if (ol_len < minOLLen)
-					continue;
-				// if the overlap length enough for specified value, the ratio
-				// is less than specified value, also next;
-				if (ratio < minOLRatio)
-					continue;
-				// for two end length of contig not allow larger than maxOHLen
-				if (contLeftLen > ohLen || contRigthLen > ohLen)
-					continue;
-			} else {
-				if (currentPBStart <= endLen && currentPBEnd <= endLen) {
-					// checking the right side, for the end point in p1-p2
-					if (contRigthLen > ohLen)
-						continue;
-				} else if (currentPBStart <= endLen && currentPBEnd <= (currentPBLen - endLen)) {
-					if (ol_len < minOLLen)
-						continue;
-					if (contRigthLen > ohLen)
-						continue;
-				} else if (currentPBStart <= endLen && currentPBEnd >= (currentPBLen - endLen)) {
-					// start point in p1-p2 and end point in p3-p4
-					// do no afford info, discard
-					continue;
-				} else if (currentPBStart >= endLen && currentPBStart <= (currentPBLen - endLen) && currentPBEnd >= (currentPBLen - endLen)) {
-					// start point in p2-p3 and end point in p3-p4
-					if (ol_len < minOLLen)
-						continue;
-					if (contLeftLen > ohLen)
-						continue;
-				} else if (currentPBStart >= (currentPBLen - endLen) && currentPBEnd >= (currentPBLen - endLen)) {
-					if (contLeftLen > ohLen)
-						continue;
-				}
-			}
-			
-			// building PBLink
-			if(former == null)
-			{
-				valids.add(current);
-				former = current;
-				continue;
-			} else
-			{
-				String formerCNTId = former.gettName();
-				if(formerCNTId.equals(currentCNTId))
-						continue;
-				int dist = this.getDistance(former, current);
-				int formerPBStart = former.getqStart();
-				int formerPBEnd = former.getqEnd();
-				if(dist >= 0)
-				{
-					PBLink link = new PBLink();
-					link.setPbId(currentPBId);
-					link.setDist(dist);
-					link.setOrigin(formerCNTId);
-					link.setOStrand(former.gettStrand());
-					link.setOPStart(formerPBStart);
-					link.setOPEnd(formerPBEnd);
-					link.setTerminus(currentCNTId);
-					link.setTStrand(currentStrand);
-					link.setTPStart(currentPBStart);
-					link.setTPEnd(currentPBEnd);
-					links.add(link);
-					valids.add(current);
-					former = current;
-				} else
-				{
-					int formerCNTLen = former.gettLength();
-					// check overlap ratio
-//					double formerOLRatio = Math.abs(dist) / formerCNTLen;
-//					double currentOLRatio = Math.abs(dist) / currentCNTLen;
-//					if(formerOLRatio > currentOLRatio && formerOLRatio >= 0.4)
-//					{
-//						isRemove = true;
-//						if(!links.isEmpty())
-//							links.removeLast(); // delete the last link
-//						if(!valids.isEmpty())
-//							valids.removeLast(); // delete the former from valids;
-//						if(valids.isEmpty())
-//						{
-//							valids.add(current);
-//							former = current;
-//							continue;
-//						}  else
-//						{
-//							former = valids.getLast();
-//							dist = this.getDistance(former, current);
-//							PBLink link = new PBLink();
-//							link.setPbId(currentPBId);
-//							link.setDist(dist);
-//							link.setOrigin(former.gettName());
-//							link.setOStrand(former.gettStrand());
-//							link.setOPStart(formerPBStart);
-//							link.setOPEnd(formerPBEnd);
-//							link.setTerminus(currentCNTId);
-//							link.setTStrand(currentStrand);
-//							link.setTPStart(currentPBStart);
-//							link.setTPEnd(currentPBEnd);
-//							links.add(link);
-//							valids.add(current);
-//							former = current;
-//						}
-//					} else if(currentOLRatio >= formerOLRatio && currentOLRatio >= 0.4)
-//					{
+//	private List<PBLink> mRecord2PBLink2(List<MRecord> records, List<String> repeats)
+//	{
+//		LinkedList<PBLink> links = new LinkedList<PBLink>();
+//		LinkedList<MRecord> valids = new LinkedList<MRecord>();
+//		int size = valids.size();
+//		MRecord former = null;
+//		MRecord current = null;
+//		Iterator<MRecord> it = records.iterator();
+////		if(size >= 3)
+//			Collections.sort(records, new ByLocOrderComparator());
+////		if(size >= 3)
+////			this.pesudoTriadLink(records);
+//		int index = 0;
+//		boolean isRemove = false;
+//		while(it.hasNext())
+//		{
+//			current = it.next();
+//			String currentCNTId = current.gettName();
+//			// check whether is repeats;
+//			if(repeats.contains(currentCNTId))
+//				continue;
+//			String currentPBId = current.getqName();
+//			int currentPBLen = current.getqLength();
+//			int currentPBStart = current.getqStart();
+//			int currentPBEnd = current.getqEnd() - 1;
+//			int currentCNTLen = current.gettLength();
+//			int currentCNTStart = current.gettStart();
+//			int currentCNTEnd = current.gettEnd() - 1;
+//			Strand currentStrand = current.gettStrand();
+//			boolean isInner = false;
+//			int endLen = maxEndLen;
+//			int endDefLen = (int) Math.round(currentPBLen * maxEndRatio);
+//			// if max end length larger than the endDefLen, used the endDefLen
+//			// as threshold
+//			if (endDefLen < maxEndLen)
+//				endLen = endDefLen;
+//			if (currentPBStart >= endLen && currentPBStart <= (currentPBLen - endLen)) {
+//				if (currentPBEnd <= (currentPBLen - endLen))
+//					isInner = true;
+//			}
+//			// the overlap length of contig
+//			int ol_len = currentCNTEnd - currentCNTStart + 1;
+//			double ratio = (double) ol_len / currentCNTLen;
+//			// the overhang length
+//			int contLeftLen = currentCNTStart;
+//			int contRigthLen = currentCNTLen - currentCNTEnd - 1;
+//			// for the reversed strand, BLASR define the coordinate according to
+//			// aligned seq
+//			if (currentStrand.equals(Strand.REVERSE)) {
+//				int temp = contLeftLen;
+//				contLeftLen = contRigthLen;
+//				contRigthLen = temp;
+//			}
+//			int ohLen = maxOHLen;
+//			int ohDefLen = (int) Math.round(currentCNTLen * maxOHRatio);
+//			if (ohDefLen < maxOHLen)
+//				ohLen = ohDefLen;
+//			if (isInner) {
+//				// the overlap length less than specified value, next;
+//				if (ol_len < minOLLen)
+//					continue;
+//				// if the overlap length enough for specified value, the ratio
+//				// is less than specified value, also next;
+//				if (ratio < minOLRatio)
+//					continue;
+//				// for two end length of contig not allow larger than maxOHLen
+//				if (contLeftLen > ohLen || contRigthLen > ohLen)
+//					continue;
+//			} else {
+//				if (currentPBStart <= endLen && currentPBEnd <= endLen) {
+//					// checking the right side, for the end point in p1-p2
+//					if (contRigthLen > ohLen)
 //						continue;
+//				} else if (currentPBStart <= endLen && currentPBEnd <= (currentPBLen - endLen)) {
+//					if (ol_len < minOLLen)
+//						continue;
+//					if (contRigthLen > ohLen)
+//						continue;
+//				} else if (currentPBStart <= endLen && currentPBEnd >= (currentPBLen - endLen)) {
+//					// start point in p1-p2 and end point in p3-p4
+//					// do no afford info, discard
+//					continue;
+//				} else if (currentPBStart >= endLen && currentPBStart <= (currentPBLen - endLen) && currentPBEnd >= (currentPBLen - endLen)) {
+//					// start point in p2-p3 and end point in p3-p4
+//					if (ol_len < minOLLen)
+//						continue;
+//					if (contLeftLen > ohLen)
+//						continue;
+//				} else if (currentPBStart >= (currentPBLen - endLen) && currentPBEnd >= (currentPBLen - endLen)) {
+//					if (contLeftLen > ohLen)
+//						continue;
+//				}
+//			}
+//			
+//			// building PBLink
+//			if(former == null)
+//			{
+//				valids.add(current);
+//				former = current;
+//				continue;
+//			} else
+//			{
+//				String formerCNTId = former.gettName();
+//				if(formerCNTId.equals(currentCNTId))
+//						continue;
+//				int dist = this.getDistance(former, current);
+//				int formerPBStart = former.getqStart();
+//				int formerPBEnd = former.getqEnd();
+//				if(dist >= 0)
+//				{
+//					PBLink link = new PBLink();
+//					link.setPbId(currentPBId);
+//					link.setDist(dist);
+//					link.setOrigin(formerCNTId);
+//					link.setOStrand(former.gettStrand());
+//					link.setOPStart(formerPBStart);
+//					link.setOPEnd(formerPBEnd);
+//					link.setTerminus(currentCNTId);
+//					link.setTStrand(currentStrand);
+//					link.setTPStart(currentPBStart);
+//					link.setTPEnd(currentPBEnd);
+//					links.add(link);
+//					valids.add(current);
+//					former = current;
+//				} else
+//				{
+//					int formerCNTLen = former.gettLength();
+//					// check overlap ratio
+////					double formerOLRatio = Math.abs(dist) / formerCNTLen;
+////					double currentOLRatio = Math.abs(dist) / currentCNTLen;
+////					if(formerOLRatio > currentOLRatio && formerOLRatio >= 0.4)
+////					{
+////						isRemove = true;
+////						if(!links.isEmpty())
+////							links.removeLast(); // delete the last link
+////						if(!valids.isEmpty())
+////							valids.removeLast(); // delete the former from valids;
+////						if(valids.isEmpty())
+////						{
+////							valids.add(current);
+////							former = current;
+////							continue;
+////						}  else
+////						{
+////							former = valids.getLast();
+////							dist = this.getDistance(former, current);
+////							PBLink link = new PBLink();
+////							link.setPbId(currentPBId);
+////							link.setDist(dist);
+////							link.setOrigin(former.gettName());
+////							link.setOStrand(former.gettStrand());
+////							link.setOPStart(formerPBStart);
+////							link.setOPEnd(formerPBEnd);
+////							link.setTerminus(currentCNTId);
+////							link.setTStrand(currentStrand);
+////							link.setTPStart(currentPBStart);
+////							link.setTPEnd(currentPBEnd);
+////							links.add(link);
+////							valids.add(current);
+////							former = current;
+////						}
+////					} else if(currentOLRatio >= formerOLRatio && currentOLRatio >= 0.4)
+////					{
+////						continue;
+////					}
+//					
+//					// checking score;
+//					int formerPBOLLen = formerPBEnd - formerPBStart;
+//					int currentPBOLLen = currentPBEnd - currentPBStart;
+//					double formerRatio  = (double)(Math.abs(dist))/formerPBOLLen;
+//					double currentRatio = (double)(Math.abs(dist))/currentPBOLLen;
+//					if(formerRatio >= olRatio || currentRatio >= olRatio)
+//					{
+//						double formerIdentity = former.getIdentity();
+//						double currentIdentity = current.getIdentity();
+//						int formerScore = (int)Math.round(formerPBOLLen * olweight + 
+//								formerIdentity * 1000 * identweight);
+//						int currentScore = (int)Math.round(currentPBOLLen * olweight +
+//								currentIdentity * 1000 * identweight);
+//						if(formerScore >= currentScore)
+//						{
+//							continue;
+//						} else
+//						{
+//							isRemove = true;
+//							if(!links.isEmpty())
+//								links.removeLast(); // delete the last link
+//							if(!valids.isEmpty())
+//								valids.removeLast(); // delete the former from valids;
+//							if(valids.isEmpty())
+//							{
+//								valids.add(current);
+//								former = current;
+//								continue;
+//							} else
+//							{
+//								former = valids.getLast();
+//								dist = this.getDistance(former, current);
+//								PBLink link = new PBLink();
+//								link.setPbId(currentPBId);
+//								link.setDist(dist);
+//								link.setOrigin(former.gettName());
+//								link.setOStrand(former.gettStrand());
+//								link.setOPStart(formerPBStart);
+//								link.setOPEnd(formerPBEnd);
+//								link.setTerminus(currentCNTId);
+//								link.setTStrand(currentStrand);
+//								link.setTPStart(currentPBStart);
+//								link.setTPEnd(currentPBEnd);
+//								links.add(link);
+//								valids.add(current);
+//								former = current;
+//							}
+//						}
+//					} else
+//					{
+//						PBLink link = new PBLink();
+//						link.setPbId(currentPBId);
+//						link.setDist(dist);
+//						link.setOrigin(former.gettName());
+//						link.setOStrand(former.gettStrand());
+//						link.setOPStart(formerPBStart);
+//						link.setOPEnd(formerPBEnd);
+//						link.setTerminus(currentCNTId);
+//						link.setTStrand(currentStrand);
+//						link.setTPStart(currentPBStart);
+//						link.setTPEnd(currentPBEnd);
+//						links.add(link);
+//						valids.add(current);
+//						former = current;
 //					}
-					
-					// checking score;
-					int formerPBOLLen = formerPBEnd - formerPBStart;
-					int currentPBOLLen = currentPBEnd - currentPBStart;
-					double formerRatio  = (double)(Math.abs(dist))/formerPBOLLen;
-					double currentRatio = (double)(Math.abs(dist))/currentPBOLLen;
-					if(formerRatio >= olRatio || currentRatio >= olRatio)
-					{
-						double formerIdentity = former.getIdentity();
-						double currentIdentity = current.getIdentity();
-						int formerScore = (int)Math.round(formerPBOLLen * olweight + 
-								formerIdentity * 1000 * identweight);
-						int currentScore = (int)Math.round(currentPBOLLen * olweight +
-								currentIdentity * 1000 * identweight);
-						if(formerScore >= currentScore)
-						{
-							continue;
-						} else
-						{
-							isRemove = true;
-							if(!links.isEmpty())
-								links.removeLast(); // delete the last link
-							if(!valids.isEmpty())
-								valids.removeLast(); // delete the former from valids;
-							if(valids.isEmpty())
-							{
-								valids.add(current);
-								former = current;
-								continue;
-							} else
-							{
-								former = valids.getLast();
-								dist = this.getDistance(former, current);
-								PBLink link = new PBLink();
-								link.setPbId(currentPBId);
-								link.setDist(dist);
-								link.setOrigin(former.gettName());
-								link.setOStrand(former.gettStrand());
-								link.setOPStart(formerPBStart);
-								link.setOPEnd(formerPBEnd);
-								link.setTerminus(currentCNTId);
-								link.setTStrand(currentStrand);
-								link.setTPStart(currentPBStart);
-								link.setTPEnd(currentPBEnd);
-								links.add(link);
-								valids.add(current);
-								former = current;
-							}
-						}
-					} else
-					{
-						PBLink link = new PBLink();
-						link.setPbId(currentPBId);
-						link.setDist(dist);
-						link.setOrigin(former.gettName());
-						link.setOStrand(former.gettStrand());
-						link.setOPStart(formerPBStart);
-						link.setOPEnd(formerPBEnd);
-						link.setTerminus(currentCNTId);
-						link.setTStrand(currentStrand);
-						link.setTPStart(currentPBStart);
-						link.setTPEnd(currentPBEnd);
-						links.add(link);
-						valids.add(current);
-						former = current;
-					}
-				}
-			}
-			
-			// building triadlink
-			size = valids.size();
-			if(size >= 3)
-			{
-				// delete the corresponding triadlink;
-				if(isRemove)
-				{ 
-					for(int i = 0; i <= index; i++)
-						if(!triadlinks.isEmpty())
-							triadlinks.removeLast();
-					index--;
-					isRemove = false;
-				}
-				for(int i = 0; i <= index; i++)
-				{
-					TriadLink tl = new TriadLink();
-					Contig pre = new Contig();
-					pre.setID(valids.get(i).gettName());
-					tl.setPrevious(pre);
-					Contig lst = new Contig();
-					lst.setID(valids.get(size - 1).gettName());
-					tl.setLast(lst);
-					if((i - index) == 0)
-					{
-						Contig mid = new Contig();
-						mid.setID(valids.get(size - 2).gettName());
-						tl.setMiddle(mid);
-					}
-					tl.setSupLinks(1);
-					if(triadlinks.contains(tl))
-					{
-						int loc = triadlinks.indexOf(tl);
-						int supLink = triadlinks.get(loc).getSupLinks();
-						supLink += 1;
-						triadlinks.get(loc).setSupLinks(supLink);
-					} else
-					{
-						triadlinks.add(tl);
-					}
-				}
-				index++;
-			}
-		}
-		if(links.isEmpty())
-			return null;
-		return links;
-	}
+//				}
+//			}
+//			
+//			// building triadlink
+//			size = valids.size();
+//			if(size >= 3)
+//			{
+//				// delete the corresponding triadlink;
+//				if(isRemove)
+//				{ 
+//					for(int i = 0; i <= index; i++)
+//						if(!triadlinks.isEmpty())
+//							triadlinks.removeLast();
+//					index--;
+//					isRemove = false;
+//				}
+//				for(int i = 0; i <= index; i++)
+//				{
+//					TriadLink tl = new TriadLink();
+//					Contig pre = new Contig();
+//					pre.setID(valids.get(i).gettName());
+//					tl.setPrevious(pre);
+//					Contig lst = new Contig();
+//					lst.setID(valids.get(size - 1).gettName());
+//					tl.setLast(lst);
+//					if((i - index) == 0)
+//					{
+//						Contig mid = new Contig();
+//						mid.setID(valids.get(size - 2).gettName());
+//						tl.setMiddle(mid);
+//					}
+//					tl.setSupLinks(1);
+//					if(triadlinks.contains(tl))
+//					{
+//						int loc = triadlinks.indexOf(tl);
+//						int supLink = triadlinks.get(loc).getSupLinks();
+//						supLink += 1;
+//						triadlinks.get(loc).setSupLinks(supLink);
+//					} else
+//					{
+//						triadlinks.add(tl);
+//					}
+//				}
+//				index++;
+//			}
+//		}
+//		if(links.isEmpty())
+//			return null;
+//		return links;
+//	}
 	
 
 //	private List<PBLink> mRecord2PBLink(List<MRecord> records, List<String> repeats) {
