@@ -36,7 +36,7 @@ public class LinkBuilder {
 	private double maxOHRatio;
 	private int maxEndLen;
 	private double maxEndRatio;
-	private double olRatio = 0.6;
+	private double olRatio = 0.5;
 	private double olweight = 0.6;
 	private double identweight = 0.4;
 
