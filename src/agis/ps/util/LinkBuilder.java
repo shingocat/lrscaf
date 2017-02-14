@@ -36,6 +36,7 @@ public class LinkBuilder {
 	private double maxOHRatio;
 	private int maxEndLen;
 	private double maxEndRatio;
+	private int olLength = -150; // default overlap 100 bp will consider which is the best;
 	private double olRatio = 0.6;
 	private double olweight = 0.6;
 	private double identweight = 0.4;
@@ -229,7 +230,7 @@ public class LinkBuilder {
 				int currentPBOLLen = currentPBEnd - currentPBStart;
 				double formerRatio  = (double)(Math.abs(dist))/formerPBOLLen;
 				double currentRatio = (double)(Math.abs(dist))/currentPBOLLen;
-				if(formerRatio >= olRatio || currentRatio >= olRatio)
+				if((formerRatio >= olRatio || currentRatio >= olRatio) || (dist <= olLength))
 				{
 					double formerIdentity = former.getIdentity();
 					double currentIdentity = current.getIdentity();

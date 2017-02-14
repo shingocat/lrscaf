@@ -134,6 +134,7 @@ public class Scaffolder {
 		PathBuilder pb = new PathBuilder(edges, paras, cntLens);
 		paths = pb.buildPath();
 		cntLens = null;
+		edges = null;
 	}
 	
 	private void writeNodePathInfo()

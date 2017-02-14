@@ -59,7 +59,6 @@ public abstract class DynamicProgramming {
 		}
 		initializeScores();
 		initializePointers();
-
 		isInitialized = true;
 	}
 
