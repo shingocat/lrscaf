@@ -37,6 +37,10 @@ public class MRecord implements Serializable{
 	public Integer getqLength() {
 		return qLength;
 	}
+	public void setqLength(int qLength)
+	{
+		this.qLength = qLength;
+	}
 	public void setqLength(String qLength)
 	{
 		this.qLength = Integer.valueOf(qLength);
@@ -44,11 +48,19 @@ public class MRecord implements Serializable{
 	public Integer getqStart() {
 		return qStart;
 	}
+	public void setqStart(int qStart)
+	{
+		this.qStart = qStart;
+	}
 	public void setqStart(String qStart) {
 		this.qStart = Integer.valueOf(qStart);
 	}
 	public Integer getqEnd() {
 		return qEnd;
+	}
+	public void setqEnd(int qEnd)
+	{
+		this.qEnd = qEnd;
 	}
 	public void setqEnd(String qEnd) {
 		this.qEnd = Integer.valueOf(qEnd);

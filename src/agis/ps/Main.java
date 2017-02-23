@@ -79,6 +79,10 @@ public class Main {
 		opts.addOption("m5", "m5", true, "The file in m5 format of blasr!");
 		// m4 format
 		opts.addOption("m4", "m4", true, "The file in m4 format of blasr!");
+		// minimap format
+		opts.addOption("mm", "m4", true, "The file in minimap output format!");
+		// sam format
+		opts.addOption("sam", "sam", true, "The file in sam format!");
 		// output folder
 		opts.addOption("o", "output", true, "The output folder!");
 		// help 

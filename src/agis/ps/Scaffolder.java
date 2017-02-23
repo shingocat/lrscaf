@@ -16,8 +16,10 @@ import agis.ps.file.AlignmentFileReader;
 import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.M4Reader;
 import agis.ps.file.M5Reader;
+import agis.ps.file.MMReader;
 import agis.ps.file.OutputFolderBuilder;
 import agis.ps.file.PBLinkWriter;
+import agis.ps.file.SamReader;
 import agis.ps.file.ScaffoldWriter;
 import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.Edge;
@@ -90,10 +92,11 @@ public class Scaffolder {
 		{
 			reader = new M4Reader(paras);
 			
-		} else if(type.equalsIgnoreCase("sam") || type.equalsIgnoreCase("bam"))
+		} else if(type.equalsIgnoreCase("sam"))
 		{
-			logger.info(this.getClass().getName() + "Do not implement yet!");
-			return;
+			reader = new SamReader(paras);
+		} else if(type.equalsIgnoreCase("mm")){
+			reader = new MMReader(paras);
 		} else 
 		{
 			logger.info(this.getClass().getName() + "The aligned parameter do not set! only <m5>, <m4>, <sam> or <bam>");

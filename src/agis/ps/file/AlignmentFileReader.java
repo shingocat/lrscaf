@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import agis.ps.link.MRecord;
 import agis.ps.util.MRecordValidator;
 import agis.ps.util.Parameter;
+import agis.ps.util.Strand;
 
 public abstract class AlignmentFileReader {
 	private final static Logger logger = LoggerFactory.getLogger(AlignmentFileReader.class);
@@ -31,6 +32,7 @@ public abstract class AlignmentFileReader {
 	private Map<String, List<MRecord>> records = null;
 	private Map<String, Integer> cntLens = null;
 	private List<List<MRecord>> listRecords = null;
+	private Map<String, Integer> samCntLens = null;
 	
 	public AlignmentFileReader(Parameter paras)
 	{
@@ -50,10 +52,13 @@ public abstract class AlignmentFileReader {
 			cntLens = new HashMap<String, Integer>();
 		if(listRecords == null)
 			listRecords = new ArrayList<List<MRecord>>();
+		if(samCntLens == null)
+			samCntLens = new HashMap<String, Integer>();
 		records.clear();
 		cntCovs.clear();
 		cntLens.clear();
 		listRecords.clear();
+		samCntLens.clear();
 		File file = null;
 		FileReader fr = null;
 		BufferedReader br = null;
@@ -74,9 +79,32 @@ public abstract class AlignmentFileReader {
 				String [] arrs = line.split("\\s+");
 				if(arrs[0].equals("qName"))
 					continue;
+				// for sam format to get reference length
+				if(paras.getType().equalsIgnoreCase("sam") && arrs[0].startsWith("@"))
+				{
+					if(arrs[0].equalsIgnoreCase("@SQ"))
+					{
+						// seqeunce name 
+						String [] names = arrs[1].split(":");
+						String name = names[1];
+						// sequence length
+						String [] lengths = arrs[2].split(":");
+						Integer len = Integer.valueOf(lengths[1]);
+						if(!samCntLens.containsKey(name))
+							samCntLens.put(name, len);
+					}
+					continue;
+				}
 				MRecord record = initMRecord(arrs);
+				if(paras.getType().equalsIgnoreCase("sam"))
+				{
+					int length = samCntLens.get(record.gettName());
+					record.settLength(length);
+				}
 				if(!cntLens.containsKey(record.gettName()))
+				{
 					cntLens.put(record.gettName(), record.gettLength());
+				}
 				Map<String, Boolean> values = MRecordValidator.validate(record, paras);
 				if(values.get("REPEAT"))
 				{
@@ -164,6 +192,13 @@ public abstract class AlignmentFileReader {
 	{
 		return this.listRecords;
 	}
+//	// print in m4 format
+//	private void pritnMRecord(MRecord record){
+//		System.out.println(record.getqName() + "\t" + record.gettName() + "\t" + "-1000" + "\t" +
+//				record.getIdentity() + "\t" + "0" + record.getqStart() + "\t" + record.getqEnd() + "\t" +
+//				record.getqLength() + "\t" + (record.gettStart().equals(Strand.FORWARD)?"0":"1") + "\t" +
+//				record.gettStart() + "\t" + record.gettEnd() + "\t" + record.gettLength() + "\t" + 255);
+//	}
 }
 
 

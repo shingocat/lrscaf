@@ -67,13 +67,13 @@ public class XMLParser {
 							para.setType("m4");
 						}else if (nodeName.equalsIgnoreCase("sam")) {
 							para.setAlgFile(node.getTextContent().trim());
-							para.setType("s");
-						} else if (nodeName.equalsIgnoreCase("bam")) {
+							para.setType("sam");
+						} else if(nodeName.equalsIgnoreCase("mm")){
 							para.setAlgFile(node.getTextContent().trim());
-							para.setType("s");
+							para.setType("mm");
 						} else if(nodeName.equalsIgnoreCase("pbread")){
 							para.setPbFile(node.getTextContent().trim());
-						}else {
+						} else {
 							logger.info(this.getClass().getName() + "\t" + "The XML file contain illeagle elements!");
 							return null;
 						}
