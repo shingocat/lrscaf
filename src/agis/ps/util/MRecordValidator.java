@@ -223,6 +223,10 @@ public class MRecordValidator {
 			isValid4Record = false;
 		if(identity < defIdentity)
 			isValid4Record = false;
+//		if(tLeftLen > defOHLen )
+//			isValid4Record = false;
+//		if(tRightLen > defOHLen)
+//			isValid4Record = false;
 		values.put("REPEAT", isValid4Repeat);
 		values.put("RECORD", isValid4Record);
 		return values;

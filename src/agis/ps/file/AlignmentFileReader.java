@@ -77,6 +77,8 @@ public abstract class AlignmentFileReader {
 					break;
 				line = line.trim();
 				String [] arrs = line.split("\\s+");
+//				if(arrs[0].equals("PB8356"))
+//					logger.debug("breakpoint");
 				if(arrs[0].equals("qName"))
 					continue;
 				// for sam format to get reference length
@@ -96,6 +98,8 @@ public abstract class AlignmentFileReader {
 					continue;
 				}
 				MRecord record = initMRecord(arrs);
+				if(record == null)
+					continue;
 				if(paras.getType().equalsIgnoreCase("sam"))
 				{
 					int length = samCntLens.get(record.gettName());

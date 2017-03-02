@@ -62,7 +62,7 @@ public class LinkBuilder {
 			int size = records.size();
 			for(int i = 0; i < size; i++)
 			{
-//				if(records.get(i).get(0).getqName().equals("m130605_000141_42207_c100515142550000001823076608221372_s1_p0/48237/0_5269"))
+//				if(records.get(i).get(0).getqName().equals("PB8356"))
 //					logger.debug("breakpoint");
 				List<PBLink> temp = this.mRecord2PBLink(records.get(i), repeats);
 				if(temp != null)

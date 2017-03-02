@@ -202,6 +202,7 @@ public class ScaffoldWriter {
 //				seq = cnts.get(cId).getForwardSeqs();
 //				seq.trim();
 				Strand cStrand = current.getStrand();
+				Contig cnt = cnts.get(cId);
 				if(cStrand == null || cStrand.equals(Strand.FORWARD))
 					seq = cnts.get(cId).getForwardSeqs();
 				else

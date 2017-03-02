@@ -90,6 +90,8 @@ public class ContigReader {
 					int length = sb.length();
 					if(temp != null && length >= 0)
 					{
+//						if(temp.startsWith(">1445"))
+//							logger.debug("breakpoint");
 						temp = temp.replaceFirst("^>", "");
 						temp = temp.split("\\s")[0];
 						temp = temp.trim();

@@ -70,55 +70,55 @@ public class Main {
 	{
 		Options opts = new Options();
 		// xml file
-		opts.addOption("x", "xml", true, "The XML file for specified parameters on scaffolding! All the other commandline parameter will be omitted if setted!");
+		opts.addOption("x", "xml", true, "The parameter XML file! All command-line parameters would be omitted if set.");
 		// contig
-		opts.addOption("c", "contig", true, "The file of contig in fasta format!");
+		opts.addOption("c", "contig", true, "The file of pre-assembled contigs in fasta format.");
 		// pacbio reads
-		opts.addOption("p", "pacbio", true, "The PacBio Long Reads file for gap filling if requried!");
+		opts.addOption("p", "pacbio", true, "The PacBio Long Reads file for gap filling if requried.");
 		// m5 format
-		opts.addOption("m5", "m5", true, "The file in m5 format of blasr!");
+		opts.addOption("m5", "m5", true, "The aligned file in -m 5 format of blasr.");
 		// m4 format
-		opts.addOption("m4", "m4", true, "The file in m4 format of blasr!");
+		opts.addOption("m4", "m4", true, "The aligned file in -m 4 format of blasr.");
 		// minimap format
-		opts.addOption("mm", "m4", true, "The file in minimap output format!");
+		opts.addOption("mm", "m4", true, "The aligned file in minimap output format.");
 		// sam format
-		opts.addOption("sam", "sam", true, "The file in sam format!");
+		opts.addOption("sam", "sam", true, "The aligned file in sam format.");
 		// output folder
-		opts.addOption("o", "output", true, "The output folder!");
+		opts.addOption("o", "output", true, "The scaffolding output folder.");
 		// help 
 		opts.addOption("h", "help", false, "The help infomation!");
 		// minimum contig length
-		opts.addOption("micl", "miniCntLen", true, "The minimum contig's length for scaffolding! Default:<3000>");
+		opts.addOption("micl", "miniCntLen", true, "The minimum contig's length for scaffolding! Default:<3000>.");
 		// minimum pacbio long read length
-		opts.addOption("mipl", "miniPBLen", true, "The minimum PacBio long read's length for scaffolding! Default:<5000>");
+		opts.addOption("mipl", "miniPBLen", true, "The minimum PacBio long read's length for scaffolding! Default:<5000>.");
 		// identity
-		opts.addOption("i", "identity", true, "The identity threshold for blasr alignment! Default: <0.8>");
+		opts.addOption("i", "identity", true, "The identity threshold for blasr alignment! Default: <0.8>.");
 		// minimum overlap length
-		opts.addOption("mioll", "miniOLLen", true, "The minimum overlap length threshold for blasr alignment! Default: <2400>");
+		opts.addOption("mioll", "miniOLLen", true, "The minimum overlap length threshold for blasr alignment! Default: <2400>.");
 		// minimum overlap ratio
-		opts.addOption("miolr", "miniOLRatio", true, "The minimum overlap ratio threshold for blasr alignment! Default: <0.8>");
+		opts.addOption("miolr", "miniOLRatio", true, "The minimum overlap ratio threshold for blasr alignment! Default: <0.8>.");
 		// maximum overhang length;
-		opts.addOption("maohl", "maOHLen", true, "The maximum overhang length threshold for blasr alignment! Default: <300>");
+		opts.addOption("maohl", "maOHLen", true, "The maximum overhang length threshold for blasr alignment! Default: <300>.");
 		// maximum overhang ratio;
-		opts.addOption("maohr", "maOHRatio", true, "The maximum overhang ratio threshold for blasr alignment! Default: <0.1>");
+		opts.addOption("maohr", "maOHRatio", true, "The maximum overhang ratio threshold for blasr alignment! Default: <0.1>.");
 		// maximum ending length
-		opts.addOption("mael", "maELen", true, "The maximum ending length of PacBio's Long Read! Default: <300>");
+		opts.addOption("mael", "maELen", true, "The maximum ending length of PacBio's Long Read! Default: <300>.");
 		// maximum ending ratio
-		opts.addOption("maer", "maERatio", true, "The maximum ending ratio of PacBio's Long Read! Default: <0.1>");
+		opts.addOption("maer", "maERatio", true, "The maximum ending ratio of PacBio's Long Read! Default: <0.1>.");
 		// minimum support links;
-		opts.addOption("misl", "miSLN", true, "The minimum support links number! Default: <1>");
+		opts.addOption("misl", "miSLN", true, "The minimum support links number! Default: <1>.");
 		// use overlap link
-		opts.addOption("doll", "doll", false, "The indicator for using overlap relationship of contig! Default: <f>, discard overlap relationship!");
+		opts.addOption("doll", "doll", false, "The indicator for using overlap relationship of contig! Default: <f>, discard overlap relationship.");
 		// deleting error prone edges ratio;
-		opts.addOption("r", "ratio", true, "The ratio for deleting error prone edges! Default: <0.2>");
+		opts.addOption("r", "ratio", true, "The ratio for deleting error prone edges! Default: <0.2>.");
 		// masking repeat
-		opts.addOption("mr", "mr", false, "The indicator for masking repeats! Default: <f>");
+		opts.addOption("mr", "mr", false, "The indicator for masking repeats! Default: <f>.");
 		// gap filling
-		opts.addOption("gf", "gf", false, "The indicator for gap filling! Default: <f>");
+		opts.addOption("gf", "gf", false, "The indicator for gap filling! Default: <f>.");
 		// tip length
-		opts.addOption("tl", "tiplength", false, "The maximum tip length!");
+		opts.addOption("tl", "tiplength", false, "The maximum tip length.");
 		// iqr time
-		opts.addOption("iqrt", "iqrtime", false, "The IQR time for defined repeat outlier!");
+		opts.addOption("iqrt", "iqrtime", false, "The IQR time for defined repeat outlier.");
 		return opts;
 	}
 	

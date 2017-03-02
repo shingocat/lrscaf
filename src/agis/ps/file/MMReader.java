@@ -32,14 +32,14 @@ public class MMReader extends AlignmentFileReader {
 		identity = Double.valueOf(String.format("%.4f", identity));
 		record.setIdentity(identity);
 		if(arrs[4].equals("+"))
-		{
 			record.settStrand(Strand.FORWARD);
-		} else
-		{
+		else
 			record.settStrand(Strand.REVERSE);
-		}
 		record.settStart(arrs[7]);
 		record.settEnd(arrs[8]);
+		int cms = Integer.valueOf(arrs[12].split("cm:i:")[1]);
+		if(cms <= 8)
+			return null;
 		return record;
 	}
 }
