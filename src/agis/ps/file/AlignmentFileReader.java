@@ -27,7 +27,7 @@ import agis.ps.util.Strand;
 public abstract class AlignmentFileReader {
 	private final static Logger logger = LoggerFactory.getLogger(AlignmentFileReader.class);
 	private String algFile;
-	private Parameter paras = null;
+	protected Parameter paras = null;
 	private Map<String, Integer> cntCovs = null;
 	private Map<String, List<MRecord>> records = null;
 	private Map<String, Integer> cntLens = null;

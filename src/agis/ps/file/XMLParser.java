@@ -167,6 +167,8 @@ public class XMLParser {
 						para.setTipLength(Integer.valueOf(node.getTextContent().trim()));
 					} else if(nodeName.equalsIgnoreCase("iqr_time")){
 						para.setIqrTime(Double.valueOf(node.getTextContent().trim()));
+					} else if(nodeName.equalsIgnoreCase("mmcm")){
+						para.setMmcm(Integer.valueOf(node.getTextContent().trim()));;
 					} else {
 						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will be omitted!");
 					}

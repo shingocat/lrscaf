@@ -38,7 +38,7 @@ public class MMReader extends AlignmentFileReader {
 		record.settStart(arrs[7]);
 		record.settEnd(arrs[8]);
 		int cms = Integer.valueOf(arrs[12].split("cm:i:")[1]);
-		if(cms <= 8)
+		if(cms <= paras.getMmcm())
 			return null;
 		return record;
 	}

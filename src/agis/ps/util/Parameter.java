@@ -33,8 +33,15 @@ public class Parameter implements Serializable {
 	private boolean isGapFilling = false; // whether gap is filled;
 	private int tipLength = 1500; // tip length is 1500 bp, larger than this do not considering as tip
 	private double iqrTime = 1.5;
+	private int mmcm = 8; // only for minimap output, default: 8;
 	
-	
+	public int getMmcm() {
+		return mmcm;
+	}
+
+	public void setMmcm(int mmcm) {
+		this.mmcm = mmcm;
+	}
 
 	public double getIqrTime() {
 		return iqrTime;
