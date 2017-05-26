@@ -4,6 +4,7 @@
 *Email: mqin@ymail.com
 *Date: 2016年6月2日
 */
+/*
 package agis.ps.file;
 
 import java.io.BufferedReader;
@@ -14,8 +15,6 @@ import java.util.HashMap;
 //import java.util.List;
 import java.util.Map;
 
-import org.biojava.nbio.core.sequence.AccessionID;
-import org.biojava.nbio.core.sequence.compound.DNACompoundSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,8 +78,8 @@ public class PBReader {
 					{
 						if(id != null && sb.length() != 0)
 						{
-							pb = new PBRead(sb.toString(),DNACompoundSet.getDNACompoundSet());
-							pb.setAccession(new AccessionID(id));
+//							pb = new PBRead(sb.toString(),DNACompoundSet.getDNACompoundSet());
+//							pb.setAccession(new AccessionID(id));
 							reads.put(id, pb);
 							sb = null;
 							id = null;
@@ -92,8 +91,8 @@ public class PBReader {
 					{
 						if(sb.length() != 0 && id != null)
 						{
-							pb = new PBRead(sb.toString(),DNACompoundSet.getDNACompoundSet());
-							pb.setAccession(new AccessionID(id));
+//							pb = new PBRead(sb.toString(),DNACompoundSet.getDNACompoundSet());
+//							pb.setAccession(new AccessionID(id));
 							reads.put(id, pb);
 							sb = null;
 							id = null;
@@ -114,9 +113,9 @@ public class PBReader {
 					{
 						if(id != null && sb.length() != 0)
 						{
-							pb = new PBRead(sb.toString(),DNACompoundSet.getDNACompoundSet());
-							pb.setAccession(new AccessionID(id));
-							pb.setDescription(qua.toString());
+//							pb = new PBRead(sb.toString(),DNACompoundSet.getDNACompoundSet());
+//							pb.setAccession(new AccessionID(id));
+//							pb.setDescription(qua.toString());
 							reads.put(id, pb);
 							qua = null;
 							sb = null;
@@ -129,9 +128,9 @@ public class PBReader {
 					{
 						if(sb.length() != 0 && id != null)
 						{
-							pb = new PBRead(sb.toString(),DNACompoundSet.getDNACompoundSet());
-							pb.setAccession(new AccessionID(id));
-							pb.setDescription(qua.toString());
+//							pb = new PBRead(sb.toString(),DNACompoundSet.getDNACompoundSet());
+//							pb.setAccession(new AccessionID(id));
+//							pb.setDescription(qua.toString());
 							reads.put(id, pb);
 							qua = null;
 							sb = null;
@@ -187,4 +186,4 @@ public class PBReader {
 	}
 }
 
-
+*/
