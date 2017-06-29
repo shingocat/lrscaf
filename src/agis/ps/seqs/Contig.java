@@ -12,9 +12,31 @@ public class Contig {
 	private String id;
 	private int length;
 	private byte [] seqs;
+	private boolean isUsed; // defined this contig is used or not during scaffolding;
+	private boolean isRepeat; // defined this contig is repeat or not;
 	
 	public Contig() {
 		
+	}
+	
+	public boolean isRepeat()
+	{
+		return this.isRepeat;
+	}
+	
+	public void setIsRepeat(boolean isRepeat)
+	{
+		this.isRepeat = isRepeat;
+	}
+	
+	public boolean isUsed()
+	{
+		return this.isUsed;
+	}
+	
+	public void setIsUsed(boolean isUsed)
+	{
+		this.isUsed = isUsed;
 	}
 
 	public String getID() {

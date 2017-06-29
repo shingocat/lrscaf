@@ -13,6 +13,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.MissingArgumentException;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.CommandLine;
 
 import org.slf4j.Logger;
@@ -28,17 +30,17 @@ public class Main {
 	public static void main(String[] args) {
 		// System.setProperty("log4j.configuration", "log4j.properties");
 		long start = System.currentTimeMillis();
-		logger.info("Launching...");
 		try {
 			Options opts = Main.initOpts();
 			CommandLineParser parser = new DefaultParser();
 			CommandLine cl = parser.parse(opts, args);
-			HelpFormatter f = new HelpFormatter();
+//			HelpFormatter f = new HelpFormatter();
 			Parameter paras = null;
 			
 			if (cl.hasOption("h")) {
-				f.printHelp("java -jar agisps.jar -c <Contig File> -a <Aligned File> -o <Output Folder> or"
-						+ " java -jar agisps.jar -x <Parameters File>\n", opts);
+//				f.printHelp("java -jar agisps.jar -c <Contig File> -a <Aligned File> -o <Output Folder> or"
+//						+ " java -jar agisps.jar -x <Parameters File>\n", opts, true);
+				logger.info(printUsageInfo());
 				System.exit(0);
 			} else {
 				// for parse the xml configure, all the other parameters set by command line will dismissed
@@ -48,41 +50,66 @@ public class Main {
 					XMLParser xmlParser = new XMLParser();
 					paras = xmlParser.parseXML(xmlFile);
 				} else {				
-					paras = Main.parsering(cl, f, opts);
+					paras = Main.parsering(cl,  opts);
 				}
 				// The body for executing scaffolding process
+				logger.info("Launching...");
 				Scaffolder scaffolder = new Scaffolder(paras);
 				scaffolder.scaffolding();
+				logger.info("Ending...");
+				long end = System.currentTimeMillis();
+				logger.info("Scaffolding erase time: " + (end - start)/1000 + " s.");
 			}
 		} catch (MissingArgumentException e) {
 			logger.error(Main.class.getName() + "\t" + e.getMessage());
+			logger.info(printUsageInfo());
 		} catch (ParseException e) {
 			logger.error(Main.class.getName() + "\t"+ e.getMessage());
+			logger.info(printUsageInfo());
 		} catch (Exception e) {
 			logger.error(Main.class.getName() + "\t" + e.getMessage());
+			logger.info(printUsageInfo());
 		}
-		logger.info("Ending...");
-		long end = System.currentTimeMillis();
-		logger.info("Scaffolding erase time: " + (end - start)/1000 + " s.");
 	}
 	
 	private static Options initOpts()
 	{
 		Options opts = new Options();
+		// parameters sepcified by xml
+		OptionGroup xmlog = new OptionGroup();
 		// xml file
-		opts.addOption("x", "xml", true, "The parameter XML file! All command-line parameters would be omitted if set.");
+		Option xml = new Option("x", "xml", true, "The parameter XML file! All command-line parameters would be omitted if set.");
+		xmlog.addOption(xml);
+		opts.addOptionGroup(xmlog);
+		
+		// cml options
+		OptionGroup inputog = new OptionGroup();
 		// contig
-		opts.addOption("c", "contig", true, "The file of pre-assembled contigs in fasta format.");
+		Option cnt = new Option("c", "contig", true, "The file of pre-assembled contigs in fasta format.");
+		opts.addOption(cnt);
 		// pacbio reads
-		opts.addOption("p", "pacbio", true, "The PacBio Long Reads file for gap filling if requried.");
+//		opts.addOption("p", "pacbio", true, "The PacBio Long Reads file for gap filling if requried.");
 		// m5 format
-		opts.addOption("m5", "m5", true, "The aligned file in -m 5 format of blasr.");
+//		Option m5 = new Option("m5", "m5", true, "The aligned file in -m 5 format of blasr.");
+//		opts.addOption("m5", "m5", true, "The aligned file in -m 5 format of blasr.");
+//		inputog.addOption(m5);
 		// m4 format
-		opts.addOption("m4", "m4", true, "The aligned file in -m 4 format of blasr.");
+//		opts.addOption("m4", "m4", true, "The aligned file in -m 4 format of blasr.");
+//		Option m4 = new Option("m4", "m4", true, "The aligned file in -m 4 format of blasr.");
+//		inputog.addOption(m4);
 		// minimap format
-		opts.addOption("mm", "m4", true, "The aligned file in minimap output format.");
+//		opts.addOption("mm", "mm", true, "The aligned file in minimap output format.");
+//		Option mm = new Option("mm", "mm", true, "The aligned file in minimap output format.");
+//		inputog.addOption(mm);
 		// sam format
-		opts.addOption("sam", "sam", true, "The aligned file in sam format.");
+//		opts.addOption("sam", "sam", true, "The aligned file in sam format.");
+//		Option sam = new Option("sam", "sam", true, "The aligned file in sam format.");
+//		inputog.addOption(sam);
+		Option alnFile = new Option("a", "alignedFile", true, "Required. The aligned file by using Minimap or BLASR mapper!");
+		inputog.addOption(alnFile);
+		Option type = new Option("t", "type", true, "Requried. The aligned file format, supported: mm for Minimap, m4, m5 or sam for BLASR.");
+		inputog.addOption(type);
+		opts.addOptionGroup(inputog);
 		// output folder
 		opts.addOption("o", "output", true, "The scaffolding output folder.");
 		// help 
@@ -90,7 +117,7 @@ public class Main {
 		// minimum contig length
 		opts.addOption("micl", "miniCntLen", true, "The minimum contig's length for scaffolding! Default:<3000>.");
 		// minimum pacbio long read length
-		opts.addOption("mipl", "miniPBLen", true, "The minimum PacBio long read's length for scaffolding! Default:<5000>.");
+//		opts.addOption("mipl", "miniPBLen", true, "The minimum PacBio long read's length for scaffolding! Default:<5000>.");
 		// identity
 		opts.addOption("i", "identity", true, "The identity threshold for blasr alignment! Default: <0.8>.");
 		// minimum overlap length
@@ -98,25 +125,25 @@ public class Main {
 		// minimum overlap ratio
 		opts.addOption("miolr", "miniOLRatio", true, "The minimum overlap ratio threshold for blasr alignment! Default: <0.8>.");
 		// maximum overhang length;
-		opts.addOption("maohl", "maOHLen", true, "The maximum overhang length threshold for blasr alignment! Default: <300>.");
+		opts.addOption("mxohl", "maxOHLen", true, "The maximum overhang length threshold for blasr alignment! Default: <300>.");
 		// maximum overhang ratio;
-		opts.addOption("maohr", "maOHRatio", true, "The maximum overhang ratio threshold for blasr alignment! Default: <0.1>.");
+		opts.addOption("mxohr", "maxOHRatio", true, "The maximum overhang ratio threshold for blasr alignment! Default: <0.1>.");
 		// maximum ending length
-		opts.addOption("mael", "maELen", true, "The maximum ending length of PacBio's Long Read! Default: <300>.");
+		opts.addOption("mxel", "maxEndLen", true, "The maximum ending length of PacBio's Long Read! Default: <300>.");
 		// maximum ending ratio
-		opts.addOption("maer", "maERatio", true, "The maximum ending ratio of PacBio's Long Read! Default: <0.1>.");
+		opts.addOption("mxer", "maxEndRatio", true, "The maximum ending ratio of PacBio's Long Read! Default: <0.1>.");
 		// minimum support links;
-		opts.addOption("misl", "miSLN", true, "The minimum support links number! Default: <1>.");
+		opts.addOption("misl", "miniSupLinks", true, "The minimum support links number! Default: <1>.");
 		// use overlap link
-		opts.addOption("doll", "doll", false, "The indicator for using overlap relationship of contig! Default: <f>, discard overlap relationship.");
+//		opts.addOption("doll", "doll", false, "The indicator for using overlap relationship of contig! Default: <f>, discard overlap relationship.");
 		// deleting error prone edges ratio;
 		opts.addOption("r", "ratio", true, "The ratio for deleting error prone edges! Default: <0.2>.");
 		// masking repeat
-		opts.addOption("mr", "mr", false, "The indicator for masking repeats! Default: <f>.");
+//		opts.addOption("mr", "mr", false, "The indicator for masking repeats! Default: <f>.");
 		// gap filling
-		opts.addOption("gf", "gf", false, "The indicator for gap filling! Default: <f>.");
+//		opts.addOption("gf", "gf", false, "The indicator for gap filling! Default: <f>.");
 		// tip length
-		opts.addOption("tl", "tiplength", false, "The maximum tip length.");
+//		opts.addOption("tl", "tiplength", false, "The maximum tip length.");
 		// iqr time
 		opts.addOption("iqrt", "iqrtime", false, "The IQR time for defined repeat outlier.");
 		// only for minimap format , default 8;
@@ -124,46 +151,66 @@ public class Main {
 		return opts;
 	}
 	
-	private static Parameter parsering(CommandLine cl, HelpFormatter f, Options opts) throws MissingArgumentException
+	private static Parameter parsering(CommandLine cl, Options opts) throws MissingArgumentException
 	{
 		Parameter paras = new Parameter();
 		// checking the aligned setting valid or not
-		if((!cl.hasOption("m5")) && (!cl.hasOption("m4")))
+//		if((!cl.hasOption("m5")) && (!cl.hasOption("m4")))
+//		{
+//			//logger.error("The aligned file could not be null!");
+////			f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
+////					+ "\t java -jar agisps.jar -x <Parameters File>\n", opts);
+//			throw new MissingArgumentException("The aligned file could not be null!");
+//		}
+		if(!cl.hasOption("a"))
 		{
-			logger.error("The aligned file could not be null!");
-			f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
-					+ "\t java -jar agisps.jar -x <Parameters File>\n", opts);
 			throw new MissingArgumentException("The aligned file could not be null!");
+		}
+		if(!cl.hasOption("t"))
+		{
+			throw new MissingArgumentException("The type of aligned file could not be null!");
 		}
 		// checking the contig setting or not
 		if(!cl.hasOption("c"))
 		{
-			logger.error("The argument '-c' setting could not be null!");
-			f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
-					+ "\t java -jar agisps.jar -x <Parameters File>\n", opts);
-			throw new MissingArgumentException("The aligned file could not be null!");
+			//logger.error("The argument '-c' setting could not be null!");
+//			f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
+//					+ "\t java -jar agisps.jar -x <Parameters File>\n", opts);
+			throw new MissingArgumentException("The draft assemblied genome could not be null!");
 		}
 		// checking the out
 		if(!cl.hasOption("o"))
 		{
-			logger.error("The argument '-o' setting could not be null!");
-			f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
-					+ "\t java -jar agisps.jar -x <Parameters File>\n", opts);
-			throw new MissingArgumentException("The aligned file could not be null!");
+			//logger.error("The argument '-o' setting could not be null!");
+//			f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
+//					+ "\t java -jar agisps.jar -x <Parameters File>\n", opts);
+			throw new MissingArgumentException("The ouput folder could not be null!");
 		}
-		// parsering m4
-		if(cl.hasOption("m5"))
+		// parsing file type
+//		if(cl.hasOption("m5"))
+//		{
+//			paras.setAlgFile(cl.getOptionValue("m5"));
+//			paras.setType("m5");
+//		} else if(cl.hasOption("m4"))
+//		{
+//			paras.setAlgFile(cl.getOptionValue("m4"));
+//			paras.setType("m4");
+//		} else if(cl.hasOption("sam") || cl.hasOption("bam"))
+//		{
+//			paras.setAlgFile(cl.getOptionValue("sam"));
+//			paras.setType("sam");
+//		} else if(cl.hasOption("mm"))
+//		{
+//			paras.setAlgFile(cl.getOptionValue("mm"));
+//			paras.setType("mm");
+//		}
+		if(cl.hasOption("a"))
 		{
-			paras.setAlgFile(cl.getOptionValue("m5"));
-			paras.setType("m5");
-		} else if(cl.hasOption("m4"))
+			paras.setAlgFile(cl.getOptionValue("a"));
+		}
+		if(cl.hasOption("t"))
 		{
-			paras.setAlgFile(cl.getOptionValue("m4"));
-			paras.setType("m4");
-		} else if(cl.hasOption("sam") || cl.hasOption("bam"))
-		{
-			paras.setAlgFile(cl.getOptionValue("sam"));
-			paras.setType("sam");
+			paras.setType(cl.getOptionValue("t"));
 		}
 		// parsering contig;
 		if(cl.hasOption("c"))
@@ -262,5 +309,40 @@ public class Main {
 			paras.setIqrTime(Double.valueOf(cl.getOptionValue("iqrt")));
 		}
 		return paras;
+	}
+	
+	private static String printUsageInfo()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("\nLRScaf is a scaffolder by using Thired Generation Sequencing data to "
+				+ "scaffold any draft assemblied genomes. it supports command line argument or XML configure file!\n");
+		sb.append("Usage:\nXML: java -jar LRScaf.jar -x <XML_File>\n");
+		sb.append("CML: java -jar LRScaf.jar -c <Draft_Assemblies_File> -a <Alinged_File> -t <m5|m4|mm|sam> [Other_Options]\n");
+		sb.append("Argument Details:\n");
+		sb.append("XML configure file:\n");
+		sb.append("-x\t--xml\t<arg>\tThe parameter XML file! All command-line parameters would be omitted if set.\n");
+		sb.append("Command line options:\n");
+		sb.append("-c\t--contig\t<arg>\tRequired. The file of pre-assembled contigs in fasta format.\n");
+		sb.append("## Input file:\n");
+		sb.append("-a\t--alignedFile\tRequired. The aligned file by using Minimap or BLASR mapper!\n");
+		sb.append("-t\t--type\tRequried. The aligned file format, supported: 1) mm for Minimap; 2)m4, m5 or sam for BLASR.\n");
+		sb.append("## Output folder:\n");
+		sb.append("-o\t--output\t<arg>\tRequired. The scaffolding output folder.\n");
+		sb.append("## Other options:\n");
+		sb.append("-i\t--identity\t<arg>\tThe identity threshold for blasr alignment! Default: <0.8>.\n");
+		sb.append("-r\t--ratio\t<arg>\tThe ratio for deleting error prone edges! Default: <0.2>.\n");
+		sb.append("-misl\t--miniSupLinks\t<arg>\tThe minimum support links number! Default: <1>.\n");
+		sb.append("-iqrt\t--iqrtime\tThe IQR time for defined repeat outlier.Default: <1.5>\n");
+		sb.append("-micl\t--miniCntLen\t<arg>\tThe minimum contig's length for scaffolding! Default:<200>.\n");
+		sb.append("-mioll\t--miniOLLen\t<arg>\tThe minimum overlap length threshold for alignment! Default: <160>.\n");
+		sb.append("-miolr\t--miniOLRatio\t<arg>\tThe minimum overlap ratio threshold for alignment! Default: <0.8>.\n");
+		sb.append("-mxel\t--maxEndLen\t<arg>\tThe maximum ending length of Long Read! Default: <300>.\n");
+		sb.append("-mxer\t--maxEndRatio\t<arg>\tThe maximum ending ratio of Long Read! Default: <0.1>.\n");
+		sb.append("-mxohl\t--maxOHLen\t<arg>\tThe maximum overhang length threshold for alignment! Default: <300>.\n");
+		sb.append("-mxohr\t--maxOHRatio\t<arg>\tThe maximum overhang ratio threshold for alignment! Default: <0.1>.\n");
+		sb.append("-mmcm\t--mmcm\t<arg>\tThe filter parameter only for last column format of Minimap, default:<8>.\n");
+ 		sb.append("-h\t--help\tThe help infomation!\n");
+		sb.append("Please report issues at <github_project_website>!");
+		return sb.toString();
 	}
 }

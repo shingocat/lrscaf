@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 //import java.util.Vector;
 //import java.util.regex.Matcher;
@@ -31,9 +33,12 @@ public class ContigReader {
 	public static Logger logger = LoggerFactory.getLogger(ContigReader.class);
 	public Map<String, Contig> cnts = new HashMap<String, Contig>();
 	private String filePath;
+	private List<Integer> lens;
+	private Parameter paras;
 	
 	public ContigReader(Parameter paras)
 	{
+		this.paras = paras;
 		this.filePath = paras.getCntFile();
 	}
 	
@@ -44,6 +49,9 @@ public class ContigReader {
 		if (cnts == null)
 			cnts = new HashMap<String, Contig>();
 		cnts.clear();
+		if(lens == null)
+			lens = new ArrayList<Integer>();
+		lens.clear();
 		FileReader fr = null;
 		BufferedReader br = null;
 		try {
@@ -70,12 +78,18 @@ public class ContigReader {
 						Contig cnt = new Contig();
 						cnt.setSeqs(sb.toString());
 						cnt.setLength(length);
+						if(length < paras.getMinContLen())
+							cnt.setIsUsed(false);
+						else
+							cnt.setIsUsed(true);
+						cnt.setIsRepeat(false);
 						id = id.replaceAll("^>", "");
 						id = id.split("\\s")[0];
 						id = id.trim();
 						cnt.setID(id);
 						cnts.put(id, cnt);
 						cnt = null;
+						lens.add(length);
 					}
 					sb = null;
 					temp = null;
@@ -99,11 +113,17 @@ public class ContigReader {
 						cnt.setSeqs(sb.toString());
 						cnt.setLength(length);
 						cnt.setID(temp);
+						if(length < paras.getMinContLen())
+							cnt.setIsUsed(false);
+						else
+							cnt.setIsUsed(true);
+						cnt.setIsRepeat(false);
 						cnts.put(temp, cnt);
 						sb = null;
 						cnt = null;
 						temp = null;
 						sb = new StringBuffer();
+						lens.add(length);
 					}
 				} else {
 					sb.append(line);
@@ -130,6 +150,13 @@ public class ContigReader {
 		}
 		long end = System.currentTimeMillis();
 		logger.info("Reading contigs, erase times: " + (end - start) + " ms");
+		this.writeCntsSummary();
 		return cnts;
+	}
+	
+	private void writeCntsSummary()
+	{
+		N50Writer writer = new N50Writer(paras, "draft", lens);
+		writer.write();
 	}
 }

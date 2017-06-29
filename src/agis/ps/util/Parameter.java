@@ -15,9 +15,9 @@ public class Parameter implements Serializable {
 	private String cntFile;
 	private String algFile;
 	private String outFolder = System.getProperty("user.dir"); // The current directory if not setted;
-	private Integer minContLen = 3000; // minimum contig 3k bp in length;
+	private Integer minContLen = 200; // minimum contig 200 bp in length;
 	private Integer minPBLen = 5000; // maximum pacbio read 5k bp in length;
-	private Integer minOLLen = 2400; // minimum overlap length 3k bp;
+	private Integer minOLLen = 160; // minimum overlap length 3k bp;
 	private Double minOLRatio = 0.8d; // minimum ratio of overlap, if contig_length * ratio > default minOLLen, then the overlap length should be larger than contig_length * ratio;
 	private Integer maxOHLen = 300; // the maximum overhang length 300 bp;
 	private Double maxOHRatio = 0.1d; // maximum overhang ratio, if contig_legnth * ratio > default maxOHLen, then the overhang length should be less than default maxOHLen, else using the length * ratio; 
@@ -27,9 +27,9 @@ public class Parameter implements Serializable {
 	private Integer maxSupLinks = 70; // maximum supported links number: 70;
 	private String type; // m for m5, s for sam, s for bam;
 	private Double identity = 0.8d; // compute the identity between contig and pacbio, formula as: match / (match + mismatch + numsIn + numsDel); 
-	private boolean isUseOLLink = false; // use overlap link into build edges;
+	private boolean isUseOLLink = true; // use overlap link into build edges;
 	private Double ratio = 0.2; // use this ratio to delete edge by supported link ratio 
-	private boolean isRepMask = false; // whether repeat is mask;
+	private boolean isRepMask = true; // whether repeat is mask;
 	private boolean isGapFilling = false; // whether gap is filled;
 	private int tipLength = 1500; // tip length is 1500 bp, larger than this do not considering as tip
 	private double iqrTime = 1.5;

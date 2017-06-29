@@ -13,6 +13,7 @@ import java.io.File;
 //import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 //import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +59,14 @@ public class ScaffoldWriter {
 //		this.paths = paths;
 //		this.filePath = paras.getOutFolder() + System.getProperty("file.separator") + "scaffolds.fasta";
 ////		this.cntfile = cntfile;
-//	}
+//	}	
 //	
+	
+	public ScaffoldWriter(Parameter paras, List<NodePath> paths, Map<String, Contig> cnts)
+	{
+		this(paras, paths);
+		this.cnts = cnts;
+	}
 	public ScaffoldWriter(Parameter paras, List<NodePath> paths)
 	{
 		this.paras = paras;
@@ -74,7 +81,7 @@ public class ScaffoldWriter {
 		long start = System.currentTimeMillis();
 		filePath = paras.getOutFolder() + System.getProperty("file.separator") + "scaffolds.fasta";
 		try{
-			this.readCntFile();
+//			this.readCntFile();
 			out = new File(filePath);
 			if (out.exists()) {
 				logger.info("The output file of scaffold is exist! It will not be overwrited!");
@@ -87,7 +94,7 @@ public class ScaffoldWriter {
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);
 			int index = 0;
-			int [] lens = new int[paths.size()];
+			List<Integer> lens = new ArrayList<Integer>();
 			for(NodePath np : paths)
 			{
 				String seqs = this.buildScaffold(np, index);
@@ -96,12 +103,27 @@ public class ScaffoldWriter {
 				bw.newLine();
 				bw.write(seqs);
 				bw.newLine();
-				lens[index] = len;
+				lens.add(len);
 				index++;
+			}
+			// write the contigs larger than 200 but not including in paths
+			for(Map.Entry<String, Contig> entry : cnts.entrySet())
+			{
+				Contig c = entry.getValue();
+				int len = c.getLength();
+				if(c.getLength() >= paras.getMinContLen() && !c.isUsed() && !c.isRepeat())
+				{
+					bw.write(">Scaffolds_" + index + "  " + len);
+					bw.newLine();
+					bw.write(c.getForwardSeqs());
+					bw.newLine();
+					lens.add(len);
+					index++;
+				}
 			}
 			bw.flush();
 			bw.close();
-			N50Writer n50 = new N50Writer(paras, lens);
+			N50Writer n50 = new N50Writer(paras, "scaffolds", lens);
 			n50.write();
 		} catch(IOException e)
 		{
@@ -185,7 +207,7 @@ public class ScaffoldWriter {
 	private String buildScaffold(NodePath path, int index)
 	{
 //		long start = System.currentTimeMillis();
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int size = path.getPathSize();
 		Node current =  null;
 		String cId = null;
@@ -202,7 +224,7 @@ public class ScaffoldWriter {
 //				seq = cnts.get(cId).getForwardSeqs();
 //				seq.trim();
 				Strand cStrand = current.getStrand();
-				Contig cnt = cnts.get(cId);
+//				Contig cnt = cnts.get(cId);
 				if(cStrand == null || cStrand.equals(Strand.FORWARD))
 					seq = cnts.get(cId).getForwardSeqs();
 				else

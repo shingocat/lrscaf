@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +23,21 @@ public class N50Writer {
 	private static Logger logger = LoggerFactory.getLogger(N50Writer.class);
 	private Parameter paras;
 	private int [] lens;
+	private String prefix;
 	
 	
-	public N50Writer( Parameter paras, int [] lens)
+	public N50Writer( Parameter paras, String prefix, int [] lens)
 	{
 		this.paras = paras;
+		this.prefix = prefix;
 		this.lens = lens;
+	}
+	
+	public N50Writer(Parameter paras, String prefix, List<Integer> lens)
+	{
+		this.paras = paras;
+		this.prefix = prefix;
+		this.lens = lens.stream().mapToInt(Integer::intValue).toArray();
 	}
 	
 	public void write()
@@ -35,7 +45,7 @@ public class N50Writer {
 		if(lens == null)
 			throw new IllegalArgumentException(this.getClass() + "\t:The list of sequence length recould could not be null!");
 		String outFolder = paras.getOutFolder();
-		String fileName = outFolder + System.getProperty("file.separator") + "summary.info";
+		String fileName = outFolder + System.getProperty("file.separator") + prefix + "_summary.info";
 		File file = null; 
 		FileWriter fw = null;
 		BufferedWriter bw = null;

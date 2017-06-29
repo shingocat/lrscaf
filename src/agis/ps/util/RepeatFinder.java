@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.file.ContigCoverageWriter;
+import agis.ps.seqs.Contig;
 
 public class RepeatFinder {
 	
@@ -22,6 +23,7 @@ public class RepeatFinder {
 	private Parameter paras;
 	private List<String> repeats;
 	private double iqrTime;
+	private Map<String,Contig> cnts;
 //	private Map<String, List<MRecord>> cntMaps; 
 	
 	public RepeatFinder(Parameter paras)
@@ -64,6 +66,13 @@ public class RepeatFinder {
 //		return repeats;
 //	}
 //	
+	
+	public List<String> findRepeats(Map<String, Integer> cntCovs, Map<String, Contig> cnts)
+	{
+		this.cnts = cnts;
+		return this.findRepeats(cntCovs);
+	}
+	
 	public List<String> findRepeats(Map<String, Integer> cntCovs)
 	{
 		long start = System.currentTimeMillis();
@@ -98,6 +107,8 @@ public class RepeatFinder {
 			if(cntCovs.get(id) > upper)
 			{
 				repeats.add(id);
+				if(cnts.containsKey(id))
+					cnts.get(id).setIsRepeat(true);
 			}
 		}
 		logger.info("Repeat count: " + repeats.size());

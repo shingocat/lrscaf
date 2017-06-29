@@ -96,20 +96,20 @@ public class XMLParser {
 			nodes = rootElm.getElementsByTagName("paras");
 			if (nodes == null || nodes.getLength() == 0) {
 				logger.info(this.getClass().getName() + "\t" + "The XML file do not contain output elements, it will use default value!");
-				para.setMinContLen(2000);
+				para.setMinContLen(200);
 				para.setMinPBLen(5000);
-				para.setMinOLLen(1500);
+				para.setMinOLLen(160);
 				para.setMinOLRatio(0.8);
-				para.setMaxOHLen(500);
+				para.setMaxOHLen(300);
 				para.setMaxOHRatio(0.1);
-				para.setMaxEndLen(500);
+				para.setMaxEndLen(300);
 				para.setMaxEndRatio(0.1);
-				para.setMinSupLinks(3);
+				para.setMinSupLinks(1);
 				para.setMaxSupLinks(50);
 				para.setIdentity(0.8);
-				para.setUseOLLink(false);
-				para.setRatio(0.3);
-				para.setRepMask(false);
+				para.setUseOLLink(true);
+				para.setRatio(0.2);
+				para.setRepMask(true);
 				para.setGapFilling(false);
 				para.setTipLength(1500);
 				para.setIqrTime(1.5);

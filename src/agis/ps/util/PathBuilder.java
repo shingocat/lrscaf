@@ -25,7 +25,6 @@ import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
 import agis.ps.link.TriadLink;
 //import agis.ps.link.TriadLinkComparator;
-import agis.ps.path.InternalNode2;
 import agis.ps.path.InternalNode;
 import agis.ps.path.InternalPath;
 import agis.ps.path.InternalPathComparator;
@@ -45,7 +44,8 @@ public class PathBuilder {
 	private Graph diGraph;
 	private NodePath path;
 //	private CntFileEncapsulate cntfile;
-	private Map<String, Integer> cntLens;
+//	private Map<String, Integer> cntLens;
+	private Map<String, Contig> cnts;
 
 	public PathBuilder(List<Edge> edges, Parameter paras, CntFileEncapsulate cntfile) {
 		this.edges = edges;
@@ -55,12 +55,15 @@ public class PathBuilder {
 		triads = tlr.read();
 	}
 	
-	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Integer> cntLens)
+//	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Integer> cntLens)
+	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Contig> cnts)
 	{
 		this.edges = edges;
 		this.paras = paras;
-		this.cntLens = cntLens;
+//		this.cntLens = cntLens;
+		this.cnts = cnts;
 	}
+	
 
 	public List<NodePath> buildPath() {
 		if (edges == null || edges.size() == 0)
@@ -82,7 +85,7 @@ public class PathBuilder {
 			String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges.info";
 			DotGraphFileWriter.writeEdge(edgeFile, edges);
 //			diGraph = new DirectedGraph(edges, paras, cntfile);
-			diGraph = new DirectedGraph(edges, paras, cntLens);
+			diGraph = new DirectedGraph(edges, paras, cnts);
 			// do transitive reduction
 			diGraph.transitiveReducting();
 			List<Edge> tempEdges = diGraph.getEdges();
@@ -210,6 +213,7 @@ public class PathBuilder {
 		// define the first element in path is forward;
 		// require to check the orientation conflict!
 		// cleaning and call gc
+		this.setUnusedContig();
 		this.diGraph = null;
 		this.edges = null;
 		this.triads = null;
@@ -1595,7 +1599,8 @@ public class PathBuilder {
 			INTERNAL_LENGTH += eLen;
 			// INTERNAL_LENGTH += this.indexLen(current.getID());
 //			int cLen = cntfile.getLengthByNewId(Integer.valueOf(child.getID()));
-			int cLen = cntLens.get(child.getID());
+//			int cLen = cntLens.get(child.getID());
+			int cLen = cnts.get(child.getID()).getLength();
 			INTERNAL_LENGTH += cLen;
 			if (INTERNAL_LENGTH <= MAXIMUM_INTERNAL_LENGTH) {
 				boolean validAlls = false;
@@ -1643,7 +1648,8 @@ public class PathBuilder {
 			INTERNAL_LENGTH += eLen;
 			// INTERNAL_LENGTH += this.indexLen(current.getID());
 //			int cLen = cntfile.getLengthByNewId(Integer.valueOf(child.getID()));
-			int cLen = cntLens.get(child.getID());
+//			int cLen = cntLens.get(child.getID());
+			int cLen = cnts.get(child.getID()).getLength();
 			INTERNAL_LENGTH += cLen;
 			// if the internal length of path already large than MAXIMUM_INTERNAL_LENGTH
 			if (INTERNAL_LENGTH > MAXIMUM_INTERNAL_LENGTH) {
@@ -2529,5 +2535,15 @@ public class PathBuilder {
 				return false;
 		}
 	}
-
+	
+	private void setUnusedContig()
+	{
+		List<Contig> usedContigs = diGraph.getVertices();
+		for(Map.Entry<String, Contig> entry : cnts.entrySet())
+		{
+			Contig c = entry.getValue();
+			if(!usedContigs.contains(c))
+				c.setIsUsed(false);
+		}
+	}
 }

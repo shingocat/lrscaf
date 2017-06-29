@@ -16,20 +16,21 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.link.Link;
 //import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
 //import agis.ps.link.PBLinkM;
 import agis.ps.util.Parameter;
 
-public class PBLinkWriter {
+public class LinkWriter {
 	
-	private static Logger logger = LoggerFactory.getLogger(PBLinkWriter.class);
+	private static Logger logger = LoggerFactory.getLogger(LinkWriter.class);
 	private Parameter paras = null;
 	private File file = null;
 	private FileWriter fw = null;
 	private BufferedWriter bw = null;
 	
-	public PBLinkWriter(Parameter paras)
+	public LinkWriter(Parameter paras)
 	{
 		this.paras = paras;
 	}
@@ -74,7 +75,47 @@ public class PBLinkWriter {
 //		}
 //	}
 	
-	public void write(List<PBLink> links)
+//	public void write(List<PBLink> links)
+//	{
+//		try{
+//			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "links.info");
+//			fw = new FileWriter(file, true);
+//			bw = new BufferedWriter(fw);
+//			if(links != null && links.size() > 0)
+//			{
+//				Iterator<PBLink> it = links.iterator();
+//				while(it.hasNext())
+//				{
+//					PBLink link = it.next();
+//					String line = link.getOrigin() + "\t" + link.getOStrand() + "\t" + link.getTerminus() + "\t" +
+//					link.getTStrand() + "\t" + link.getDist() + "\t" + link.getPbId() + "\t" + link.getOPStart() + "\t" 
+//					+ link.getOPEnd() + "\t" + link.getTPStart() + "\t" + link.getTPEnd();
+//					bw.write(line);
+//					bw.newLine();
+//				}
+//				bw.flush();
+//				bw.close();
+//			}
+//		} catch(IOException e)
+//		{
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//		} catch(Exception e)
+//		{
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//		} finally
+//		{
+//			try{
+//				if(bw != null)
+//					bw.close();
+//			} catch(Exception e)
+//			{
+//				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//			}
+//		}
+//		
+//	}
+	
+	public void write(List<Link> links)
 	{
 		try{
 			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "links.info");
@@ -82,13 +123,13 @@ public class PBLinkWriter {
 			bw = new BufferedWriter(fw);
 			if(links != null && links.size() > 0)
 			{
-				Iterator<PBLink> it = links.iterator();
+				Iterator<Link> it = links.iterator();
 				while(it.hasNext())
 				{
-					PBLink link = it.next();
-					String line = link.getOrigin() + "\t" + link.getOStrand() + "\t" + link.getTerminus() + "\t" +
-					link.getTStrand() + "\t" + link.getDist() + "\t" + link.getPbId() + "\t" + link.getOPStart() + "\t" 
-					+ link.getOPEnd() + "\t" + link.getTPStart() + "\t" + link.getTPEnd();
+					Link link = it.next();
+					String line = link.getOriginal().getID() + "\t" + link.getoStrand() + "\t" + link.getTerminus() + "\t" +
+					link.gettStrand() + "\t" + link.getDist() + "\t" + link.getLrId() + "\t" + link.getoStart() + "\t" 
+					+ link.getoEnd() + "\t" + link.gettStart() + "\t" + link.gettEnd();
 					bw.write(line);
 					bw.newLine();
 				}

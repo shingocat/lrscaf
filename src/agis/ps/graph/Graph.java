@@ -61,16 +61,6 @@ public abstract class Graph implements Serializable, IUntangler {
 			String tId = terminus.getID();
 			String id = oId + "->" + tId;
 			this.edges.put(id, e);
-//			if(!this.vertices.containsKey(oId))
-//			{
-//				this.vertices.put(oId, origin);
-//				this.unselectedVertices.put(oId, origin);
-//			}
-//			if(!this.vertices.containsKey(tId))
-//			{
-//				this.vertices.put(tId, terminus);
-//				this.unselectedVertices.put(tId, terminus);
-//			}
 			if(!this.vertices.contains(origin))
 				this.vertices.add(origin);
 			if(!this.unselectedVertices.contains(origin))
@@ -108,7 +98,17 @@ public abstract class Graph implements Serializable, IUntangler {
 	}
 
 	public List<Contig> getVertices() {
-//		return new ArrayList<Contig>(this.vertices.values());
+		if(this.vertices == null)
+			this.vertices = new ArrayList<Contig>();
+		this.vertices.clear();
+		for(Map.Entry<String, Edge> entry : edges.entrySet())
+		{
+			Edge e = entry.getValue();
+			if(!this.vertices.contains(e.getOrigin()))
+				this.vertices.add(e.getOrigin());
+			if(!this.vertices.contains(e.getTerminus()))
+				this.vertices.add(e.getTerminus());
+		}
 		return this.vertices;
 	}
 

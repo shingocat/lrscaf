@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.MRecord;
+import agis.ps.seqs.Contig;
 import agis.ps.util.MRecordValidator;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
@@ -29,10 +30,12 @@ public abstract class AlignmentFileReader {
 	private String algFile;
 	protected Parameter paras = null;
 	private Map<String, Integer> cntCovs = null;
-	private Map<String, List<MRecord>> records = null;
-	private Map<String, Integer> cntLens = null;
+//	private Map<String, List<MRecord>> records = null;
+//	private Map<String, Integer> cntLens = null;
 	private List<List<MRecord>> listRecords = null;
-	private Map<String, Integer> samCntLens = null;
+//	private Map<String, Integer> samCntLens = null;
+	private Map<String, Contig> cnts;
+//	private List<Contig> unusedCnts;
 	
 	public AlignmentFileReader(Parameter paras)
 	{
@@ -40,25 +43,37 @@ public abstract class AlignmentFileReader {
 		this.paras = paras;
 	}
 	
+	public AlignmentFileReader(Parameter paras, Map<String, Contig> cnts)
+	{
+		this(paras);
+		this.cnts = cnts;
+	}
+	
+	public List<List<MRecord>> read(Map<String, Contig> cnts)
+	{
+		this.cnts  = cnts;
+		return this.read();
+	}
+	
 //	public Map<String, List<MRecord>> read()
 	public List<List<MRecord>> read()
 	{
 		long start = System.currentTimeMillis();
-		if(records == null)
-			records = new HashMap<String, List<MRecord>>();
+//		if(records == null)
+//			records = new HashMap<String, List<MRecord>>();
 		if(cntCovs == null)
 			cntCovs = new HashMap<String, Integer>();
-		if(cntLens == null)
-			cntLens = new HashMap<String, Integer>();
+//		if(cntLens == null)
+//			cntLens = new HashMap<String, Integer>();
 		if(listRecords == null)
 			listRecords = new ArrayList<List<MRecord>>();
-		if(samCntLens == null)
-			samCntLens = new HashMap<String, Integer>();
-		records.clear();
+//		if(samCntLens == null)
+//			samCntLens = new HashMap<String, Integer>();
+//		records.clear();
 		cntCovs.clear();
-		cntLens.clear();
+//		cntLens.clear();
 		listRecords.clear();
-		samCntLens.clear();
+//		samCntLens.clear();
 		File file = null;
 		FileReader fr = null;
 		BufferedReader br = null;
@@ -69,47 +84,57 @@ public abstract class AlignmentFileReader {
 			br = new BufferedReader(fr);
 			String line = null;
 			String qId = "";
-			List<MRecord> rs = new ArrayList<MRecord>();
+			List<MRecord> rs = new ArrayList<MRecord>(); // aligned record
 			while(true)
 			{
 				line = br.readLine();
 				if(line == null)
+				{
+					if(rs.size() > 1)
+						listRecords.add(rs);
 					break;
+				}
 				line = line.trim();
 				String [] arrs = line.split("\\s+");
 //				if(arrs[0].equals("PB8356"))
 //					logger.debug("breakpoint");
-				if(arrs[0].equals("qName"))
+				// if the M5 or m4 file format with header;
+				if(arrs[0].equals("qName") && 
+						(paras.getType().equalsIgnoreCase("m5") || paras.getType().equalsIgnoreCase("m4")))
 					continue;
+				if(arrs[0].startsWith("@") && paras.getType().equalsIgnoreCase("sam"))
+					continue;
+				// 
 				// for sam format to get reference length
-				if(paras.getType().equalsIgnoreCase("sam") && arrs[0].startsWith("@"))
-				{
-					if(arrs[0].equalsIgnoreCase("@SQ"))
-					{
-						// seqeunce name 
-						String [] names = arrs[1].split(":");
-						String name = names[1];
-						// sequence length
-						String [] lengths = arrs[2].split(":");
-						Integer len = Integer.valueOf(lengths[1]);
-						if(!samCntLens.containsKey(name))
-							samCntLens.put(name, len);
-					}
-					continue;
-				}
+//				if(paras.getType().equalsIgnoreCase("sam") && arrs[0].startsWith("@"))
+//				{
+//					if(arrs[0].equalsIgnoreCase("@SQ"))
+//					{
+//						// seqeunce name 
+//						String [] names = arrs[1].split(":");
+//						String name = names[1];
+//						// sequence length
+//						String [] lengths = arrs[2].split(":");
+//						Integer len = Integer.valueOf(lengths[1]);
+//						if(!samCntLens.containsKey(name))
+//							samCntLens.put(name, len);
+//					}
+//					continue;
+//				}
 				MRecord record = initMRecord(arrs);
 				if(record == null)
 					continue;
-				if(paras.getType().equalsIgnoreCase("sam"))
-				{
-					int length = samCntLens.get(record.gettName());
-					record.settLength(length);
-				}
-				if(!cntLens.containsKey(record.gettName()))
-				{
-					cntLens.put(record.gettName(), record.gettLength());
-				}
-				Map<String, Boolean> values = MRecordValidator.validate(record, paras);
+//				if(paras.getType().equalsIgnoreCase("sam"))
+//				{
+//					int length = samCntLens.get(record.gettName());
+//					record.settLength(length);
+//				}
+//				if(!cntLens.containsKey(record.gettName()))
+//				{
+//					cntLens.put(record.gettName(), record.gettLength());
+//				}
+
+				Map<String, Boolean> values = MRecordValidator.validate(record, paras, cnts);
 				if(values.get("REPEAT"))
 				{
 					String tName = record.gettName();
@@ -149,11 +174,12 @@ public abstract class AlignmentFileReader {
 					{
 						if(rs.size() > 1)
 							listRecords.add(rs);
-						rs = new LinkedList<MRecord>();
+						rs = new ArrayList<MRecord>();
 						rs.add(record);
 						qId = record.getqName();
 					}
-				}
+				} 
+					
 			}
 			br.close();
 		} catch(IOException e)
@@ -187,10 +213,10 @@ public abstract class AlignmentFileReader {
 		return this.cntCovs;
 	}
 	
-	public Map<String, Integer> getCntLengths()
-	{
-		return this.cntLens;
-	}
+//	public Map<String, Integer> getCntLengths()
+//	{
+//		return this.cntLens;
+//	}
 	
 	public List<List<MRecord>> getListRecord()
 	{

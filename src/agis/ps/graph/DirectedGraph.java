@@ -9,6 +9,7 @@ package agis.ps.graph;
 //import java.io.File;
 //import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,10 +41,11 @@ public class DirectedGraph extends Graph implements Serializable {
 	private Parameter paras = null;
 	private Map<String, List<Contig>> adjTos = Collections.synchronizedMap(new HashMap<String, List<Contig>>());
 	// for store multiple in and multiple out contig vertex;
-	private List<Contig> mimos = new Vector<Contig>();
+	private List<Contig> mimos = new ArrayList<Contig>();
 	private TriadLinkWriter tlWriter = null;
 //	private CntFileEncapsulate cntfile;
-	private Map<String, Integer> cntLens;
+//	private Map<String, Integer> cntLens;
+	private Map<String, Contig> cnts;
 
 	public DirectedGraph(List<Edge> edges, Parameter paras) {
 		super(edges);
@@ -55,12 +57,18 @@ public class DirectedGraph extends Graph implements Serializable {
 		tlWriter.init();
 	}
 	
-	
-	public DirectedGraph(List<Edge> edges, Parameter paras, Map<String, Integer> cntLens)
+	public DirectedGraph(List<Edge> edges, Parameter paras, Map<String, Contig> cnts)
 	{
 		this(edges, paras);
-		this.cntLens = cntLens;
+		this.cnts= cnts;
 	}
+	
+	
+//	public DirectedGraph(List<Edge> edges, Parameter paras, Map<String, Integer> cntLens)
+//	{
+//		this(edges, paras);
+//		this.cntLens = cntLens;
+//	}
 
 	private void initAdjTos() {
 		if (adjTos == null)
@@ -237,7 +245,8 @@ public class DirectedGraph extends Graph implements Serializable {
 //					alDists.add(this.indexCntLength(now.getID()));
 					String id = now.getID();
 //					int dist = cntfile.getLengthByNewId(id);
-					int dist = cntLens.get(id);
+//					int dist = cntLens.get(id);
+					int dist = this.cnts.get(id).getLength();
 					alDists.add(dist);
 				}
 			}
@@ -383,11 +392,13 @@ public class DirectedGraph extends Graph implements Serializable {
 					sls[i] = es.get(0).getLinkNum();
 //					lens[i] = this.indexCntLength(t.getID());
 //					lens[i] = cntfile.getLengthByNewId(t.getID());
-					lens[i] = cntLens.get(t.getID());
+//					lens[i] = cntLens.get(t.getID());
+					lens[i] = this.cnts.get(t.getID()).getLength();
 				}
 //				lens[adjCount] = this.indexCntLength(id);
 //				lens[adjCount] = cntfile.getLengthByNewId(id);
-				lens[adjCount] = cntLens.get(id);
+//				lens[adjCount] = cntLens.get(id);
+				lens[adjCount] = this.cnts.get(id).getLength();
 				Arrays.sort(sls);
 				Arrays.sort(lens);
 				int max = sls[adjCount - 1];
@@ -410,7 +421,8 @@ public class DirectedGraph extends Graph implements Serializable {
 							Contig t = adjs.get(i);
 //							if(this.indexCntLength(t.getID()) <= 500){
 //							if(cntfile.getLengthByNewId(t.getID()) <= 500){
-							if(cntLens.get(t.getID()) <= 500){
+//							if(cntLens.get(t.getID()) <= 500){
+							if(cnts.get(t.getID()).getLength() <= 500){
 								List<Edge> es = this.getEdgesInfo(cnt, t);
 								int sl = es.get(0).getLinkNum();
 								double r = (double) sl / max;
@@ -665,7 +677,8 @@ public class DirectedGraph extends Graph implements Serializable {
 				all.addAll(es);
 				length += es.get(0).getDistMean();
 //				length += cntfile.getLengthByNewId(n.getID());
-				length += cntLens.get(n.getID());
+//				length += cntLens.get(n.getID());
+				length += cnts.get(n.getID()).getLength();
 			}
 			if(length <= TIP_LENGTH)
 			{
@@ -699,7 +712,8 @@ public class DirectedGraph extends Graph implements Serializable {
 					all.addAll(es);
 					length += es.get(0).getDistMean();
 //					length += cntfile.getLengthByNewId(n.getID());
-					length += cntLens.get(n.getID());
+//					length += cntLens.get(n.getID());
+					length += cnts.get(n.getID()).getLength();
 				}
 				if(length <= TIP_LENGTH)
 				{
