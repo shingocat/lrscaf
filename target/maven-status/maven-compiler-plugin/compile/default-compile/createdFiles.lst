@@ -38,7 +38,6 @@ agis\ps\file\ScaffoldWriter.class
 agis\ps\util\ByLocOrderComparator.class
 agis\ps\path\InternalPath.class
 agis\ps\file\GapRecordWriter.class
-agis\ps\file\PBLinkWriter.class
 agis\ps\util\RepeatFinder.class
 agis\ps\util\MathTool.class
 agis\ps\link\TriadLinkComparator.class
@@ -49,6 +48,8 @@ agis\ps\file\M4Reader.class
 agis\ps\Main.class
 agis\ps\align\DynamicProgramming.class
 agis\ps\file\N50Writer.class
+agis\ps\link\Link.class
+agis\ps\file\LinkWriter.class
 agis\ps\link\ILink.class
 agis\ps\link\MRecord.class
 agis\ps\file\M5Reader.class

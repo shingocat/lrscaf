@@ -1,0 +1,18 @@
+2017-06-20 15:34:38  [ main:8 ] - [agis.ps.Main.parsering(Main.java:133)] - [ ERROR ]  The aligned file could not be null!
+2017-06-20 15:34:38  [ main:9 ] - [agis.ps.Main.main(Main.java:58)] - [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2017-06-21 17:53:49  [ main:0 ] - [agis.ps.Main.parsering(Main.java:133)] - [ ERROR ]  The aligned file could not be null!
+2017-06-21 17:53:49  [ main:4 ] - [agis.ps.Main.main(Main.java:61)] - [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2017-06-21 17:56:04  [ main:0 ] - [agis.ps.Main.main(Main.java:61)] - [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2017-06-21 17:57:37  [ main:0 ] - [agis.ps.Main.main(Main.java:61)] - [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2017-06-23 14:50:26  [ main:45 ] - [agis.ps.file.ContigReader.read(ContigReader.java:130)] - [ ERROR ]  agis.ps.file.ContigReader	null	java.lang.NullPointerException
+2017-06-23 14:50:26  [ main:73 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:78)] - [ ERROR ]  agis.ps.Scaffolder	null
+2017-06-27 14:55:35  [ main:0 ] - [agis.ps.Main.main(Main.java:65)] - [ ERROR ]  agis.ps.Main	Missing required option: c
+2017-06-27 16:03:38  [ main:0 ] - [agis.ps.Main.main(Main.java:64)] - [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2017-06-27 16:05:53  [ main:0 ] - [agis.ps.Main.main(Main.java:64)] - [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2017-06-27 16:07:20  [ main:0 ] - [agis.ps.Main.main(Main.java:64)] - [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2017-06-27 16:07:58  [ main:0 ] - [agis.ps.Main.main(Main.java:64)] - [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2017-06-27 16:09:04  [ main:0 ] - [agis.ps.Main.main(Main.java:64)] - [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2017-06-27 16:09:41  [ main:0 ] - [agis.ps.Main.main(Main.java:64)] - [ ERROR ]  agis.ps.Main	Missing argument for option: x
+2017-06-29 11:11:30  [ main:663 ] - [agis.ps.file.ScaffoldWriter.write(ScaffoldWriter.java:117)] - [ ERROR ]  agis.ps.file.ScaffoldWriter	null
+2017-06-29 11:12:24  [ main:649 ] - [agis.ps.file.ScaffoldWriter.write(ScaffoldWriter.java:117)] - [ ERROR ]  agis.ps.file.ScaffoldWriter	null
+2017-06-29 11:19:48  [ main:1534 ] - [agis.ps.file.ScaffoldWriter.write(ScaffoldWriter.java:132)] - [ ERROR ]  agis.ps.file.ScaffoldWriter	10

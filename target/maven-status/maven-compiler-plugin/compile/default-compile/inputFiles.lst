@@ -20,7 +20,6 @@ D:\workspace\agisps\src\agis\ps\link\ILink.java
 D:\workspace\agisps\src\agis\ps\util\LinkBuilder.java
 D:\workspace\agisps\src\agis\ps\align\DynamicProgramming.java
 D:\workspace\agisps\src\agis\ps\util\MRecordValidator.java
-D:\workspace\agisps\src\agis\ps\file\PBLinkWriter.java
 D:\workspace\agisps\src\agis\ps\file\ContigReader.java
 D:\workspace\agisps\src\agis\ps\file\M5Reader.java
 D:\workspace\agisps\src\agis\ps\Scaffolder.java
@@ -32,6 +31,7 @@ D:\workspace\agisps\src\agis\ps\link\TriadLink.java
 D:\workspace\agisps\src\agis\ps\graph\Graph.java
 D:\workspace\agisps\src\agis\ps\file\XMLParser.java
 D:\workspace\agisps\src\agis\ps\path\Node.java
+D:\workspace\agisps\src\agis\ps\file\LinkWriter.java
 D:\workspace\agisps\src\agis\ps\file\DotGraphFileWriter.java
 D:\workspace\agisps\src\agis\ps\link\Edge.java
 D:\workspace\agisps\src\agis\ps\file\N50Writer.java
@@ -43,6 +43,7 @@ D:\workspace\agisps\src\agis\ps\link\MRecord.java
 D:\workspace\agisps\src\agis\ps\util\GapRecord.java
 D:\workspace\agisps\src\agis\ps\path\InternalNode2.java
 D:\workspace\agisps\src\agis\ps\file\SimilarityCntReader.java
+D:\workspace\agisps\src\agis\ps\link\Link.java
 D:\workspace\agisps\src\agis\ps\util\MathTool.java
 D:\workspace\agisps\src\agis\ps\file\ContigCoverageWriter.java
 D:\workspace\agisps\src\agis\ps\file\TriadLinkWriter.java
