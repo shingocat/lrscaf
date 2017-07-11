@@ -66,7 +66,7 @@ public class ContigReader {
 			br = new BufferedReader(fr);
 			String line = null;
 			String id = null;
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			String temp;
 			while (true) {
 				line = br.readLine();
@@ -122,7 +122,7 @@ public class ContigReader {
 						sb = null;
 						cnt = null;
 						temp = null;
-						sb = new StringBuffer();
+						sb = new StringBuilder();
 						lens.add(length);
 					}
 				} else {

@@ -16,3 +16,37 @@
 2017-06-29 11:11:30  [ main:663 ] - [agis.ps.file.ScaffoldWriter.write(ScaffoldWriter.java:117)] - [ ERROR ]  agis.ps.file.ScaffoldWriter	null
 2017-06-29 11:12:24  [ main:649 ] - [agis.ps.file.ScaffoldWriter.write(ScaffoldWriter.java:117)] - [ ERROR ]  agis.ps.file.ScaffoldWriter	null
 2017-06-29 11:19:48  [ main:1534 ] - [agis.ps.file.ScaffoldWriter.write(ScaffoldWriter.java:132)] - [ ERROR ]  agis.ps.file.ScaffoldWriter	10
+2017-07-03 14:26:24  [ main:245 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:190)] - [ ERROR ]  agis.ps.file.M4Reader	null
+2017-07-03 14:26:24  [ main:352 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	0
+2017-07-03 14:32:06  [ main:4082 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:190)] - [ ERROR ]  agis.ps.file.M4Reader	null
+2017-07-03 14:32:19  [ main:5023 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:190)] - [ ERROR ]  agis.ps.file.M4Reader	null
+2017-07-03 14:34:23  [ main:3673 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:190)] - [ ERROR ]  agis.ps.file.M4Reader	null
+2017-07-03 14:38:10  [ main:249 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:190)] - [ ERROR ]  agis.ps.file.M4Reader	1
+2017-07-03 14:38:10  [ main:251 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	0
+2017-07-03 15:06:53  [ main:1364263 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:190)] - [ ERROR ]  agis.ps.file.M4Reader	1
+2017-07-03 15:08:52  [ main:73592 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:190)] - [ ERROR ]  agis.ps.file.M4Reader	1
+2017-07-03 15:11:23  [ main:107595 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	0
+2017-07-03 15:17:34  [ main:13354 ] - [agis.ps.util.LinkBuilder.mRecords2Links(LinkBuilder.java:78)] - [ ERROR ]  0agis.ps.util.LinkBuilder	null
+2017-07-03 15:22:43  [ main:27408 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-03 16:58:23  [ main:245 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-03 16:59:14  [ main:252 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-03 17:15:46  [ main:563 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:192)] - [ ERROR ]  agis.ps.file.M4Reader	null
+2017-07-03 17:16:12  [ main:245 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-03 17:17:19  [ main:495 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:192)] - [ ERROR ]  agis.ps.file.M4Reader	null
+2017-07-03 17:20:07  [ main:544 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:192)] - [ ERROR ]  agis.ps.file.M4Reader	null
+2017-07-03 17:22:02  [ main:558 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:182)] - [ ERROR ]  15615agis.ps.file.M4Reader	null
+2017-07-03 17:23:21  [ main:530 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:184)] - [ ERROR ]  15615agis.ps.file.M4Reader	null
+2017-07-03 17:24:56  [ main:233 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:184)] - [ ERROR ]  9agis.ps.file.M4Reader	null
+2017-07-03 17:24:56  [ main:239 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-03 17:25:15  [ main:268 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:184)] - [ ERROR ]  9agis.ps.file.M4Reader	null
+2017-07-03 17:25:30  [ main:258 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:184)] - [ ERROR ]  9agis.ps.file.M4Reader	null
+2017-07-03 17:26:35  [ main:249 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-03 17:40:21  [ main:238 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-03 22:08:40  [ main:245 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-10 11:19:36  [ main:355 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-10 11:19:44  [ main:254 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-10 17:29:39  [ main:7955661 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-10 21:33:33  [ main:246 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-11 10:02:04  [ main:240 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-11 10:03:46  [ main:237 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-11 10:14:00  [ main:238 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!

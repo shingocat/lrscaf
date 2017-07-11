@@ -127,7 +127,7 @@ public class LinkWriter {
 				while(it.hasNext())
 				{
 					Link link = it.next();
-					String line = link.getOriginal().getID() + "\t" + link.getoStrand() + "\t" + link.getTerminus() + "\t" +
+					String line = link.getOriginal().getID() + "\t" + link.getoStrand() + "\t" + link.getTerminus().getID() + "\t" +
 					link.gettStrand() + "\t" + link.getDist() + "\t" + link.getLrId() + "\t" + link.getoStart() + "\t" 
 					+ link.getoEnd() + "\t" + link.gettStart() + "\t" + link.gettEnd();
 					bw.write(line);

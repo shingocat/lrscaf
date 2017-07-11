@@ -38,7 +38,7 @@ public class LinkBuilder {
 	private double maxOHRatio;
 	private int maxEndLen;
 	private double maxEndRatio;
-	private int olLength = -150; // default overlap 100 bp will consider which is the best;
+	private int olLength = -1500; // default overlap 100 bp will consider which is the best;
 	private double olRatio = 0.6;
 	private double olweight = 0.6;
 	private double identweight = 0.4;
@@ -60,9 +60,8 @@ public class LinkBuilder {
 		long start = System.currentTimeMillis();
 		if (links == null)
 //			links = new Vector<PBLink>();
-			links = new ArrayList<Link>();
+			links = new ArrayList<Link>(records.size());
 		links.clear();
-		int bug = 0;
 		try {
 			int size = records.size();
 			for(int i = 0; i < size; i++)
@@ -75,7 +74,7 @@ public class LinkBuilder {
 					links.addAll(temp);
 			}
 		} catch (Exception e) {
-			logger.error(bug + this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		long end = System.currentTimeMillis();
 		logger.info("Valid Links Acount: " + links.size());
@@ -203,14 +202,17 @@ public class LinkBuilder {
 						if (contRigthLen > ohLen)
 							continue;
 					} else if (currentPBStart <= endLen && currentPBEnd <= (currentPBLen - endLen)) {
+						// checking ol length, for the end point in p2, p3;
 						if (ol_len < minOLLen)
 							continue;
 						if (contRigthLen > ohLen)
 							continue;
 					} else if (currentPBStart <= endLen && currentPBEnd >= (currentPBLen - endLen)) {
 						// start point in p1-p2 and end point in p3-p4
+						
 						// do no afford info, discard
-						continue;
+						if(contLeftLen > ohLen && contRigthLen > ohLen) 
+							continue;
 					} else if (currentPBStart >= endLen && currentPBStart <= (currentPBLen - endLen) 
 							&& currentPBEnd >= (currentPBLen - endLen)) {
 						// start point in p2-p3 and end point in p3-p4
@@ -264,7 +266,7 @@ public class LinkBuilder {
 				int currentPBOLLen = currentPBEnd - currentPBStart;
 				double formerRatio  = (double)(Math.abs(dist))/formerPBOLLen;
 				double currentRatio = (double)(Math.abs(dist))/currentPBOLLen;
-				if((formerRatio >= olRatio || currentRatio >= olRatio) || (dist <= olLength))
+				if((formerRatio >= olRatio || currentRatio >= olRatio) || (dist <= olLength))// should be more generalization
 				{
 					double formerIdentity = former.getIdentity();
 					double currentIdentity = current.getIdentity();
@@ -279,7 +281,14 @@ public class LinkBuilder {
 						continue;
 					} else
 					{
-						former = current;
+						if(i == (size - 1))
+						{
+							ms.add(current);
+							continue;
+						} else
+						{
+							former = current;
+						}
 					}
 				}else
 				{

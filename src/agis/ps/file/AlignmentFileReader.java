@@ -59,21 +59,6 @@ public abstract class AlignmentFileReader {
 	public List<List<MRecord>> read()
 	{
 		long start = System.currentTimeMillis();
-//		if(records == null)
-//			records = new HashMap<String, List<MRecord>>();
-		if(cntCovs == null)
-			cntCovs = new HashMap<String, Integer>();
-//		if(cntLens == null)
-//			cntLens = new HashMap<String, Integer>();
-		if(listRecords == null)
-			listRecords = new ArrayList<List<MRecord>>();
-//		if(samCntLens == null)
-//			samCntLens = new HashMap<String, Integer>();
-//		records.clear();
-		cntCovs.clear();
-//		cntLens.clear();
-		listRecords.clear();
-//		samCntLens.clear();
 		File file = null;
 		FileReader fr = null;
 		BufferedReader br = null;
@@ -82,13 +67,19 @@ public abstract class AlignmentFileReader {
 			file = new File(algFile);
 			fr = new FileReader(file);
 			br = new BufferedReader(fr);
+			if(cntCovs == null)
+				cntCovs = new HashMap<String, Integer>();
+			if(listRecords == null) // build list to store record, assuming list size just for speeding up program.
+				listRecords = new ArrayList<List<MRecord>>((int) (file.length()/100)); // 100 byte per line, not very strict
+			cntCovs.clear();
+			listRecords.clear();
 			String line = null;
 			String qId = "";
 			List<MRecord> rs = new ArrayList<MRecord>(); // aligned record
 			while(true)
 			{
 				line = br.readLine();
-				if(line == null)
+				if(line == null || line.isEmpty())
 				{
 					if(rs.size() > 1)
 						listRecords.add(rs);
@@ -96,8 +87,6 @@ public abstract class AlignmentFileReader {
 				}
 				line = line.trim();
 				String [] arrs = line.split("\\s+");
-//				if(arrs[0].equals("PB8356"))
-//					logger.debug("breakpoint");
 				// if the M5 or m4 file format with header;
 				if(arrs[0].equals("qName") && 
 						(paras.getType().equalsIgnoreCase("m5") || paras.getType().equalsIgnoreCase("m4")))
@@ -179,7 +168,6 @@ public abstract class AlignmentFileReader {
 						qId = record.getqName();
 					}
 				} 
-					
 			}
 			br.close();
 		} catch(IOException e)
