@@ -125,15 +125,20 @@ public abstract class AlignmentFileReader {
 
 				Map<String, Boolean> values = MRecordValidator.validate(record, paras, cnts);
 				if(values.get("REPEAT"))
-				{
+				{ // only considering valid contigs to compute repeats;
 					String tName = record.gettName();
-					if(cntCovs.containsKey(tName))
+					int cLen = cnts.get(tName).getLength();
+					int minCntLen = paras.getMinContLen();
+					if(cLen >= minCntLen)
 					{
-						int count = cntCovs.get(tName) + 1;
-						cntCovs.replace(tName, count);
-					} else
-					{
-						cntCovs.put(tName, 1);
+						if(cntCovs.containsKey(tName))
+						{
+							int count = cntCovs.get(tName) + 1;
+							cntCovs.replace(tName, count);
+						} else
+						{
+							cntCovs.put(tName, 1);
+						}
 					}
 				}
 				// hashmap

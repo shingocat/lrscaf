@@ -76,9 +76,10 @@ public class Scaffolder {
 			this.buildPaths();
 			this.writeNodePathInfo();
 			this.writeScaffolds();
-			this.writeSmallAndRepeatCnts();
+//			this.writeSmallAndRepeatCnts();
+			this.writeRepeatCnts();
 		} catch (Exception e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -104,14 +105,12 @@ public class Scaffolder {
 			reader = new M5Reader(paras);
 		} else if (type.equalsIgnoreCase("m4")) {
 			reader = new M4Reader(paras);
-
 		} else if (type.equalsIgnoreCase("sam")) {
 			reader = new SamReader(paras);
 		} else if (type.equalsIgnoreCase("mm")) {
 			reader = new MMReader(paras);
 		} else {
-			logger.info(
-					this.getClass().getName() + "The aligned parameter do not set! only <m5>, <m4>, <sam> or <bam>");
+			logger.info("The aligned parameter should be not set! only <m5>, <m4>, <sam> or <bam>");
 			return;
 		}
 		listRecords = reader.read(cnts);
@@ -160,26 +159,78 @@ public class Scaffolder {
 		tlw.close();
 	}
 	
-	private void writeSmallAndRepeatCnts()
+//	private void writeSmallAndRepeatCnts()
+//	{
+//		File small = null;
+//		File repeat = null;
+//		FileWriter fwSmall = null;
+//		FileWriter fwRepeat = null;
+//		BufferedWriter bwSmall = null;
+//		BufferedWriter bwRepeat = null;
+//		try{
+//			small = new File(paras.getOutFolder() + System.getProperty("file.separator") + "small.contigs");
+//			repeat = new File(paras.getOutFolder() + System.getProperty("file.separator") + "repeat.contigs");
+//			fwSmall = new FileWriter(small);
+//			fwRepeat = new FileWriter(repeat);
+//			bwSmall = new BufferedWriter(fwSmall);
+//			bwRepeat = new BufferedWriter(fwRepeat);
+//			for(Map.Entry<String, Contig> entry : cnts.entrySet())
+//			{
+//				Contig c = entry.getValue();
+//				String id = entry.getKey();
+//				int len = c.getLength();
+//				if(c.isRepeat())
+//				{
+//					bwRepeat.write(">" + id);
+//					bwRepeat.newLine();
+//					bwRepeat.write(c.getForwardSeqs());
+//					bwRepeat.newLine();
+//					continue;
+//				}
+//				if(len < paras.getMinContLen())
+//				{
+//					bwSmall.write(">" + id);
+//					bwSmall.newLine();
+//					bwSmall.write(c.getForwardSeqs());
+//					bwSmall.newLine();
+//				}
+//			}
+//			bwSmall.flush();
+//			bwRepeat.flush();
+//			bwSmall.close();
+//			bwRepeat.close();
+//		}	catch(IOException e)
+//		{
+//			
+//		} catch(Exception e)
+//		{
+//			
+//		} finally{
+//			try{
+//				if(bwSmall != null)
+//					bwSmall.close();
+//				if(bwRepeat != null)
+//					bwRepeat.close();
+//			} catch(IOException e)
+//			{
+//				
+//			}
+//			
+//		}
+//	}
+	private void writeRepeatCnts()
 	{
-		File small = null;
 		File repeat = null;
-		FileWriter fwSmall = null;
 		FileWriter fwRepeat = null;
-		BufferedWriter bwSmall = null;
 		BufferedWriter bwRepeat = null;
 		try{
-			small = new File(paras.getOutFolder() + System.getProperty("file.separator") + "small.contigs");
 			repeat = new File(paras.getOutFolder() + System.getProperty("file.separator") + "repeat.contigs");
-			fwSmall = new FileWriter(small);
 			fwRepeat = new FileWriter(repeat);
-			bwSmall = new BufferedWriter(fwSmall);
 			bwRepeat = new BufferedWriter(fwRepeat);
 			for(Map.Entry<String, Contig> entry : cnts.entrySet())
 			{
 				Contig c = entry.getValue();
 				String id = entry.getKey();
-				int len = c.getLength();
 				if(c.isRepeat())
 				{
 					bwRepeat.write(">" + id);
@@ -188,36 +239,24 @@ public class Scaffolder {
 					bwRepeat.newLine();
 					continue;
 				}
-				if(len < paras.getMinContLen())
-				{
-					bwSmall.write(">" + id);
-					bwSmall.newLine();
-					bwSmall.write(c.getForwardSeqs());
-					bwSmall.newLine();
-				}
 			}
-			bwSmall.flush();
 			bwRepeat.flush();
-			bwSmall.close();
 			bwRepeat.close();
-		}	catch(IOException e)
+		} catch(IOException e)
 		{
-			
+			logger.error(e.getMessage());
 		} catch(Exception e)
 		{
-			
+			logger.error(e.getMessage());
 		} finally{
 			try{
-				if(bwSmall != null)
-					bwSmall.close();
 				if(bwRepeat != null)
 					bwRepeat.close();
 			} catch(IOException e)
 			{
-				
+				logger.error(e.getMessage());
 			}
 			
 		}
 	}
-
 }

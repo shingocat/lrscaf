@@ -203,7 +203,6 @@ public class MRecordValidator {
 		boolean isValid4Record = true;
 		int maxOHLen = paras.getMaxOHLen();
 		double maxOHRatio = paras.getMaxOHRatio();
-		int minPBLen = paras.getMinPBLen();
 		int minCNTLen = paras.getMinContLen();
 		double defIdentity = paras.getIdentity();
 		// check for repeat
@@ -220,7 +219,6 @@ public class MRecordValidator {
 		if (tRightLen > defOHLen)
 			isValid4Repeat = false;
 		// check for record
-		int pbLen = record.getqLength();
 		// int cntLen = record.gettLength();
 		int cntLen = cnts.get(record.gettName()).getLength();
 		double identity = record.getIdentity();
@@ -232,8 +230,8 @@ public class MRecordValidator {
 		// isValid4Record = false;
 		if (cntLen < minCNTLen) {
 			isValid4Record = false;
-			if(cnts.containsKey(record.gettName()))
-				cnts.get(record.gettName()).setIsUsed(false);
+//			if(cnts.containsKey(record.gettName()))
+//				cnts.get(record.gettName()).setIsUsed(false);
 		}
 		if (identity < defIdentity)
 			isValid4Record = false;

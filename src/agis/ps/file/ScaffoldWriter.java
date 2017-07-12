@@ -106,14 +106,23 @@ public class ScaffoldWriter {
 				lens.add(len);
 				index++;
 			}
-			// write the contigs larger than 200 but not including in paths
+			// write the contigs not including in paths, excluding repeative contigs;
 			for(Map.Entry<String, Contig> entry : cnts.entrySet())
 			{
 				Contig c = entry.getValue();
 				int len = c.getLength();
-				if(c.getLength() >= paras.getMinContLen() && !c.isUsed() && !c.isRepeat())
+//				if(c.getLength() >= paras.getMinContLen() && !c.isUsed() && !c.isRepeat())
+//				{
+//					bw.write(">Scaffolds_" + index + "  " + len);
+//					bw.newLine();
+//					bw.write(c.getForwardSeqs());
+//					bw.newLine();
+//					lens.add(len);
+//					index++;
+//				}
+				if(!c.isUsed() && !c.isRepeat())
 				{
-					bw.write(">Scaffolds_" + index + "  " + len);
+					bw.write(">Scaffolds_" + index + "  " + c.getID() + " " + len);
 					bw.newLine();
 					bw.write(c.getForwardSeqs());
 					bw.newLine();

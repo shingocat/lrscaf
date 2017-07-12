@@ -122,7 +122,16 @@ public class XMLParser {
 						continue;
 					String nodeName = node.getNodeName();
 					if (nodeName.equalsIgnoreCase("min_contig_length")) {
-						para.setMinContLen(Integer.valueOf(node.getTextContent().trim()));
+						int value = Integer.valueOf(node.getTextContent().trim());
+						if(value < 200)
+						{
+							para.setMinContLen(200);
+							logger.info("The minimum contig's length should be large than 200 bp!");
+							logger.info("Mandatorily set to 200 bp!");
+						} else
+						{
+							para.setMinContLen(value);
+						}
 					} else if (nodeName.equalsIgnoreCase("min_pacbio_length")) {
 						para.setMinPBLen(Integer.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("min_overlap_length")) {

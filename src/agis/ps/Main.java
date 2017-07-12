@@ -230,7 +230,16 @@ public class Main {
 		// parsering minimum contig length
 		if(cl.hasOption("micl"))
 		{
-			paras.setMinContLen(Integer.valueOf(cl.getOptionValue("micl")));
+			int value = Integer.valueOf(cl.getOptionValue("micl"));
+			if(value < 200)
+			{
+				paras.setMinContLen(200);
+				logger.info("The minimum contig's length should be large than 200 bp!");
+				logger.info("Mandatorily set to 200 bp!");
+			} else
+			{
+				paras.setMinContLen(value);
+			}
 		}
 		// parsering minimum pacbio lng read
 		if(cl.hasOption("mipl"))
@@ -333,7 +342,7 @@ public class Main {
 		sb.append("-r\t--ratio\t<arg>\tThe ratio for deleting error prone edges! Default: <0.2>.\n");
 		sb.append("-misl\t--miniSupLinks\t<arg>\tThe minimum support links number! Default: <1>.\n");
 		sb.append("-iqrt\t--iqrtime\tThe IQR time for defined repeat outlier.Default: <1.5>\n");
-		sb.append("-micl\t--miniCntLen\t<arg>\tThe minimum contig's length for scaffolding! Default:<200>.\n");
+		sb.append("-micl\t--miniCntLen\t<arg>\tThe minimum contig's length (must be larget than 200 bp) for scaffolding! Default:<200>.\n");
 		sb.append("-mioll\t--miniOLLen\t<arg>\tThe minimum overlap length threshold for alignment! Default: <160>.\n");
 		sb.append("-miolr\t--miniOLRatio\t<arg>\tThe minimum overlap ratio threshold for alignment! Default: <0.8>.\n");
 		sb.append("-mxel\t--maxEndLen\t<arg>\tThe maximum ending length of Long Read! Default: <300>.\n");

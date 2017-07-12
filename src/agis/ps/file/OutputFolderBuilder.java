@@ -27,21 +27,21 @@ public class OutputFolderBuilder {
 		String path = paras.getOutFolder();
 		boolean isValid = false;
 		if (path == null || path.length() == 0) {
-			logger.error(this.getClass().getName() + "\t" + "The output path was not setted!");
+			logger.error("The output path was not setted!");
 			return isValid;
 		}
 		try {
 			File output = new File(path);
 			if (output.exists()) {
-				logger.info(this.getClass().getName() + "\t" + "The output folder was exist!");
-				logger.info(this.getClass().getName() + "\t" + "It will delete all file under this folder!");
+				logger.info("The output folder was exist!");
+				logger.info("It will delete all file under this folder!");
 				isValid = this.deleteDir(output);
 			} else {
 				isValid = output.mkdirs();
 				if (isValid)
-					logger.info(this.getClass().getName() + "\t" + "Build output folder successfully!");
+					logger.info("Build output folder successfully!");
 				else
-					logger.info(this.getClass().getName() + "\t" + "Build output folder failed!");
+					logger.info("Build output folder failed!");
 			}
 		} catch (SecurityException e) {
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());

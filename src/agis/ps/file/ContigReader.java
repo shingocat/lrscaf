@@ -57,8 +57,7 @@ public class ContigReader {
 		try {
 			File cntFile = new File(filePath);
 			if (!cntFile.exists()) {
-				logger.debug(this.getClass().getName() + "\t" + "The contig file " + filePath + " do not exist!");
-				logger.error(this.getClass().getName() + "\t" + "The contig file " + filePath + " do not exist!");
+				logger.error("\t" + "The contig file " + filePath + " do not exist!");
 				return null;
 			}
 
@@ -104,8 +103,6 @@ public class ContigReader {
 					int length = sb.length();
 					if(temp != null && length >= 0)
 					{
-//						if(temp.startsWith(">1445"))
-//							logger.debug("breakpoint");
 						temp = temp.replaceFirst("^>", "");
 						temp = temp.split("\\s")[0];
 						temp = temp.trim();
@@ -131,21 +128,21 @@ public class ContigReader {
 			}
 
 		} catch (ArrayIndexOutOfBoundsException e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} catch (FileNotFoundException e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} catch (IOException e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} catch (PatternSyntaxException e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} catch (Exception e) {
-			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} finally {
 			try {
 				if (br != null)
 					br.close();
 			} catch (IOException e) {
-				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+				logger.error(e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}
 		long end = System.currentTimeMillis();
