@@ -23,7 +23,9 @@ import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.M4Reader;
 import agis.ps.file.M5Reader;
 import agis.ps.file.MMReader;
+import agis.ps.file.MisassembliesWriter;
 import agis.ps.file.OutputFolderBuilder;
+import agis.ps.file.RepeatWriter;
 import agis.ps.file.LinkWriter;
 import agis.ps.file.SamReader;
 import agis.ps.file.ScaffoldWriter;
@@ -36,6 +38,7 @@ import agis.ps.path.NodePath;
 import agis.ps.seqs.Contig;
 import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
+import agis.ps.util.MisassemblyChecker;
 import agis.ps.util.Parameter;
 import agis.ps.util.PathBuilder;
 import agis.ps.util.RepeatFinder;
@@ -53,6 +56,7 @@ public class Scaffolder {
 	private List<List<MRecord>> listRecords;
 	private Map<String, Integer> cntCovs;
 	private List<String> repeats;
+//	private List<String> misassemblies;
 	private List<Link> links;
 	private List<TriadLink> triads;
 	private List<Edge> edges;
@@ -78,6 +82,7 @@ public class Scaffolder {
 			this.writeScaffolds();
 //			this.writeSmallAndRepeatCnts();
 			this.writeRepeatCnts();
+//			this.writeMisassemblies();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -117,8 +122,10 @@ public class Scaffolder {
 		cntCovs = reader.getCntCoverages();
 		RepeatFinder rf = new RepeatFinder(paras);
 		repeats = rf.findRepeats(cntCovs, cnts);
+//		misassemblies = MisassemblyChecker.findMisassemblies(paras, cnts);
 		LinkBuilder linkBuilder = new LinkBuilder(paras, cnts);
 		links = linkBuilder.mRecords2Links(listRecords, repeats);
+//		links = linkBuilder.mRecords2Links(listRecords, repeats, misassemblies);
 		LinkWriter pblw = new LinkWriter(paras);
 		pblw.write(links);
 		triads = linkBuilder.getTriadLinks();
@@ -159,104 +166,15 @@ public class Scaffolder {
 		tlw.close();
 	}
 	
-//	private void writeSmallAndRepeatCnts()
-//	{
-//		File small = null;
-//		File repeat = null;
-//		FileWriter fwSmall = null;
-//		FileWriter fwRepeat = null;
-//		BufferedWriter bwSmall = null;
-//		BufferedWriter bwRepeat = null;
-//		try{
-//			small = new File(paras.getOutFolder() + System.getProperty("file.separator") + "small.contigs");
-//			repeat = new File(paras.getOutFolder() + System.getProperty("file.separator") + "repeat.contigs");
-//			fwSmall = new FileWriter(small);
-//			fwRepeat = new FileWriter(repeat);
-//			bwSmall = new BufferedWriter(fwSmall);
-//			bwRepeat = new BufferedWriter(fwRepeat);
-//			for(Map.Entry<String, Contig> entry : cnts.entrySet())
-//			{
-//				Contig c = entry.getValue();
-//				String id = entry.getKey();
-//				int len = c.getLength();
-//				if(c.isRepeat())
-//				{
-//					bwRepeat.write(">" + id);
-//					bwRepeat.newLine();
-//					bwRepeat.write(c.getForwardSeqs());
-//					bwRepeat.newLine();
-//					continue;
-//				}
-//				if(len < paras.getMinContLen())
-//				{
-//					bwSmall.write(">" + id);
-//					bwSmall.newLine();
-//					bwSmall.write(c.getForwardSeqs());
-//					bwSmall.newLine();
-//				}
-//			}
-//			bwSmall.flush();
-//			bwRepeat.flush();
-//			bwSmall.close();
-//			bwRepeat.close();
-//		}	catch(IOException e)
-//		{
-//			
-//		} catch(Exception e)
-//		{
-//			
-//		} finally{
-//			try{
-//				if(bwSmall != null)
-//					bwSmall.close();
-//				if(bwRepeat != null)
-//					bwRepeat.close();
-//			} catch(IOException e)
-//			{
-//				
-//			}
-//			
-//		}
-//	}
 	private void writeRepeatCnts()
 	{
-		File repeat = null;
-		FileWriter fwRepeat = null;
-		BufferedWriter bwRepeat = null;
-		try{
-			repeat = new File(paras.getOutFolder() + System.getProperty("file.separator") + "repeat.contigs");
-			fwRepeat = new FileWriter(repeat);
-			bwRepeat = new BufferedWriter(fwRepeat);
-			for(Map.Entry<String, Contig> entry : cnts.entrySet())
-			{
-				Contig c = entry.getValue();
-				String id = entry.getKey();
-				if(c.isRepeat())
-				{
-					bwRepeat.write(">" + id);
-					bwRepeat.newLine();
-					bwRepeat.write(c.getForwardSeqs());
-					bwRepeat.newLine();
-					continue;
-				}
-			}
-			bwRepeat.flush();
-			bwRepeat.close();
-		} catch(IOException e)
-		{
-			logger.error(e.getMessage());
-		} catch(Exception e)
-		{
-			logger.error(e.getMessage());
-		} finally{
-			try{
-				if(bwRepeat != null)
-					bwRepeat.close();
-			} catch(IOException e)
-			{
-				logger.error(e.getMessage());
-			}
-			
-		}
+		RepeatWriter rw = new RepeatWriter(paras, cnts);
+		rw.write();
+	}
+	
+	private void writeMisassemblies()
+	{
+		MisassembliesWriter mw = new MisassembliesWriter(paras, cnts);
+		mw.write();
 	}
 }

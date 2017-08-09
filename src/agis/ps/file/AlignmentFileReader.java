@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,9 +20,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.prism.impl.Disposer.Target;
+
 import agis.ps.link.MRecord;
 import agis.ps.seqs.Contig;
 import agis.ps.util.MRecordValidator;
+import agis.ps.util.MisassemblyChecker;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 
@@ -75,14 +79,19 @@ public abstract class AlignmentFileReader {
 			listRecords.clear();
 			String line = null;
 			String qId = "";
+			String maQid = ""; // same as qId, but for misassembly checking; 
 			List<MRecord> rs = new ArrayList<MRecord>(); // aligned record
+			List<MRecord> maRs = new ArrayList<MRecord>(); // store all record for misassembly checking;
 			while(true)
 			{
 				line = br.readLine();
+				// the last line;
 				if(line == null || line.isEmpty())
 				{
 					if(rs.size() > 1)
 						listRecords.add(rs);
+					if(!maRs.isEmpty())
+						misassemblyChecking(maRs);
 					break;
 				}
 				line = line.trim();
@@ -93,36 +102,23 @@ public abstract class AlignmentFileReader {
 					continue;
 				if(arrs[0].startsWith("@") && paras.getType().equalsIgnoreCase("sam"))
 					continue;
-				// 
-				// for sam format to get reference length
-//				if(paras.getType().equalsIgnoreCase("sam") && arrs[0].startsWith("@"))
-//				{
-//					if(arrs[0].equalsIgnoreCase("@SQ"))
-//					{
-//						// seqeunce name 
-//						String [] names = arrs[1].split(":");
-//						String name = names[1];
-//						// sequence length
-//						String [] lengths = arrs[2].split(":");
-//						Integer len = Integer.valueOf(lengths[1]);
-//						if(!samCntLens.containsKey(name))
-//							samCntLens.put(name, len);
-//					}
-//					continue;
-//				}
+				// initiated Record
 				MRecord record = initMRecord(arrs);
 				if(record == null)
 					continue;
-//				if(paras.getType().equalsIgnoreCase("sam"))
+				// misassembly checking;
+//				if(record.getqName().equalsIgnoreCase(maQid))
 //				{
-//					int length = samCntLens.get(record.gettName());
-//					record.settLength(length);
-//				}
-//				if(!cntLens.containsKey(record.gettName()))
+//					maRs.add(record);
+//				} else
 //				{
-//					cntLens.put(record.gettName(), record.gettLength());
+//					if(!maRs.isEmpty())
+//						misassemblyChecking(maRs);
+//					maQid = record.getqName();
+//					maRs = new ArrayList<MRecord>();
+//					maRs.add(record); 
 //				}
-
+				// validate record to build link and check repeats;
 				Map<String, Boolean> values = MRecordValidator.validate(record, paras, cnts);
 				if(values.get("REPEAT"))
 				{ // only considering valid contigs to compute repeats;
@@ -141,22 +137,6 @@ public abstract class AlignmentFileReader {
 						}
 					}
 				}
-				// hashmap
-//				if(values.get("RECORD"))
-//				{
-//					String qName = record.getqName();
-//					if(qName.equals(qId))
-//					{
-//						rs.add(record);
-//					} else
-//					{
-//						if(rs.size() > 1)
-//							records.put(qId, rs);
-//						rs = new LinkedList<MRecord>();
-//						rs.add(record);
-//						qId = record.getqName();
-//					}
-//				}
 				// arraylist
 				if(values.get("RECORD"))
 				{
@@ -215,6 +195,158 @@ public abstract class AlignmentFileReader {
 	{
 		return this.listRecords;
 	}
+	
+	private void misassemblyChecking(List<MRecord> maRs)
+	{
+		if(maRs == null || maRs.isEmpty())
+			return;
+		int size = maRs.size();
+		double threshold = 0.5;
+		// method 4
+		MisassemblyChecker.checking2(paras, cnts, maRs);
+//		// method 3: checking whether the long reads including repeat regions;
+//		if(size == 1)
+//		{
+//			MisassemblyChecker.checking(paras, cnts, maRs.get(0));
+//		} else
+//		{
+//			boolean isExist = false;
+//		outer:	for(int i = 0; i < size; i++)
+//			{
+//				MRecord target = maRs.get(i);
+//				for(int j = 0; j < size; j++)
+//				{
+//					if(j != i)
+//					{
+//						int tStart = target.getqStart();
+//						int tEnd = target.getqEnd();
+//						int tRegionLen = tEnd - tStart;
+//						MRecord query = maRs.get(j);
+//						int qStart = query.getqStart();
+//						int qEnd = query.getqEnd();
+//						// two points in the middle define overlap region
+//						if(qStart < tEnd && qEnd > tStart)
+//						{
+//							int olRegionLen = 0;
+//							int [] temp = {tStart, tEnd, qStart, qEnd};
+//							Arrays.sort(temp);
+//							olRegionLen = temp[2] - temp[1];
+//							double tOLRatio = (double)olRegionLen / tRegionLen;
+//							if(tOLRatio > threshold)
+//							{
+//								isExist = true;
+//								break outer;
+//							}
+//						}
+//					}
+//				}
+//			}
+//			if(!isExist)
+//			{
+//				for(int i = 0; i < size; i++)
+//					MisassemblyChecker.checking(paras, cnts, maRs.get(i));
+//			}
+//		}
+		// method 2: checking whether overlap among all contigs;
+//		double threshold = 0.1;
+//		if(maRs.get(0).getqName().equals("623L15891/0_15891"))
+//			logger.debug("breakpoint");
+//		if(size == 1)
+//		{
+//			MisassemblyChecker.checking(paras, cnts, maRs.get(0));
+//		} else
+//		{
+//			for(int i = 0; i < size; i++)
+//			{
+//				MRecord target = maRs.get(i);
+//				boolean isExist = false;
+//				for(int j = 0; j < size; j++)
+//				{ // checking weather there are overlap regions.
+//					if(j != i)
+//					{
+//						int tStart = target.getqStart();
+//						int tEnd = target.getqEnd();
+//						int tRegionLen = tEnd - tStart;
+//						MRecord query = maRs.get(j);
+//						int qStart = query.getqStart();
+//						int qEnd = query.getqEnd();
+//						// two points in the middle define overlap region
+//						if(qStart < tEnd && qEnd > tStart)
+//						{
+//							int olRegionLen = 0;
+//							int [] temp = {tStart, tEnd, qStart, qEnd};
+//							Arrays.sort(temp);
+//							olRegionLen = temp[2] - temp[1];
+//							double tOLRatio = (double)olRegionLen / tRegionLen;
+//							if(tOLRatio > threshold)
+//							{
+//								isExist = true;
+//								break;
+//							}
+//						}
+//					} 
+//				}
+//				if(!isExist)
+//					MisassemblyChecker.checking(paras, cnts, target);
+//			}
+//		}
+		// method 1: checking whether overlap between two adjacent contigs;
+//		MRecord target = maRs.get(0);
+//		if(target.getqName().equals("483L5351/0_5351"))
+//			logger.info("breakpoint");
+//		if(size == 1)
+//		{
+//			MisassemblyChecker.checking(paras, cnts, target);
+//		} else
+//		{
+//			boolean isTargetCheck = true;
+//			for(int i = 1; i < size; i++)
+//			{
+//				int tStart = target.getqStart();
+//				int tEnd = target.getqEnd();
+//				int tRegionLen = tEnd - tStart;
+//				MRecord query = maRs.get(i);
+//				int qStart = query.getqStart();
+//				int qEnd = query.getqEnd();
+//				int qRegionLen = qEnd - qStart;
+//				int olRegionLen = 0;
+//				// two points in the middle define overlap region
+//				if(qStart < tEnd && qEnd > tStart)
+//				{
+//					int [] temp = {tStart, tEnd, qStart, qEnd};
+//					Arrays.sort(temp);
+//					olRegionLen = temp[2] - temp[1];
+//				}
+//				double tOLRatio = (double)olRegionLen / tRegionLen;
+//				double qOLRatio = (double)olRegionLen / qRegionLen;
+//				double threshold = 0.7;
+//				if(tOLRatio <= threshold)
+//				{
+//					if(isTargetCheck)
+//						MisassemblyChecker.checking(paras, cnts, target);
+//					target = query;
+//					if(qOLRatio >= threshold) 
+//						isTargetCheck = false;
+//					else
+//						isTargetCheck = true;
+//				} else
+//				{
+//					target = query;
+//					if(qOLRatio >= threshold) 
+//						isTargetCheck = false;
+//					else
+//						isTargetCheck = true;
+//				}
+//				
+//				if(i == (size - 1) && isTargetCheck)
+//				{
+//					MisassemblyChecker.checking(paras, cnts, target);
+//				}
+//			}
+//		}
+	}
+	
+	
 //	// print in m4 format
 //	private void pritnMRecord(MRecord record){
 //		System.out.println(record.getqName() + "\t" + record.gettName() + "\t" + "-1000" + "\t" +

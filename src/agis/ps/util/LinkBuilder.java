@@ -82,6 +82,33 @@ public class LinkBuilder {
 		return links;
 	}
 	
+//	public List<Link> mRecords2Links(List<List<MRecord>> records, List<String> repeats, List<String> misassemblies)
+//	{
+//		long start = System.currentTimeMillis();
+//		if (links == null)
+////			links = new Vector<PBLink>();
+//			links = new ArrayList<Link>(records.size());
+//		links.clear();
+//		try {
+//			int size = records.size();
+//			for(int i = 0; i < size; i++)
+//			{
+////				if(records.get(i).get(0).getqName().equals("PB8356"))
+////					logger.debug("breakpoint");
+////				List<PBLink> temp = this.mRecord2PBLink(records.get(i), repeats);
+//				List<Link> temp = this.mRecord2Link(records.get(i), repeats, misassemblies);
+//				if(temp != null)
+//					links.addAll(temp);
+//			}
+//		} catch (Exception e) {
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//		}
+//		long end = System.currentTimeMillis();
+//		logger.info("Valid Links Acount: " + links.size());
+//		logger.info("Building Link, erase time : " + (end - start) + " ms");
+//		return links;
+//	}
+	
 //	public List<PBLink> mRecords2Links(List<List<MRecord>> records, List<String> repeats)
 //	{
 //		long start = System.currentTimeMillis();

@@ -409,9 +409,11 @@ public class EdgeBundler {
 		int size = links.size();
 		if(size == 0)
 			return links;
-		int [] dists = new int[size];
+//		int [] dists = new int[size];
+		List<Integer> dists = new ArrayList<Integer>();
 		for(int i = 0; i < size; i++)
-			dists[i] = links.get(i).getDist();
+//			dists[i] = links.get(i).getDist();
+			dists.add(links.get(i).getDist());
 		double upper = 0;
 		double lower = 0;
 		if(size < 5)

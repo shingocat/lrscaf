@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -22,22 +24,15 @@ import agis.ps.util.Parameter;
 public class N50Writer {
 	private static Logger logger = LoggerFactory.getLogger(N50Writer.class);
 	private Parameter paras;
-	private int [] lens;
+	private List<Integer>lens;
 	private String prefix;
 	
-	
-	public N50Writer( Parameter paras, String prefix, int [] lens)
-	{
-		this.paras = paras;
-		this.prefix = prefix;
-		this.lens = lens;
-	}
 	
 	public N50Writer(Parameter paras, String prefix, List<Integer> lens)
 	{
 		this.paras = paras;
 		this.prefix = prefix;
-		this.lens = lens.stream().mapToInt(Integer::intValue).toArray();
+		this.lens = lens;
 	}
 	
 	public void write()
@@ -65,8 +60,8 @@ public class N50Writer {
 			bw = new BufferedWriter(fw);
 			int total = MathTool.sum(lens);
 			int mean = MathTool.mean(lens);
-			int num = lens.length;
-			int median = (int) MathTool.median(lens);
+			int num = lens.size();
+			int median = (int) MathTool.median(lens, false);
 			bw.write("Total Length:\t" + total);
 			bw.newLine();
 			bw.write("Sequences No.:\t" + num);
@@ -75,17 +70,18 @@ public class N50Writer {
 			bw.newLine();
 			bw.write("Median:\t" + median);
 			bw.newLine();
-			Arrays.sort(lens);
+//			Arrays.sort(lens);
+			Collections.sort(lens);
 			double index = 0.0;
 			int values = 0;
 			int threshold = (int) (index * total);
 			int count = 0;
 			for(int i = num - 1; i >= 0; i--)
 			{
-				values += lens[i];
+				values += lens.get(i);
 				while(values >= threshold)
 				{
-					bw.write("N" + count + "0:\t" + lens[i]);
+					bw.write("N" + count + "0:\t" + lens.get(i));
 					bw.newLine();
 					index += 0.1;
 					count++;

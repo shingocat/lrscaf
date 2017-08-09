@@ -50,3 +50,36 @@
 2017-07-11 10:02:04  [ main:240 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
 2017-07-11 10:03:46  [ main:237 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
 2017-07-11 10:14:00  [ main:238 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:81)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-12 13:56:00  [ main:229 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  agis.ps.Scaffolder	PathBuilder ： The Edges could not be empty!
+2017-07-12 13:56:52  [ main:235 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-12 15:15:11  [ main:243 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-12 15:21:36  [ main:238 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-12 16:18:37  [ main:229 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-12 16:33:27  [ main:240 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-12 16:38:56  [ main:226 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-12 16:44:18  [ main:241 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-12 17:19:13  [ main:244 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-12 20:43:58  [ main:236 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-14 10:32:19  [ main:260 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  1
+2017-07-14 10:39:17  [ main:15653 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  1
+2017-07-14 10:58:00  [ main:251 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-14 17:26:00  [ main:242 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-14 17:41:57  [ main:252 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-31 09:27:51  [ main:373 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-31 10:18:38  [ main:262 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-31 10:27:49  [ main:254 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-31 10:59:08  [ main:249 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-31 11:44:28  [ main:277 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-31 13:58:12  [ main:248 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-31 14:01:44  [ main:255 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-07-31 14:02:23  [ main:246 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:83)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-01 11:16:21  [ main:279 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-01 11:17:31  [ main:243 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-01 11:27:34  [ main:263 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-01 11:38:53  [ main:253 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-01 14:01:54  [ main:261 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-01 14:08:42  [ main:260 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-01 14:10:03  [ main:254 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-01 21:27:34  [ main:246 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-01 21:31:50  [ main:249 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-08-02 11:36:47  [ main:235 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!

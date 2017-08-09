@@ -120,7 +120,7 @@ public class ScaffoldWriter {
 //					lens.add(len);
 //					index++;
 //				}
-				if(!c.isUsed() && !c.isRepeat())
+				if(!c.isUsed() && !c.isRepeat() && !c.getIsMisassembly())
 				{
 					bw.write(">Scaffolds_" + index + "  " + c.getID() + " " + len);
 					bw.newLine();

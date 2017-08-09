@@ -6,6 +6,10 @@
 */
 package agis.ps.seqs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import agis.ps.util.MisassemblyRegion;
 
 public class Contig {
 	
@@ -14,9 +18,38 @@ public class Contig {
 	private byte [] seqs;
 	private boolean isUsed; // defined this contig is used or not during scaffolding;
 	private boolean isRepeat; // defined this contig is repeat or not;
+	private boolean isMisassembly;
+	private List<MisassemblyRegion> misassemblies;
 	
 	public Contig() {
-		
+		if(misassemblies == null)
+			misassemblies = new ArrayList<MisassemblyRegion>();
+		this.misassemblies.clear();
+	}
+	
+	public void setIsMisassembly(boolean isMisassembly)
+	{
+		this.isMisassembly = isMisassembly;
+	}
+	
+	public boolean getIsMisassembly()
+	{
+		return this.isMisassembly;
+	}
+	
+	public void addMisassemblyRegion(MisassemblyRegion mr)
+	{
+		this.misassemblies.add(mr);
+	}
+	
+	public List<MisassemblyRegion> getMisassemblyRegion()
+	{
+		return this.misassemblies;
+	}
+	
+	public void seteMisassemblyRegions(List<MisassemblyRegion> mrs)
+	{
+		this.misassemblies = mrs;
 	}
 	
 	public boolean isRepeat()

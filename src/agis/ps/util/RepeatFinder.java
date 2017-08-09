@@ -90,6 +90,7 @@ public class RepeatFinder {
 			double iqr = thirdQ - firstQ;
 			double upper = iqr * iqrTime + values.get("THIRDQ");
 			double median = values.get("MEDIAN");
+			logger.info("Finding Repeats:");
 			logger.info("MIN: " + values.get("MIN"));
 			logger.info("First Quartile: " + firstQ);
 			// logger.info("Mean cov = " + mean);
