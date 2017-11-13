@@ -79,9 +79,9 @@ public abstract class AlignmentFileReader {
 			listRecords.clear();
 			String line = null;
 			String qId = "";
-			String maQid = ""; // same as qId, but for misassembly checking; 
+//			String maQid = ""; // same as qId, but for misassembly checking; 
 			List<MRecord> rs = new ArrayList<MRecord>(); // aligned record
-			List<MRecord> maRs = new ArrayList<MRecord>(); // store all record for misassembly checking;
+//			List<MRecord> maRs = new ArrayList<MRecord>(); // store all record for misassembly checking;
 			while(true)
 			{
 				line = br.readLine();
@@ -90,8 +90,8 @@ public abstract class AlignmentFileReader {
 				{
 					if(rs.size() > 1)
 						listRecords.add(rs);
-					if(!maRs.isEmpty())
-						misassemblyChecking(maRs);
+//					if(!maRs.isEmpty())
+//						misassemblyChecking(maRs);
 					break;
 				}
 				line = line.trim();
@@ -196,7 +196,7 @@ public abstract class AlignmentFileReader {
 		return this.listRecords;
 	}
 	
-	private void misassemblyChecking(List<MRecord> maRs)
+	/*private void misassemblyChecking(List<MRecord> maRs)
 	{
 		if(maRs == null || maRs.isEmpty())
 			return;
@@ -344,7 +344,7 @@ public abstract class AlignmentFileReader {
 //				}
 //			}
 //		}
-	}
+	}*/
 	
 	
 //	// print in m4 format

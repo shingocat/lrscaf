@@ -1,8 +1,8 @@
-/*
-*File: agis.ps.file.MMReader.java
-*User: mqin
-*Email: mqin@ymail.com
-*Date: 2017年2月22日
+/** 
+** Usage: TODO
+** Author: mqin
+** Email: mqin@outlook.com
+** Date: 2017年11月13日
 */
 package agis.ps.file;
 
@@ -10,9 +10,9 @@ import agis.ps.link.MRecord;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 
-public class MMReader extends AlignmentFileReader {
-
-	public MMReader(Parameter paras) {
+public class MM2Reader extends AlignmentFileReader{
+	
+	public MM2Reader(Parameter paras) {
 		super(paras);
 	}
 	
@@ -37,15 +37,9 @@ public class MMReader extends AlignmentFileReader {
 			record.settStrand(Strand.REVERSE);
 		record.settStart(arrs[7]);
 		record.settEnd(arrs[8]);
-		int cms = 0;
-		if(arrs[12].startsWith("cm:i:"))
-			cms = Integer.valueOf(arrs[12].split("cm:i:")[1]);
-		else
-			cms = Integer.valueOf(arrs[13].split("cm:i:")[1]);
+		int cms = Integer.valueOf(arrs[13].split("cm:i:")[1]);
 		if(cms <= paras.getMmcm())
 			return null;
 		return record;
 	}
 }
-
-

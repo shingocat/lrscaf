@@ -441,7 +441,7 @@ public class DirectedGraph extends Graph implements Serializable {
 		} catch (Exception e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
-		logger.info(this.getClass().getName() + "\tDelete error prone edges:" + rmEdges.size());
+		logger.info("Delete error prone edges:" + rmEdges.size());
 		this.removeEdges(rmEdges);
 		this.updateGraph();
 		long end = System.currentTimeMillis();
@@ -645,7 +645,7 @@ public class DirectedGraph extends Graph implements Serializable {
 			this.updateGraph();
 			rmEdges.clear();
 		}
-		logger.info(this.getClass().getName() + "\tDelete tip edges:" + totalDels);
+		logger.info("Delete tip edges:" + totalDels);
 		long end = System.currentTimeMillis();
 		logger.info("Tip edge deleting, erase time: " + (end - start) + " ms");
 	}

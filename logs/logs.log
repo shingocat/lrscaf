@@ -1,38 +1,36 @@
-2017-08-09 14:40:11  [ main:0 ] - [agis.ps.Main.main(Main.java:48)] - [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed
-2017-08-09 14:40:11  [ main:47 ] - [agis.ps.file.XMLParser.parseXML(XMLParser.java:129)] - [ INFO ]  The minimum contig's length should be large than 200 bp!
-2017-08-09 14:40:11  [ main:47 ] - [agis.ps.file.XMLParser.parseXML(XMLParser.java:130)] - [ INFO ]  Mandatorily set to 200 bp!
-2017-08-09 14:40:11  [ main:47 ] - [agis.ps.Main.main(Main.java:56)] - [ INFO ]  Launching...
-2017-08-09 14:40:11  [ main:47 ] - [agis.ps.file.OutputFolderBuilder.building(OutputFolderBuilder.java:36)] - [ INFO ]  The output folder was exist!
-2017-08-09 14:40:11  [ main:47 ] - [agis.ps.file.OutputFolderBuilder.building(OutputFolderBuilder.java:37)] - [ INFO ]  It will delete all file under this folder!
-2017-08-09 14:40:11  [ main:63 ] - [agis.ps.file.OutputFolderBuilder.building(OutputFolderBuilder.java:52)] - [ INFO ]  Building output folder, erase time: 16 ms
-2017-08-09 14:40:11  [ main:263 ] - [agis.ps.file.ContigReader.read(ContigReader.java:149)] - [ INFO ]  Reading contigs, erase times: 200 ms
-2017-08-09 14:40:11  [ main:511 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:176)] - [ INFO ]  Valid Aligned Records: 2956
-2017-08-09 14:40:11  [ main:511 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:177)] - [ INFO ]  Reading Aligned Records, erase time: 229 ms
-2017-08-09 14:40:11  [ main:512 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:93)] - [ INFO ]  Finding Repeats:
-2017-08-09 14:40:11  [ main:512 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:94)] - [ INFO ]  MIN: 1.0
-2017-08-09 14:40:11  [ main:513 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:95)] - [ INFO ]  First Quartile: 2.0
-2017-08-09 14:40:11  [ main:513 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:97)] - [ INFO ]  Median cov = 7.0
-2017-08-09 14:40:11  [ main:513 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:107)] - [ INFO ]  Third Quartile: 14.0
-2017-08-09 14:40:11  [ main:513 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:108)] - [ INFO ]  MAX: 90.0
-2017-08-09 14:40:11  [ main:514 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:109)] - [ INFO ]  Interquartile Range: 12.0
-2017-08-09 14:40:11  [ main:514 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:110)] - [ INFO ]  1.5's IQR , Outlier Threshold: 32.0
-2017-08-09 14:40:11  [ main:518 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:123)] - [ INFO ]  Repeat count: 13
-2017-08-09 14:40:11  [ main:518 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:125)] - [ INFO ]  Finding repeat, erase time: 6 ms
-2017-08-09 14:40:11  [ main:544 ] - [agis.ps.util.LinkBuilder.mRecords2Links(LinkBuilder.java:80)] - [ INFO ]  Valid Links Acount: 3273
-2017-08-09 14:40:11  [ main:544 ] - [agis.ps.util.LinkBuilder.mRecords2Links(LinkBuilder.java:81)] - [ INFO ]  Building Link, erase time : 25 ms
-2017-08-09 14:40:11  [ main:568 ] - [agis.ps.util.EdgeBundler.links2edges(EdgeBundler.java:56)] - [ INFO ]  Minimum supported links: 2
-2017-08-09 14:40:11  [ main:568 ] - [agis.ps.util.EdgeBundler.links2edges(EdgeBundler.java:57)] - [ INFO ]  Used overlap link: true
-2017-08-09 14:40:11  [ main:600 ] - [agis.ps.util.EdgeBundler.links2edges(EdgeBundler.java:85)] - [ INFO ]  Building Edges, Erase Time: 32 ms
-2017-08-09 14:40:11  [ main:602 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:84)] - [ INFO ]  Original Edges size: 612
-2017-08-09 14:40:12  [ main:634 ] - [agis.ps.graph.DirectedGraph.transitiveReducting(DirectedGraph.java:189)] - [ INFO ]  Transitive Reducing, erase time: 19 ms
-2017-08-09 14:40:12  [ main:635 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:92)] - [ INFO ]  Edges size after transitive reducing: 540
-2017-08-09 14:40:12  [ main:639 ] - [agis.ps.graph.DirectedGraph.delErrorProneEdge(DirectedGraph.java:444)] - [ INFO ]  agis.ps.graph.DirectedGraph	Delete error prone edges:6
-2017-08-09 14:40:12  [ main:639 ] - [agis.ps.graph.DirectedGraph.delErrorProneEdge(DirectedGraph.java:448)] - [ INFO ]  Error prone Edge deleting, erase time: 2 ms
-2017-08-09 14:40:12  [ main:640 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:98)] - [ INFO ]  Edges size after error prone deleting: 534
-2017-08-09 14:40:12  [ main:643 ] - [agis.ps.graph.DirectedGraph.delTips(DirectedGraph.java:648)] - [ INFO ]  agis.ps.graph.DirectedGraph	Delete tip edges:20
-2017-08-09 14:40:12  [ main:643 ] - [agis.ps.graph.DirectedGraph.delTips(DirectedGraph.java:650)] - [ INFO ]  Tip edge deleting, erase time: 1 ms
-2017-08-09 14:40:12  [ main:643 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:104)] - [ INFO ]  Edges size after deleting tips: 514
-2017-08-09 14:40:12  [ main:688 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:222)] - [ INFO ]  Path Building, erase time: 86 ms
-2017-08-09 14:40:12  [ main:1536 ] - [agis.ps.file.ScaffoldWriter.write(ScaffoldWriter.java:155)] - [ INFO ]  Scaffold writing, erase time: 845 ms
-2017-08-09 14:40:12  [ main:1554 ] - [agis.ps.Main.main(Main.java:59)] - [ INFO ]  Ending...
-2017-08-09 14:40:12  [ main:1554 ] - [agis.ps.Main.main(Main.java:61)] - [ INFO ]  Scaffolding erase time: 1 s.
+2017-11-13 15:15:21  [ main:0 ] - [agis.ps.Main.main(Main.java:48)] - [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed
+2017-11-13 15:15:21  [ main:25 ] - [agis.ps.Main.main(Main.java:56)] - [ INFO ]  Launching...
+2017-11-13 15:15:21  [ main:28 ] - [agis.ps.file.OutputFolderBuilder.building(OutputFolderBuilder.java:36)] - [ INFO ]  The output folder was exist!
+2017-11-13 15:15:21  [ main:28 ] - [agis.ps.file.OutputFolderBuilder.building(OutputFolderBuilder.java:37)] - [ INFO ]  It will delete all file under this folder!
+2017-11-13 15:15:21  [ main:37 ] - [agis.ps.file.OutputFolderBuilder.building(OutputFolderBuilder.java:52)] - [ INFO ]  Building output folder, erase time: 9 ms
+2017-11-13 15:15:21  [ main:410 ] - [agis.ps.file.ContigReader.read(ContigReader.java:149)] - [ INFO ]  Reading contigs, erase times: 369 ms
+2017-11-13 15:15:22  [ main:1718 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:176)] - [ INFO ]  Valid Aligned Records: 6431
+2017-11-13 15:15:22  [ main:1718 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:177)] - [ INFO ]  Reading Aligned Records, erase time: 1297 ms
+2017-11-13 15:15:22  [ main:1720 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:93)] - [ INFO ]  Finding Repeats:
+2017-11-13 15:15:22  [ main:1720 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:94)] - [ INFO ]  MIN: 1.0
+2017-11-13 15:15:22  [ main:1720 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:95)] - [ INFO ]  First Quartile: 2.0
+2017-11-13 15:15:22  [ main:1720 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:97)] - [ INFO ]  Median cov = 5.0
+2017-11-13 15:15:22  [ main:1720 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:107)] - [ INFO ]  Third Quartile: 8.0
+2017-11-13 15:15:22  [ main:1720 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:108)] - [ INFO ]  MAX: 64.0
+2017-11-13 15:15:22  [ main:1721 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:109)] - [ INFO ]  Interquartile Range: 6.0
+2017-11-13 15:15:22  [ main:1721 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:110)] - [ INFO ]  1.5's IQR , Outlier Threshold: 17.0
+2017-11-13 15:15:22  [ main:1727 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:123)] - [ INFO ]  Repeat count: 34
+2017-11-13 15:15:22  [ main:1727 ] - [agis.ps.util.RepeatFinder.findRepeats(RepeatFinder.java:125)] - [ INFO ]  Finding repeat, erase time: 8 ms
+2017-11-13 15:15:22  [ main:1780 ] - [agis.ps.util.LinkBuilder.mRecords2Links(LinkBuilder.java:80)] - [ INFO ]  Valid Links Acount: 6574
+2017-11-13 15:15:22  [ main:1781 ] - [agis.ps.util.LinkBuilder.mRecords2Links(LinkBuilder.java:81)] - [ INFO ]  Building Link, erase time : 53 ms
+2017-11-13 15:15:22  [ main:1814 ] - [agis.ps.util.EdgeBundler.links2edges(EdgeBundler.java:56)] - [ INFO ]  Minimum supported links: 1
+2017-11-13 15:15:22  [ main:1815 ] - [agis.ps.util.EdgeBundler.links2edges(EdgeBundler.java:57)] - [ INFO ]  Used overlap link: true
+2017-11-13 15:15:23  [ main:1848 ] - [agis.ps.util.EdgeBundler.links2edges(EdgeBundler.java:85)] - [ INFO ]  Building Edges, Erase Time: 34 ms
+2017-11-13 15:15:23  [ main:1851 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:84)] - [ INFO ]  Original Edges size: 2744
+2017-11-13 15:15:23  [ main:1963 ] - [agis.ps.graph.DirectedGraph.transitiveReducting(DirectedGraph.java:189)] - [ INFO ]  Transitive Reducing, erase time: 41 ms
+2017-11-13 15:15:23  [ main:1966 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:92)] - [ INFO ]  Edges size after transitive reducing: 2254
+2017-11-13 15:15:23  [ main:1975 ] - [agis.ps.graph.DirectedGraph.delErrorProneEdge(DirectedGraph.java:444)] - [ INFO ]  Delete error prone edges:24
+2017-11-13 15:15:23  [ main:1977 ] - [agis.ps.graph.DirectedGraph.delErrorProneEdge(DirectedGraph.java:448)] - [ INFO ]  Error prone Edge deleting, erase time: 5 ms
+2017-11-13 15:15:23  [ main:1977 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:98)] - [ INFO ]  Edges size after error prone deleting: 2230
+2017-11-13 15:15:23  [ main:1987 ] - [agis.ps.graph.DirectedGraph.delTips(DirectedGraph.java:648)] - [ INFO ]  Delete tip edges:184
+2017-11-13 15:15:23  [ main:1987 ] - [agis.ps.graph.DirectedGraph.delTips(DirectedGraph.java:650)] - [ INFO ]  Tip edge deleting, erase time: 5 ms
+2017-11-13 15:15:23  [ main:1988 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:104)] - [ INFO ]  Edges size after deleting tips: 2046
+2017-11-13 15:15:23  [ main:2210 ] - [agis.ps.util.PathBuilder.buildPath3(PathBuilder.java:222)] - [ INFO ]  Path Building, erase time: 359 ms
+2017-11-13 15:15:24  [ main:2962 ] - [agis.ps.file.ScaffoldWriter.write(ScaffoldWriter.java:155)] - [ INFO ]  Scaffold writing, erase time: 749 ms
+2017-11-13 15:15:24  [ main:2966 ] - [agis.ps.Main.main(Main.java:59)] - [ INFO ]  Ending...
+2017-11-13 15:15:24  [ main:2966 ] - [agis.ps.Main.main(Main.java:61)] - [ INFO ]  Scaffolding erase time: 2 s.

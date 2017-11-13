@@ -6,11 +6,6 @@
 */
 package agis.ps;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +18,7 @@ import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.M4Reader;
 import agis.ps.file.M5Reader;
 import agis.ps.file.MMReader;
-import agis.ps.file.MisassembliesWriter;
+//import agis.ps.file.MisassembliesWriter;
 import agis.ps.file.OutputFolderBuilder;
 import agis.ps.file.RepeatWriter;
 import agis.ps.file.LinkWriter;
@@ -38,7 +33,7 @@ import agis.ps.path.NodePath;
 import agis.ps.seqs.Contig;
 import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
-import agis.ps.util.MisassemblyChecker;
+//import agis.ps.util.MisassemblyChecker;
 import agis.ps.util.Parameter;
 import agis.ps.util.PathBuilder;
 import agis.ps.util.RepeatFinder;
@@ -172,9 +167,9 @@ public class Scaffolder {
 		rw.write();
 	}
 	
-	private void writeMisassemblies()
-	{
-		MisassembliesWriter mw = new MisassembliesWriter(paras, cnts);
-		mw.write();
-	}
+//	private void writeMisassemblies()
+//	{
+//		MisassembliesWriter mw = new MisassembliesWriter(paras, cnts);
+//		mw.write();
+//	}
 }
