@@ -27,6 +27,7 @@ agis\ps\file\PBLinkReader.class
 agis\ps\link\PBLink.class
 agis\ps\file\XMLParser.class
 agis\ps\file\SimilarityCntReader.class
+agis\ps\file\MM2Reader.class
 agis\ps\util\MisassemblyChecker$1.class
 agis\ps\file\GapRecordReader.class
 agis\ps\util\PathBuilder.class

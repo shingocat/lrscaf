@@ -83,3 +83,10 @@
 2017-08-01 21:27:34  [ main:246 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
 2017-08-01 21:31:50  [ main:249 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
 2017-08-02 11:36:47  [ main:235 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:85)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-11-13 15:04:45  [ main:523 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:163)] - [ ERROR ]  agis.ps.file.M4Reader	For input string: "12546_length_3299_cvg_11.9_tip_0|ref0000437|ref0005657|ref0003271|ref0001643|ref0002787"
+2017-11-13 15:04:45  [ main:538 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-11-13 15:06:47  [ main:400 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:163)] - [ ERROR ]  agis.ps.file.M4Reader	For input string: "12546_length_3299_cvg_11.9_tip_0|ref0000437|ref0005657|ref0003271|ref0001643|ref0002787"
+2017-11-13 15:06:47  [ main:401 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-11-13 15:06:59  [ main:451 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:163)] - [ ERROR ]  agis.ps.file.M4Reader	For input string: "12546_length_3299_cvg_11.9_tip_0|ref0000437|ref0005657|ref0003271|ref0001643|ref0002787"
+2017-11-13 15:06:59  [ main:454 ] - [agis.ps.Scaffolder.scaffolding(Scaffolder.java:82)] - [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2017-11-13 15:07:38  [ main:24722 ] - [agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:163)] - [ ERROR ]  agis.ps.file.M4Reader	For input string: "12546_length_3299_cvg_11.9_tip_0|ref0000437|ref0005657|ref0003271|ref0001643|ref0002787"

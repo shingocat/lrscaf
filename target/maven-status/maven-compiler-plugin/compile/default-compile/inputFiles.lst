@@ -2,6 +2,7 @@ D:\workspace\agisps\src\agis\ps\file\SimilarityCntWriter.java
 D:\workspace\agisps\src\agis\ps\align\SequenceAlignment.java
 D:\workspace\agisps\src\agis\ps\file\ScaffoldWriter.java
 D:\workspace\agisps\src\agis\ps\Main.java
+D:\workspace\agisps\src\agis\ps\file\MisassembliesWriter.java
 D:\workspace\agisps\src\agis\ps\path\InternalNode.java
 D:\workspace\agisps\src\agis\ps\util\PathBuilder.java
 D:\workspace\agisps\src\agis\ps\file\GapRecordReader.java
@@ -13,14 +14,18 @@ D:\workspace\agisps\src\agis\ps\util\RepeatFinder.java
 D:\workspace\agisps\src\agis\ps\file\TriadLinkReader.java
 D:\workspace\agisps\src\agis\ps\util\Color.java
 D:\workspace\agisps\src\agis\ps\file\SamReader.java
+D:\workspace\agisps\src\agis\ps\util\MisassemblyRegion.java
+D:\workspace\agisps\src\agis\ps\file\ContigMisassemblyWriter.java
 D:\workspace\agisps\src\agis\ps\align\NeedlemanWunsch.java
 D:\workspace\agisps\src\agis\ps\seqs\PBRead.java
 D:\workspace\agisps\src\agis\ps\file\MMReader.java
 D:\workspace\agisps\src\agis\ps\link\ILink.java
 D:\workspace\agisps\src\agis\ps\util\LinkBuilder.java
 D:\workspace\agisps\src\agis\ps\align\DynamicProgramming.java
+D:\workspace\agisps\src\agis\ps\file\MM2Reader.java
 D:\workspace\agisps\src\agis\ps\util\MRecordValidator.java
 D:\workspace\agisps\src\agis\ps\file\ContigReader.java
+D:\workspace\agisps\src\agis\ps\file\RepeatWriter.java
 D:\workspace\agisps\src\agis\ps\file\M5Reader.java
 D:\workspace\agisps\src\agis\ps\Scaffolder.java
 D:\workspace\agisps\src\agis\ps\seqs\PBGapSeq.java
@@ -34,6 +39,7 @@ D:\workspace\agisps\src\agis\ps\path\Node.java
 D:\workspace\agisps\src\agis\ps\file\LinkWriter.java
 D:\workspace\agisps\src\agis\ps\file\DotGraphFileWriter.java
 D:\workspace\agisps\src\agis\ps\link\Edge.java
+D:\workspace\agisps\src\agis\ps\util\MisassemblyChecker.java
 D:\workspace\agisps\src\agis\ps\file\N50Writer.java
 D:\workspace\agisps\src\agis\ps\file\GapRecordWriter.java
 D:\workspace\agisps\src\agis\ps\link\TriadLinkComparator.java
@@ -42,6 +48,7 @@ D:\workspace\agisps\src\agis\ps\path\NodePath.java
 D:\workspace\agisps\src\agis\ps\link\MRecord.java
 D:\workspace\agisps\src\agis\ps\util\GapRecord.java
 D:\workspace\agisps\src\agis\ps\path\InternalNode2.java
+D:\workspace\agisps\src\agis\ps\util\MisassemblyRegionSorter.java
 D:\workspace\agisps\src\agis\ps\file\SimilarityCntReader.java
 D:\workspace\agisps\src\agis\ps\link\Link.java
 D:\workspace\agisps\src\agis\ps\util\MathTool.java
