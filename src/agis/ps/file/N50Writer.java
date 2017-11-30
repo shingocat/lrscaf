@@ -73,8 +73,8 @@ public class N50Writer {
 //			Arrays.sort(lens);
 			Collections.sort(lens);
 			double index = 0.0;
-			int values = 0;
-			int threshold = (int) (index * total);
+			long values = 0L;
+			long threshold = (long) (index * total);
 			int count = 0;
 			for(int i = num - 1; i >= 0; i--)
 			{
@@ -85,7 +85,7 @@ public class N50Writer {
 					bw.newLine();
 					index += 0.1;
 					count++;
-					threshold = (int) (index * total);
+					threshold = (long) (index * total);
 				}
 			}
 			bw.flush();
