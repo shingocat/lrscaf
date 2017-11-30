@@ -225,7 +225,7 @@ public class DirectedGraph extends Graph implements Serializable {
 			}
 			List<Edge> trEs = this.getEdgesInfo(start, end);
 			List<Edge> alEs = new Vector<Edge>();
-			int alDist = 0;
+			long alDist = 0;
 			int alSd = 0;
 			int alSize = alPath.size();
 			List<Integer> alDists = new Vector<Integer>(alSize * 2);
@@ -315,7 +315,7 @@ public class DirectedGraph extends Graph implements Serializable {
 			int trSL = trEs.get(0).getLinkNum();
 
 			int sd = trSd >= alSd ? trSd : alSd;
-			int diff = trDist - alDist;
+			long diff = trDist - alDist;
 			int range = TR_TIMES * sd;
 			
 			// considering two standards for transitive reduction

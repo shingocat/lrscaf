@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 public class MathTool {
 	private static Logger logger = LoggerFactory.getLogger(MathTool.class);
 
-	public static Integer sum(List<Integer> nums) {
-		int sum = 0;
+	public static Long sum(List<Integer> nums) {
+		long sum = 0;
 		for (int i = 0; i < nums.size(); i++) {
 			sum += nums.get(i);
 		}
@@ -111,7 +111,7 @@ public class MathTool {
 	public static Integer mean(Integer [] nums) {
 		int mean = 0;
 		try {
-			int sum = 0;
+			long sum = 0;
 			int size = nums.length;
 			if (size == 0)
 				return 0;
@@ -130,7 +130,7 @@ public class MathTool {
 	{
 		int mean = 0;
 		try {
-			int sum = 0;
+			long sum = 0;
 			int size = nums.length;
 			if (size == 0)
 				return 0;
@@ -182,7 +182,7 @@ public class MathTool {
 	} 
 
 	public static Integer avgSd(List<Integer> sds) {
-		int sum = 0;
+		long sum = 0;
 		for (int i = 0; i < sds.size(); i++) {
 			sum += Math.pow(sds.get(i), 2);
 		}

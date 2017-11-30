@@ -58,7 +58,7 @@ public class N50Writer {
 			}
 			fw = new FileWriter(file);
 			bw = new BufferedWriter(fw);
-			int total = MathTool.sum(lens);
+			long total = MathTool.sum(lens);
 			int mean = MathTool.mean(lens);
 			int num = lens.size();
 			int median = (int) MathTool.median(lens, false);
