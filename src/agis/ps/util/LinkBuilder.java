@@ -64,8 +64,21 @@ public class LinkBuilder {
 		links.clear();
 		try {
 			int size = records.size();
+			int [] thresholds = new int [11];
+			thresholds[0] = 0;
+			thresholds[10] = size - 1;
+			for(int i = 1; i <= 9; i++)
+			{
+				thresholds[i] = Math.round( size * i / 10);
+			}
+			int index = 0;
 			for(int i = 0; i < size; i++)
 			{
+				if(i == thresholds[index])
+				{
+					logger.info("Building Links in " + index + "0%");
+					index++;
+				}
 //				if(records.get(i).get(0).getqName().equals("PB8356"))
 //					logger.debug("breakpoint");
 //				List<PBLink> temp = this.mRecord2PBLink(records.get(i), repeats);
