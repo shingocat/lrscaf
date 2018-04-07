@@ -1,47 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scaffold>
-<!--The input file for scaffolding, including contigs and aligned files (i.e. m5, sam or bam file) -->
+<!--The input file for scaffolding, including contigs and aligned files (i.e. m5, m4 or mm file) -->
 	<input>
-		<contig>E:\Data\Ecoli\ecoli83k.contig</contig>
-		<m5>E:\Data\Ecoli\align_10000.m5</m5>
-		<pbread></pbread>
-		<!--<m5>E:\Data\Ecoli\mock.dat</m5>-->
-		<!--<m5>E:\Data\Ecoli\align_bstn_1_10000.m5</m5>-->
+		<contig>Draft assembly in fasta format.</contig>
+		<m4>The aligned file in BLASR -m 4 format.</m4>
 	</input>
 	<!-- The output folder for scaffolding -->
-	<output>E:\Data\Ecoli\Scaffolding</output>
-	<!-- the parameters for scaffolding-->
+	<output>The output folder.</output>
+	<!-- The parameters for scaffolding-->
 	<paras>
-		 <!--The minimum contig length to be used in scaffolding-->
-         <min_contig_length>1000</min_contig_length>
-         <min_pacbio_length>3000</min_pacbio_length>
+		 <!--More details are showed in README.md-->
+         <min_contig_length>500</min_contig_length>
 		 <identity>0.8</identity>
-         <min_overlap_length>500</min_overlap_length>
-         <min_overlap_ratio>0.3</min_overlap_ratio>
-         <max_overhang_length>3000</max_overhang_length>
-         <max_overhang_ratio>0.8</max_overhang_ratio>
+         <min_overlap_length>400</min_overlap_length>
+         <min_overlap_ratio>0.8</min_overlap_ratio>
+         <max_overhang_length>1000</max_overhang_length>
+         <max_overhang_ratio>0.1</max_overhang_ratio>
          <max_end_length>1000</max_end_length>
-         <max_end_ratio>0.5</max_end_ratio>
+         <max_end_ratio>0.1</max_end_ratio>
          <min_supported_links>2</min_supported_links>
-         <max_supported_links>70</max_supported_links>
-		 <tips_size>1</tips_size>
 		 <tips_length>1500</tips_length>
 		 <use_overlap_link>true</use_overlap_link>
-		 <ratio>0.3</ratio>
+		 <ratio>0.2</ratio>
 		 <repeat_mask>true</repeat_mask>
-		 <gap_filling>false</gap_filling>
-		<!--The minimum contig length to be used in scaffolding-->
-		<!--
-		<min_contig_length>2000</min_contig_length>
-		<min_pacbio_length>5000</min_pacbio_length>
-		<min_overlap_length>1500</min_overlap_length>
-		<min_overlap_ratio>0.8</min_overlap_ratio>
-		<max_overhang_length>500</max_overhang_length>
-		<max_overhang_ratio>0.1</max_overhang_ratio>
-		<max_end_length>500</max_end_length>
-		<max_end_ratio>0.1</max_end_ratio>
-		<min_supported_links>3</min_supported_links>
-		<max_supported_links>50</max_supported_links>
-		-->
+		 <iqr_time>3</iqr_time>
+		 <mmcm>8</mmcm> <!--only for Minimap aligned outcome.-->
 	</paras>
 </scaffold>
