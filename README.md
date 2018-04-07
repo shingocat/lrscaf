@@ -1,22 +1,21 @@
-LRScaf: improving draft genomes using long noisy reads
+<h1>LRScaf: improving draft genomes using long noisy reads</h1>
 
-Hybrid assembly strategy is a reasonable and promising approach to utilize strengths and settle weaknesses in Next-Generation Sequencing (NGS) and Third-Generation Sequencing (TGS) technologies. According to this principle, we here present a new toolkit named LRScaf (Long Reads Scaffolder) by applied TGS data to improve draft genome assembly. The main features are: short running time, accuracy, and being contiguity. To scaffold rice genome, it could be done in 20 mins with minimap mapper.
+<p>Hybrid assembly strategy is a reasonable and promising approach to utilize strengths and settle weaknesses in Next-Generation Sequencing (NGS) and Third-Generation Sequencing (TGS) technologies. According to this principle, we here present a new toolkit named LRScaf (Long Reads Scaffolder) by applied TGS data to improve draft genome assembly. The main features are: short running time, accuracy, and being contiguity. To scaffold rice genome, it could be done in 20 mins with minimap mapper.</p>
 
 #######################################################<br>
-Installing requirements:
-#######################################################
-java version: 1.8+.
-the related library under lib folder.
-ant.
+Requirements:
+#######################################################<br>
+Java version: 1.8+.
 
-#######################################################
-To build LRScaf project:
-#######################################################
-downlaod the source code and the required library in lib. Then use maven to build this project.
+#######################################################<br>
+To build LRScaf:
+#######################################################<br>
+1. There is a jar package named LRScaf-<version>.jar under target folder. User could download it and run it with command "java -jar LRScafp-<version>.jar -x <configure.xml>"
+2. If you need to compile downlaod the source code and the required library in lib. Then use maven to build this project.
 
-#######################################################
+#######################################################<br>
 Parameters of LRScaf
-#######################################################
+#######################################################<br>
 Parameter	Abbreviation	XML Code	Details
 xml	x	NA	The parameter XML file! All command-line parameters would be omitted if set.
 
@@ -66,9 +65,9 @@ iqrtime	iqrt	iqr_time	The IQR time for defined repeat outlier.
 
 mmcm	mmcm	mmcm	The parameter to remove Minimap aligned records. Default: <8>.
 
-#######################################################
+#######################################################<br>
 License
-#######################################################
+#######################################################<br>
 LRScaf is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation, either version 3 of the License, or (at your
