@@ -2,31 +2,22 @@ LRScaf: improving draft genomes using long noisy reads
 
 Hybrid assembly strategy is a reasonable and promising approach to utilize strengths and settle weaknesses in Next-Generation Sequencing (NGS) and Third-Generation Sequencing (TGS) technologies. According to this principle, we here present a new toolkit named LRScaf (Long Reads Scaffolder) by applied TGS data to improve draft genome assembly. The main features are: short running time, accuracy, and being contiguity. To scaffold rice genome, it could be done in 20 mins with minimap mapper.
 
-############
-
-Installig requirements:
-
-############
-
+#######################################################
+Installing requirements:
+#######################################################
 java version: 1.8+.
-the related libarary under lib folder.
+the related library under lib folder.
 ant.
-############
 
-To build hass project:
+#######################################################
+To build LRScaf project:
+#######################################################
+downlaod the source code and the required library in lib. Then use maven to build this project.
 
-############
-
-downlaod the source code and the required libaray in lib. Then use maven to build this project.
-
-############
-
-LRScaf Parameter:
-
-############
-
+#######################################################
+Parameters of LRScaf
+#######################################################
 Parameter	Abbreviation	XML Code	Details
-
 xml	x	NA	The parameter XML file! All command-line parameters would be omitted if set.
 
 contig	c	contig	The file of pre-assembled contigs in fasta format.
@@ -74,3 +65,19 @@ tiplength	tl	tip_length	The maximum tip length.
 iqrtime	iqrt	iqr_time	The IQR time for defined repeat outlier.
 
 mmcm	mmcm	mmcm	The parameter to remove Minimap aligned records. Default: <8>.
+
+#######################################################
+License
+#######################################################
+LRScaf is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program. If not, see <http://www.gnu.org/licenses/>.
