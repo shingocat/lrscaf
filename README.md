@@ -14,7 +14,7 @@ Java version: 1.8+.<br>
 ################################################################################<br>
 There are two ways to build and run this project:
 <li>There is a jar package named LRScaf-&ltversion&gt.jar under target folder in releases. User could run it with command: <i>"java -jar LRScaf-&ltversion&gt.jar -x &ltconfigure.xml&gt"</i>. The details of configuration XML file are described below.</li>
-<li>If you want to compile the source code by yourself, you could download the source code and then compile and build this project by maven in following steps:</li>
+<li>If you want to compile the source code by yourself, you could download the source code and then compile and build this project by maven &lthttps://maven.apache.org/&gt in following steps:</li>
 # 1. download the latest releases version and unzip the package<br>
 <i>unzip lrscaf-&ltversion&gt.zip</i><br>
 # 2. change the working folder<br>
@@ -44,7 +44,7 @@ or command-line style<br>
 <tr><td>m5</td><td>m5</td><td>m5</td><td>The alignment file in -m 5 format of BLASR.</td></tr>
 <tr><td>m4</td><td>m4</td><td>m4</td><td>The alignment file in -m 4 format of BLASR.</td></tr>
 <tr><td>sam</td><td>sam</td><td>sam</td><td>The alignment file in sam format of BLASR.</td></tr>
-<tr><td>mm</td><td>mm</td><td>mm</td><td>The alignment file in defualt format of Minimap.</td></tr>
+<tr><td>mm</td><td>mm</td><td>mm</td><td>The alignment file in PAF format of Minimap.</td></tr>
 <tr><td>output</td><td>o</td><td>output</td><td>The output folder.</td></tr>
 <tr><td>miniCntLen</td><td>micl</td><td>min_contig_length</td><td>The minimum contigs length to be included for scaffolding. Default: &lt500&gt bp.</td></tr>
 <tr><td>identity</td><td>i</td><td>identity</td><td>The identity threshold for filtering invalid alignment. Default: &lt0.8&gt.<br>This value <b>must be</b> modify according to the mapper. <br>For the BLASR alignment file, the higher value means the higher identity. <br>For the Minimap alignment file, the value should not be larger than 0.3 and the value could be set to 0.1.</td></tr>
