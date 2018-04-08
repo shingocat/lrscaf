@@ -27,13 +27,15 @@ There are two ways to build and run this project:
 ################################################################################<br>
 # XML configuration style<br>
 <i>java -jar LRScaf-&ltversion&gt.jar -x &ltconfigure.xml&gt</i><br>
-or command-line style<br>
+or command-line in short style<br>
 <i>java -jar LRScaf-&ltversion&gt.jar -c &ltdraft_assembly.fasta&gt -m4 &ltalignment.m4&gt -o &ltoutput_foloder&gt [options]</i><br>
+or command-line in long style<br>
+<i>java -jar LRScaf-&ltversion&gt.jar --contig &ltdraft_assembly.fasta&gt --m4 &ltalignment.m4&gt --output &ltoutput_foloder&gt [options]</i><br>
 <br>
 ################################################################################<br>
 <b>Parameters of LRScaf</b><br>
 ################################################################################<br>
-<p>LRScaf supports parameters set by XML confiuration file or command-line. It recommends to use XML configuration file. There is a template configuration file of XML format, named "scafconf.xml", in the project. In command-line, LRScaf supports long and short style of GNU like options. And the following table would show each parameter meaning and default value if available.</p>
+<p>LRScaf supports parameters set by XML confiuration file or command-line. It recommends to use XML configuration file. There is a template configuration file of XML format, named "scafconf.xml", in the project. In command-line, LRScaf supports long (dash-dash) and short (dash) style of GNU like options. And the following table would show each parameter meaning and default value if available.</p>
 <p>The first and second columns are the command-line paremeters in long and its coressponding short style.</p>
 <p>The third column is the code in XML configuration file. NA is not available in XML configuration file.</p>
 <p>The fourth column is the details and default value of this option if available.</p>
