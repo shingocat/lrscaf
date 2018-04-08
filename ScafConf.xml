@@ -20,7 +20,6 @@
          <max_end_ratio>0.1</max_end_ratio>
          <min_supported_links>2</min_supported_links>
 		 <tips_length>1500</tips_length>
-		 <use_overlap_link>true</use_overlap_link>
 		 <ratio>0.2</ratio>
 		 <repeat_mask>true</repeat_mask>
 		 <iqr_time>3</iqr_time>
