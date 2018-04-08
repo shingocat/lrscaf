@@ -58,8 +58,8 @@ or command-line style<br>
 <tr><td>ratio</td><td>r</td><td>ratio</td><td>The ratio for deleting error prone edges in divergence nodes. Default: &lt0.2&gt.</td></tr>
 <tr><td>mr</td><td>mr</td><td>repeat_mask</td><td>The indicator for masking repeats. Default: &lttrue&gt. It recommends to be true.</td></tr>
 <tr><td>tiplength</td><td>tl</td><td>tip_length</td><td>The maximum tip length. Default: &lt1500&gt bp.</td></tr>
-<tr><td>iqrtime</td><td>iqrt</td><td>iqr_time</td><td>The IQR times for set contigs as repeats by their coverages. Default: &lt3&gt.</td></tr>
-<tr><td>mmcm</td><td>mmcm</td><td>mmcm</td><td>The parameter to remove Minimap aligned records. Default: &lt8&gt. <b>Only for Minimap alignment</b>.</td></tr>
+<tr><td>iqrtime</td><td>iqrt</td><td>iqr_time</td><td>The IQR times for setting contigs as repeats by their coverages. Default: &lt3&gt.</td></tr>
+<tr><td>mmcm</td><td>mmcm</td><td>mmcm</td><td>The parameter to filter invalid Minimap alignments. Default: &lt8&gt. <b>Only for Minimap alignment</b>.</td></tr>
 <tr><td>help</td><td>h</td><td>NA</td><td>Print this help information.</td></tr>
 </table>
 <br>
