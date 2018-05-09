@@ -1,7 +1,7 @@
 <b>LRScaf: improving draft genomes using long noisy reads</b>
 <br>
 <p>
-Hybrid assembly strategy is a reasonable and promising approach to utilize strengths and settle weaknesses in Next-Generation Sequencing (NGS) and Third-Generation Sequencing (TGS) technologies. According to this principle, we here present a new toolkit named LRScaf (Long Reads Scaffolder) by applied TGS data to improve draft genome assembly. The main features are: short running time, accuracy, and being contiguity. To scaffold rice genome, it could be done in 20 mins with minimap mapper. In human, LRScaf could improve the draft assembly NG50 from 129.2 Kb to 10.7 Mb on 20x PacBio CHM1 dataset and N50 from 114 Kb to 16.9 Mb on ~35x Nanopore NA12878 dataset.
+Hybrid assembly strategy is a reasonable and promising approach to utilize strengths and settle weaknesses in Next-Generation Sequencing (NGS) and Third-Generation Sequencing (TGS) technologies. According to this principle, we here present a new toolkit named LRScaf (Long Reads Scaffolder) by applied TGS data to improve draft genome assembly. The main features are: short running time, accuracy, and being contiguity. To scaffold rice genome, it could be done in 20 mins with minimap mapper. In human, LRScaf could improve the draft assembly NG50 from 127.5 Kb to 10.4 Mb on 20x PacBio CHM1 dataset and NG50 from 115.7 Kb to 17.4 Mb on ~35x Nanopore NA12878 dataset.
 </p>
 <br>
 ################################################################################<br>
