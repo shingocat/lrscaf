@@ -188,7 +188,14 @@ public class LinkBuilder {
 		{
 			MRecord record = records.get(i);
 			String tId = record.gettName();
-			if(!repeats.contains(tId))
+			if(paras.isRepMask())
+			{
+				if(repeats.contains(tId))
+				{
+					continue;
+				}
+			} 
+			//if(!repeats.contains(tId))
 			{
 				int currentPBLen = record.getqLength();
 				int currentPBStart = record.getqStart();
