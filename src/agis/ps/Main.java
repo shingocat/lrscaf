@@ -76,14 +76,15 @@ public class Main {
 	{
 		Options opts = new Options();
 		// parameters sepcified by xml
-		OptionGroup xmlog = new OptionGroup();
+		//OptionGroup xmlog = new OptionGroup();
 		// xml file
 		Option xml = new Option("x", "xml", true, "The parameter XML file! All command-line parameters would be omitted if set.");
-		xmlog.addOption(xml);
-		opts.addOptionGroup(xmlog);
+		//xmlog.addOption(xml);
+		//opts.addOptionGroup(xmlog);
+		opts.addOption(xml);
 		
 		// cml options
-		OptionGroup inputog = new OptionGroup();
+		//OptionGroup inputog = new OptionGroup();
 		// contig
 		Option cnt = new Option("c", "contig", true, "The file of pre-assembled contigs in fasta format.");
 		opts.addOption(cnt);
@@ -106,10 +107,12 @@ public class Main {
 //		Option sam = new Option("sam", "sam", true, "The aligned file in sam format.");
 //		inputog.addOption(sam);
 		Option alnFile = new Option("a", "alignedFile", true, "Required. The aligned file by using Minimap or BLASR mapper!");
-		inputog.addOption(alnFile);
+		//inputog.addOption(alnFile);
+		opts.addOption(alnFile);
 		Option type = new Option("t", "type", true, "Requried. The aligned file format, supported: mm for Minimap, m4, m5 or sam for BLASR.");
-		inputog.addOption(type);
-		opts.addOptionGroup(inputog);
+		//inputog.addOption(type);
+		//opts.addOptionGroup(inputog);
+		opts.addOption(type);
 		// output folder
 		opts.addOption("o", "output", true, "The scaffolding output folder.");
 		// help 
