@@ -45,7 +45,7 @@ public class Main {
 			} else {
 				// for parse the xml configure, all the other parameters set by command line will dismissed
 				if (cl.hasOption("x")) {
-					logger.info("Parsing the xml configure, all the other parameters set by command line will dismissed");
+					logger.info("Parsing the xml configure, all the other parameters set by command line will dismissed!");
 					String xmlFile = cl.getOptionValue("x");
 					XMLParser xmlParser = new XMLParser();
 					paras = xmlParser.parseXML(xmlFile);

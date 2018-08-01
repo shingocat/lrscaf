@@ -9,6 +9,11 @@ package agis.ps.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import agis.ps.Scaffolder;
+
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
@@ -17,6 +22,7 @@ import agis.ps.link.MRecord;
 import agis.ps.seqs.Contig;
 
 public class MRecordValidator {
+	private static Logger logger = LoggerFactory.getLogger(MRecordValidator.class);
 	// private static Logger logger =
 	// LoggerFactory.getLogger(MRecordValidator.class);
 
@@ -220,7 +226,15 @@ public class MRecordValidator {
 			isValid4Repeat = false;
 		// check for record
 		// int cntLen = record.gettLength();
-		int cntLen = cnts.get(record.gettName()).getLength();
+		int cntLen = 0;
+		try{
+			cntLen = cnts.get(record.gettName()).getLength();
+			record.settLength(cntLen);
+		}catch(Exception e)
+		{
+			throw new IllegalArgumentException("The contig ID, " + record.gettName() + 
+					", in alignment file is not in your input draft assembly file! Please checking the contig ID.");
+		}
 		double identity = record.getIdentity();
 		// do not filter the pacbio read length
 		// and only filter the contigs length less than 200 bp;

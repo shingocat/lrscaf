@@ -175,6 +175,10 @@ public abstract class AlignmentFileReader {
 //		logger.info("Valid Aligned Records: " + records.values().size());
 		logger.info("Valid Aligned Records: " + listRecords.size());
 		logger.info("Reading Aligned Records, erase time: " + (end - start) + " ms");
+//		if(listRecords.isEmpty())
+//		{
+//			throw new IllegalArgumentException("The valid records in alignment file are empty! Please checking the alignment file!");
+//		}
 //		return records;
 		return listRecords;
 	}
