@@ -254,9 +254,10 @@ public class Main {
 		// parsering identity
 		if(cl.hasOption("i"))
 		{
-			if(paras.getType() == "mm")
+			double ident = Double.valueOf(cl.getOptionValue("i"));
+			if(paras.getType() == "mm" && ident >= 0.3)
 				logger.warn("The identity for minimap mapper should be less than 0.3!");
-			paras.setIdentity(Double.valueOf(cl.getOptionValue("i")));
+			paras.setIdentity(ident);
 		} else
 		{ // if do not set identity for minimap alignment
 			if(paras.getType() == "mm")
