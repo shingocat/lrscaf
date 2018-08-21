@@ -353,7 +353,7 @@ public class Main {
 		sb.append("## Output folder:\n");
 		sb.append("-o\t--output\t<arg>\tRequired. The scaffolding output folder.\n");
 		sb.append("## Other options:\n");
-		sb.append("-i\t--identity\t<arg>\tThe identity threshold for blasr alignment! Default: <0.8>.\n");
+		sb.append("-i\t--identity\t<arg>\tFor BLASR Mapper: Default <0.8>; For minimap Mapper: Default <0.1>.\n");
 		sb.append("-r\t--ratio\t<arg>\tThe ratio for deleting error prone edges! Default: <0.2>.\n");
 		sb.append("-misl\t--miniSupLinks\t<arg>\tThe minimum support links number! Default: <1>.\n");
 		sb.append("-iqrt\t--iqrtime\tThe IQR time for defined repeat outlier.Default: <1.5>\n");
