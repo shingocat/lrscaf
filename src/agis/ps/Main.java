@@ -254,11 +254,14 @@ public class Main {
 		// parsering identity
 		if(cl.hasOption("i"))
 		{
+			if(paras.getType() == "mm")
+				logger.warn("The identity for minimap mapper should be less than 0.3!");
 			paras.setIdentity(Double.valueOf(cl.getOptionValue("i")));
 		} else
 		{ // if do not set identity for minimap alignment
 			if(paras.getType() == "mm")
 			{
+				logger.warn("The identity for minimap mapper would be setted to 0.1!");
 				paras.setIdentity(0.1);
 			}
 		}
