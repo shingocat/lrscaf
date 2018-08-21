@@ -28,9 +28,9 @@ There are two ways to build and run this project:
 # XML configuration style<br>
 <i>java -jar LRScaf-&ltversion&gt.jar -x &ltconfigure.xml&gt</i><br>
 # or command-line in short style<br>
-<i>java -jar LRScaf-&ltversion&gt.jar -c &ltdraft_assembly.fasta&gt -m4 &ltalignment.m4&gt -o &ltoutput_foloder&gt [options]</i><br>
+<i>java -jar LRScaf-&ltversion&gt.jar -c &ltdraft_assembly.fasta&gt -a &ltalignment.m4&gt -t &ltm4&gt -o &ltoutput_foloder&gt [options]</i><br>
 # or command-line in long style<br>
-<i>java -jar LRScaf-&ltversion&gt.jar --contig &ltdraft_assembly.fasta&gt --m4 &ltalignment.m4&gt --output &ltoutput_foloder&gt [options]</i><br>
+<i>java -jar LRScaf-&ltversion&gt.jar --contig &ltdraft_assembly.fasta&gt --alignedFile &ltalignment.m4&gt -t &ltm4&gt --output &ltoutput_foloder&gt [options]</i><br>
 <br>
 ################################################################################<br>
 <b>Parameters of LRScaf</b><br>
