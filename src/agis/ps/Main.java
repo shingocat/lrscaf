@@ -122,7 +122,9 @@ public class Main {
 		// minimum pacbio long read length
 //		opts.addOption("mipl", "miniPBLen", true, "The minimum PacBio long read's length for scaffolding! Default:<5000>.");
 		// identity
-		opts.addOption("i", "identity", true, "The identity threshold for blasr alignment! Default: <0.8>.");
+		opts.addOption("i", "identity", true, "The identity threshold for filtering invalid alignment. Default: <0.8>. " + 
+				"This value must be modify according to the mapper. For the BLASR alignment file, the higher value means the higher identity. " + 
+				"For the Minimap alignment file, the value should not be larger than 0.3 and the value could be set to 0.1.");
 		// minimum overlap length
 		opts.addOption("mioll", "miniOLLen", true, "The minimum overlap length threshold for blasr alignment! Default: <2400>.");
 		// minimum overlap ratio
@@ -253,7 +255,13 @@ public class Main {
 		if(cl.hasOption("i"))
 		{
 			paras.setIdentity(Double.valueOf(cl.getOptionValue("i")));
-		} 
+		} else
+		{ // if do not set identity for minimap alignment
+			if(paras.getType() == "mm")
+			{
+				paras.setIdentity(0.1);
+			}
+		}
 		// parsering minimum overlap length
 		if(cl.hasOption("mioll"))
 		{

@@ -106,7 +106,13 @@ public class XMLParser {
 				para.setMaxEndRatio(0.1);
 				para.setMinSupLinks(1);
 				para.setMaxSupLinks(50);
-				para.setIdentity(0.8);
+				if(para.getType() == "mm")
+				{
+					para.setIdentity(0.1);
+				} else
+				{
+					para.setIdentity(0.8);
+				}
 				para.setUseOLLink(true);
 				para.setRatio(0.2);
 				para.setRepMask(true);
@@ -151,7 +157,14 @@ public class XMLParser {
 					} else if (nodeName.equalsIgnoreCase("max_end_ratio")) {
 						para.setMaxEndRatio(Double.valueOf(node.getTextContent().trim()));
 					} else if (nodeName.equalsIgnoreCase("identity")) {
-						para.setIdentity(Double.valueOf(node.getTextContent().trim()));
+						// para.setIdentity(Double.valueOf(node.getTextContent().trim()));
+						double ident = Double.valueOf(node.getTextContent().trim());
+						if(para.getType() == "mm" && ident >= 0.3)
+						{
+							logger.info("The identity is setted to " + ident + ".");
+							logger.info("The identity for Minimap mapper should be not large than 0.3!");
+						} 
+						para.setIdentity(ident);
 					} else if (nodeName.equalsIgnoreCase("use_overlap_link")) {
 						String temp = node.getTextContent().trim();
 						if(temp.startsWith("t") || temp.startsWith("T"))
