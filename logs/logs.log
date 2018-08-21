@@ -1,47 +1,47 @@
-2018-08-21 14:11:04  [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed!
-2018-08-21 14:11:04  [ INFO ]  Launching...
-2018-08-21 14:11:04  [ INFO ]  The output folder was exist!
-2018-08-21 14:11:04  [ INFO ]  It will delete all file under this folder!
-2018-08-21 14:11:04  [ INFO ]  Building output folder, erase time: 9 ms
-2018-08-21 14:11:05  [ INFO ]  Reading contigs, erase times: 210 ms
-2018-08-21 14:11:05  [ INFO ]  Valid Aligned Records: 3263
-2018-08-21 14:11:05  [ INFO ]  Reading Aligned Records, erase time: 249 ms
-2018-08-21 14:11:05  [ INFO ]  Finding Repeats:
-2018-08-21 14:11:05  [ INFO ]  MIN: 1.0
-2018-08-21 14:11:05  [ INFO ]  First Quartile: 3.0
-2018-08-21 14:11:05  [ INFO ]  Median cov = 8.5
-2018-08-21 14:11:05  [ INFO ]  Third Quartile: 13.0
-2018-08-21 14:11:05  [ INFO ]  MAX: 86.0
-2018-08-21 14:11:05  [ INFO ]  Interquartile Range: 10.0
-2018-08-21 14:11:05  [ INFO ]  3.0's IQR , Outlier Threshold: 43.0
-2018-08-21 14:11:05  [ INFO ]  Repeat count: 2
-2018-08-21 14:11:05  [ INFO ]  Finding repeat, erase time: 5 ms
-2018-08-21 14:11:05  [ INFO ]  Building Links in 00%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 10%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 20%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 30%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 40%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 50%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 60%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 70%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 80%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 90%
-2018-08-21 14:11:05  [ INFO ]  Building Links in 100%
-2018-08-21 14:11:05  [ INFO ]  Valid Links Acount: 2989
-2018-08-21 14:11:05  [ INFO ]  Building Link, erase time : 30 ms
-2018-08-21 14:11:05  [ INFO ]  Minimum supported links: 3
-2018-08-21 14:11:05  [ INFO ]  Used overlap link: true
-2018-08-21 14:11:05  [ INFO ]  Building Edges, Erase Time: 49 ms
-2018-08-21 14:11:05  [ INFO ]  Original Edges size: 448
-2018-08-21 14:11:05  [ INFO ]  Transitive Reducing, erase time: 1 ms
-2018-08-21 14:11:05  [ INFO ]  Edges size after transitive reducing: 448
-2018-08-21 14:11:05  [ INFO ]  Delete error prone edges:0
-2018-08-21 14:11:05  [ INFO ]  Error prone Edge deleting, erase time: 1 ms
-2018-08-21 14:11:05  [ INFO ]  Edges size after error prone deleting: 448
-2018-08-21 14:11:05  [ INFO ]  Delete tip edges:0
-2018-08-21 14:11:05  [ INFO ]  Tip edge deleting, erase time: 0 ms
-2018-08-21 14:11:05  [ INFO ]  Edges size after deleting tips: 448
-2018-08-21 14:11:05  [ INFO ]  Path Building, erase time: 113 ms
-2018-08-21 14:11:07  [ INFO ]  Scaffold writing, erase time: 1734 ms
-2018-08-21 14:11:07  [ INFO ]  Ending...
-2018-08-21 14:11:07  [ INFO ]  Scaffolding erase time: 2 s.
+2018-08-21 14:15:49  [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed!
+2018-08-21 14:15:50  [ INFO ]  Launching...
+2018-08-21 14:15:50  [ INFO ]  The output folder was exist!
+2018-08-21 14:15:50  [ INFO ]  It will delete all file under this folder!
+2018-08-21 14:15:50  [ INFO ]  Building output folder, erase time: 8 ms
+2018-08-21 14:15:50  [ INFO ]  Reading contigs, erase times: 205 ms
+2018-08-21 14:15:50  [ INFO ]  Valid Aligned Records: 3263
+2018-08-21 14:15:50  [ INFO ]  Reading Aligned Records, erase time: 245 ms
+2018-08-21 14:15:50  [ INFO ]  Finding Repeats:
+2018-08-21 14:15:50  [ INFO ]  MIN: 1.0
+2018-08-21 14:15:50  [ INFO ]  First Quartile: 3.0
+2018-08-21 14:15:50  [ INFO ]  Median cov = 8.5
+2018-08-21 14:15:50  [ INFO ]  Third Quartile: 13.0
+2018-08-21 14:15:50  [ INFO ]  MAX: 86.0
+2018-08-21 14:15:50  [ INFO ]  Interquartile Range: 10.0
+2018-08-21 14:15:50  [ INFO ]  3.0's IQR , Outlier Threshold: 43.0
+2018-08-21 14:15:50  [ INFO ]  Repeat count: 2
+2018-08-21 14:15:50  [ INFO ]  Finding repeat, erase time: 6 ms
+2018-08-21 14:15:50  [ INFO ]  Building Links in 00%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 10%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 20%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 30%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 40%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 50%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 60%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 70%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 80%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 90%
+2018-08-21 14:15:50  [ INFO ]  Building Links in 100%
+2018-08-21 14:15:50  [ INFO ]  Valid Links Acount: 2989
+2018-08-21 14:15:50  [ INFO ]  Building Link, erase time : 29 ms
+2018-08-21 14:15:50  [ INFO ]  Minimum supported links: 3
+2018-08-21 14:15:50  [ INFO ]  Used overlap link: true
+2018-08-21 14:15:50  [ INFO ]  Building Edges, Erase Time: 39 ms
+2018-08-21 14:15:50  [ INFO ]  Original Edges size: 448
+2018-08-21 14:15:50  [ INFO ]  Transitive Reducing, erase time: 2 ms
+2018-08-21 14:15:50  [ INFO ]  Edges size after transitive reducing: 448
+2018-08-21 14:15:50  [ INFO ]  Delete error prone edges:0
+2018-08-21 14:15:50  [ INFO ]  Error prone Edge deleting, erase time: 0 ms
+2018-08-21 14:15:50  [ INFO ]  Edges size after error prone deleting: 448
+2018-08-21 14:15:50  [ INFO ]  Delete tip edges:0
+2018-08-21 14:15:50  [ INFO ]  Tip edge deleting, erase time: 0 ms
+2018-08-21 14:15:50  [ INFO ]  Edges size after deleting tips: 448
+2018-08-21 14:15:50  [ INFO ]  Path Building, erase time: 80 ms
+2018-08-21 14:15:52  [ INFO ]  Scaffold writing, erase time: 1675 ms
+2018-08-21 14:15:52  [ INFO ]  Ending...
+2018-08-21 14:15:52  [ INFO ]  Scaffolding erase time: 2 s.
