@@ -132,8 +132,8 @@ public class XMLParser {
 						if(value < 200)
 						{
 							para.setMinContLen(200);
-							logger.info("The minimum contig's length should be large than 200 bp!");
-							logger.info("Mandatorily set to 200 bp!");
+							logger.warn("The minimum contig's length should be large than 200 bp!");
+							logger.warn("Mandatorily set to 200 bp!");
 						} else
 						{
 							para.setMinContLen(value);
@@ -159,10 +159,10 @@ public class XMLParser {
 					} else if (nodeName.equalsIgnoreCase("identity")) {
 						// para.setIdentity(Double.valueOf(node.getTextContent().trim()));
 						double ident = Double.valueOf(node.getTextContent().trim());
-						if(para.getType() == "mm" && ident >= 0.3)
+						if(para.getType().equalsIgnoreCase("mm") && ident >= 0.3)
 						{
-							logger.info("The identity is setted to " + ident + ".");
-							logger.info("The identity for Minimap mapper should be not large than 0.3!");
+							logger.warn("The identity is setted to " + ident + ".");
+							logger.warn("The identity for Minimap mapper should be not large than 0.3!");
 						} 
 						para.setIdentity(ident);
 					} else if (nodeName.equalsIgnoreCase("use_overlap_link")) {

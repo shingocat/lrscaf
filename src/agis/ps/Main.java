@@ -239,8 +239,8 @@ public class Main {
 			if(value < 200)
 			{
 				paras.setMinContLen(200);
-				logger.info("The minimum contig's length should be large than 200 bp!");
-				logger.info("Mandatorily set to 200 bp!");
+				logger.warn("The minimum contig's length should be large than 200 bp!");
+				logger.warn("Mandatorily set to 200 bp!");
 			} else
 			{
 				paras.setMinContLen(value);
@@ -255,7 +255,7 @@ public class Main {
 		if(cl.hasOption("i"))
 		{
 			double ident = Double.valueOf(cl.getOptionValue("i"));
-			if(paras.getType() == "mm" && ident >= 0.3)
+			if(paras.getType().equalsIgnoreCase("mm") && ident >= 0.3)
 				logger.warn("The identity for minimap mapper should be less than 0.3!");
 			paras.setIdentity(ident);
 		} else
