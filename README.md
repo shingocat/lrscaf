@@ -95,6 +95,7 @@ There are two ways to build and run this project:
 &nbsp; &nbsp; &ltrepeat_mask&gttrue&lt/repeat_mask&gt<br>
 &nbsp; &nbsp; &ltiqr_time&gt3&lt/iqr_time&gt<br>
 &nbsp; &nbsp; &ltmmcm&gt8&lt/mmcm&gt &lt!--only for Minimap Alignment.--&gt<br>
+&nbsp; &nbsp; &ltprocess&gt4&lt/process&gt<br>
 &nbsp; 	&lt/paras&gt<br>
 &lt/scaffold&gt<br>
 <br>
