@@ -62,6 +62,7 @@ There are two ways to build and run this project:
 <tr><td>tiplength</td><td>tl</td><td>tip_length</td><td>The maximum tip length. Default: &lt1500&gt bp.</td></tr>
 <tr><td>iqrtime</td><td>iqrt</td><td>iqr_time</td><td>The IQR times for setting contigs as repeats by their coverages. Default: &lt3&gt.</td></tr>
 <tr><td>mmcm</td><td>mmcm</td><td>mmcm</td><td>The parameter to filter invalid Minimap alignments. Default: &lt8&gt. <b>Only for Minimap alignment</b>.</td></tr>
+<tr><td>process</td><td>p</td><td>process</td><td>The multi-threads settings. Default:&lt4&gt.</td></tr>
 <tr><td>help</td><td>h</td><td>NA</td><td>Print this help information.</td></tr>
 </table>
 <br>
@@ -106,6 +107,6 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 <br>
 You should have received a copy of the GNU General Public License along with this program. If not, see &lthttp://www.gnu.org/licenses/&gt. </p>
 <br>
-If you have any questions, please feel free to contact me &ltmqin@outlook.com&gt.
+If you have any questions, please feel free to contact me &ltmqin@caas.cn&gt.
 <br>
 <br>

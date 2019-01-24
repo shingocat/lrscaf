@@ -24,5 +24,6 @@
 		 <repeat_mask>true</repeat_mask>
 		 <iqr_time>3</iqr_time>
 		 <mmcm>8</mmcm> <!--only for Minimap aligned outcome.-->
+		 <process>4</process>
 	</paras>
 </scaffold>
