@@ -27,6 +27,7 @@ D:\workspace\agisps\src\agis\ps\util\MRecordValidator.java
 D:\workspace\agisps\src\agis\ps\file\ContigReader.java
 D:\workspace\agisps\src\agis\ps\file\RepeatWriter.java
 D:\workspace\agisps\src\agis\ps\file\M5Reader.java
+D:\workspace\agisps\src\agis\ps\thread\MRecord2Link.java
 D:\workspace\agisps\src\agis\ps\Scaffolder.java
 D:\workspace\agisps\src\agis\ps\seqs\PBGapSeq.java
 D:\workspace\agisps\src\agis\ps\util\EdgeBundler.java
@@ -47,6 +48,7 @@ D:\workspace\agisps\src\agis\ps\link\CntFileEncapsulate.java
 D:\workspace\agisps\src\agis\ps\path\NodePath.java
 D:\workspace\agisps\src\agis\ps\link\MRecord.java
 D:\workspace\agisps\src\agis\ps\util\GapRecord.java
+D:\workspace\agisps\src\agis\ps\link\ByLocOrderComparator.java
 D:\workspace\agisps\src\agis\ps\path\InternalNode2.java
 D:\workspace\agisps\src\agis\ps\util\MisassemblyRegionSorter.java
 D:\workspace\agisps\src\agis\ps\file\SimilarityCntReader.java

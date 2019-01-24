@@ -39,7 +39,6 @@ agis\ps\Scaffolder.class
 agis\ps\link\Edge.class
 agis\ps\file\SamReader.class
 agis\ps\file\ScaffoldWriter.class
-agis\ps\util\ByLocOrderComparator.class
 agis\ps\util\MisassemblyRegion.class
 agis\ps\path\InternalPath.class
 agis\ps\file\GapRecordWriter.class
@@ -57,8 +56,10 @@ agis\ps\align\DynamicProgramming.class
 agis\ps\file\N50Writer.class
 agis\ps\link\Link.class
 agis\ps\file\LinkWriter.class
+agis\ps\link\ByLocOrderComparator.class
 agis\ps\link\ILink.class
 agis\ps\link\MRecord.class
+agis\ps\thread\MRecord2Link.class
 agis\ps\file\M5Reader.class
 agis\ps\file\ContigMisassemblyWriter.class
 agis\ps\path\InternalNode2.class

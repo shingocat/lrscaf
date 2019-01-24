@@ -8,7 +8,7 @@ package agis.ps.link;
 
 import agis.ps.seqs.Contig;
 
-public class TriadLink {
+public class TriadLink implements ILink {
 	private Contig previous; // previous contig in link;
 	private Contig middle; // middle contig in link;
 	private Contig last; // last contig in link
@@ -156,6 +156,12 @@ public class TriadLink {
 	public String toString() {
 		return "TriadLink [previous=" + previous + ", middle=" + middle + ", last=" + last + ", supLinks=" + supLinks
 				+ ", valid=" + isValid +"]";
+	}
+
+	@Override
+	public int getDistance() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

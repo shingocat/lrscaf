@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.file.GapRecordWriter;
 import agis.ps.link.Edge;
+import agis.ps.link.ILink;
 import agis.ps.link.Link;
 import agis.ps.link.PBLink;
 //import agis.ps.link.PBLinkM;
@@ -45,7 +46,7 @@ public class EdgeBundler {
 		this.isUseOL = paras.isUseOLLink();
 	}
 	
-	public List<Edge> links2edges(List<Link> links)
+	public List<Edge> links2edges(List<ILink> links)
 	{
 		long start = System.currentTimeMillis();
 		if(links == null || links.isEmpty())
@@ -55,10 +56,10 @@ public class EdgeBundler {
 		edges.clear();
 		logger.info("Minimum supported links: " + minSupLinks);
 		logger.info("Used overlap link: " + isUseOL);
-		Iterator<Link> it = links.iterator();
+		Iterator<ILink> it = links.iterator();
 		Map<String, List<Link>> temp = new HashMap<String, List<Link>>();
 		while (it.hasNext()) {
-			Link pb = it.next();
+			Link pb = (Link)it.next();
 			String id1 = pb.getOriginal().getID() + ":->:" + pb.getTerminus().getID();
 			String id2 = pb.getTerminus().getID() + ":->:" + pb.getOriginal().getID();
 			if (temp.containsKey(id1)) {

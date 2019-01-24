@@ -153,6 +153,7 @@ public class Main {
 		opts.addOption("iqrt", "iqrtime", false, "The IQR time for defined repeat outlier.");
 		// only for minimap format , default 8;
 		opts.addOption("mmcm", "mmcm", true, "The filter parameter only for last column format of minimap, default:8.");
+		opts.addOption("p", "process", true, "The multi-threads settings, default: 4.");
 		return opts;
 	}
 	
@@ -365,7 +366,8 @@ public class Main {
 		sb.append("-mxohl\t--maxOHLen\t<arg>\tThe maximum overhang length threshold for alignment! Default: <300>.\n");
 		sb.append("-mxohr\t--maxOHRatio\t<arg>\tThe maximum overhang ratio threshold for alignment! Default: <0.1>.\n");
 		sb.append("-mmcm\t--mmcm\t<arg>\tThe filter parameter only for last column format of Minimap, default:<8>.\n");
- 		sb.append("-h\t--help\tThe help infomation!\n");
+ 		sb.append("-p\t--process\t<arg\tThe multi-threads settings, default:<4>.\n");
+		sb.append("-h\t--help\tThe help infomation!\n");
 		sb.append("Please report issues at <github_project_website>!");
 		return sb.toString();
 	}

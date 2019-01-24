@@ -34,7 +34,20 @@ public class Parameter implements Serializable {
 	private int tipLength = 1500; // tip length is 1500 bp, larger than this do not considering as tip
 	private double iqrTime = 1.5;
 	private int mmcm = 8; // only for minimap output, default: 8;
+	private int threads = 4; // default threads;
 	
+	
+	
+	public int getThreads() {
+		return threads;
+	}
+
+	public void setThreads(int threads) {
+		if(threads <= 0)
+			threads = 1;
+		this.threads = threads;
+	}
+
 	public int getMmcm() {
 		return mmcm;
 	}

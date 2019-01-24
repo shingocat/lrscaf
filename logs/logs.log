@@ -1,30 +1,36 @@
-2018-08-21 14:54:20  [ INFO ]  
-LRScaf is a scaffolder by using Thired Generation Sequencing data to scaffold any draft assemblied genomes. it supports command line argument or XML configure file!
-Usage:
-XML: java -jar LRScaf.jar -x <XML_File>
-CML: java -jar LRScaf.jar -c <Draft_Assemblies_File> -a <Alinged_File> -t <m5|m4|mm|sam> [Other_Options]
-Argument Details:
-XML configure file:
--x	--xml	<arg>	The parameter XML file! All command-line parameters would be omitted if set.
-Command line options:
--c	--contig	<arg>	Required. The file of pre-assembled contigs in fasta format.
-## Input file:
--a	--alignedFile	Required. The aligned file by using Minimap or BLASR mapper!
--t	--type	Requried. The aligned file format, supported: 1) mm for Minimap; 2)m4, m5 or sam for BLASR.
-## Output folder:
--o	--output	<arg>	Required. The scaffolding output folder.
-## Other options:
--i	--identity	<arg>	For BLASR Mapper: Default <0.8>; For minimap Mapper: Default <0.1>.
--r	--ratio	<arg>	The ratio for deleting error prone edges! Default: <0.2>.
--misl	--miniSupLinks	<arg>	The minimum support links number! Default: <1>.
--iqrt	--iqrtime	The IQR time for defined repeat outlier.Default: <1.5>
--micl	--miniCntLen	<arg>	The minimum contig's length (must be larget than 200 bp) for scaffolding! Default:<200>.
--mioll	--miniOLLen	<arg>	The minimum overlap length threshold for alignment! Default: <160>.
--miolr	--miniOLRatio	<arg>	The minimum overlap ratio threshold for alignment! Default: <0.8>.
--mxel	--maxEndLen	<arg>	The maximum ending length of Long Read! Default: <300>.
--mxer	--maxEndRatio	<arg>	The maximum ending ratio of Long Read! Default: <0.1>.
--mxohl	--maxOHLen	<arg>	The maximum overhang length threshold for alignment! Default: <300>.
--mxohr	--maxOHRatio	<arg>	The maximum overhang ratio threshold for alignment! Default: <0.1>.
--mmcm	--mmcm	<arg>	The filter parameter only for last column format of Minimap, default:<8>.
--h	--help	The help infomation!
-Please report issues at <github_project_website>!
+2019-01-24 15:25:18  [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed!
+2019-01-24 15:25:18  [ INFO ]  Launching...
+2019-01-24 15:25:18  [ INFO ]  The output folder was exist!
+2019-01-24 15:25:18  [ INFO ]  It will delete all file under this folder!
+2019-01-24 15:25:18  [ INFO ]  Building output folder, erase time: 9 ms
+2019-01-24 15:25:18  [ INFO ]  Reading contigs, erase times: 210 ms
+2019-01-24 15:25:19  [ INFO ]  Valid Aligned Records: 3263
+2019-01-24 15:25:19  [ INFO ]  Reading Aligned Records, erase time: 274 ms
+2019-01-24 15:25:19  [ INFO ]  Finding Repeats:
+2019-01-24 15:25:19  [ INFO ]  MIN: 1.0
+2019-01-24 15:25:19  [ INFO ]  First Quartile: 3.0
+2019-01-24 15:25:19  [ INFO ]  Median cov = 8.5
+2019-01-24 15:25:19  [ INFO ]  Third Quartile: 13.0
+2019-01-24 15:25:19  [ INFO ]  MAX: 86.0
+2019-01-24 15:25:19  [ INFO ]  Interquartile Range: 10.0
+2019-01-24 15:25:19  [ INFO ]  3.0's IQR , Outlier Threshold: 43.0
+2019-01-24 15:25:19  [ INFO ]  Repeat count: 2
+2019-01-24 15:25:19  [ INFO ]  Finding repeat, erase time: 4 ms
+2019-01-24 15:25:19  [ INFO ]  Valid Links Acount: 2989
+2019-01-24 15:25:19  [ INFO ]  Building Link, erase time : 33 ms
+2019-01-24 15:25:19  [ INFO ]  Minimum supported links: 3
+2019-01-24 15:25:19  [ INFO ]  Used overlap link: true
+2019-01-24 15:25:19  [ INFO ]  Building Edges, Erase Time: 55 ms
+2019-01-24 15:25:19  [ INFO ]  Original Edges size: 448
+2019-01-24 15:25:19  [ INFO ]  Transitive Reducing, erase time: 1 ms
+2019-01-24 15:25:19  [ INFO ]  Edges size after transitive reducing: 448
+2019-01-24 15:25:19  [ INFO ]  Delete error prone edges:0
+2019-01-24 15:25:19  [ INFO ]  Error prone Edge deleting, erase time: 1 ms
+2019-01-24 15:25:19  [ INFO ]  Edges size after error prone deleting: 448
+2019-01-24 15:25:19  [ INFO ]  Delete tip edges:0
+2019-01-24 15:25:19  [ INFO ]  Tip edge deleting, erase time: 0 ms
+2019-01-24 15:25:19  [ INFO ]  Edges size after deleting tips: 448
+2019-01-24 15:25:19  [ INFO ]  Path Building, erase time: 78 ms
+2019-01-24 15:25:21  [ INFO ]  Scaffold writing, erase time: 1963 ms
+2019-01-24 15:25:21  [ INFO ]  Ending...
+2019-01-24 15:25:21  [ INFO ]  Scaffolding erase time: 2 s.

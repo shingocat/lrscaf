@@ -16,6 +16,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import agis.ps.link.ILink;
 import agis.ps.link.Link;
 //import agis.ps.link.MRecord;
 import agis.ps.link.PBLink;
@@ -115,7 +116,7 @@ public class LinkWriter {
 //		
 //	}
 	
-	public void write(List<Link> links)
+	public void write(List<ILink> links)
 	{
 		try{
 			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "links.info");
@@ -123,10 +124,10 @@ public class LinkWriter {
 			bw = new BufferedWriter(fw);
 			if(links != null && links.size() > 0)
 			{
-				Iterator<Link> it = links.iterator();
+				Iterator<ILink> it = links.iterator();
 				while(it.hasNext())
 				{
-					Link link = it.next();
+					Link link = (Link)it.next();
 					String line = link.getOriginal().getID() + "\t" + link.getoStrand() + "\t" + link.getTerminus().getID() + "\t" +
 					link.gettStrand() + "\t" + link.getDist() + "\t" + link.getLrId() + "\t" + link.getoStart() + "\t" 
 					+ link.getoEnd() + "\t" + link.gettStart() + "\t" + link.gettEnd();

@@ -26,6 +26,7 @@ import agis.ps.file.SamReader;
 import agis.ps.file.ScaffoldWriter;
 import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.Edge;
+import agis.ps.link.ILink;
 import agis.ps.link.Link;
 import agis.ps.link.MRecord;
 import agis.ps.link.TriadLink;
@@ -52,8 +53,8 @@ public class Scaffolder {
 	private Map<String, Integer> cntCovs;
 	private List<String> repeats;
 //	private List<String> misassemblies;
-	private List<Link> links;
-	private List<TriadLink> triads;
+	private List<ILink> links;
+	private List<ILink> triads;
 	private List<Edge> edges;
 	private List<NodePath> paths;
 	private Map<String, Contig> cnts;

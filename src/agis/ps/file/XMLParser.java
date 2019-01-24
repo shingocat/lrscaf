@@ -119,6 +119,7 @@ public class XMLParser {
 				para.setGapFilling(false);
 				para.setTipLength(1500);
 				para.setIqrTime(1.5);
+				para.setThreads(4);
 			} else {
 				Node parasNode = nodes.item(0);
 				nodes = parasNode.getChildNodes();
@@ -191,6 +192,8 @@ public class XMLParser {
 						para.setIqrTime(Double.valueOf(node.getTextContent().trim()));
 					} else if(nodeName.equalsIgnoreCase("mmcm")){
 						para.setMmcm(Integer.valueOf(node.getTextContent().trim()));;
+					} else if(nodeName.equals("process")){
+						para.setThreads(Integer.valueOf(node.getTextContent().trim()));
 					} else {
 						logger.info(this.getClass().getName() + "\t" + "The para element contain illeage item " + nodeName + ". it will be omitted!");
 					}

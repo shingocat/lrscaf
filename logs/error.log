@@ -155,3 +155,41 @@
 2018-08-01 15:55:05  [ ERROR ]  PathBuilder ： The Edges could not be empty!
 2018-08-21 14:04:20  [ ERROR ]  agis.ps.file.SamReader	The contig ID, 1231_length_11972_cvg_62.0_tip_0|ref0000176|ref0000140|ref0000197|ref0000446|ref0000189|ref0000382|ref0000721|ref0000308|ref0000458|ref0000216|ref0000227|ref0000443|ref0000090|ref0000505|ref0000197|ref0000630|ref0000166|ref0000625|ref0000708|ref0000706|ref0000609|ref0000613|ref0000527|ref0000131|ref0000423|ref0000638, in alignment file is not in your input draft assembly file! Please checking the contig ID.
 2018-08-21 14:04:20  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2019-01-24 09:29:10  [ ERROR ]  
+2019-01-24 09:31:23  [ ERROR ]  
+2019-01-24 09:34:00  [ ERROR ]  
+2019-01-24 09:40:24  [ ERROR ]  
+2019-01-24 09:49:36  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2019-01-24 09:52:18  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2019-01-24 09:53:17  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2019-01-24 09:53:35  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2019-01-24 09:58:31  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2019-01-24 09:59:02  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2019-01-24 10:07:50  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:07:50  [ ERROR ]  
+2019-01-24 10:10:07  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:10:07  [ ERROR ]  
+2019-01-24 10:10:18  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:10:18  [ ERROR ]  
+2019-01-24 10:34:01  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:34:15  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:34:27  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:35:46  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:39:38  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:42:44  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:44:31  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:50:59  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:51:11  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:51:22  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:51:30  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:54:28  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:54:41  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:57:22  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:58:05  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:58:27  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 10:59:52  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 11:17:53  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 11:18:30  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 11:22:50  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 11:23:05  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-01-24 11:26:45  [ ERROR ]  agis.ps.file.TriadLinkWriter	null

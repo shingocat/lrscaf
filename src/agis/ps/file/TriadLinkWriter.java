@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.Edge;
+import agis.ps.link.ILink;
 import agis.ps.link.TriadLink;
 import agis.ps.seqs.Contig;
 import agis.ps.util.Parameter;
@@ -99,9 +100,10 @@ public class TriadLinkWriter {
 //		}
 //	}
 
-	public void write(List<TriadLink> triads) {
+	public void write(List<ILink> triads) {
 		try {
-			for (TriadLink tl : triads) {
+			for (int i = 0; i < triads.size(); i++) {
+				TriadLink tl = (TriadLink)triads.get(i);
 				Contig pre = tl.getPrevious();
 				Contig mid = tl.getMiddle();
 				Contig lst = tl.getLast();
