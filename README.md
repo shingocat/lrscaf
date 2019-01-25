@@ -108,6 +108,6 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 <br>
 You should have received a copy of the GNU General Public License along with this program. If not, see &lthttp://www.gnu.org/licenses/&gt. </p>
 <br>
-If you have any questions, please feel free to contact me &ltmqin@caas.cn&gt.
+If you have any questions, please feel free to contact me &ltqinmao@caas.cn&gt.
 <br>
 <br>
