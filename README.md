@@ -48,19 +48,19 @@ There are two ways to build and run this project:
 <tr><td>sam</td><td>sam</td><td>sam</td><td>The alignment file in sam format of BLASR.</td></tr>
 <tr><td>mm</td><td>mm</td><td>mm</td><td>The alignment file in PAF format of Minimap.</td></tr>
 <tr><td>output</td><td>o</td><td>output</td><td>The output folder.</td></tr>
-<tr><td>miniCntLen</td><td>micl</td><td>min_contig_length</td><td>The minimum contigs length to be included for scaffolding. Default: &lt500&gt bp.</td></tr>
+<tr><td>miniCntLen</td><td>micl</td><td>min_contig_length</td><td>The minimum contigs length to be included for scaffolding. Default: &lt200&gt bp.</td></tr>
 <tr><td>identity</td><td>i</td><td>identity</td><td>The identity threshold for filtering invalid alignment. Default: &lt0.8&gt.<br>This value <b>must be</b> modify according to the mapper. <br>For the BLASR alignment file, the higher value means the higher identity. <br>For the Minimap alignment file, the value should not be larger than 0.3 and the value could be set to 0.1.</td></tr>
-<tr><td>miniOLLen</td><td>mioll</td><td>min_overlap_length</td><td>The minimum overlap length of contig. Default: &lt400&gt bp.</td></tr>
+<tr><td>miniOLLen</td><td>mioll</td><td>min_overlap_length</td><td>The minimum overlap length of contig. Default: &lt160&gt bp.</td></tr>
 <tr><td>miniOLRatio</td><td>miolr</td><td>min_overlap_ratio</td><td>The minimum overlap length ratio of contig. Default: &lt0.8&gt.<br>If the overlap length is large than the miniOLLen, <br>it will compute the ratio of overlap length which is overlap_length/contig_length.</td></tr>
-<tr><td>maOHLen</td><td>maohl</td><td>max_overhang_length</td><td>The maximum overhang length of contig. Default: &lt500&gt bp.</td></tr>
+<tr><td>maOHLen</td><td>maohl</td><td>max_overhang_length</td><td>The maximum overhang length of contig. Default: &lt300&gt bp.</td></tr>
 <tr><td>maOHRatio</td><td>maohr</td><td>max_overhang_ratio</td><td>The maximum overhang ratio of contig. Default: &lt0.1&gt. <br>If the overhang length is less than the maohl, <br>it will compute the ratio of overhang length which is overhang_lenght/contig_length.</td></tr>
-<tr><td>maELen</td><td>mael</td><td>max_end_length</td><td>The maximum ending length of long read. Default: &lt500&gt bp.</td></tr>
+<tr><td>maELen</td><td>mael</td><td>max_end_length</td><td>The maximum ending length of long read. Default: &lt300&gt bp.</td></tr>
 <tr><td>maERatio</td><td>maer</td><td>max_end_ratio</td><td>The maximum ending ratio of long read. Default: &lt0.1&gt.<br>It will compute the ending length (ending_len) by long_read_length * maer, <br>then def_ending_len = (mael >= ending_len ? ending_len : mael).</td></tr>
-<tr><td>miSLN</td><td>misl</td><td>min_supported_links</td><td>The minimum support links. Default: &lt2&gt. <br>If the depth of long reads less than 10x, the misl could be set to 1.</td></tr>
+<tr><td>miSLN</td><td>misl</td><td>min_supported_links</td><td>The minimum support links. Default: &lt1&gt. <br>If the depth of long reads less than 10x, the misl could be set to 1.</td></tr>
 <tr><td>ratio</td><td>r</td><td>ratio</td><td>The ratio for deleting error prone edges in divergence nodes. Default: &lt0.2&gt.</td></tr>
 <tr><td>mr</td><td>mr</td><td>repeat_mask</td><td>The indicator for masking repeats. Default: &lttrue&gt. It recommends to be true.</td></tr>
 <tr><td>tiplength</td><td>tl</td><td>tip_length</td><td>The maximum tip length. Default: &lt1500&gt bp.</td></tr>
-<tr><td>iqrtime</td><td>iqrt</td><td>iqr_time</td><td>The IQR times for setting contigs as repeats by their coverages. Default: &lt3&gt.</td></tr>
+<tr><td>iqrtime</td><td>iqrt</td><td>iqr_time</td><td>The IQR times for setting contigs as repeats by their coverages. Default: &lt1.5&gt.</td></tr>
 <tr><td>mmcm</td><td>mmcm</td><td>mmcm</td><td>The parameter to filter invalid Minimap alignments. Default: &lt8&gt. <b>Only for Minimap alignment</b>.</td></tr>
 <tr><td>process</td><td>p</td><td>process</td><td>The multi-threads settings. Default:&lt4&gt.</td></tr>
 <tr><td>help</td><td>h</td><td>NA</td><td>Print this help information.</td></tr>

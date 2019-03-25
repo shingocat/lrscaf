@@ -118,7 +118,7 @@ public class Main {
 		// help 
 		opts.addOption("h", "help", false, "The help infomation!");
 		// minimum contig length
-		opts.addOption("micl", "miniCntLen", true, "The minimum contig's length for scaffolding! Default:<3000>.");
+		opts.addOption("micl", "miniCntLen", true, "The minimum contig's length for scaffolding! Default:<200>.");
 		// minimum pacbio long read length
 //		opts.addOption("mipl", "miniPBLen", true, "The minimum PacBio long read's length for scaffolding! Default:<5000>.");
 		// identity
@@ -126,7 +126,7 @@ public class Main {
 				"This value must be modify according to the mapper. For the BLASR alignment file, the higher value means the higher identity. " + 
 				"For the Minimap alignment file, the value should not be larger than 0.3 and the value could be set to 0.1.");
 		// minimum overlap length
-		opts.addOption("mioll", "miniOLLen", true, "The minimum overlap length threshold for blasr alignment! Default: <2400>.");
+		opts.addOption("mioll", "miniOLLen", true, "The minimum overlap length threshold for blasr alignment! Default: <160>.");
 		// minimum overlap ratio
 		opts.addOption("miolr", "miniOLRatio", true, "The minimum overlap ratio threshold for blasr alignment! Default: <0.8>.");
 		// maximum overhang length;
