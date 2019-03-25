@@ -26,6 +26,8 @@ public interface IUntangler {
 	public void delErrorProneEdge(double ratio);
 	// delete tip when the divergence point have a path that contains only one node;
 	public void delTips();
+	// delete A->A edges;
+	public void delCyclerEdges();
 }
 
 

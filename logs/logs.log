@@ -1,36 +1,53 @@
-2019-01-24 15:25:18  [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed!
-2019-01-24 15:25:18  [ INFO ]  Launching...
-2019-01-24 15:25:18  [ INFO ]  The output folder was exist!
-2019-01-24 15:25:18  [ INFO ]  It will delete all file under this folder!
-2019-01-24 15:25:18  [ INFO ]  Building output folder, erase time: 9 ms
-2019-01-24 15:25:18  [ INFO ]  Reading contigs, erase times: 210 ms
-2019-01-24 15:25:19  [ INFO ]  Valid Aligned Records: 3263
-2019-01-24 15:25:19  [ INFO ]  Reading Aligned Records, erase time: 274 ms
-2019-01-24 15:25:19  [ INFO ]  Finding Repeats:
-2019-01-24 15:25:19  [ INFO ]  MIN: 1.0
-2019-01-24 15:25:19  [ INFO ]  First Quartile: 3.0
-2019-01-24 15:25:19  [ INFO ]  Median cov = 8.5
-2019-01-24 15:25:19  [ INFO ]  Third Quartile: 13.0
-2019-01-24 15:25:19  [ INFO ]  MAX: 86.0
-2019-01-24 15:25:19  [ INFO ]  Interquartile Range: 10.0
-2019-01-24 15:25:19  [ INFO ]  3.0's IQR , Outlier Threshold: 43.0
-2019-01-24 15:25:19  [ INFO ]  Repeat count: 2
-2019-01-24 15:25:19  [ INFO ]  Finding repeat, erase time: 4 ms
-2019-01-24 15:25:19  [ INFO ]  Valid Links Acount: 2989
-2019-01-24 15:25:19  [ INFO ]  Building Link, erase time : 33 ms
-2019-01-24 15:25:19  [ INFO ]  Minimum supported links: 3
-2019-01-24 15:25:19  [ INFO ]  Used overlap link: true
-2019-01-24 15:25:19  [ INFO ]  Building Edges, Erase Time: 55 ms
-2019-01-24 15:25:19  [ INFO ]  Original Edges size: 448
-2019-01-24 15:25:19  [ INFO ]  Transitive Reducing, erase time: 1 ms
-2019-01-24 15:25:19  [ INFO ]  Edges size after transitive reducing: 448
-2019-01-24 15:25:19  [ INFO ]  Delete error prone edges:0
-2019-01-24 15:25:19  [ INFO ]  Error prone Edge deleting, erase time: 1 ms
-2019-01-24 15:25:19  [ INFO ]  Edges size after error prone deleting: 448
-2019-01-24 15:25:19  [ INFO ]  Delete tip edges:0
-2019-01-24 15:25:19  [ INFO ]  Tip edge deleting, erase time: 0 ms
-2019-01-24 15:25:19  [ INFO ]  Edges size after deleting tips: 448
-2019-01-24 15:25:19  [ INFO ]  Path Building, erase time: 78 ms
-2019-01-24 15:25:21  [ INFO ]  Scaffold writing, erase time: 1963 ms
-2019-01-24 15:25:21  [ INFO ]  Ending...
-2019-01-24 15:25:21  [ INFO ]  Scaffolding erase time: 2 s.
+2019-03-14 21:54:21  [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed!
+2019-03-14 21:54:21  [ INFO ]  Launching...
+2019-03-14 21:54:21  [ INFO ]  The output folder was exist!
+2019-03-14 21:54:21  [ INFO ]  It will delete all file under this folder!
+2019-03-14 21:54:21  [ INFO ]  Building output folder, erase time: 2 ms
+2019-03-14 21:54:30  [ INFO ]  Reading contigs, erase times: 9547 ms
+2019-03-14 21:54:55  [ INFO ]  Valid Aligned Records: 344151
+2019-03-14 21:54:55  [ INFO ]  Reading Aligned Records, erase time: 24414 ms
+2019-03-14 21:54:55  [ INFO ]  Finding Repeats:
+2019-03-14 21:54:55  [ INFO ]  MIN: 1.0
+2019-03-14 21:54:55  [ INFO ]  First Quartile: 2.0
+2019-03-14 21:54:55  [ INFO ]  Median cov = 4.0
+2019-03-14 21:54:55  [ INFO ]  Third Quartile: 8.0
+2019-03-14 21:54:55  [ INFO ]  MAX: 2140.0
+2019-03-14 21:54:55  [ INFO ]  Interquartile Range: 6.0
+2019-03-14 21:54:55  [ INFO ]  3.0's IQR , Outlier Threshold: 26.0
+2019-03-14 21:54:55  [ INFO ]  Repeat count: 967
+2019-03-14 21:54:55  [ INFO ]  Finding repeat, erase time: 23 ms
+2019-03-14 21:55:03  [ INFO ]  Valid Links Acount: 105810
+2019-03-14 21:55:03  [ INFO ]  Building Link, erase time : 7885 ms
+2019-03-14 21:55:03  [ INFO ]  Minimum supported links: 1
+2019-03-14 21:55:03  [ INFO ]  Used overlap link: true
+2019-03-14 21:55:03  [ INFO ]  Building Edges, Erase Time: 287 ms
+2019-03-14 21:55:03  [ INFO ]  Original Edges size: 77890
+2019-03-14 21:57:07  [ DEBUG ]  breakpoint
+2019-03-14 21:57:48  [ DEBUG ]  breakpoint
+2019-03-14 21:57:57  [ DEBUG ]  breakpoint
+2019-03-14 21:57:58  [ DEBUG ]  breakpoint
+2019-03-14 21:58:10  [ DEBUG ]  breakpoint
+2019-03-14 21:58:28  [ DEBUG ]  breakpoint
+2019-03-14 21:58:30  [ DEBUG ]  breakpoint
+2019-03-14 21:58:42  [ DEBUG ]  breakpoint
+2019-03-14 21:59:00  [ DEBUG ]  breakpoint
+2019-03-14 21:59:31  [ DEBUG ]  breakpoint
+2019-03-14 21:59:33  [ DEBUG ]  breakpoint
+2019-03-14 21:59:33  [ DEBUG ]  breakpoint
+2019-03-14 21:59:34  [ DEBUG ]  breakpoint
+2019-03-14 21:59:39  [ DEBUG ]  breakpoint
+2019-03-14 21:59:48  [ DEBUG ]  breakpoint
+2019-03-14 21:59:50  [ DEBUG ]  breakpoint
+2019-03-14 21:59:59  [ DEBUG ]  breakpoint
+2019-03-14 22:00:00  [ INFO ]  Transitive Reducing, erase time: 205506 ms
+2019-03-14 22:00:01  [ INFO ]  Edges size after transitive reducing: 70858
+2019-03-14 22:00:02  [ INFO ]  Delete error prone edges:29584
+2019-03-14 22:00:02  [ INFO ]  Error prone Edge deleting, erase time: 679 ms
+2019-03-14 22:00:02  [ INFO ]  Edges size after error prone deleting: 47718
+2019-03-14 22:00:03  [ INFO ]  Delete tip edges:158
+2019-03-14 22:00:03  [ INFO ]  Tip edge deleting, erase time: 769 ms
+2019-03-14 22:00:03  [ INFO ]  Edges size after deleting tips: 47560
+2019-03-14 22:02:16  [ INFO ]  Path Building, erase time: 432799 ms
+2019-03-14 22:03:23  [ INFO ]  Scaffold writing, erase time: 66785 ms
+2019-03-14 22:03:23  [ INFO ]  Ending...
+2019-03-14 22:03:23  [ INFO ]  Scaffolding erase time: 542 s.

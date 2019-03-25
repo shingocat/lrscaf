@@ -193,3 +193,20 @@
 2019-01-24 11:22:50  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
 2019-01-24 11:23:05  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
 2019-01-24 11:26:45  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-03-14 20:29:55  [ ERROR ]  agis.ps.Main	The aligned file could not be null!
+2019-03-14 20:30:43  [ ERROR ]  	The contig file ./ctgs.fa do not exist!
+2019-03-14 20:30:43  [ ERROR ]  agis.ps.file.MMReader	.\aln.mm (系统找不到指定的文件。)
+2019-03-14 20:30:43  [ ERROR ]  
+2019-03-14 20:31:33  [ ERROR ]  	The contig file D:\\data\\rice\\r498\\ctgs.fa do not exist!
+2019-03-14 20:31:33  [ ERROR ]  agis.ps.file.MMReader	The contig ID, jcf7180002691895, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2019-03-14 20:31:33  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2019-03-14 20:37:37  [ ERROR ]  agis.ps.graph.DirectedGraph	null
+2019-03-14 20:37:37  [ ERROR ]  jcf7180002720970
+2019-03-14 20:42:43  [ ERROR ]  agis.ps.graph.DirectedGraph	null
+2019-03-14 20:42:43  [ ERROR ]  index 232
+2019-03-14 20:42:43  [ ERROR ]  jcf7180002720970
+2019-03-14 21:21:05  [ ERROR ]  agis.ps.graph.DirectedGraph	null
+2019-03-14 21:21:05  [ ERROR ]  index 232
+2019-03-14 21:21:05  [ ERROR ]  jcf7180002720970
+2019-03-14 21:36:07  [ ERROR ]  agis.ps.graph.DirectedGraph	null
+2019-03-14 21:36:08  [ ERROR ]  index 232

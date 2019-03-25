@@ -86,6 +86,8 @@ public class PathBuilder {
 			DotGraphFileWriter.writeEdge(edgeFile, edges);
 //			diGraph = new DirectedGraph(edges, paras, cntfile);
 			diGraph = new DirectedGraph(edges, paras, cnts);
+			// remove cycler edges A->A;
+			diGraph.delCyclerEdges();
 			// do transitive reduction
 			diGraph.transitiveReducting();
 			List<Edge> tempEdges = diGraph.getEdges();

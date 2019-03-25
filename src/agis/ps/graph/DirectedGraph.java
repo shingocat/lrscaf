@@ -160,7 +160,7 @@ public class DirectedGraph extends Graph implements Serializable {
 //		int index = 0;
 		for (Contig origin : mimos) {
 //			index++;
-//			if(index == 11)
+//			if(index == 232)
 //				logger.debug("breakpoint");
 			List<Contig> cnts = this.getAdjVertices(origin);
 			Iterator<Contig> it = cnts.iterator();
@@ -168,10 +168,19 @@ public class DirectedGraph extends Graph implements Serializable {
 			try {
 				while (it.hasNext()) {
 					Contig c = it.next();
-					LinkedList<Contig> path = new LinkedList<Contig>();
-					path.addLast(origin);
-					// path.addLast(c);
-					this.transitiveReducting(c, origin, origin, depth, path);
+//					if(c.getID().equalsIgnoreCase("jcf7180002720970"))
+//						logger.debug("breakpoint");
+//					if(!c.equals(origin))
+//					{
+						LinkedList<Contig> path = new LinkedList<Contig>();
+						path.addLast(origin);
+						// path.addLast(c);
+						this.transitiveReducting(c, origin, origin, depth, path);
+//					} else
+//					{
+//						List<Edge> cycEdges =  this.getEdgesInfo(origin, c);
+//						this.removeEdges(cycEdges);
+//					}
 					int temp = cnts.size();
 					if (indicator != temp) {
 						it = this.getAdjVertices(origin).iterator();
@@ -182,6 +191,8 @@ public class DirectedGraph extends Graph implements Serializable {
 				}
 			} catch (Exception e) {
 				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//				logger.error("index " + index);
+//				logger.error(origin.getID());
 			}
 		}
 		long end = System.currentTimeMillis();
@@ -195,6 +206,9 @@ public class DirectedGraph extends Graph implements Serializable {
 	// the recurrence break or if the depth is equal to defined depth return;
 	private boolean transitiveReducting(Contig current, Contig former, Contig start, int depth,
 			LinkedList<Contig> path) {
+//		logger.debug("current depth " + depth);
+//		logger.debug("current node " + current.getID());
+//		logger.debug("former node " + former.getID());
 		path.addLast(current);
 		List<Contig> cnts = this.getNextVertices(current, former);
 		if (cnts == null) {
@@ -775,6 +789,27 @@ public class DirectedGraph extends Graph implements Serializable {
 			}
 			path.removeLast();
 			return isDel;
+		}
+	}
+
+	@Override
+	public void delCyclerEdges() {
+		List<Edge> rmEdges = new Vector<Edge>(100);
+		int totalDels = 0;
+		List<Edge> tempEdges = this.getEdges();
+		for(Edge e : tempEdges)
+		{
+			if(e.getOrigin().equals(e.getTerminus()))
+			{
+				rmEdges.add(e);
+			}
+		}
+		if(rmEdges.size() != 0)
+		{
+			totalDels += rmEdges.size();
+			this.removeEdges(rmEdges);
+			this.updateGraph();
+			rmEdges.clear();
 		}
 	}
 
