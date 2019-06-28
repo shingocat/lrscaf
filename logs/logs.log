@@ -1,53 +1,31 @@
-2019-03-14 21:54:21  [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed!
-2019-03-14 21:54:21  [ INFO ]  Launching...
-2019-03-14 21:54:21  [ INFO ]  The output folder was exist!
-2019-03-14 21:54:21  [ INFO ]  It will delete all file under this folder!
-2019-03-14 21:54:21  [ INFO ]  Building output folder, erase time: 2 ms
-2019-03-14 21:54:30  [ INFO ]  Reading contigs, erase times: 9547 ms
-2019-03-14 21:54:55  [ INFO ]  Valid Aligned Records: 344151
-2019-03-14 21:54:55  [ INFO ]  Reading Aligned Records, erase time: 24414 ms
-2019-03-14 21:54:55  [ INFO ]  Finding Repeats:
-2019-03-14 21:54:55  [ INFO ]  MIN: 1.0
-2019-03-14 21:54:55  [ INFO ]  First Quartile: 2.0
-2019-03-14 21:54:55  [ INFO ]  Median cov = 4.0
-2019-03-14 21:54:55  [ INFO ]  Third Quartile: 8.0
-2019-03-14 21:54:55  [ INFO ]  MAX: 2140.0
-2019-03-14 21:54:55  [ INFO ]  Interquartile Range: 6.0
-2019-03-14 21:54:55  [ INFO ]  3.0's IQR , Outlier Threshold: 26.0
-2019-03-14 21:54:55  [ INFO ]  Repeat count: 967
-2019-03-14 21:54:55  [ INFO ]  Finding repeat, erase time: 23 ms
-2019-03-14 21:55:03  [ INFO ]  Valid Links Acount: 105810
-2019-03-14 21:55:03  [ INFO ]  Building Link, erase time : 7885 ms
-2019-03-14 21:55:03  [ INFO ]  Minimum supported links: 1
-2019-03-14 21:55:03  [ INFO ]  Used overlap link: true
-2019-03-14 21:55:03  [ INFO ]  Building Edges, Erase Time: 287 ms
-2019-03-14 21:55:03  [ INFO ]  Original Edges size: 77890
-2019-03-14 21:57:07  [ DEBUG ]  breakpoint
-2019-03-14 21:57:48  [ DEBUG ]  breakpoint
-2019-03-14 21:57:57  [ DEBUG ]  breakpoint
-2019-03-14 21:57:58  [ DEBUG ]  breakpoint
-2019-03-14 21:58:10  [ DEBUG ]  breakpoint
-2019-03-14 21:58:28  [ DEBUG ]  breakpoint
-2019-03-14 21:58:30  [ DEBUG ]  breakpoint
-2019-03-14 21:58:42  [ DEBUG ]  breakpoint
-2019-03-14 21:59:00  [ DEBUG ]  breakpoint
-2019-03-14 21:59:31  [ DEBUG ]  breakpoint
-2019-03-14 21:59:33  [ DEBUG ]  breakpoint
-2019-03-14 21:59:33  [ DEBUG ]  breakpoint
-2019-03-14 21:59:34  [ DEBUG ]  breakpoint
-2019-03-14 21:59:39  [ DEBUG ]  breakpoint
-2019-03-14 21:59:48  [ DEBUG ]  breakpoint
-2019-03-14 21:59:50  [ DEBUG ]  breakpoint
-2019-03-14 21:59:59  [ DEBUG ]  breakpoint
-2019-03-14 22:00:00  [ INFO ]  Transitive Reducing, erase time: 205506 ms
-2019-03-14 22:00:01  [ INFO ]  Edges size after transitive reducing: 70858
-2019-03-14 22:00:02  [ INFO ]  Delete error prone edges:29584
-2019-03-14 22:00:02  [ INFO ]  Error prone Edge deleting, erase time: 679 ms
-2019-03-14 22:00:02  [ INFO ]  Edges size after error prone deleting: 47718
-2019-03-14 22:00:03  [ INFO ]  Delete tip edges:158
-2019-03-14 22:00:03  [ INFO ]  Tip edge deleting, erase time: 769 ms
-2019-03-14 22:00:03  [ INFO ]  Edges size after deleting tips: 47560
-2019-03-14 22:02:16  [ INFO ]  Path Building, erase time: 432799 ms
-2019-03-14 22:03:23  [ INFO ]  Scaffold writing, erase time: 66785 ms
-2019-03-14 22:03:23  [ INFO ]  Ending...
-2019-03-14 22:03:23  [ INFO ]  Scaffolding erase time: 542 s.
+2019-03-25 21:04:11  [ INFO ]  
+LRScaf is a scaffolder by using Thired Generation Sequencing data to scaffold any draft assemblied genomes. it supports command line argument or XML configure file!
+Usage:
+XML: java -jar LRScaf.jar -x <XML_File>
+CML: java -jar LRScaf.jar -c <Draft_Assemblies_File> -a <Alinged_File> -t <m5|m4|mm|sam> [Other_Options]
+Argument Details:
+XML configure file:
+-x	--xml	<arg>	The parameter XML file! All command-line parameters would be omitted if set.
+Command line options:
+-c	--contig	<arg>	Required. The file of pre-assembled contigs in fasta format.
+## Input file:
+-a	--alignedFile	Required. The aligned file by using Minimap or BLASR mapper!
+-t	--type	Requried. The aligned file format, supported: 1) mm for Minimap; 2)m4, m5 or sam for BLASR.
+## Output folder:
+-o	--output	<arg>	Required. The scaffolding output folder.
+## Other options:
+-i	--identity	<arg>	For BLASR Mapper: Default <0.8>; For minimap Mapper: Default <0.1>.
+-r	--ratio	<arg>	The ratio for deleting error prone edges! Default: <0.2>.
+-misl	--miniSupLinks	<arg>	The minimum support links number! Default: <1>.
+-iqrt	--iqrtime	The IQR time for defined repeat outlier.Default: <1.5>
+-micl	--miniCntLen	<arg>	The minimum contig's length (must be larget than 200 bp) for scaffolding! Default:<200>.
+-mioll	--miniOLLen	<arg>	The minimum overlap length threshold for alignment! Default: <160>.
+-miolr	--miniOLRatio	<arg>	The minimum overlap ratio threshold for alignment! Default: <0.8>.
+-mxel	--maxEndLen	<arg>	The maximum ending length of Long Read! Default: <300>.
+-mxer	--maxEndRatio	<arg>	The maximum ending ratio of Long Read! Default: <0.1>.
+-mxohl	--maxOHLen	<arg>	The maximum overhang length threshold for alignment! Default: <300>.
+-mxohr	--maxOHRatio	<arg>	The maximum overhang ratio threshold for alignment! Default: <0.1>.
+-mmcm	--mmcm	<arg>	The filter parameter only for last column format of Minimap, default:<8>.
+-p	--process	<arg	The multi-threads settings, default:<4>.
+-h	--help	The help infomation!
+Please report issues at <github_project_website>!

@@ -33,6 +33,55 @@ There are two ways to build and run this project:
 <i>java -jar LRScaf-&ltversion&gt.jar --contig &ltdraft_assembly.fasta&gt --alignedFile &ltalignment.m4&gt -t &ltm4&gt --output &ltoutput_foloder&gt [options]</i><br>
 <br>
 ################################################################################<br>
+<b>A<i>Oryza sativa</i> L. Sample</b><br>
+################################################################################<br>
+# Download the NGS dataset (<i>prefecth SRR8446493</i>)and extract NGS reads(<i>fastq-dump SRR8446493</i>);
+# Download the TGS dataset under the project PRJNA318714 on NCBI and extract TGS reads of about 20-fold coverages;
+# Counstruct the NGS draft assemlbies using SOAPdenovo2 (More details: https://sourceforge.net/projects/soapdenovo2/)
+# The content of "assembly.config" file:
+# 	max_rd_len=150
+#	[LIB]
+#	avg_ins=300
+#	reverse_seq=0
+#	asm_flags=3
+#	q1=read_R1.fq
+#	q2=read_R2.fq
+<i>
+SOAPdenovo127mer pregraph -s ./assembly.config -d 1 -K 83 -R -p 48 -o ./83/83
+SOAPdenovo127mer contig -R -g ./83/83
+SOAPdenovo127mer map -p 48 -s ./assembly.config -g ./83/83
+SOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83
+</i>
+# mapping the TGS long reads against the draft assemblies
+<i>minimap2 -t 8 ./draft.fa ./tgs20x.fa >./aln.mm</i>
+# improving draft assemblies using LRScaf
+# The content of "scafconf.xml" file:
+#	&ltscaffold&gt<br>
+#	&nbsp; 	&ltinput&gt<br>
+#	&nbsp; &nbsp; &ltcontig&gt./draft.fa&lt/contig&gt<br>
+#	&nbsp; &nbsp; &ltmm&gt./aln.mm&lt/mm&gt<br>
+#	&nbsp; 	&lt/input&gt<br>
+#	&nbsp; 	&ltoutput&gt./&lt/output&gt<br>
+#	&nbsp; 	&ltparas&gt<br>
+#	&nbsp; &nbsp; &ltmin_contig_length&gt1200&lt/min_contig_length&gt<br>
+#	&nbsp; &nbsp; &ltidentity&gt0.1&lt/identity&gt<br>
+#	&nbsp; &nbsp; &ltmin_overlap_length&gt960&lt/min_overlap_length&gt<br>
+#	&nbsp; &nbsp; &ltmin_overlap_ratio&gt0.8&lt/min_overlap_ratio&gt<br>
+#	&nbsp; &nbsp; &ltmax_overhang_length&gt1000&lt/max_overhang_length&gt<br>
+#	&nbsp; &nbsp; &ltmax_overhang_ratio&gt0.1&lt/max_overhang_ratio&gt<br>
+#	&nbsp; &nbsp; &ltmax_end_length&gt1000&lt/max_end_length&gt<br>
+#	&nbsp; &nbsp; &ltmax_end_ratio&gt0.1&lt/max_end_ratio&gt<br>
+#	&nbsp; &nbsp; &ltmin_supported_links&gt1&lt/min_supported_links&gt<br>
+#	&nbsp; &nbsp; &lttips_length&gt1000&lt/tips_length&gt<br>
+#	&nbsp; &nbsp; &ltratio&gt0.2&lt/ratio&gt<br>
+#	&nbsp; &nbsp; &ltrepeat_mask&gttrue&lt/repeat_mask&gt<br>
+#	&nbsp; &nbsp; &ltiqr_time&gt3&lt/iqr_time&gt<br>
+#	&nbsp; &nbsp; &ltmmcm&gt20&lt/mmcm&gt &lt!--only for Minimap Alignment.--&gt<br>
+#	&nbsp; &nbsp; &ltprocess&gt4&lt/process&gt<br>
+#	&nbsp; 	&lt/paras&gt<br>
+#	&lt/scaffold&gt<br>
+<i>java -Xms100g -Xmx100g -jar LRScaf.jar -x ./scafconf.xml</i>
+################################################################################<br>
 <b>Parameters of LRScaf</b><br>
 ################################################################################<br>
 <p>LRScaf supports parameters set by XML confiuration file or command-line. It recommends to use XML configuration file. There is a template configuration file of XML format, named "scafconf.xml", in the project. In command-line, LRScaf supports long (dash-dash) and short (dash) style of GNU like options. And the following table would show each parameter meaning and default value if available.</p>
