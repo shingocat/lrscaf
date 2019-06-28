@@ -37,6 +37,8 @@ There are two ways to build and run this project:
 ################################################################################<br>
 <b>A <i>Oryza sativa</i> L. Tutorials</b><br>
 ################################################################################<br>
+# Improving a draft assemblies using LRScaf is generally by three steps. <br>
+# <b>The first step: generated a draft assemblies using NGS reads. <br>
 # Download the NGS dataset (<i>prefecth SRR8446493</i>) and extract NGS reads (<i>fastq-dump SRR8446493</i>);<br>
 # Download the TGS dataset under the project PRJNA318714 on NCBI and extract TGS reads of about 20-fold coverages;<br>
 # Counstruct the NGS draft assemlbies using SOAPdenovo2 (More details: https://sourceforge.net/projects/soapdenovo2/)<br>
@@ -48,7 +50,6 @@ There are two ways to build and run this project:
 # &nbsp;&nbsp;asm_flags=3<br>
 # &nbsp;&nbsp;q1=read_R1.fq<br>
 # &nbsp;&nbsp;q2=read_R2.fq<br>
-<br>
 <i>
 &gtSOAPdenovo127mer pregraph -s ./assembly.config -d 1 -K 83 -R -p 48 -o ./83/83<br>
 &gtSOAPdenovo127mer contig -R -g ./83/83<br>
@@ -56,9 +57,11 @@ There are two ways to build and run this project:
 &gtSOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83<br>
 </i>
 <br>
+# <b>The second step: alignment the TGS long reads against the draft assemblies.<b><br> 
 # mapping the TGS long reads against the draft assemblies<br>
 <i>minimap2 -t 8 ./draft.fa ./tgs20x.fa >./aln.mm</i><br>
 <br>
+# <b>The last step: scaffolding using LRScaf.<b><b>
 # improving draft assemblies using LRScaf<br>
 # The content of "scafconf.xml" file:<br>
 #	&ltscaffold&gt<br>
