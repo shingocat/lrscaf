@@ -42,6 +42,12 @@ There are two ways to build and run this project:
 # Download the NGS dataset (<i>prefecth SRR8446493</i>) and extract NGS reads (<i>fastq-dump SRR8446493</i>);<br>
 # Download the TGS dataset under the project PRJNA318714 on NCBI and extract TGS reads of about 20-fold coverages;<br>
 # Counstruct the NGS draft assemlbies using SOAPdenovo2 (More details: https://sourceforge.net/projects/soapdenovo2/)<br>
+<i>
+&gtSOAPdenovo127mer pregraph -s ./assembly.config -d 1 -K 83 -R -p 48 -o ./83/83<br>
+&gtSOAPdenovo127mer contig -R -g ./83/83<br>
+&gtSOAPdenovo127mer map -p 48 -s ./assembly.config -g ./83/83<br>
+&gtSOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83<br>
+</i>
 # The content of "assembly.config" file:<br>
 # &nbsp;&nbsp;max_rd_len=150<br>
 # &nbsp;&nbsp;[LIB]<br>
@@ -50,18 +56,13 @@ There are two ways to build and run this project:
 # &nbsp;&nbsp;asm_flags=3<br>
 # &nbsp;&nbsp;q1=read_R1.fq<br>
 # &nbsp;&nbsp;q2=read_R2.fq<br>
-<i>
-&gtSOAPdenovo127mer pregraph -s ./assembly.config -d 1 -K 83 -R -p 48 -o ./83/83<br>
-&gtSOAPdenovo127mer contig -R -g ./83/83<br>
-&gtSOAPdenovo127mer map -p 48 -s ./assembly.config -g ./83/83<br>
-&gtSOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83<br>
-</i>
 <br>
 # <b>The second step: alignment the TGS long reads against the draft assemblies.</b><br> 
-# mapping the TGS long reads against the draft assemblies<br>
-<i>minimap2 -t 8 ./draft.fa ./tgs20x.fa >./aln.mm</i><br>
+# mapping the TGS long reads against the draft assemblies with minimap2 or BLASR.<br>
+<i>&gtminimap2 -t 8 ./draft.fa ./tgs20x.fa >./aln.mm</i><br>
 <br>
-# <b>The last step: improving draft assemblies using LRScaf</b><br>
+# <b>The last step: improving draft assemblies using LRScaf.</b><br>
+<i>&gtjava -Xms100g -Xmx100g -jar LRScaf.jar -x ./scafconf.xml</i><br>
 # The content of "scafconf.xml" file:<br>
 #	&ltscaffold&gt<br>
 #	&nbsp; 	&ltinput&gt<br>
@@ -87,7 +88,6 @@ There are two ways to build and run this project:
 #	&nbsp; &nbsp; &ltprocess&gt4&lt/process&gt<br>
 #	&nbsp; 	&lt/paras&gt<br>
 #	&lt/scaffold&gt<br>
-<i>&gtjava -Xms100g -Xmx100g -jar LRScaf.jar -x ./scafconf.xml</i><br>
 <br>
 ################################################################################<br>
 <b>Parameters of LRScaf</b><br>
@@ -115,7 +115,7 @@ There are two ways to build and run this project:
 <tr><td>maERatio</td><td>maer</td><td>max_end_ratio</td><td>The maximum ending ratio of long read. Default: &lt0.1&gt.<br>It will compute the ending length (ending_len) by long_read_length * maer, <br>then def_ending_len = (mael >= ending_len ? ending_len : mael).</td></tr>
 <tr><td>miSLN</td><td>misl</td><td>min_supported_links</td><td>The minimum support links. Default: &lt1&gt. <br>If the depth of long reads less than 10x, the misl could be set to 1.</td></tr>
 <tr><td>ratio</td><td>r</td><td>ratio</td><td>The ratio for deleting error prone edges in divergence nodes. Default: &lt0.2&gt.</td></tr>
-<tr><td>mr</td><td>mr</td><td>repeat_mask</td><td>The indicator for masking repeats. Default: &lttrue&gt. It recommends to be true.</td></tr>
+<tr><td>mr</td><td>mr</td><td>repeat_mask</td><td>The indicator for masking repeats. Default: &lttrue&gt. Masking repeats could improve the assemblies contiguous. It recommends to be true.</td></tr>
 <tr><td>tiplength</td><td>tl</td><td>tip_length</td><td>The maximum tip length. Default: &lt1500&gt bp.</td></tr>
 <tr><td>iqrtime</td><td>iqrt</td><td>iqr_time</td><td>The IQR times for setting contigs as repeats by their coverages. Default: &lt1.5&gt.</td></tr>
 <tr><td>mmcm</td><td>mmcm</td><td>mmcm</td><td>The parameter to filter invalid Minimap alignments. Default: &lt8&gt. <b>Only for Minimap alignment</b>.</td></tr>
@@ -157,7 +157,7 @@ There are two ways to build and run this project:
 &lt/scaffold&gt<br>
 <br>
 ################################################################################<br>
-<b>License</b><br>
+<b>Licence</b><br>
 ################################################################################<br>
 <p>LRScaf is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 <br>
