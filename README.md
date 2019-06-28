@@ -37,7 +37,7 @@ There are two ways to build and run this project:
 ################################################################################<br>
 <b>A <i>Oryza sativa</i> L. Tutorials</b><br>
 ################################################################################<br>
-# Improving a draft assemblies using LRScaf is generally by three steps. <br>
+# <b>Improving a draft assemblies using LRScaf is generally by three steps.</b><br>
 # <b>The first step: generated a draft assemblies using NGS reads.</b> <br>
 # Download the NGS dataset (<i>prefecth SRR8446493</i>) and extract NGS reads (<i>fastq-dump SRR8446493</i>);<br>
 # Download the TGS dataset under the project PRJNA318714 on NCBI and extract TGS reads of about 20-fold coverages;<br>
