@@ -14,25 +14,25 @@ Java version: 1.8+.<br>
 ################################################################################<br>
 There are two ways to build and run this project:
 <li>There is a jar package named LRScaf-&ltversion&gt.jar under target folder in releases. User could run it with command (The details of configuration XML file are described below.): </li>
-<i>"java -jar LRScaf-&ltversion&gt.jar -x &ltconfigure.xml&gt"</i>. 
+<i>&gtjava -jar LRScaf-&ltversion&gt.jar -x &ltconfigure.xml&gt</i>. 
 <li>If you want to compile the source code by yourself, you could download the source code and then compile and build this project by maven &lthttps://maven.apache.org/&gt in following steps:</li>
 # 1. download the latest releases version and unzip the package<br>
-<i>unzip lrscaf-&ltversion&gt.zip</i><br>
+<i>&gtunzip lrscaf-&ltversion&gt.zip</i><br>
 # 2. change the working folder<br>
-<i>cd lrscaf-&ltversion&gt</i><br>
+<i>&gtcd lrscaf-&ltversion&gt</i><br>
 # 3. complie source code and package the project, and a jar package named <br>
-# LRScaf-&ltversion&gt.jar would be under the target folder.
-<i>mvn package</i><br>
+# LRScaf-&ltversion&gt.jar would be under the target folder.<br>
+<i>&gtmvn package</i><br>
 <br>
 ################################################################################<br>
 <b>Quick starting</b><br>
 ################################################################################<br>
 # XML configuration style<br>
-<i>java -jar LRScaf-&ltversion&gt.jar -x &ltconfigure.xml&gt</i><br>
+<i>&gtjava -jar LRScaf-&ltversion&gt.jar -x &ltconfigure.xml&gt</i><br>
 # or command-line in short style<br>
-<i>java -jar LRScaf-&ltversion&gt.jar -c &ltdraft_assembly.fasta&gt -a &ltalignment.m4&gt -t &ltm4&gt -o &ltoutput_foloder&gt [options]</i><br>
+<i>&gtjava -jar LRScaf-&ltversion&gt.jar -c &ltdraft_assembly.fasta&gt -a &ltalignment.m4&gt -t &ltm4&gt -o &ltoutput_foloder&gt [options]</i><br>
 # or command-line in long style<br>
-<i>java -jar LRScaf-&ltversion&gt.jar --contig &ltdraft_assembly.fasta&gt --alignedFile &ltalignment.m4&gt -t &ltm4&gt --output &ltoutput_foloder&gt [options]</i><br>
+<i>&gtjava -jar LRScaf-&ltversion&gt.jar --contig &ltdraft_assembly.fasta&gt --alignedFile &ltalignment.m4&gt -t &ltm4&gt --output &ltoutput_foloder&gt [options]</i><br>
 <br>
 ################################################################################<br>
 <b>A <i>Oryza sativa</i> L. Tutorials</b><br>
@@ -41,18 +41,18 @@ There are two ways to build and run this project:
 # Download the TGS dataset under the project PRJNA318714 on NCBI and extract TGS reads of about 20-fold coverages;<br>
 # Counstruct the NGS draft assemlbies using SOAPdenovo2 (More details: https://sourceforge.net/projects/soapdenovo2/)<br>
 # The content of "assembly.config" file:<br>
-# 	max_rd_len=150<br>
-#	[LIB]<br>
-#	avg_ins=300<br>
-#	reverse_seq=0<br>
-#	asm_flags=3<br>
-#	q1=read_R1.fq<br>
-#	q2=read_R2.fq<br>
+# &nbsp;max_rd_len=150<br>
+# &nbsp;[LIB]<br>
+# &nbsp;avg_ins=300<br>
+# &nbsp;reverse_seq=0<br>
+# &nbsp;asm_flags=3<br>
+# &nbsp;q1=read_R1.fq<br>
+# &nbsp;q2=read_R2.fq<br>
 <i>
-SOAPdenovo127mer pregraph -s ./assembly.config -d 1 -K 83 -R -p 48 -o ./83/83<br>
-SOAPdenovo127mer contig -R -g ./83/83<br>
-SOAPdenovo127mer map -p 48 -s ./assembly.config -g ./83/83<br>
-SOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83<br>
+&gtSOAPdenovo127mer pregraph -s ./assembly.config -d 1 -K 83 -R -p 48 -o ./83/83<br>
+&gtSOAPdenovo127mer contig -R -g ./83/83<br>
+&gtSOAPdenovo127mer map -p 48 -s ./assembly.config -g ./83/83<br>
+&gtSOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83<br>
 </i>
 # mapping the TGS long reads against the draft assemblies<br>
 <i>minimap2 -t 8 ./draft.fa ./tgs20x.fa >./aln.mm</i><br>
@@ -82,7 +82,7 @@ SOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83<br>
 #	&nbsp; &nbsp; &ltprocess&gt4&lt/process&gt<br>
 #	&nbsp; 	&lt/paras&gt<br>
 #	&lt/scaffold&gt<br>
-<i>java -Xms100g -Xmx100g -jar LRScaf.jar -x ./scafconf.xml</i><br>
+<i>&gtjava -Xms100g -Xmx100g -jar LRScaf.jar -x ./scafconf.xml</i><br>
 ################################################################################<br>
 <b>Parameters of LRScaf</b><br>
 ################################################################################<br>
