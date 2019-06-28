@@ -115,7 +115,7 @@ There are two ways to build and run this project:
 <tr><td>maERatio</td><td>maer</td><td>max_end_ratio</td><td>The maximum ending ratio of long read. Default: &lt0.1&gt.<br>It will compute the ending length (ending_len) by long_read_length * maer, <br>then def_ending_len = (mael >= ending_len ? ending_len : mael).</td></tr>
 <tr><td>miSLN</td><td>misl</td><td>min_supported_links</td><td>The minimum support links. Default: &lt1&gt. <br>If the depth of long reads less than 10x, the misl could be set to 1.</td></tr>
 <tr><td>ratio</td><td>r</td><td>ratio</td><td>The ratio for deleting error prone edges in divergence nodes. Default: &lt0.2&gt.</td></tr>
-<tr><td>mr</td><td>mr</td><td>repeat_mask</td><td>The indicator for masking repeats. Default: &lttrue&gt. Masking repeats could improve the assemblies contiguous. It recommends to be true.</td></tr>
+<tr><td>mr</td><td>mr</td><td>repeat_mask</td><td>The indicator for masking repeats. Default: &lttrue&gt. Masking repeats will reduce the divergence nodes in the scaffolding graph and improve the contiguity of assemblies. It recommends to be true.</td></tr>
 <tr><td>tiplength</td><td>tl</td><td>tip_length</td><td>The maximum tip length. Default: &lt1500&gt bp.</td></tr>
 <tr><td>iqrtime</td><td>iqrt</td><td>iqr_time</td><td>The IQR times for setting contigs as repeats by their coverages. Default: &lt1.5&gt.</td></tr>
 <tr><td>mmcm</td><td>mmcm</td><td>mmcm</td><td>The parameter to filter invalid Minimap alignments. Default: &lt8&gt. <b>Only for Minimap alignment</b>.</td></tr>
