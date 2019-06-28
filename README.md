@@ -41,21 +41,24 @@ There are two ways to build and run this project:
 # Download the TGS dataset under the project PRJNA318714 on NCBI and extract TGS reads of about 20-fold coverages;<br>
 # Counstruct the NGS draft assemlbies using SOAPdenovo2 (More details: https://sourceforge.net/projects/soapdenovo2/)<br>
 # The content of "assembly.config" file:<br>
-# &nbsp;max_rd_len=150<br>
-# &nbsp;[LIB]<br>
-# &nbsp;avg_ins=300<br>
-# &nbsp;reverse_seq=0<br>
-# &nbsp;asm_flags=3<br>
-# &nbsp;q1=read_R1.fq<br>
-# &nbsp;q2=read_R2.fq<br>
+# &nbsp;&nbsp;max_rd_len=150<br>
+# &nbsp;&nbsp;[LIB]<br>
+# &nbsp;&nbsp;avg_ins=300<br>
+# &nbsp;&nbsp;reverse_seq=0<br>
+# &nbsp;&nbsp;asm_flags=3<br>
+# &nbsp;&nbsp;q1=read_R1.fq<br>
+# &nbsp;&nbsp;q2=read_R2.fq<br>
+<br>
 <i>
 &gtSOAPdenovo127mer pregraph -s ./assembly.config -d 1 -K 83 -R -p 48 -o ./83/83<br>
 &gtSOAPdenovo127mer contig -R -g ./83/83<br>
 &gtSOAPdenovo127mer map -p 48 -s ./assembly.config -g ./83/83<br>
 &gtSOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83<br>
 </i>
+<br>
 # mapping the TGS long reads against the draft assemblies<br>
 <i>minimap2 -t 8 ./draft.fa ./tgs20x.fa >./aln.mm</i><br>
+<br>
 # improving draft assemblies using LRScaf<br>
 # The content of "scafconf.xml" file:<br>
 #	&ltscaffold&gt<br>
@@ -83,6 +86,7 @@ There are two ways to build and run this project:
 #	&nbsp; 	&lt/paras&gt<br>
 #	&lt/scaffold&gt<br>
 <i>&gtjava -Xms100g -Xmx100g -jar LRScaf.jar -x ./scafconf.xml</i><br>
+<br>
 ################################################################################<br>
 <b>Parameters of LRScaf</b><br>
 ################################################################################<br>
