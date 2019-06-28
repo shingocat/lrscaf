@@ -13,13 +13,15 @@ Java version: 1.8+.<br>
 <b>Building LRScaf project</b><br>
 ################################################################################<br>
 There are two ways to build and run this project:
-<li>There is a jar package named LRScaf-&ltversion&gt.jar under target folder in releases. User could run it with command: <i>"java -jar LRScaf-&ltversion&gt.jar -x &ltconfigure.xml&gt"</i>. The details of configuration XML file are described below.</li>
+<li>There is a jar package named LRScaf-&ltversion&gt.jar under target folder in releases. User could run it with command (The details of configuration XML file are described below.): </li>
+<i>"java -jar LRScaf-&ltversion&gt.jar -x &ltconfigure.xml&gt"</i>. 
 <li>If you want to compile the source code by yourself, you could download the source code and then compile and build this project by maven &lthttps://maven.apache.org/&gt in following steps:</li>
 # 1. download the latest releases version and unzip the package<br>
 <i>unzip lrscaf-&ltversion&gt.zip</i><br>
 # 2. change the working folder<br>
 <i>cd lrscaf-&ltversion&gt</i><br>
-# 3. complie source code and package the project, and a jar package named LRScaf-&ltversion&gt.jar would be under the target folder.<br>
+# 3. complie source code and package the project, and a jar package named <br>
+# LRScaf-&ltversion&gt.jar would be under the target folder.
 <i>mvn package</i><br>
 <br>
 ################################################################################<br>
@@ -33,29 +35,29 @@ There are two ways to build and run this project:
 <i>java -jar LRScaf-&ltversion&gt.jar --contig &ltdraft_assembly.fasta&gt --alignedFile &ltalignment.m4&gt -t &ltm4&gt --output &ltoutput_foloder&gt [options]</i><br>
 <br>
 ################################################################################<br>
-<b>A<i>Oryza sativa</i> L. Sample</b><br>
+<b>A <i>Oryza sativa</i> L. Tutorials</b><br>
 ################################################################################<br>
-# Download the NGS dataset (<i>prefecth SRR8446493</i>)and extract NGS reads(<i>fastq-dump SRR8446493</i>);
-# Download the TGS dataset under the project PRJNA318714 on NCBI and extract TGS reads of about 20-fold coverages;
-# Counstruct the NGS draft assemlbies using SOAPdenovo2 (More details: https://sourceforge.net/projects/soapdenovo2/)
-# The content of "assembly.config" file:
-# 	max_rd_len=150
-#	[LIB]
-#	avg_ins=300
-#	reverse_seq=0
-#	asm_flags=3
-#	q1=read_R1.fq
-#	q2=read_R2.fq
+# Download the NGS dataset (<i>prefecth SRR8446493</i>) and extract NGS reads (<i>fastq-dump SRR8446493</i>);<br>
+# Download the TGS dataset under the project PRJNA318714 on NCBI and extract TGS reads of about 20-fold coverages;<br>
+# Counstruct the NGS draft assemlbies using SOAPdenovo2 (More details: https://sourceforge.net/projects/soapdenovo2/)<br>
+# The content of "assembly.config" file:<br>
+# 	max_rd_len=150<br>
+#	[LIB]<br>
+#	avg_ins=300<br>
+#	reverse_seq=0<br>
+#	asm_flags=3<br>
+#	q1=read_R1.fq<br>
+#	q2=read_R2.fq<br>
 <i>
-SOAPdenovo127mer pregraph -s ./assembly.config -d 1 -K 83 -R -p 48 -o ./83/83
-SOAPdenovo127mer contig -R -g ./83/83
-SOAPdenovo127mer map -p 48 -s ./assembly.config -g ./83/83
-SOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83
+SOAPdenovo127mer pregraph -s ./assembly.config -d 1 -K 83 -R -p 48 -o ./83/83<br>
+SOAPdenovo127mer contig -R -g ./83/83<br>
+SOAPdenovo127mer map -p 48 -s ./assembly.config -g ./83/83<br>
+SOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83<br>
 </i>
-# mapping the TGS long reads against the draft assemblies
-<i>minimap2 -t 8 ./draft.fa ./tgs20x.fa >./aln.mm</i>
-# improving draft assemblies using LRScaf
-# The content of "scafconf.xml" file:
+# mapping the TGS long reads against the draft assemblies<br>
+<i>minimap2 -t 8 ./draft.fa ./tgs20x.fa >./aln.mm</i><br>
+# improving draft assemblies using LRScaf<br>
+# The content of "scafconf.xml" file:<br>
 #	&ltscaffold&gt<br>
 #	&nbsp; 	&ltinput&gt<br>
 #	&nbsp; &nbsp; &ltcontig&gt./draft.fa&lt/contig&gt<br>
@@ -80,7 +82,7 @@ SOAPdenovo127mer scaff -p 48 -L 150 -F -g ./83/83
 #	&nbsp; &nbsp; &ltprocess&gt4&lt/process&gt<br>
 #	&nbsp; 	&lt/paras&gt<br>
 #	&lt/scaffold&gt<br>
-<i>java -Xms100g -Xmx100g -jar LRScaf.jar -x ./scafconf.xml</i>
+<i>java -Xms100g -Xmx100g -jar LRScaf.jar -x ./scafconf.xml</i><br>
 ################################################################################<br>
 <b>Parameters of LRScaf</b><br>
 ################################################################################<br>
