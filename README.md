@@ -38,7 +38,7 @@ There are two ways to build and run this project:
 <b>A <i>Oryza sativa</i> L. Tutorials</b><br>
 ################################################################################<br>
 # Improving a draft assemblies using LRScaf is generally by three steps. <br>
-# <b>The first step: generated a draft assemblies using NGS reads. <br>
+# <b>The first step: generated a draft assemblies using NGS reads.<b> <br>
 # Download the NGS dataset (<i>prefecth SRR8446493</i>) and extract NGS reads (<i>fastq-dump SRR8446493</i>);<br>
 # Download the TGS dataset under the project PRJNA318714 on NCBI and extract TGS reads of about 20-fold coverages;<br>
 # Counstruct the NGS draft assemlbies using SOAPdenovo2 (More details: https://sourceforge.net/projects/soapdenovo2/)<br>
@@ -61,8 +61,7 @@ There are two ways to build and run this project:
 # mapping the TGS long reads against the draft assemblies<br>
 <i>minimap2 -t 8 ./draft.fa ./tgs20x.fa >./aln.mm</i><br>
 <br>
-# <b>The last step: scaffolding using LRScaf.<b><b>
-# improving draft assemblies using LRScaf<br>
+# <b>The last step: improving draft assemblies using LRScaf<b><br>
 # The content of "scafconf.xml" file:<br>
 #	&ltscaffold&gt<br>
 #	&nbsp; 	&ltinput&gt<br>
