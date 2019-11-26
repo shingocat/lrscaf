@@ -36,6 +36,14 @@ public class RepeatWriter {
 		BufferedWriter bwRepeat = null;
 		try{
 			repeat = new File(paras.getOutFolder() + System.getProperty("file.separator") + "repeat.contigs");
+			if(repeat.exists()) {
+				logger.info("The output file " + repeat.getAbsolutePath() + " existed. It will overwrite.");
+			} else {
+				if(!repeat.createNewFile()) {
+					logger.error("The output file " + repeat.getAbsolutePath() + " could not create.");
+					return;
+				}
+			}
 			fwRepeat = new FileWriter(repeat);
 			bwRepeat = new BufferedWriter(fwRepeat);
 			for(Map.Entry<String, Contig> entry : cnts.entrySet())

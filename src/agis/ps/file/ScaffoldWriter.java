@@ -83,13 +83,17 @@ public class ScaffoldWriter {
 		try{
 //			this.readCntFile();
 			out = new File(filePath);
-			if (out.exists()) {
-				logger.info("The output file of scaffold is exist! It will not be overwrited!");
-				return;
-			}
-			if (!out.createNewFile()) {
-				logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
-				return;
+//			if (out.exists()) {
+//				logger.info("The output file of scaffold is exist! It will not be overwrited!");
+//				return;
+//			}
+			if(out.exists()) {
+				logger.info("The output file " + filePath + " existed. It will overwrite.");
+			} else {
+				if (!out.createNewFile()) {
+					logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
+					return;
+				}
 			}
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);

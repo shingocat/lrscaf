@@ -31,9 +31,12 @@ public class DotGraphFileWriter {
 		BufferedWriter bw = null;
 		try {
 			out = new File(filePath);
-			if (out.exists()) {
-				logger.info(DotGraphFileWriter.class.getName() + "\t" + filePath + " is exist!");
-				return;
+//			if (out.exists()) {
+//				logger.info(DotGraphFileWriter.class.getName() + "\t" + filePath + " is exist!");
+//				return;
+//			}
+			if(out.exists()) {
+				logger.info("The output file " + filePath + " existed. It will overwrite.");
 			}
 			out.createNewFile();
 			fw = new FileWriter(out);
@@ -85,12 +88,19 @@ public class DotGraphFileWriter {
 		BufferedWriter bw = null;
 		try {
 			out = new File(filePath);
-			if (out.exists()) {
-				logger.error(filePath + " is exist!");
-				return;
+//			if (out.exists()) {
+//				logger.error(filePath + " is exist!");
+//				return;
+//			}
+			if(out.exists()) {
+				logger.info("The output file " + filePath + " existed. It will overwrite.");
+			} else {
+				if(!out.createNewFile()) {
+					logger.info("The output file" + filePath + "could not be created!");
+					return;
+				}
 			}
-			out.createNewFile();
-			fw = new FileWriter(out);
+			fw = new FileWriter(out, false);
 			bw = new BufferedWriter(fw);
 			int count = 0;
 			for (NodePath p : paths) {

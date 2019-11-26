@@ -120,7 +120,15 @@ public class LinkWriter {
 	{
 		try{
 			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "links.info");
-			fw = new FileWriter(file, true);
+			if(file.exists()) {
+				logger.info("The output file " + file.getAbsolutePath() + " existed. It will overwrite.");
+			} else {
+				if(!file.createNewFile()) {
+					logger.error("The output file " + file.getAbsolutePath() + " could not crate.");
+					return;
+				}
+			}
+			fw = new FileWriter(file, false);
 			bw = new BufferedWriter(fw);
 			if(links != null && links.size() > 0)
 			{

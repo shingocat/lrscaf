@@ -47,16 +47,20 @@ public class N50Writer {
 		try
 		{
 			file = new File(fileName);
-			if (file.exists()) {
-				logger.info("The output file" + fileName + "is exist! It will not be overwrited!");
-				return;
+//			if (file.exists()) {
+//				logger.info("The output file" + fileName + "is exist! It will not be overwrited!");
+//				return;
+//			}
+			if(file.exists()) {
+				logger.info("The output file " + fileName + " existed. It will overwrite.");
+			} else {
+				if(!file.createNewFile())
+				{
+					logger.info(this.getClass().getName() + "The output file" + fileName + "could not be created!");
+					return;
+				}
 			}
-			if(!file.createNewFile())
-			{
-				logger.info(this.getClass().getName() + "The output file" + fileName + "could not be created!");
-				return;
-			}
-			fw = new FileWriter(file);
+			fw = new FileWriter(file, false);
 			bw = new BufferedWriter(fw);
 			long total = MathTool.sum(lens);
 			int mean = MathTool.mean(lens);

@@ -210,3 +210,14 @@
 2019-03-14 21:21:05  [ ERROR ]  jcf7180002720970
 2019-03-14 21:36:07  [ ERROR ]  agis.ps.graph.DirectedGraph	null
 2019-03-14 21:36:08  [ ERROR ]  index 232
+2019-11-26 15:02:27  [ ERROR ]  D:\\data\\ecoli\\pb\\output\nodePaths.info is exist!
+2019-11-26 15:13:26  [ ERROR ]  D:\\data\\ecoli\\pb\\output\nodePaths.info is exist!
+2019-11-26 15:17:00  [ ERROR ]  D:\\data\\ecoli\\pb\\output\nodePaths.info is exist!
+2019-11-26 15:20:37  [ ERROR ]  D:\\data\\ecoli\\pb\\output\nodePaths.info is exist!
+2019-11-26 15:21:07  [ ERROR ]  D:\\data\\ecoli\\pb\\output\nodePaths.info is exist!
+2019-11-26 15:24:56  [ ERROR ]  D:\\data\\ecoli\\pb\\output\nodePaths.info is exist!
+2019-11-26 15:27:42  [ ERROR ]  D:\\data\\ecoli\\pb\\output\nodePaths.info is exist!
+2019-11-26 15:28:00  [ ERROR ]  D:\\data\\ecoli\\pb\\output\nodePaths.info is exist!
+2019-11-26 16:04:51  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-11-26 16:04:51  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2019-11-26 16:04:51  [ ERROR ]  agis.ps.file.TriadLinkWriter	null

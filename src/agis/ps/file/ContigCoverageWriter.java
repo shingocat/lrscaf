@@ -47,16 +47,20 @@ public class ContigCoverageWriter {
 		try
 		{
 			file = new File(fileName);
-			if (file.exists()) {
-				logger.info("The output file of scaffold is exist! It will not be overwrited!");
-				return;
+//			if (file.exists()) {
+//				logger.info("The output file of scaffold is exist! It will not be overwrited!");
+//				return;
+//			}
+			if(file.exists()) {
+				logger.info("The output file " + fileName + " existed. It will overwrite.");
+			} else {
+				if(!file.createNewFile())
+				{
+					logger.info("The output file" + fileName + "could not be created!");
+					return;
+				}
 			}
-			if(!file.createNewFile())
-			{
-				logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
-				return;
-			}
-			fw = new FileWriter(file);
+			fw = new FileWriter(file, false);
 			bw = new BufferedWriter(fw);
 			for(String s : args.keySet())
 			{

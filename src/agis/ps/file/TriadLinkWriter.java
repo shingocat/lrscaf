@@ -40,12 +40,47 @@ public class TriadLinkWriter {
 //		this.triads = triads;
 //	}
 
-	public void init() {
+//	public void init() {
+//		try {
+//			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "triadlinks.info");
+////			if (!file.exists())
+////				file.createNewFile();
+////			fw = new FileWriter(file, true);
+//			if(file.exists()) {
+//				logger.info("The output file " + file.getAbsolutePath() + " existed. It will overwrite.");
+//			} else {
+//				if(!file.createNewFile()) {
+//					logger.error("The output file " + file.getAbsolutePath() + " could not create.");
+//					return;
+//				}
+//			}
+//			fw = new FileWriter(file, false);
+//			bw = new BufferedWriter(fw);
+//		} catch (IOException e) {
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//		} catch (Exception e) {
+//			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+//		}
+//	}
+	
+	public void init(Boolean append) {
 		try {
 			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "triadlinks.info");
-			if (!file.exists())
-				file.createNewFile();
-			fw = new FileWriter(file, true);
+//			if (!file.exists())
+//				file.createNewFile();
+//			fw = new FileWriter(file, true);
+			if(file.exists()) {
+				if(append) 
+					logger.info("The output file " + file.getAbsolutePath() + " existed. It will append.");
+				else
+					logger.info("The output file " + file.getAbsolutePath() + " existed. It will overwrite.");
+			} else {
+				if(!file.createNewFile()) {
+					logger.error("The output file " + file.getAbsolutePath() + " could not create.");
+					return;
+				}
+			}
+			fw = new FileWriter(file, append);
 			bw = new BufferedWriter(fw);
 		} catch (IOException e) {
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());

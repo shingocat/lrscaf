@@ -157,7 +157,7 @@ public class Scaffolder {
 
 	private void writeTriadLinks() {
 		TriadLinkWriter tlw = new TriadLinkWriter(paras);
-		tlw.init();
+		tlw.init(false);
 		tlw.write(triads);
 		tlw.close();
 	}

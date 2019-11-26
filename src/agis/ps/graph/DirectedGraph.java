@@ -54,7 +54,7 @@ public class DirectedGraph extends Graph implements Serializable {
 		initAdjTos();
 //		initCntIndexer();
 		tlWriter = new TriadLinkWriter(paras);
-		tlWriter.init();
+		tlWriter.init(true);
 	}
 	
 	public DirectedGraph(List<Edge> edges, Parameter paras, Map<String, Contig> cnts)
