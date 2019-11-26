@@ -88,10 +88,10 @@ public class ScaffoldWriter {
 //				return;
 //			}
 			if(out.exists()) {
-				logger.info("The output file " + filePath + " existed. It will overwrite.");
+				logger.info("The output file " + out.getCanonicalPath() + " existed. It will overwrite.");
 			} else {
 				if (!out.createNewFile()) {
-					logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
+					logger.error("The output file " +  out.getCanonicalPath() + " could not create.");
 					return;
 				}
 			}

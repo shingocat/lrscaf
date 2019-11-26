@@ -54,11 +54,11 @@ public class ContigMisassemblyWriter {
 //				return;
 //			}
 			if(file.exists()) {
-				logger.info("The output file " + fileName + " existed. It will overwrite.");
+				logger.info("The output file " + file.getCanonicalPath() + " existed. It will overwrite.");
 			} else  {
 				if(!file.createNewFile())
 				{
-					logger.info("ScaffoldWriter: The output file of scaffolds could not create!");
+					logger.info("The output file " + file.getCanonicalPath() + "could not create.");
 					return;
 				}
 			}

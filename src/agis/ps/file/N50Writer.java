@@ -52,11 +52,11 @@ public class N50Writer {
 //				return;
 //			}
 			if(file.exists()) {
-				logger.info("The output file " + fileName + " existed. It will overwrite.");
+				logger.info("The output file " + file.getCanonicalPath() + " existed. It will overwrite.");
 			} else {
 				if(!file.createNewFile())
 				{
-					logger.info(this.getClass().getName() + "The output file" + fileName + "could not be created!");
+					logger.error("The output file" + file.getCanonicalPath() + "could not be created!");
 					return;
 				}
 			}

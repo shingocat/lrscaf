@@ -36,9 +36,13 @@ public class DotGraphFileWriter {
 //				return;
 //			}
 			if(out.exists()) {
-				logger.info("The output file " + filePath + " existed. It will overwrite.");
+				logger.info("The output file " + out.getCanonicalPath() + " existed. It will overwrite.");
+			} else  {
+				if(!out.createNewFile()) {
+					logger.error("The output file " +  out.getCanonicalPath() + " could not create.");
+					return;
+				}
 			}
-			out.createNewFile();
 			fw = new FileWriter(out);
 			bw = new BufferedWriter(fw);
 			bw.write("digraph G{\n");

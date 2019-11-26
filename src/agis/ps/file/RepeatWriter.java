@@ -37,10 +37,10 @@ public class RepeatWriter {
 		try{
 			repeat = new File(paras.getOutFolder() + System.getProperty("file.separator") + "repeat.contigs");
 			if(repeat.exists()) {
-				logger.info("The output file " + repeat.getAbsolutePath() + " existed. It will overwrite.");
+				logger.info("The output file " + repeat.getCanonicalPath() + " existed. It will overwrite.");
 			} else {
 				if(!repeat.createNewFile()) {
-					logger.error("The output file " + repeat.getAbsolutePath() + " could not create.");
+					logger.error("The output file " + repeat.getCanonicalPath() + " could not create.");
 					return;
 				}
 			}

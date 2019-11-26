@@ -121,10 +121,10 @@ public class LinkWriter {
 		try{
 			file = new File(paras.getOutFolder() + System.getProperty("file.separator") + "links.info");
 			if(file.exists()) {
-				logger.info("The output file " + file.getAbsolutePath() + " existed. It will overwrite.");
+				logger.info("The output file " + file.getCanonicalPath() + " existed. It will overwrite.");
 			} else {
 				if(!file.createNewFile()) {
-					logger.error("The output file " + file.getAbsolutePath() + " could not crate.");
+					logger.error("The output file " + file.getCanonicalPath() + " could not create.");
 					return;
 				}
 			}

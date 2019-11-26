@@ -36,7 +36,15 @@ public class MisassembliesWriter {
 		BufferedWriter bwMisassembly = null;
 		try{
 			misassembly = new File(paras.getOutFolder() + System.getProperty("file.separator") + "misassembly.contigs");
-			fwMisassembly = new FileWriter(misassembly);
+			if(misassembly.exists()) {
+				logger.info("The output file " + misassembly.getCanonicalPath() + " existed. It will overwrite.");
+			} else {
+				if(!misassembly.createNewFile()) {
+					logger.error("The output file " + misassembly.getCanonicalPath() + " could not create.");
+					return;
+				}
+			}
+			fwMisassembly = new FileWriter(misassembly, false);
 			bwMisassembly = new BufferedWriter(fwMisassembly);
 			for(Map.Entry<String, Contig> entry : cnts.entrySet())
 			{

@@ -71,12 +71,12 @@ public class TriadLinkWriter {
 //			fw = new FileWriter(file, true);
 			if(file.exists()) {
 				if(append) 
-					logger.info("The output file " + file.getAbsolutePath() + " existed. It will append.");
+					logger.info("The output file " + file.getCanonicalPath() + " existed. It will append.");
 				else
-					logger.info("The output file " + file.getAbsolutePath() + " existed. It will overwrite.");
+					logger.info("The output file " + file.getCanonicalPath() + " existed. It will overwrite.");
 			} else {
 				if(!file.createNewFile()) {
-					logger.error("The output file " + file.getAbsolutePath() + " could not create.");
+					logger.error("The output file " + file.getCanonicalPath() + " could not create.");
 					return;
 				}
 			}
