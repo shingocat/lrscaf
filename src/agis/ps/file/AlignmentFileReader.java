@@ -161,6 +161,7 @@ public abstract class AlignmentFileReader {
 		{
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());;
 		} catch (NumberFormatException e) {
+			
 			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex  
 					+ "\t" + e.getMessage());
 		} catch(Exception e)
