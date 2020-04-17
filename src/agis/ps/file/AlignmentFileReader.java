@@ -66,6 +66,7 @@ public abstract class AlignmentFileReader {
 		File file = null;
 		FileReader fr = null;
 		BufferedReader br = null;
+		int lineIndex = 1; // for debug use;
 		try
 		{
 			file = new File(algFile);
@@ -153,14 +154,19 @@ public abstract class AlignmentFileReader {
 						qId = record.getqName();
 					}
 				} 
+				lineIndex++;
 			}
 			br.close();
 		} catch(IOException e)
 		{
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());;
+		} catch (NumberFormatException e) {
+			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex  
+					+ "\t" + e.getMessage());
 		} catch(Exception e)
 		{
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex 
+					+ "\t" + e.getMessage());
 		} finally
 		{
 			try{
