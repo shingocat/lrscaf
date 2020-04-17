@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>AGIS</groupId>
   <artifactId>LRScaf</artifactId>
-  <version>1.1.8</version>
+  <version>1.1.8r1</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -39,6 +39,14 @@
                   <mainClass>agis.ps.Main</mainClass>
                 </transformer>
               </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>agis/ps/test/**</exclude>
+                  </excludes>
+                </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>
