@@ -245,13 +245,16 @@ public class MRecordValidator {
 			cntLen = cnt.getLength();
 			record.settLength(cntLen);
 		} catch (ClassCastException e) {
+			e.printStackTrace();
 			throw new IllegalArgumentException("The contig ID '" + record.gettName() + 
 					"' could not change to String type.");
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 			throw new IllegalArgumentException("The contig ID, " + record.gettName() + 
 					", in alignment file is not in your input draft assembly file! Please checking the contig ID.");
 		} catch(Exception e)
 		{
+			e.printStackTrace();
 			throw new IllegalArgumentException("The contig ID, " + record.gettName() + 
 					", in alignment file is not in your input draft assembly file! Please checking the contig ID.");
 		}
