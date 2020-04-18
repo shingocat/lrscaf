@@ -6,11 +6,16 @@
 */
 package agis.ps.file;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import agis.ps.link.MRecord;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 
 public class MMReader extends AlignmentFileReader {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MMReader.class);
 
 	public MMReader(Parameter paras) {
 		super(paras);
@@ -54,6 +59,7 @@ public class MMReader extends AlignmentFileReader {
 		*/
 		if(cms <= paras.getMmcm())
 			return null;
+		logger.debug(record.toString());
 		return record;
 	}
 }

@@ -120,7 +120,10 @@ public abstract class AlignmentFileReader {
 //					maRs.add(record); 
 //				}
 				// validate record to build link and check repeats;
+//				logger.info("MRecordValidator on lines " + lineIndex + " start.");
 				Map<String, Boolean> values = MRecordValidator.validate(record, paras, cnts);
+				logger.debug("MRecordValidator on lines " + lineIndex + " done.");
+//				logger.info("Repeat finding on lines " + lineIndex + " start.");
 				if(values.get("REPEAT"))
 				{ // only considering valid contigs to compute repeats;
 					String tName = record.gettName();
@@ -138,7 +141,9 @@ public abstract class AlignmentFileReader {
 						}
 					}
 				}
+				logger.debug("Repeat finding on lines " + lineIndex + " done.");
 				// arraylist
+//				logger.info("Record saving on lines " + lineIndex + " start.");
 				if(values.get("RECORD"))
 				{
 					String qName = record.getqName();
@@ -154,20 +159,28 @@ public abstract class AlignmentFileReader {
 						qId = record.getqName();
 					}
 				} 
+				logger.debug("Record saving on lines " + lineIndex + " done.");
 				lineIndex++;
 			}
 			br.close();
 		} catch(IOException e)
 		{
-			logger.error(this.getClass().getName() + "\t" + e.getMessage());;
+			logger.error(this.getClass().getName() + "\t" + e.getMessage());
+			logger.error(this.getClass().getName() + "\t" + e.toString());
+			e.printStackTrace();
 		} catch (NumberFormatException e) {
-			
+			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex  
+					+ "\t" + e.toString());
 			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex  
 					+ "\t" + e.getMessage());
+			e.printStackTrace();
 		} catch(Exception e)
 		{
+			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex  
+					+ "\t" + e.toString());
 			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex 
 					+ "\t" + e.getMessage());
+			e.printStackTrace();
 		} finally
 		{
 			try{
@@ -176,6 +189,7 @@ public abstract class AlignmentFileReader {
 			} catch(Exception e)
 			{
 				logger.error(this.getClass().getName() + "\t" + e.getMessage());
+				e.printStackTrace();
 			}
 		}
 		long end = System.currentTimeMillis();

@@ -227,10 +227,30 @@ public class MRecordValidator {
 		// check for record
 		// int cntLen = record.gettLength();
 		int cntLen = 0;
+		// annotation on 2020-4-18
+//		try{
+//			cntLen = cnts.get(record.gettName()).getLength();
+//			record.settLength(cntLen);
+//		}catch(Exception e)
+//		{
+//			throw new IllegalArgumentException("The contig ID, " + record.gettName() + 
+//					", in alignment file is not in your input draft assembly file! Please checking the contig ID.");
+//		}
 		try{
-			cntLen = cnts.get(record.gettName()).getLength();
+			String tName = record.gettName();
+			Contig cnt = cnts.get(tName);
+//			if(cnt == null)
+//					cntLen = 0;
+//			else
+			cntLen = cnt.getLength();
 			record.settLength(cntLen);
-		}catch(Exception e)
+		} catch (ClassCastException e) {
+			throw new IllegalArgumentException("The contig ID '" + record.gettName() + 
+					"' could not change to String type.");
+		} catch (NullPointerException e) {
+			throw new IllegalArgumentException("The contig ID, " + record.gettName() + 
+					", in alignment file is not in your input draft assembly file! Please checking the contig ID.");
+		} catch(Exception e)
 		{
 			throw new IllegalArgumentException("The contig ID, " + record.gettName() + 
 					", in alignment file is not in your input draft assembly file! Please checking the contig ID.");
