@@ -6,6 +6,9 @@
 */
 package agis.ps.file;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +36,11 @@ public class MMReader extends AlignmentFileReader {
 		record.settLength(arrs[6]);
 		int match = Integer.valueOf(arrs[9]);
 		int allMatch = Integer.valueOf(arrs[10]);
-		double identity = Double.valueOf(((double)match) /allMatch);
-		identity = Double.valueOf(String.format("%.4f", identity));
+//		double identity = Double.valueOf(((double)match) /allMatch);
+//		identity = Double.valueOf(String.format("%.4f", identity));
+//		record.setIdentity(identity);
+		// for internation decimal format
+		double identity = Math.round((double)match / allMatch * 10000) / 10000.0;
 		record.setIdentity(identity);
 		if(arrs[4].equals("+"))
 			record.settStrand(Strand.FORWARD);
