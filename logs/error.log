@@ -221,3 +221,131 @@
 2019-11-26 16:04:51  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
 2019-11-26 16:04:51  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
 2019-11-26 16:04:51  [ ERROR ]  agis.ps.file.TriadLinkWriter	null
+2020-04-17 16:55:42  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, 754, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-17 16:57:46  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, 754, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-17 16:58:51  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	For input string: "424c"
+2020-04-17 17:02:11  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	For input string: "424c"
+2020-04-17 17:02:52  [ ERROR ]  agis.ps.file.MMReader	On lines: 1null	For input string: "424c"
+2020-04-17 17:03:01  [ ERROR ]  agis.ps.file.MMReader	On lines: 1java.lang.NumberFormatException: For input string: "424c"	For input string: "424c"
+2020-04-17 17:03:36  [ ERROR ]  agis.ps.file.MMReader	On lines: 1class java.lang.NumberFormatException	For input string: "424c"
+2020-04-17 17:04:18  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.NumberFormatException: For input string: "424c"
+2020-04-17 17:04:32  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, 754, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-17 17:05:20  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, 754, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-17 17:05:27  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	For input string: "424c"
+2020-04-17 17:11:34  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	For input string: "424c"
+2020-04-18 09:09:56  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-18 09:11:18  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-18 10:08:41  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-18 10:14:11  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-18 10:18:03  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:18:56  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:29  [ ERROR ]  MRecordValidatornull
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:22:37  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:24:50  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:32:08  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:32:42  [ ERROR ]  MRecordValidator:	null
+2020-04-18 10:34:13  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-18 10:37:10  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-18 10:38:14  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	For input string: "39c"
+2020-04-18 10:40:24  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-18 10:43:35  [ ERROR ]  agis.ps.file.MMReader	On lines: 2	For input string: "62c"
+2020-04-18 10:43:54  [ ERROR ]  agis.ps.file.MMReader	On lines: 3	For input string: "21c"
+2020-04-18 10:44:06  [ ERROR ]  agis.ps.file.MMReader	On lines: 3	For input string: "21c"
+2020-04-18 10:44:15  [ ERROR ]  agis.ps.file.MMReader	On lines: 6	For input string: "61c"
+2020-04-18 10:46:37  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.NumberFormatException: For input string: "39c"
+2020-04-18 10:46:37  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	For input string: "39c"
+2020-04-18 11:01:35  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:03:19  [ ERROR ]  agis.ps.file.M4Reader	D:\data\lrscaf\tet.mm (系统找不到指定的文件。)
+2020-04-18 11:03:19  [ ERROR ]  agis.ps.file.M4Reader	java.io.FileNotFoundException: D:\data\lrscaf\tet.mm (系统找不到指定的文件。)
+2020-04-18 11:03:19  [ ERROR ]  
+2020-04-18 11:03:29  [ ERROR ]  agis.ps.file.M4Reader	On lines: 1	java.lang.NumberFormatException: For input string: "tig00003288_pilon"
+2020-04-18 11:03:29  [ ERROR ]  agis.ps.file.M4Reader	On lines: 1	For input string: "tig00003288_pilon"
+2020-04-18 11:03:29  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:04:23  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.NumberFormatException: For input string: "39c"
+2020-04-18 11:04:23  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	For input string: "39c"
+2020-04-18 11:04:23  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:04:36  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:14:01  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:15:51  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:19:02  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:22:39  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:23:21  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:23:45  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:31:25  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:31:39  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.NumberFormatException: For input string: "39c"
+2020-04-18 11:31:39  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	For input string: "39c"
+2020-04-18 11:31:39  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 11:37:30  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-18 18:59:32  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.IllegalArgumentException: The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-18 18:59:32  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:31:14  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.IllegalArgumentException: The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:31:14  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:32:58  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.IllegalArgumentException: The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:32:58  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:36:33  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.IllegalArgumentException: The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:36:33  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:37:07  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.IllegalArgumentException: The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:37:07  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:54:41  [ ERROR ]  Error: 
+java.lang.NullPointerException
+	at agis.ps.util.MRecordValidator.validate(MRecordValidator.java:242)
+	at agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:124)
+	at agis.ps.test.TestMMReader.main(TestMMReader.java:16)
+2020-04-19 16:54:41  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.IllegalArgumentException: The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 16:54:41  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 17:00:22  [ ERROR ]  Error: 
+java.lang.NullPointerException
+	at agis.ps.util.MRecordValidator.validate(MRecordValidator.java:242)
+	at agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:124)
+	at agis.ps.test.TestMMReader.main(TestMMReader.java:16)
+2020-04-19 17:00:22  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.IllegalArgumentException: The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 17:00:22  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 17:00:45  [ ERROR ]  Error: 
+java.lang.NullPointerException
+	at agis.ps.util.MRecordValidator.validate(MRecordValidator.java:242)
+	at agis.ps.file.AlignmentFileReader.read(AlignmentFileReader.java:124)
+	at agis.ps.test.TestMMReader.main(TestMMReader.java:16)
+2020-04-19 17:00:45  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	java.lang.IllegalArgumentException: The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 17:00:45  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The contig ID, tig00003288_pilon, in alignment file is not in your input draft assembly file! Please checking the contig ID.
+2020-04-19 17:01:27  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-19 17:01:57  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-19 17:05:18  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-19 17:42:49  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-19 17:43:41  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-19 17:43:58  [ ERROR ]  PathBuilder ： The Edges could not be empty!

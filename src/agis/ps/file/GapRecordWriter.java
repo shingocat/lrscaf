@@ -81,7 +81,7 @@ public class GapRecordWriter {
 			bw.flush();
 		} catch(IOException e)
 		{
-			logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} finally
 		{
@@ -90,7 +90,7 @@ public class GapRecordWriter {
 					bw.close();
 			} catch(IOException e)
 			{
-				logger.debug(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}

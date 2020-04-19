@@ -61,12 +61,15 @@ public class Main {
 				logger.info("Scaffolding erase time: " + (end - start)/1000 + " s.");
 			}
 		} catch (MissingArgumentException e) {
+			logger.error("Error: ", e);
 			logger.error(Main.class.getName() + "\t" + e.getMessage());
 			logger.info(printUsageInfo());
 		} catch (ParseException e) {
+			logger.error("Error: ", e);
 			logger.error(Main.class.getName() + "\t"+ e.getMessage());
 			logger.info(printUsageInfo());
 		} catch (Exception e) {
+			logger.error("Error: ", e);
 			logger.error(Main.class.getName() + "\t" + e.getMessage());
 			logger.info(printUsageInfo());
 		}

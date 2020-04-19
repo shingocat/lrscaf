@@ -69,14 +69,17 @@ public class DotGraphFileWriter {
 			}
 			bw.write("}");
 		} catch (IOException e) {
+			logger.debug("Error: ", e);
 			logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 		} finally {
 			try {
 				if (bw != null)
 					bw.close();
 			} catch (IOException e) {
+				logger.debug("Error: ", e);
 				logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 			}
 		}
@@ -115,12 +118,14 @@ public class DotGraphFileWriter {
 			}
 
 		} catch (IOException e) {
+			logger.debug("Error: ", e);
 			logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 		} finally {
 			if (bw != null)
 				try {
 					bw.close();
 				} catch (IOException e) {
+					logger.debug("Error: ", e);
 					logger.error(DotGraphFileWriter.class.getName() + "\t" + e.getMessage());
 				}
 		}

@@ -83,8 +83,10 @@ public class TriadLinkWriter {
 			fw = new FileWriter(file, append);
 			bw = new BufferedWriter(fw);
 		} catch (IOException e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 	}
@@ -153,8 +155,10 @@ public class TriadLinkWriter {
 			bw.flush();
 //			bw.close();
 		} catch (IOException e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 	}
@@ -195,9 +199,11 @@ public class TriadLinkWriter {
 			}
 		} catch(IOException e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} catch(Exception e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		}
 	}
@@ -207,6 +213,7 @@ public class TriadLinkWriter {
 			if (bw != null)
 				bw.close();
 		} catch (IOException e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 	}

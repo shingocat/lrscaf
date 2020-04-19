@@ -41,8 +41,10 @@ public class SimilarityCntWriter {
 			fw = new FileWriter(file, true);
 			bw = new BufferedWriter(fw);
 		} catch (IOException e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 	}
@@ -62,12 +64,14 @@ public class SimilarityCntWriter {
 			}
 			bw.flush();
 		} catch (IOException e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} finally {
 			try {
 				if (bw != null)
 					bw.close();
 			} catch (IOException e) {
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}

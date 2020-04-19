@@ -190,6 +190,7 @@ public class DirectedGraph extends Graph implements Serializable {
 					// break;
 				}
 			} catch (Exception e) {
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage());
 //				logger.error("index " + index);
 //				logger.error(origin.getID());
@@ -453,6 +454,7 @@ public class DirectedGraph extends Graph implements Serializable {
 				}
 			}
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		logger.info("Delete error prone edges:" + rmEdges.size());
@@ -650,6 +652,7 @@ public class DirectedGraph extends Graph implements Serializable {
 //				}
 			}
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		if(rmEdges.size() != 0)

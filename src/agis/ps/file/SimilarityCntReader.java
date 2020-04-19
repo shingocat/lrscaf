@@ -60,6 +60,7 @@ public class SimilarityCntReader {
 			
 		} catch(IOException e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} finally
 		{
@@ -69,6 +70,7 @@ public class SimilarityCntReader {
 					br.close();
 			}  catch(IOException e)
 			{
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			} 
 		}

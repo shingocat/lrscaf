@@ -201,10 +201,13 @@ public class XMLParser {
 			}
 
 		} catch (ParserConfigurationException e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (SAXException e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch (IOException e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		}
 		return para;

@@ -95,6 +95,7 @@ public class N50Writer {
 			bw.flush();
 		} catch(IOException e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} finally
 		{
@@ -103,6 +104,7 @@ public class N50Writer {
 					bw.close();
 			} catch(IOException e)
 			{
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}

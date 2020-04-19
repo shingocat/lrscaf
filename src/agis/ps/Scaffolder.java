@@ -80,7 +80,7 @@ public class Scaffolder {
 			this.writeRepeatCnts();
 //			this.writeMisassemblies();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error: ", e);
 			logger.error(e.getMessage());
 		}
 	}

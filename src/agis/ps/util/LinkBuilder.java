@@ -137,6 +137,7 @@ public class LinkBuilder {
 					}
 				}
 			} catch (InterruptedException | ExecutionException e) {
+				logger.debug("Error: ", e);
 				logger.error(e.getMessage());
 			}
 		}

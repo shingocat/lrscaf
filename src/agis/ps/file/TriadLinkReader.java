@@ -73,6 +73,7 @@ public class TriadLinkReader {
 			
 		} catch(IOException e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 		} finally
 		{
@@ -82,6 +83,7 @@ public class TriadLinkReader {
 					br.close();
 			}  catch(IOException e)
 			{
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			} 
 		}

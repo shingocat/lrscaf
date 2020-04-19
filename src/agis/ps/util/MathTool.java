@@ -121,6 +121,7 @@ public class MathTool {
 			}
 			mean = Math.round(sum / size);
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(MathTool.class.getName() + "\t" + e.getMessage());
 		}
 		return mean;
@@ -140,6 +141,7 @@ public class MathTool {
 			}
 			mean = Math.round(sum / size);
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(MathTool.class.getName() + "\t" + e.getMessage());
 		}
 		return mean;
@@ -160,6 +162,7 @@ public class MathTool {
 			}
 			sd = (int) Math.round(Math.sqrt(diff / (size - 1)));
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(MathTool.class.getName() + "\t" + e.getMessage());
 		}
 		return sd;
@@ -176,6 +179,7 @@ public class MathTool {
 			}
 			sd = (int) Math.round(Math.sqrt(diff / (size - 1)));
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(MathTool.class.getName() + "\t" + e.getMessage());
 		}
 		return sd;

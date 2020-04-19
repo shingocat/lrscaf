@@ -128,26 +128,26 @@ public class ContigReader {
 			}
 
 		} catch (ArrayIndexOutOfBoundsException e) {
-			e.printStackTrace();
+			logger.debug("Error: ", e);
 			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.debug("Error: ", e);
 			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("Error: ", e);
 			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} catch (PatternSyntaxException e) {
-			e.printStackTrace();
+			logger.debug("Error: ", e);
 			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug("Error: ", e);
 			logger.error(e.getMessage() + "\t" + e.getClass().getName());
 		} finally {
 			try {
 				if (br != null)
 					br.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.debug("Error: ", e);
 				logger.error(e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}

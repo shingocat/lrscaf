@@ -63,9 +63,11 @@ public class MisassembliesWriter {
 			bwMisassembly.close();
 		} catch(IOException e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(e.getMessage());
 		} catch(Exception e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(e.getMessage());
 		} finally{
 			try{
@@ -73,6 +75,7 @@ public class MisassembliesWriter {
 					bwMisassembly.close();
 			} catch(IOException e)
 			{
+				logger.debug("Error: ", e);
 				logger.error(e.getMessage());
 			}
 			

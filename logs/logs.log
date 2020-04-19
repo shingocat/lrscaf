@@ -1,48 +1,19 @@
-2019-11-26 16:37:46  [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed!
-2019-11-26 16:37:46  [ INFO ]  Launching...
-2019-11-26 16:37:46  [ INFO ]  The output folder existed!
-2019-11-26 16:37:46  [ INFO ]  Building output folder, erase time: 0 ms
-2019-11-26 16:37:46  [ INFO ]  Reading contigs, erase times: 177 ms
-2019-11-26 16:37:46  [ INFO ]  The output file D:\\data\\ecoli\\pb\\output\draft_summary.info existed. It will overwrite.
-2019-11-26 16:37:46  [ INFO ]  Valid Aligned Records: 3263
-2019-11-26 16:37:46  [ INFO ]  Reading Aligned Records, erase time: 231 ms
-2019-11-26 16:37:46  [ INFO ]  Finding Repeats:
-2019-11-26 16:37:46  [ INFO ]  MIN: 1.0
-2019-11-26 16:37:46  [ INFO ]  First Quartile: 3.0
-2019-11-26 16:37:46  [ INFO ]  Median cov = 8.5
-2019-11-26 16:37:46  [ INFO ]  Third Quartile: 13.0
-2019-11-26 16:37:46  [ INFO ]  MAX: 86.0
-2019-11-26 16:37:46  [ INFO ]  Interquartile Range: 10.0
-2019-11-26 16:37:46  [ INFO ]  3.0's IQR , Outlier Threshold: 43.0
-2019-11-26 16:37:46  [ INFO ]  The output file D:\\data\\ecoli\\pb\\output\contig_coverage.info existed. It will overwrite.
-2019-11-26 16:37:46  [ INFO ]  Repeat count: 2
-2019-11-26 16:37:46  [ INFO ]  Finding repeat, erase time: 5 ms
-2019-11-26 16:37:46  [ INFO ]  Valid Links Acount: 2989
-2019-11-26 16:37:46  [ INFO ]  Building Link, erase time : 31 ms
-2019-11-26 16:37:46  [ INFO ]  The output file D:\data\ecoli\pb\output\links.info existed. It will overwrite.
-2019-11-26 16:37:46  [ INFO ]  The output file D:\data\ecoli\pb\output\triadlinks.info existed. It will overwrite.
-2019-11-26 16:37:46  [ INFO ]  Minimum supported links: 3
-2019-11-26 16:37:46  [ INFO ]  Used overlap link: true
-2019-11-26 16:37:46  [ INFO ]  Building Edges, Erase Time: 41 ms
-2019-11-26 16:37:46  [ INFO ]  Original Edges size: 448
-2019-11-26 16:37:46  [ INFO ]  The output file D:\\data\\ecoli\\pb\\output\edges.info existed. It will overwrite.
-2019-11-26 16:37:46  [ INFO ]  The output file D:\data\ecoli\pb\output\triadlinks.info existed. It will append.
-2019-11-26 16:37:46  [ INFO ]  Transitive Reducing, erase time: 2 ms
-2019-11-26 16:37:46  [ INFO ]  Edges size after transitive reducing: 448
-2019-11-26 16:37:46  [ INFO ]  The output file D:\\data\\ecoli\\pb\\output\edges_after_tr.info existed. It will overwrite.
-2019-11-26 16:37:46  [ INFO ]  Delete error prone edges:0
-2019-11-26 16:37:46  [ INFO ]  Error prone Edge deleting, erase time: 1 ms
-2019-11-26 16:37:46  [ INFO ]  Edges size after error prone deleting: 448
-2019-11-26 16:37:46  [ INFO ]  The output file D:\\data\\ecoli\\pb\\output\edges_after_dep.info existed. It will overwrite.
-2019-11-26 16:37:46  [ INFO ]  Delete tip edges:0
-2019-11-26 16:37:46  [ INFO ]  Tip edge deleting, erase time: 1 ms
-2019-11-26 16:37:46  [ INFO ]  Edges size after deleting tips: 448
-2019-11-26 16:37:46  [ INFO ]  The output file D:\\data\\ecoli\\pb\\output\edges_after_dt.info existed. It will overwrite.
-2019-11-26 16:37:46  [ INFO ]  Path Building, erase time: 122 ms
-2019-11-26 16:37:46  [ INFO ]  The output file D:\\data\\ecoli\\pb\\output\nodePaths.info existed. It will overwrite.
-2019-11-26 16:37:46  [ INFO ]  The output file D:\\data\\ecoli\\pb\\output\scaffolds.fasta existed. It will overwrite.
-2019-11-26 16:37:47  [ INFO ]  The output file D:\\data\\ecoli\\pb\\output\scaffolds_summary.info existed. It will overwrite.
-2019-11-26 16:37:47  [ INFO ]  Scaffold writing, erase time: 1067 ms
-2019-11-26 16:37:47  [ INFO ]  The output file D:\data\ecoli\pb\output\repeat.contigs existed. It will overwrite.
-2019-11-26 16:37:47  [ INFO ]  Ending...
-2019-11-26 16:37:47  [ INFO ]  Scaffolding erase time: 1 s.
+2020-04-19 17:43:58  [ INFO ]  Parsing the xml configure, all the other parameters set by command line will dismissed!
+2020-04-19 17:43:58  [ WARN ]  The identity is setted to 0.7.
+2020-04-19 17:43:58  [ WARN ]  The identity for Minimap mapper should be not large than 0.3!
+2020-04-19 17:43:58  [ INFO ]  Launching...
+2020-04-19 17:43:58  [ INFO ]  The output folder existed!
+2020-04-19 17:43:58  [ INFO ]  Building output folder, erase time: 1 ms
+2020-04-19 17:43:58  [ INFO ]  Reading contigs, erase times: 1 ms
+2020-04-19 17:43:58  [ INFO ]  The output file D:\data\lrscaf\output\draft_summary.info existed. It will overwrite.
+2020-04-19 17:43:58  [ INFO ]  Valid Aligned Records: 0
+2020-04-19 17:43:58  [ INFO ]  Reading Aligned Records, erase time: 2 ms
+2020-04-19 17:43:58  [ INFO ]  Repeat count: 0
+2020-04-19 17:43:58  [ INFO ]  Finding repeat, erase time: 0 ms
+2020-04-19 17:43:58  [ INFO ]  Valid Links Acount: 0
+2020-04-19 17:43:58  [ INFO ]  Building Link, erase time : 5 ms
+2020-04-19 17:43:58  [ INFO ]  The output file D:\data\lrscaf\output\links.info existed. It will overwrite.
+2020-04-19 17:43:58  [ INFO ]  The output file D:\data\lrscaf\output\triadlinks.info existed. It will overwrite.
+2020-04-19 17:43:58  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-04-19 17:43:58  [ INFO ]  Ending...
+2020-04-19 17:43:58  [ INFO ]  Scaffolding erase time: 0 s.

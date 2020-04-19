@@ -61,15 +61,18 @@ public class PBLinkReader {
 			br.close();
 		} catch(IOException e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch(Exception e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} finally{
 			try{
 				
 			} catch(Exception e)
 			{
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage());
 			}
 		}		

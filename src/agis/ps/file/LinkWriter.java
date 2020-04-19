@@ -147,9 +147,11 @@ public class LinkWriter {
 			}
 		} catch(IOException e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} catch(Exception e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
 		} finally
 		{
@@ -158,6 +160,7 @@ public class LinkWriter {
 					bw.close();
 			} catch(Exception e)
 			{
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage());
 			}
 		}

@@ -165,22 +165,17 @@ public abstract class AlignmentFileReader {
 			br.close();
 		} catch(IOException e)
 		{
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-			logger.error(this.getClass().getName() + "\t" + e.toString());
-			e.printStackTrace();
 		} catch (NumberFormatException e) {
-			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex  
-					+ "\t" + e.toString());
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex  
 					+ "\t" + e.getMessage());
-			e.printStackTrace();
 		} catch(Exception e)
 		{
-			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex  
-					+ "\t" + e.toString());
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\tOn lines: " + lineIndex 
 					+ "\t" + e.getMessage());
-			e.printStackTrace();
 		} finally
 		{
 			try{
@@ -188,8 +183,8 @@ public abstract class AlignmentFileReader {
 					br.close();
 			} catch(Exception e)
 			{
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage());
-				e.printStackTrace();
 			}
 		}
 		long end = System.currentTimeMillis();

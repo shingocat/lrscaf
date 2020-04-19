@@ -96,18 +96,18 @@ public class GapRecordReader {
 			br.close();
 		} catch(ArrayIndexOutOfBoundsException e)
 		{
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} catch(FileNotFoundException e)
 		{
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} catch(IOException e)
 		{
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} catch(Exception e){
-			logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} finally
 		{
@@ -117,7 +117,7 @@ public class GapRecordReader {
 					br.close();
 			} catch(IOException e)
 			{
-				logger.debug(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
+				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 			}
 		}

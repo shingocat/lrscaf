@@ -45,8 +45,10 @@ public class OutputFolderBuilder {
 					logger.info("Build output folder failed!");
 			}
 		} catch (SecurityException e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		} catch (Exception e) {
+			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		long end = System.currentTimeMillis();
