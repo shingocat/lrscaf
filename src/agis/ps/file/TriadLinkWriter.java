@@ -20,7 +20,8 @@ import org.slf4j.LoggerFactory;
 import agis.ps.link.Edge;
 import agis.ps.link.ILink;
 import agis.ps.link.TriadLink;
-import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
+//import agis.ps.seqs.Contig;
 import agis.ps.util.Parameter;
 
 public class TriadLinkWriter {
@@ -141,14 +142,14 @@ public class TriadLinkWriter {
 		try {
 			for (int i = 0; i < triads.size(); i++) {
 				TriadLink tl = (TriadLink)triads.get(i);
-				Contig pre = tl.getPrevious();
-				Contig mid = tl.getMiddle();
-				Contig lst = tl.getLast();
+				Sequence pre = tl.getPrevious();
+				Sequence mid = tl.getMiddle();
+				Sequence lst = tl.getLast();
 				String line = null;
 				if (mid == null)
-					line = pre.getID() + ",-" + "," + lst.getID() + "," + tl.getSupLinks();
+					line = pre.getId() + ",-" + "," + lst.getId() + "," + tl.getSupLinks();
 				else
-					line = pre.getID() + "," + mid.getID() + "," + lst.getID() + "," + tl.getSupLinks();
+					line = pre.getId() + "," + mid.getId() + "," + lst.getId() + "," + tl.getSupLinks();
 				bw.write(line);
 				bw.newLine();
 			}
@@ -189,10 +190,10 @@ public class TriadLinkWriter {
 			if(edges != null && !(edges.isEmpty()))
 			{
 				Edge e = edges.get(0);
-				Contig origin = e.getOrigin();
-				Contig terminus = e.getTerminus();
+				Sequence origin = e.getOrigin();
+				Sequence terminus = e.getTerminus();
 				int support = e.getLinkNum();
-				String line = origin.getID() + ",-," + terminus.getID() + "," + support;
+				String line = origin.getId() + ",-," + terminus.getId() + "," + support;
 				bw.write(line);
 				bw.newLine();
 				bw.flush();

@@ -19,28 +19,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.MRecord;
-import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
+//import agis.ps.seqs.Contig;
 import agis.ps.util.MisassemblyRegion;
 import agis.ps.util.Parameter;
 
 public class ContigMisassemblyWriter {
 	public static Logger logger = LoggerFactory.getLogger(ContigMisassemblyWriter.class);
 	private Parameter paras;
-	private Map<String, Contig> args;
+//	private Map<String, Contig> args;
+	private Map<String, Sequence> seqs;
 	
-	public ContigMisassemblyWriter(Parameter paras, Map<String, Contig> args)
-	{
+//	public ContigMisassemblyWriter(Parameter paras, Map<String, Sequence> seqs)
+//	{
+//		this.paras = paras;
+//		this.seqs = seqs;
+//	}
+	
+	public ContigMisassemblyWriter(Parameter paras) {
 		this.paras = paras;
-		this.args = args;
 	}
 	
-	public ContigMisassemblyWriter(Parameter paras)
-	{
-		this.paras = paras;
-	}
-	
-	public void write(Map<String, Contig> args)
-	{
+	public void write(Map<String, Sequence> seqs) {
 		String outFolder = paras.getOutFolder();
 		String fileName = outFolder + System.getProperty("file.separator") + "contig_misassemblies.info";
 		File file = null; 
@@ -64,9 +64,9 @@ public class ContigMisassemblyWriter {
 			}
 			fw = new FileWriter(file, false);
 			bw = new BufferedWriter(fw);
-			for(Map.Entry<String, Contig> entry : args.entrySet())
+			for(Map.Entry<String, Sequence> entry : seqs.entrySet())
 			{
-				List<MisassemblyRegion> regions = entry.getValue().getMisassemblyRegion();
+				List<MisassemblyRegion> regions = entry.getValue().getMisassemblies();
 				for(MisassemblyRegion mr : regions)
 				{
 					bw.write(entry.getKey() + "\t" + mr.getStart() + "\t" +

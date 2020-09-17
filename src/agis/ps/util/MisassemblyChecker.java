@@ -16,24 +16,25 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.file.ContigCoverageWriter;
+import agis.ps.file.SequenceCoverageWriter;
 import agis.ps.file.ContigMisassemblyWriter;
 import agis.ps.link.MRecord;
-import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 
 public class MisassemblyChecker {
 	
 	private static Logger logger = LoggerFactory.getLogger(MisassemblyChecker.class);
 	private Parameter paras;
-	private Map<String, Contig> cnts;
-	
+//	private Map<String, Contig> cnts;
+	private Map<String, Sequence> seqs;
 	
 	public MisassemblyChecker(Parameter paras)
 	{
 		this.paras = paras;
 	}
 	
-	public static boolean checking2(Parameter paras, Map<String, Contig> cnts, List<MRecord> maRs)
+	public static boolean checking2(Parameter paras, Map<String, Sequence> seqs, List<MRecord> maRs)
 	{
 		boolean isTrue = false;
 		int maxOHLen = paras.getMaxOHLen();
@@ -139,8 +140,8 @@ public class MisassemblyChecker {
 								mr.setStart(tCntStart);
 								mr.setEnd(tCntEnd);
 								mr.setSupportLRs(1);
-								Contig cnt = cnts.get(target.gettName());
-								List<MisassemblyRegion> mrs = cnt.getMisassemblyRegion();
+								Sequence cnt = seqs.get(target.gettName());
+								List<MisassemblyRegion> mrs = cnt.getMisassemblies();
 								if(!mrs.contains(mr))
 									mrs.add(mr);
 								// query
@@ -148,8 +149,8 @@ public class MisassemblyChecker {
 								mr.setStart(qCntStart);
 								mr.setEnd(qCntEnd);
 								mr.setSupportLRs(1);
-								cnt = cnts.get(query.gettName());
-								mrs = cnt.getMisassemblyRegion();
+								cnt = seqs.get(query.gettName());
+								mrs = cnt.getMisassemblies();
 								if(!mrs.contains(mr))
 									mrs.add(mr);
 							}
@@ -190,8 +191,8 @@ public class MisassemblyChecker {
 								mr.setStart(tCntStart);
 								mr.setEnd(tCntEnd);
 								mr.setSupportLRs(1);
-								Contig cnt = cnts.get(target.gettName());
-								List<MisassemblyRegion> mrs = cnt.getMisassemblyRegion();
+								Sequence cnt = seqs.get(target.gettName());
+								List<MisassemblyRegion> mrs = cnt.getMisassemblies();
 								if(!mrs.contains(mr))
 									mrs.add(mr);
 								// query
@@ -199,8 +200,8 @@ public class MisassemblyChecker {
 								mr.setStart(qCntStart);
 								mr.setEnd(qCntEnd);
 								mr.setSupportLRs(1);
-								cnt = cnts.get(query.gettName());
-								mrs = cnt.getMisassemblyRegion();
+								cnt = seqs.get(query.gettName());
+								mrs = cnt.getMisassemblies();
 								if(!mrs.contains(mr))
 									mrs.add(mr);
 							}
@@ -240,8 +241,8 @@ public class MisassemblyChecker {
 								mr.setStart(tCntStart);
 								mr.setEnd(tCntEnd);
 								mr.setSupportLRs(1);
-								Contig cnt = cnts.get(target.gettName());
-								List<MisassemblyRegion> mrs = cnt.getMisassemblyRegion();
+								Sequence seq = seqs.get(target.gettName());
+								List<MisassemblyRegion> mrs = seq.getMisassemblies();
 								if(!mrs.contains(mr))
 									mrs.add(mr);
 								// query
@@ -249,8 +250,8 @@ public class MisassemblyChecker {
 								mr.setStart(qCntStart);
 								mr.setEnd(qCntEnd);
 								mr.setSupportLRs(1);
-								cnt = cnts.get(query.gettName());
-								mrs = cnt.getMisassemblyRegion();
+								seq = seqs.get(query.gettName());
+								mrs = seq.getMisassemblies();
 								if(!mrs.contains(mr))
 									mrs.add(mr);
 							}
@@ -287,8 +288,8 @@ public class MisassemblyChecker {
 								mr.setStart(tCntStart);
 								mr.setEnd(tCntEnd);
 								mr.setSupportLRs(1);
-								Contig cnt = cnts.get(target.gettName());
-								List<MisassemblyRegion> mrs = cnt.getMisassemblyRegion();
+								Sequence seq = seqs.get(target.gettName());
+								List<MisassemblyRegion> mrs = seq.getMisassemblies();
 								if(!mrs.contains(mr))
 									mrs.add(mr);
 								// query
@@ -296,8 +297,8 @@ public class MisassemblyChecker {
 								mr.setStart(qCntStart);
 								mr.setEnd(qCntEnd);
 								mr.setSupportLRs(1);
-								cnt = cnts.get(query.gettName());
-								mrs = cnt.getMisassemblyRegion();
+								seq = seqs.get(query.gettName());
+								mrs = seq.getMisassemblies();
 								if(!mrs.contains(mr))
 									mrs.add(mr);
 							}
@@ -309,7 +310,7 @@ public class MisassemblyChecker {
 		return isTrue;
 	}
 	
-	public static boolean checking(Parameter paras, Map<String, Contig> cnts, MRecord record)
+	public static boolean checking(Parameter paras, Map<String, Sequence> seqs, MRecord record)
 	{
 		boolean isTrue = false;
 		int miniCntLen = paras.getMinContLen();
@@ -340,7 +341,7 @@ public class MisassemblyChecker {
 			int lrRightLen = lrLen - lrEnd;
 			int cntLeftLen = cntStart;
 			int cntRightLen = tLength - cntEnd;
-			Contig contig = cnts.get(tName);
+			Sequence contig = seqs.get(tName);
 			if(tStrand.equals(Strand.REVERSE))
 			{
 				int temp = cntLeftLen;
@@ -400,16 +401,16 @@ public class MisassemblyChecker {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<String> findMisassemblies(Parameter paras, Map<String, Contig> cnts) {
+	public static List<String> findMisassemblies(Parameter paras, Map<String, Sequence> seqs) {
 		// TODO Auto-generated method stub
 		long start = System.currentTimeMillis();
 		List<String> misassemblies = null;
 		double iqrTime = paras.getIqrTime();
 		// sort the misassebmly regions;
-		for(Map.Entry<String, Contig> entry : cnts.entrySet())
+		for(Map.Entry<String, Sequence> entry : seqs.entrySet())
 		{
-			Contig cnt = entry.getValue();
-			List<MisassemblyRegion> regions = cnt.getMisassemblyRegion();
+			Sequence cnt = entry.getValue();
+			List<MisassemblyRegion> regions = cnt.getMisassemblies();
 			if(!regions.isEmpty())
 			{
 //				Collections.sort(regions, new MisassemblyRegionSorter());
@@ -444,13 +445,14 @@ public class MisassemblyChecker {
 				}
 				if(!tempMRs.contains(target))
 					tempMRs.add(target);
-				cnt.seteMisassemblyRegions(tempMRs);
+//				cnt.setMisassemblyRegions(tempMRs);
+				cnt.setMisassemblies(tempMRs);
 			}
 		}
 		List<Integer> covs = new ArrayList<Integer>();
-		for(Map.Entry<String, Contig> entry : cnts.entrySet())
+		for(Map.Entry<String, Sequence> entry : seqs.entrySet())
 		{
-			List<MisassemblyRegion> regions = entry.getValue().getMisassemblyRegion();
+			List<MisassemblyRegion> regions = entry.getValue().getMisassemblies();
 			for(MisassemblyRegion mr : regions)
 			{
 				covs.add(mr.getSupportLRs());
@@ -475,9 +477,9 @@ public class MisassemblyChecker {
 			logger.info(iqrTime + "'s IQR " + ", Outlier Threshold: " + upper);
 			// logger.info("Pesudo repeat contigs");
 			// Map<String, List<String>> repeat = new HashMap<String,
-			for (Map.Entry<String, Contig> entry : cnts.entrySet()) {
-				Contig cnt = entry.getValue();
-				List<MisassemblyRegion> regions = cnt.getMisassemblyRegion();
+			for (Map.Entry<String, Sequence> entry : seqs.entrySet()) {
+				Sequence cnt = entry.getValue();
+				List<MisassemblyRegion> regions = cnt.getMisassemblies();
 				for(MisassemblyRegion mr : regions)
 				{
 					if (mr.getSupportLRs() > upper) {
@@ -488,7 +490,7 @@ public class MisassemblyChecker {
 				}
 			}
 			ContigMisassemblyWriter cmw = new ContigMisassemblyWriter(paras);
-			cmw.write(cnts);
+			cmw.write(seqs);
 		}
 		logger.info("Misassemblies count: " + misassemblies.size());
 		long end = System.currentTimeMillis();

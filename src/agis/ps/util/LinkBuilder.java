@@ -25,13 +25,14 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.link.ByLocOrderComparator;
+//import agis.ps.link.ByLocOrderComparator;
 import agis.ps.link.ILink;
-import agis.ps.link.Link;
+//import agis.ps.link.Link;
 import agis.ps.link.MRecord;
-import agis.ps.link.PBLink;
+//import agis.ps.link.PBLink;
 import agis.ps.link.TriadLink;
-import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 import agis.ps.thread.MRecord2Link;
 
 public class LinkBuilder {
@@ -51,10 +52,22 @@ public class LinkBuilder {
 	private double olRatio = 0.6;
 	private double olweight = 0.6;
 	private double identweight = 0.4;
-	private Map<String, Contig> cnts;
+//	private Map<String, Contig> cnts;
+	private Map<String, Sequence> seqs;
 
-	public LinkBuilder(Parameter paras, Map<String, Contig> cnts) {
-		this.cnts = cnts;
+//	public LinkBuilder(Parameter paras, Map<String, Contig> cnts) {
+//		this.cnts = cnts;
+//		this.paras = paras;
+//		minOLLen = paras.getMinOLLen();
+//		minOLRatio = paras.getMinOLRatio();
+//		maxOHLen = paras.getMaxOHLen();
+//		maxOHRatio = paras.getMaxOHRatio();
+//		maxEndLen = paras.getMaxEndLen();
+//		maxEndRatio = paras.getMaxEndRatio();
+//	}
+	
+	public LinkBuilder(Parameter paras, Map<String, Sequence> seqs) {
+		this.seqs = seqs;
 		this.paras = paras;
 		minOLLen = paras.getMinOLLen();
 		minOLRatio = paras.getMinOLRatio();
@@ -64,8 +77,7 @@ public class LinkBuilder {
 		maxEndRatio = paras.getMaxEndRatio();
 	}
 	
-	public List<ILink> mRecords2Links(List<List<MRecord>> records, List<String> repeats)
-	{
+	public List<ILink> mRecords2Links(List<List<MRecord>> records, List<String> repeats) {
 		long start = System.currentTimeMillis();
 		if (links == null)
 			links = Collections.synchronizedList(new ArrayList<ILink>(records.size()));
@@ -83,22 +95,19 @@ public class LinkBuilder {
 		Callable<Map<String, List<ILink>>> run;
 		List<Future<Map<String, List<ILink>>>> futures = new Vector<Future<Map<String, List<ILink>>>>();
 		//CountDownLatch latch = new CountDownLatch(tasksize);
-		for(int i = 0; i < tasksize; i++)
-		{
-			if(i == (tasksize - 1))
-			{
+		for(int i = 0; i < tasksize; i++) {
+			if(i == (tasksize - 1)) {
 				if(toIndex != size)
 					toIndex = size;
 				run = new MRecord2Link(this.paras, records.subList(fromIndex, toIndex), 
-						repeats, this.cnts);
+						repeats, this.seqs);
 				Future<Map<String, List<ILink>>> f = pool.submit(run);
 //				Thread thread = new Thread(run);
 //				thread.start();
 				futures.add(f);
-			} else
-			{
+			} else {
 				run = new MRecord2Link(this.paras,  records.subList(fromIndex, toIndex), 
-						repeats, this.cnts);
+						repeats, this.seqs);
 //				Thread thread = new Thread(run);
 //				thread.start();
 				fromIndex = toIndex;
@@ -122,11 +131,9 @@ public class LinkBuilder {
 				List<ILink> tmpLinks = map.get("LINKS");
 				List<ILink> tmpTriadlinks = map.get("TRIADLINKS");
 				links.addAll(tmpLinks);
-				for(int i = 0; i < tmpTriadlinks.size(); i ++)
-				{
+				for(int i = 0; i < tmpTriadlinks.size(); i ++) {
 					TriadLink tl = (TriadLink) tmpTriadlinks.get(i);
-					if(triadlinks.contains(tl))
-					{
+					if(triadlinks.contains(tl)) {
 						int loc = triadlinks.indexOf(tl);
 						int supLink = ((TriadLink)triadlinks.get(loc)).getSupLinks();
 						supLink += 1;
@@ -172,7 +179,7 @@ public class LinkBuilder {
 //		}
 		long end = System.currentTimeMillis();
 		logger.info("Valid Links Acount: " + links.size());
-		logger.info("Building Link, erase time : " + (end - start) + " ms");
+		logger.info("Building Link, elapsed time : " + (end - start) + " ms");
 		return links;
 	}
 	

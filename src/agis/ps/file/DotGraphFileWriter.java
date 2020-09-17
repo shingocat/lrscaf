@@ -63,7 +63,7 @@ public class DotGraphFileWriter {
 				} else {
 					color = "black";
 				}
-				bw.write(e.getOrigin().getID() + " -> " + e.getTerminus().getID() + " [label=\""
+				bw.write(e.getOrigin().getId() + " -> " + e.getTerminus().getId() + " [label=\""
 						+ e.getoStrand().toString() + " " + e.gettStrand().toString() + ":" + e.getLinkNum() + ":"
 						+ e.getDistMean() + ":" + e.getDistSd() + "\",color=" + color + "];\n");
 			}

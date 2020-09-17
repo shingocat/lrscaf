@@ -8,13 +8,16 @@ package agis.ps.link;
 
 import java.io.Serializable;
 
-import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 import agis.ps.util.Strand;
 
 public class Edge implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private Contig origin;
-	private Contig terminus;
+//	private Contig origin;
+//	private Contig terminus;
+	private Sequence origin;
+	private Sequence terminus;
 	private Strand oStrand;
 	private Strand tStrand;
 	private int linkNum;
@@ -40,19 +43,19 @@ public class Edge implements Serializable{
 		this.isValid = isValid;
 	}
 
-	public Contig getOrigin() {
+	public Sequence getOrigin() {
 		return origin;
 	}
 
-	public void setOrigin(Contig origin) {
+	public void setOrigin(Sequence origin) {
 		this.origin = origin;
 	}
 
-	public Contig getTerminus() {
+	public Sequence getTerminus() {
 		return terminus;
 	}
 
-	public void setTerminus(Contig terminus) {
+	public void setTerminus(Sequence terminus) {
 		this.terminus = terminus;
 	}
 

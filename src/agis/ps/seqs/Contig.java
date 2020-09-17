@@ -6,186 +6,111 @@
 */
 package agis.ps.seqs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import agis.ps.util.MisassemblyRegion;
+import agis.ps.util.SequenceBytesTransformer;
 
-public class Contig {
+public class Contig extends Sequence {
+	private Integer start;
+	private Integer end;
+	private byte[] seqs;
 	
-	private String id;
-	private int length;
-	private byte [] seqs;
-	private boolean isUsed; // defined this contig is used or not during scaffolding;
-	private boolean isRepeat; // defined this contig is repeat or not;
-	private boolean isMisassembly;
-	private List<MisassemblyRegion> misassemblies;
-	
-	public Contig() {
-		if(misassemblies == null)
-			misassemblies = new ArrayList<MisassemblyRegion>();
-		this.misassemblies.clear();
-	}
-	
-	public void setIsMisassembly(boolean isMisassembly)
-	{
-		this.isMisassembly = isMisassembly;
-	}
-	
-	public boolean getIsMisassembly()
-	{
-		return this.isMisassembly;
-	}
-	
-	public void addMisassemblyRegion(MisassemblyRegion mr)
-	{
-		this.misassemblies.add(mr);
-	}
-	
-	public List<MisassemblyRegion> getMisassemblyRegion()
-	{
-		return this.misassemblies;
-	}
-	
-	public void seteMisassemblyRegions(List<MisassemblyRegion> mrs)
-	{
-		this.misassemblies = mrs;
-	}
-	
-	public boolean isRepeat()
-	{
-		return this.isRepeat;
-	}
-	
-	public void setIsRepeat(boolean isRepeat)
-	{
-		this.isRepeat = isRepeat;
-	}
-	
-	public boolean isUsed()
-	{
-		return this.isUsed;
-	}
-	
-	public void setIsUsed(boolean isUsed)
-	{
-		this.isUsed = isUsed;
+	public Integer getStart() {
+		return start;
 	}
 
-	public String getID() {
-		return this.id;
+	public void setStart(Integer start) {
+		this.start = start;
 	}
 
-	public void setID(String iD) {
-		this.id = iD;
+	public Integer getEnd() {
+		return end;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if(o == null)
-			return false;
-		Contig c = (Contig) o;
-		if (c.getID().equals(this.getID()))
-			return true;
-		return false;
+	public void setEnd(Integer end) {
+		this.end = end;
 	}
 
-	@Override
-	public String toString() {
-		return "Contig [ID=" + this.id + "]";
+	public void setSeqs(String seqs) {
+		// original code 2020/9/16
+		// this.seqs = this.encode(seqs);
+		this.seqs = SequenceBytesTransformer.toByte(seqs);
 	}
-	
-	public int getLength()
-	{
-		return this.length;
+
+	public String getForwardSeqs() {
+		// original code 2020/9/16
+		// return this.decode(seqs, length);
+		return SequenceBytesTransformer.toSequence(this.seqs, this.getLength());
 	}
-	
-	public void setLength(int length)
-	{
-		this.length = length;
-	}
-	
-	public void setSeqs(String seqs)
-	{
-		this.seqs = this.encode(seqs);
-	}
-	
-	public String getForwardSeqs()
-	{
-		return this.decode(seqs, length);
-	}
-	
+
 	// need to modify;
-	public String getComplementReverseSeqs()
-	{
-		if(seqs == null || length == 0)
-			return "";
-		StringBuffer sb = new StringBuffer();
-		for(int i = seqs.length - 1; i >= 0; i--)
-		{
-			byte value = seqs[i];
-			StringBuffer temp = new StringBuffer();
-			for(int j = 3; j >= 0; j--)
-			{
-				byte base = (byte) ((value >> (2*j)) & 0x03);
-				switch(base){
-				case 0x00:
-					temp.append("T");
-					break;
-				case 0x01:
-					temp.append("G");
-					break;
-				case 0x02:
-					temp.append("C");
-					break;
-				case 0x03:
-					temp.append("A");
-					break;
-				}
-			}
-			sb.append(temp.reverse());
-		}
-		int size = sb.length();
-		return sb.toString().substring(size - length);
-		
+	public String getComplementReverseSeqs() {
+		return SequenceBytesTransformer.toComplementReverseSeqs(this.seqs, this.getLength());
+		// original code 2020/9/16
+		// if(seqs == null || length == 0)
+		// return "";
+		// StringBuffer sb = new StringBuffer();
+		// for(int i = seqs.length - 1; i >= 0; i--)
+		// {
+		// byte value = seqs[i];
+		// StringBuffer temp = new StringBuffer();
+		// for(int j = 3; j >= 0; j--)
+		// {
+		// byte base = (byte) ((value >> (2*j)) & 0x03);
+		// switch(base){
+		// case 0x00:
+		// temp.append("T");
+		// break;
+		// case 0x01:
+		// temp.append("G");
+		// break;
+		// case 0x02:
+		// temp.append("C");
+		// break;
+		// case 0x03:
+		// temp.append("A");
+		// break;
+		// }
+		// }
+		// sb.append(temp.reverse());
+		// }
+		// int size = sb.length();
+		// return sb.toString().substring(size - length);
+
 		// original method
-//		String seq = this.decode(seqs, length);
-//		if(seq == null || seq.length() == 0)
-//			return "";
-//		StringBuffer sb = new StringBuffer();
-//		seq.toUpperCase(); 
-//		for (int j = (seq.length() - 1); j >= 0; j--) {
-//			switch (seq.charAt(j)) {
-//			case 'A':
-//				sb.append("T");
-//				break;
-//			case 'T':
-//				sb.append("A");
-//				break;
-//			case 'C':
-//				sb.append("G");
-//				break;
-//			case 'G':
-//				sb.append("C");
-//				break;
-//			default:
-//				sb.append("N");
-//				break;
-//			}
-//		}
-//		return sb.toString();
+		// String seq = this.decode(seqs, length);
+		// if(seq == null || seq.length() == 0)
+		// return "";
+		// StringBuffer sb = new StringBuffer();
+		// seq.toUpperCase();
+		// for (int j = (seq.length() - 1); j >= 0; j--) {
+		// switch (seq.charAt(j)) {
+		// case 'A':
+		// sb.append("T");
+		// break;
+		// case 'T':
+		// sb.append("A");
+		// break;
+		// case 'C':
+		// sb.append("G");
+		// break;
+		// case 'G':
+		// sb.append("C");
+		// break;
+		// default:
+		// sb.append("N");
+		// break;
+		// }
+		// }
+		// return sb.toString();
 	}
-	
-	private String decode(byte[] seq, int length)
-	{
+
+	private String decode(byte[] seq, int length) {
 		StringBuffer sb = new StringBuffer();
-		for(int i = 0; i < seq.length; i++)
-		{
+		for (int i = 0; i < seq.length; i++) {
 			byte value = seq[i];
-			for(int j = 3; j >= 0; j--)
-			{
-				byte base = (byte) ((value >> (2*j)) & 0x03);
-				switch(base){
+			for (int j = 3; j >= 0; j--) {
+				byte base = (byte) ((value >> (2 * j)) & 0x03);
+				switch (base) {
 				case 0x00:
 					sb.append("A");
 					break;
@@ -203,17 +128,15 @@ public class Contig {
 		}
 		return sb.substring(0, length);
 	}
-	
-	private byte[] encode(String origin)
-	{
+
+	private byte[] encode(String origin) {
 		int olen = origin.length();
 		int length = olen / 4 + 1;
-		byte [] byteSeq = new byte[length];
+		byte[] byteSeq = new byte[length];
 		int start = 0;
-		for(int i = 0; i <= origin.length()/4; i++)
-		{
+		for (int i = 0; i <= origin.length() / 4; i++) {
 			String subSeq = null;
-			if((start + 4) > olen)
+			if ((start + 4) > olen)
 				subSeq = origin.substring(start, olen);
 			else
 				subSeq = origin.substring(start, start + 4);
@@ -222,30 +145,31 @@ public class Contig {
 		}
 		return byteSeq;
 	}
-	
-	private byte toByte(String subSeq)
-	{
+
+	private byte toByte(String subSeq) {
 		subSeq = subSeq.toUpperCase();
-		char [] os = subSeq.toCharArray();
-	    byte [] bs = new byte[4] ;
+		char[] os = subSeq.toCharArray();
+		byte[] bs = new byte[4];
 		byte d = 0;
-		for(int i = 0; i < os.length; i++ )
-		{
+		for (int i = 0; i < os.length; i++) {
 			byte value = 0;
-			switch(os[i])
-			{
-			case 'A' : value = 0x00;
-			break;
-			case 'T' : value = 0x03;
-			break;
-			case 'C' : value = 0x01;
-			break;
-			case 'G' : value = 0x02;
-			break;
+			switch (os[i]) {
+			case 'A':
+				value = 0x00;
+				break;
+			case 'T':
+				value = 0x03;
+				break;
+			case 'C':
+				value = 0x01;
+				break;
+			case 'G':
+				value = 0x02;
+				break;
 			}
 			bs[i] = value;
-		}		
-		d = (byte) (((bs[0])<<6) | ((bs[1])<<4) |((bs[2]) << 2) |((bs[3]) << 0));
+		}
+		d = (byte) (((bs[0]) << 6) | ((bs[1]) << 4) | ((bs[2]) << 2) | ((bs[3]) << 0));
 		return (byte) (d & 0xff);
 	}
 }

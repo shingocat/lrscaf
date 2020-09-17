@@ -13,6 +13,7 @@ import java.io.File;
 //import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 //import java.util.HashMap;
 import java.util.List;
@@ -28,12 +29,14 @@ import agis.ps.align.SmithWaterman;
 //import agis.ps.link.CntFileEncapsulate;
 import agis.ps.path.Node;
 import agis.ps.path.NodePath;
-import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 //import agis.ps.seqs.PBGapSeq;
 //import agis.ps.seqs.PBRead;
 //import agis.ps.util.Consensusser;
 //import agis.ps.util.GapRecord;
 import agis.ps.util.Parameter;
+import agis.ps.util.SequenceUtils;
 import agis.ps.util.Strand;
 
 public class ScaffoldWriter {
@@ -41,7 +44,8 @@ public class ScaffoldWriter {
 	public static Logger logger = LoggerFactory.getLogger(ScaffoldWriter.class);
 	private List<NodePath> paths;
 	// private Map<String, DNASequence> cnts;
-	private Map<String, Contig> cnts;
+//	private Map<String, Contig> cnts;
+	private Map<String, Sequence> seqs;
 	private String filePath;
 	private Parameter paras;
 //	private List<GapRecord> gapRecords;
@@ -49,6 +53,7 @@ public class ScaffoldWriter {
 	private File out; 
 	private BufferedWriter bw;
 	private FileWriter fw;
+	private Integer lineLength = 80;
 //	private long buildscaftime = 0L;
 //	private long concattime = 0L;
 //	private CntFileEncapsulate cntfile;
@@ -62,21 +67,24 @@ public class ScaffoldWriter {
 //	}	
 //	
 	
-	public ScaffoldWriter(Parameter paras, List<NodePath> paths, Map<String, Contig> cnts)
-	{
+//	public ScaffoldWriter(Parameter paras, List<NodePath> paths, Map<String, Contig> cnts) {
+//		this(paras, paths);
+//		this.cnts = cnts;
+//	}
+	
+	public ScaffoldWriter(Parameter paras, List<NodePath> paths, Map<String, Sequence> seqs) {
 		this(paras, paths);
-		this.cnts = cnts;
+		this.seqs = seqs;
 	}
-	public ScaffoldWriter(Parameter paras, List<NodePath> paths)
-	{
+	
+	public ScaffoldWriter(Parameter paras, List<NodePath> paths){
 		this.paras = paras;
 		this.paths = paths;
 	}
 	
 	
-	public void write()
-	{
-		if(paths == null || paths.isEmpty())
+	public void write(){
+	 	if(paths == null || paths.isEmpty())
 			return;
 		long start = System.currentTimeMillis();
 		filePath = paras.getOutFolder() + System.getProperty("file.separator") + "scaffolds.fasta";
@@ -95,40 +103,27 @@ public class ScaffoldWriter {
 					return;
 				}
 			}
-			fw = new FileWriter(out);
-			bw = new BufferedWriter(fw);
+			bw = Files.newBufferedWriter(out.toPath());
 			int index = 0;
 			List<Integer> lens = new ArrayList<Integer>();
-			for(NodePath np : paths)
-			{
+			for(NodePath np : paths) {
 				String seqs = this.buildScaffold(np, index);
 				int len = seqs.length(); 
 				bw.write(">Scaffolds_" + index + "  " + len);
 				bw.newLine();
-				bw.write(seqs);
+				bw.write(SequenceUtils.formatSeqByLength(seqs, this.lineLength));
 				bw.newLine();
 				lens.add(len);
 				index++;
 			}
 			// write the contigs not including in paths, excluding repeative contigs;
-			for(Map.Entry<String, Contig> entry : cnts.entrySet())
-			{
-				Contig c = entry.getValue();
+			for(Map.Entry<String, Sequence> entry : this.seqs.entrySet()) {
+				Sequence c = entry.getValue();
 				int len = c.getLength();
-//				if(c.getLength() >= paras.getMinContLen() && !c.isUsed() && !c.isRepeat())
-//				{
-//					bw.write(">Scaffolds_" + index + "  " + len);
-//					bw.newLine();
-//					bw.write(c.getForwardSeqs());
-//					bw.newLine();
-//					lens.add(len);
-//					index++;
-//				}
-				if(!c.isUsed() && !c.isRepeat() && !c.getIsMisassembly())
-				{
-					bw.write(">Scaffolds_" + index + "  " + c.getID() + " " + len);
+				if(!c.isUsed() && !c.isRepeat() && !c.isMisassembly()) {
+					bw.write(">Scaffolds_" + index + "  " + c.getId() + " " + len);
 					bw.newLine();
-					bw.write(c.getForwardSeqs());
+					bw.write(SequenceUtils.formatSeqByLength(c.getForwardSeqs(), this.lineLength));
 					bw.newLine();
 					lens.add(len);
 					index++;
@@ -138,18 +133,14 @@ public class ScaffoldWriter {
 			bw.close();
 			N50Writer n50 = new N50Writer(paras, "scaffolds", lens);
 			n50.write();
-		} catch(IOException e)
-		{
+		} catch(IOException e) {
 			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-		} catch(Exception e)
-		{
+		} catch(Exception e) {
 			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage());
-		} finally
-		{
-			try
-			{
+		} finally {
+			try {
 				if(bw != null)
 					bw.close();
 			} catch(Exception e)
@@ -159,7 +150,7 @@ public class ScaffoldWriter {
 			}
 		}
 		long end = System.currentTimeMillis();
-		logger.info("Scaffold writing, erase time: " + (end - start) + " ms");
+		logger.info("Scaffold writing, elapsed time: " + (end - start) + " ms");
 	}
 
 //	public void writeByContigFileEncapsulate()
@@ -220,8 +211,7 @@ public class ScaffoldWriter {
 //	}
 	
 	
-	private String buildScaffold(NodePath path, int index)
-	{
+	private String buildScaffold(NodePath path, int index) {
 //		long start = System.currentTimeMillis();
 		StringBuilder sb = new StringBuilder();
 		int size = path.getPathSize();
@@ -235,29 +225,29 @@ public class ScaffoldWriter {
 			current = path.getElement(i);
 			if(i == 0)
 			{
-				cId = current.getCnt().getID();
+				cId = current.getSeq().getId();
 //				seq = cntfile.getOriginalSeqByNewId(cId);
 //				seq = cnts.get(cId).getForwardSeqs();
 //				seq.trim();
 				Strand cStrand = current.getStrand();
 //				Contig cnt = cnts.get(cId);
 				if(cStrand == null || cStrand.equals(Strand.FORWARD))
-					seq = cnts.get(cId).getForwardSeqs();
+					seq = this.seqs.get(cId).getForwardSeqs();
 				else
-					seq = cnts.get(cId).getComplementReverseSeqs();
+					seq = this.seqs.get(cId).getComplementReverseSeqs();
 				sb.append(seq);
 				dist = current.getMeanDist2Next();
 				sd = current.getSdDist2Next();
 			} else
 			{
-				cId = current.getCnt().getID();
+				cId = current.getSeq().getId();
 //				seq = cntfile.getOriginalSeqByNewId(cId);
 //				seq = cnts.get(cId).getForwardSeqs();
 //				seq.trim();
 				if(current.getStrand().equals(Strand.FORWARD))
-					seq = cnts.get(cId).getForwardSeqs();
+					seq = this.seqs.get(cId).getForwardSeqs();
 				else
-					seq = cnts.get(cId).getComplementReverseSeqs();
+					seq = this.seqs.get(cId).getComplementReverseSeqs();
 				if(dist < 0)
 				{
 					// global sequence alignment method to concatenate two seqs;
@@ -602,14 +592,13 @@ public class ScaffoldWriter {
 //	}
 	
 	// read the contigs file;
-	private void readCntFile()
-	{
-//		long start = System.currentTimeMillis();
-		ContigReader cr = new ContigReader(paras);
-		cnts = cr.read();
-//		long end = System.currentTimeMillis();
-//		logger.info("Reading Contig file, erase time: " +  (end - start) + " ms.");
-	}
+//	private void readCntFile() {
+////		long start = System.currentTimeMillis();
+//		SequenceReader cr = new SequenceReader(paras);
+//		this.seqs = cr.read();
+////		long end = System.currentTimeMillis();
+////		logger.info("Reading Contig file, erase time: " +  (end - start) + " ms.");
+//	}
 
 	// if times larger than or equal to 0, used N indicated
 	// else times less than 0, used M indicated;

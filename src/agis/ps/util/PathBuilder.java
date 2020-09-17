@@ -30,7 +30,8 @@ import agis.ps.path.InternalPath;
 import agis.ps.path.InternalPathComparator;
 import agis.ps.path.Node;
 import agis.ps.path.NodePath;
-import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 
 public class PathBuilder {
 	public static Logger logger = LoggerFactory.getLogger(PathBuilder.class);
@@ -45,23 +46,30 @@ public class PathBuilder {
 	private NodePath path;
 //	private CntFileEncapsulate cntfile;
 //	private Map<String, Integer> cntLens;
-	private Map<String, Contig> cnts;
+//	private Map<String, Contig> cnts;
+	private Map<String, Sequence> seqs;
 
-	public PathBuilder(List<Edge> edges, Parameter paras, CntFileEncapsulate cntfile) {
-		this.edges = edges;
-		this.paras = paras;
-//		this.cntfile = cntfile;
-		TriadLinkReader tlr = new TriadLinkReader(paras);
-		triads = tlr.read();
-	}
+//	public PathBuilder(List<Edge> edges, Parameter paras, CntFileEncapsulate cntfile) {
+//		this.edges = edges;
+//		this.paras = paras;
+////		this.cntfile = cntfile;
+//		TriadLinkReader tlr = new TriadLinkReader(paras);
+//		triads = tlr.read();
+//	}
 	
 //	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Integer> cntLens)
-	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Contig> cnts)
-	{
+//	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Contig> cnts)
+//	{
+//		this.edges = edges;
+//		this.paras = paras;
+////		this.cntLens = cntLens;
+//		this.cnts = cnts;
+//	}
+	
+	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Sequence> seqs) {
 		this.edges = edges;
 		this.paras = paras;
-//		this.cntLens = cntLens;
-		this.cnts = cnts;
+		this.seqs = seqs;
 	}
 	
 
@@ -85,7 +93,7 @@ public class PathBuilder {
 			String edgeFile = paras.getOutFolder() + System.getProperty("file.separator") + "edges.info";
 			DotGraphFileWriter.writeEdge(edgeFile, edges);
 //			diGraph = new DirectedGraph(edges, paras, cntfile);
-			diGraph = new DirectedGraph(edges, paras, cnts);
+			diGraph = new DirectedGraph(edges, paras, this.seqs);
 			// remove cycler edges A->A;
 			diGraph.delCyclerEdges();
 			// do transitive reduction
@@ -123,10 +131,10 @@ public class PathBuilder {
 //				logger.debug(""+INDEX);
 //				if(INDEX == 700)
 //					logger.debug("breakpoint");
-				Contig current = diGraph.getRandomVertex();
+				Sequence current = diGraph.getRandomVertex();
 				if (current == null)
 					break;
-				List<Contig> adjs = diGraph.getAdjVertices(current);
+				List<Sequence> adjs = diGraph.getAdjVertices(current);
 				if (adjs == null) {
 					if (this.isValidCnt(current)) {
 						path = new NodePath();
@@ -150,14 +158,14 @@ public class PathBuilder {
 				} else if (adjsSize == 1) {
 					// normal start point, always on the linear end point;
 					path = new NodePath();
-					Contig next = adjs.get(0);
+					Sequence next = adjs.get(0);
 					this.travelgraph(null, current, next, path, true);
 					paths.add(path);
 				} else if (adjsSize == 2) {
 					// normal start point, located in the linear path
 					path = new NodePath();
-					Contig c1 = adjs.get(0);
-					Contig c2 = adjs.get(1);
+					Sequence c1 = adjs.get(0);
+					Sequence c2 = adjs.get(1);
 					// adding the c2 into path first
 					this.addNode(null, c2, null, null, null,  path, false);
 					// travel backward 
@@ -169,7 +177,7 @@ public class PathBuilder {
 						if(count > 1)
 							break;
 						Node node = path.pop();
-						diGraph.setVertextUnselected(node.getCnt());
+						diGraph.setVertextUnselected(node.getSeq());
 						count++;
 					}
 					// checking whether is cicle case;
@@ -215,13 +223,13 @@ public class PathBuilder {
 		// define the first element in path is forward;
 		// require to check the orientation conflict!
 		// cleaning and call gc
-		this.setUnusedContig();
+		this.setUnusedSequence();
 		this.diGraph = null;
 		this.edges = null;
 		this.triads = null;
 		System.gc();
 		long end = System.currentTimeMillis();
-		logger.info("Path Building, erase time: " + (end - start) + " ms");
+		logger.info("Path Building, elapsed time: " + (end - start) + " ms");
 		return paths;
 	}
 
@@ -353,9 +361,9 @@ public class PathBuilder {
 //		return paths;
 //	}
 	
-	private void travelgraph(Contig previous, Contig current, Contig next, NodePath path, boolean isForward)
+	private void travelgraph(Sequence previous, Sequence current, Sequence next, NodePath path, boolean isForward)
 	{
-		Contig startpoint = current;
+		Sequence startpoint = current;
 		List<Edge> p2ces = null; // previous to current edges;
 		Edge p2ce = null; // previous to current edge;
 		List<Edge> c2nes = null; // current to next edges;
@@ -410,7 +418,7 @@ public class PathBuilder {
 			// for the divergence point which could not determine
 			// how-to get next
 			if (next == null) {
-				LinkedList<Contig> formers = new LinkedList<Contig>();
+				LinkedList<Sequence> formers = new LinkedList<Sequence>();
 				int num = 0;
 				// only considering two former contigs
 				if(isForward)
@@ -419,7 +427,7 @@ public class PathBuilder {
 					{
 						Node node = path.getElement(path.getPathSize() - (num + 2));
 						if(node != null)
-							formers.addLast(node.getCnt());
+							formers.addLast(node.getSeq());
 						else
 							break;
 						num++;
@@ -432,7 +440,7 @@ public class PathBuilder {
 					{
 						Node node = path.getElement((num + 1));
 						if(node != null)
-							formers.addLast(node.getCnt());
+							formers.addLast(node.getSeq());
 						else
 							break;
 						num++;
@@ -442,7 +450,7 @@ public class PathBuilder {
 				}
 				// List<Contig> selectedCnts =
 				// this.getTriadLinkNext3(current, previous);
-				List<Contig> selectedCnts = this.getInternalPath(current, previous, formers);
+				List<Sequence> selectedCnts = this.getInternalPath(current, previous, formers);
 				if (selectedCnts == null) {
 					next = null;
 					this.addNode(previous, current, next, p2ce, c2ne, path, isForward);
@@ -933,9 +941,9 @@ public class PathBuilder {
 //		return tPaths;
 //	}
 
-	private List<Contig> getInternalPath(Contig internal, Contig external, List<Contig> formers) {
+	private List<Sequence> getInternalPath(Sequence internal, Sequence external, List<Sequence> formers) {
 		// get adjacent contigs of internal excluding external;
-		List<Contig> adjInternals = diGraph.getNextVertices(internal, external);
+		List<Sequence> adjInternals = diGraph.getNextVertices(internal, external);
 		if (adjInternals == null || adjInternals.isEmpty())
 			return null;
 		// build the list InternalNode
@@ -950,11 +958,11 @@ public class PathBuilder {
 			}
 		}
 		
-		for (Contig c : adjInternals) {
-			Contig convergence = internal;
+		for (Sequence c : adjInternals) {
+			Sequence convergence = internal;
 			Map<String, Object> outcome = this.isBubbleAdjacent(internal, c, 4, adjInternals);
 			boolean isBubble = (boolean) outcome.get("IsBubble");
-			Contig tcon = (Contig) outcome.get("CNT");
+			Sequence tcon = (Sequence) outcome.get("CNT");
 			if(isBubble && tcon != null )
 				convergence = tcon;
 //			List<InternalNode> ins = new Vector<InternalNode>(30);
@@ -981,7 +989,7 @@ public class PathBuilder {
 		this.computeInternalPathSupported(ips, external, formers);
 		InternalPathComparator ic = new InternalPathComparator();
 		Collections.sort(ips, ic);
-		LinkedList<Contig> internalPath = null;
+		LinkedList<Sequence> internalPath = null;
 		if(ips == null || ips.isEmpty())
 			return null;
 		
@@ -1083,10 +1091,10 @@ public class PathBuilder {
 	 * @param adjacents : the adjacent contigs of internal contig;
 	 * @return
 	 */
-	private Map<String, Object> isBubbleAdjacent(Contig previous, Contig current, int depth, List<Contig> adjcents)
+	private Map<String, Object> isBubbleAdjacent(Sequence previous, Sequence current, int depth, List<Sequence> adjcents)
 	{
 		boolean isBubble = false;
-		Contig convergence = null;
+		Sequence convergence = null;
 		Map<String, Object> values = new HashMap<String, Object>();
 		if(depth == 0)
 		{
@@ -1096,7 +1104,7 @@ public class PathBuilder {
 			values.put("CNT", convergence);
 			return values;
 		}
-		List<Contig> nexts = diGraph.getNextVertices(current, previous);
+		List<Sequence> nexts = diGraph.getNextVertices(current, previous);
 		if(nexts == null || nexts.isEmpty())
 		{
 			isBubble = false;
@@ -1108,7 +1116,7 @@ public class PathBuilder {
 		if(nexts.size() > 1)
 			convergence = current;
 		boolean isExist = false;
-		for(Contig c : nexts)
+		for(Sequence c : nexts)
 		{
 			if(adjcents.contains(c))
 			{
@@ -1123,7 +1131,7 @@ public class PathBuilder {
 			return values;
 		} else
 		{
-			for(Contig c : nexts)
+			for(Sequence c : nexts)
 			{
 				Map<String, Object> outcome = isBubbleAdjacent(current, c, depth - 1, adjcents);
 				if((boolean) outcome.get("IsBubble"))
@@ -1214,12 +1222,12 @@ public class PathBuilder {
 	
 	private InternalPath getBestInternalPath(InternalPath ip1, InternalPath ip2)
 	{
-		LinkedList<Contig> ip1cnts = ip1.getPath();
-		Contig ip1c1 = ip1cnts.get(0);
-		Contig ip1c2 = ip1cnts.get(1);
-		LinkedList<Contig> ip2cnts = ip2.getPath();
-		Contig ip2c1 = ip2cnts.get(0);
-		Contig ip2c2 = ip2cnts.get(1);
+		LinkedList<Sequence> ip1cnts = ip1.getPath();
+		Sequence ip1c1 = ip1cnts.get(0);
+		Sequence ip1c2 = ip1cnts.get(1);
+		LinkedList<Sequence> ip2cnts = ip2.getPath();
+		Sequence ip2c1 = ip2cnts.get(0);
+		Sequence ip2c2 = ip2cnts.get(1);
 		
 		List<Edge> ip1es = diGraph.getEdgesInfo(ip1c1, ip1c2);
 		int ip1esl = ip1es.get(0).getLinkNum();
@@ -1233,7 +1241,7 @@ public class PathBuilder {
 		
 	}
 	
-	private void computeInternalPathSupported(List<InternalPath> ips, Contig external, List<Contig> formers)
+	private void computeInternalPathSupported(List<InternalPath> ips, Sequence external, List<Sequence> formers)
 	{
 		if(ips == null || ips.isEmpty())
 			return;
@@ -1243,9 +1251,9 @@ public class PathBuilder {
 			triads = tlr.read();
 		}
 		// external uniques 
-		LinkedList<Contig> extUniqs = new LinkedList<Contig>();
+		LinkedList<Sequence> extUniqs = new LinkedList<Sequence>();
 		extUniqs.addLast(external);
-		for(Contig c : formers)
+		for(Sequence c : formers)
 		{
 			extUniqs.addLast(c);
 		}
@@ -1254,9 +1262,9 @@ public class PathBuilder {
 		for (InternalPath ip : ips) {
 			// logger.debug(ip.toString());
 			for (TriadLink tl : triads) {
-				Contig pre = tl.getPrevious();
-				Contig mid = tl.getMiddle();
-				Contig lst = tl.getLast();
+				Sequence pre = tl.getPrevious();
+				Sequence mid = tl.getMiddle();
+				Sequence lst = tl.getLast();
 //				if(pre.getID().equals("1317") || lst.getID().equals("1317"))
 //					logger.debug("breakpoint");
 				if(tl.isValid())
@@ -1428,7 +1436,7 @@ public class PathBuilder {
 				if (in.isLeaf()) {
 					InternalPath ip = new InternalPath();
 					while (true) {
-						Contig child = in.getChild();
+						Sequence child = in.getChild();
 						InternalNode parent = in.getParent();
 						ip.addFirst(child);
 						if (parent == null)
@@ -1437,9 +1445,9 @@ public class PathBuilder {
 //						in = findReverseInternalNode2(parent , ins);
 					}
 					//checking whether internal path is already travel;
-					List<Contig> path = ip.getPath();
+					List<Sequence> path = ip.getPath();
 					boolean isTravel = true;
-					for(Contig c : path)
+					for(Sequence c : path)
 					{
 						if(!diGraph.isDivergenceVertex(c))
 						{
@@ -1559,14 +1567,14 @@ public class PathBuilder {
 	 *			  - the list to store already travel contigs;          
 	 *
 	 */
-	private void getInternalPath(Contig child, Contig father, Contig grandfather, Strand fatherStrand, 
-			boolean isBubble, Contig convergence, int depth, List<InternalNode> ins, InternalNode parent) {
+	private void getInternalPath(Sequence child, Sequence father, Sequence grandfather, Strand fatherStrand, 
+			boolean isBubble, Sequence convergence, int depth, List<InternalNode> ins, InternalNode parent) {
 		// check orientation conflict
 		Map<String, Object> checks = this.validateInternalPathOrientation(child, father, fatherStrand);
 		if (!(boolean) checks.get("VALID"))
 			return;
 		Strand childStrand = (Strand) checks.get("STRAND");
-		List<Contig> nextAdjs = diGraph.getNextVertices(child, father);
+		List<Sequence> nextAdjs = diGraph.getNextVertices(child, father);
 		InternalNode in = new InternalNode();
 		in.setChild(child);
 		in.setParent(parent);
@@ -1602,11 +1610,11 @@ public class PathBuilder {
 			// INTERNAL_LENGTH += this.indexLen(current.getID());
 //			int cLen = cntfile.getLengthByNewId(Integer.valueOf(child.getID()));
 //			int cLen = cntLens.get(child.getID());
-			int cLen = cnts.get(child.getID()).getLength();
+			int cLen = this.seqs.get(child.getId()).getLength();
 			INTERNAL_LENGTH += cLen;
 			if (INTERNAL_LENGTH <= MAXIMUM_INTERNAL_LENGTH) {
 				boolean validAlls = false;
-				for (Contig c : nextAdjs) {
+				for (Sequence c : nextAdjs) {
 					if(c.equals(convergence))
 						continue;
 					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
@@ -1623,7 +1631,7 @@ public class PathBuilder {
 				return;
 			} else {
 				boolean validAlls = false;
-				for (Contig c : nextAdjs) {
+				for (Sequence c : nextAdjs) {
 					if(c.equals(convergence))
 						continue;
 					Map<String, Object> nValues = this.validateInternalPathOrientation(c, child, childStrand);
@@ -1644,14 +1652,14 @@ public class PathBuilder {
 				return;
 			}
 		} else {
-			Contig c = nextAdjs.get(0);
+			Sequence c = nextAdjs.get(0);
 			List<Edge> egs = diGraph.getEdgesInfo(child, father);
 			int eLen = egs.get(0).getDistMean();
 			INTERNAL_LENGTH += eLen;
 			// INTERNAL_LENGTH += this.indexLen(current.getID());
 //			int cLen = cntfile.getLengthByNewId(Integer.valueOf(child.getID()));
 //			int cLen = cntLens.get(child.getID());
-			int cLen = cnts.get(child.getID()).getLength();
+			int cLen = this.seqs.get(child.getId()).getLength();
 			INTERNAL_LENGTH += cLen;
 			// if the internal length of path already large than MAXIMUM_INTERNAL_LENGTH
 			if (INTERNAL_LENGTH > MAXIMUM_INTERNAL_LENGTH) {
@@ -1822,7 +1830,7 @@ public class PathBuilder {
 //		}
 //	}
 
-	private Map<String, Object> validateInternalPathOrientation(Contig child, Contig father, Strand fStrand) {
+	private Map<String, Object> validateInternalPathOrientation(Sequence child, Sequence father, Strand fStrand) {
 
 		List<Edge> es = diGraph.getEdgesInfo(father, child);
 		if (es == null || es.isEmpty()) {
@@ -2448,7 +2456,7 @@ public class PathBuilder {
 	 * @param isFirstStart
 	 *  
 	 */
-	private void addNode(Contig previous, Contig current, Contig next, Edge p2ce, Edge c2ne, NodePath path, 
+	private void addNode(Sequence previous, Sequence current, Sequence next, Edge p2ce, Edge c2ne, NodePath path, 
 			boolean isForward){
 		// if it is forward direction, it will adding next contig into path and
 		// their parameter of
@@ -2456,7 +2464,7 @@ public class PathBuilder {
 		if (isForward) {
 			if (next == null) {
 				Node node = new Node();
-				node.setCnt(current);
+				node.setSeq(current);
 				node.setOrphan(false);
 				// node.setMeanDist2Next(c2ne.getDistMean());
 				// node.setSdDist2Next(c2ne.getDistSd());
@@ -2468,7 +2476,7 @@ public class PathBuilder {
 				diGraph.setVertexAsSelected(current);
 			} else {
 				Node node = new Node();
-				node.setCnt(current);
+				node.setSeq(current);
 				node.setOrphan(false);
 				node.setMeanDist2Next(c2ne.getDistMean());
 				node.setSdDist2Next(c2ne.getDistSd());
@@ -2478,7 +2486,7 @@ public class PathBuilder {
 			}
 		} else {
 			Node node = new Node();
-			node.setCnt(current);
+			node.setSeq(current);
 			node.setOrphan(false);
 			if(p2ce != null)
 			{
@@ -2501,7 +2509,7 @@ public class PathBuilder {
 	 * 
 	 * @return
 	 */
-	private boolean isValidCnt(Contig cnt) {
+	private boolean isValidCnt(Sequence cnt) {
 		if (diGraph.isDivergenceVertex(cnt)) {
 			return true;
 		} else {
@@ -2521,7 +2529,7 @@ public class PathBuilder {
 	 * @param next
 	 * @return
 	 */
-	private boolean validateOrientation(Contig previous, Contig current, Contig next, Edge p2ce, Edge c2ne) {
+	private boolean validateOrientation(Sequence previous, Sequence current, Sequence next, Edge p2ce, Edge c2ne) {
 		if (previous == null) {
 			return true;
 		} else {
@@ -2538,14 +2546,21 @@ public class PathBuilder {
 		}
 	}
 	
-	private void setUnusedContig()
-	{
-		List<Contig> usedContigs = diGraph.getVertices();
-		for(Map.Entry<String, Contig> entry : cnts.entrySet())
-		{
-			Contig c = entry.getValue();
-			if(!usedContigs.contains(c))
-				c.setIsUsed(false);
+	private void setUnusedSequence() {
+		List<Sequence> usedSeqs = diGraph.getVertices();
+		for(Map.Entry<String, Sequence> entry : this.seqs.entrySet()) {
+			Sequence seq = entry.getValue();
+			if(!usedSeqs.contains(seq)) 
+				seq.setIsUsed(false);
 		}
 	}
+	
+//	private void setUnusedContig() {
+//		List<Contig> usedContigs = diGraph.getVertices();
+//		for(Map.Entry<String, Contig> entry : cnts.entrySet()) {
+//			Contig c = entry.getValue();
+//			if(!usedContigs.contains(c))
+//				c.setIsUsed(false);
+//		}
+//	}
 }

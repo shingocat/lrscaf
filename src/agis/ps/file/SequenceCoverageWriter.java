@@ -21,18 +21,18 @@ import org.slf4j.LoggerFactory;
 import agis.ps.link.MRecord;
 import agis.ps.util.Parameter;
 
-public class ContigCoverageWriter {
-	public static Logger logger = LoggerFactory.getLogger(ContigCoverageWriter.class);
+public class SequenceCoverageWriter {
+	public static Logger logger = LoggerFactory.getLogger(SequenceCoverageWriter.class);
 	private Parameter paras;
 	private Map<String, List<String>> args;
 	
-	public ContigCoverageWriter(Parameter paras, Map<String, List<String>> args)
+	public SequenceCoverageWriter(Parameter paras, Map<String, List<String>> args)
 	{
 		this.paras = paras;
 		this.args = args;
 	}
 	
-	public ContigCoverageWriter(Parameter paras)
+	public SequenceCoverageWriter(Parameter paras)
 	{
 		this.paras = paras;
 	}

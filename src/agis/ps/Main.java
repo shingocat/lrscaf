@@ -58,7 +58,7 @@ public class Main {
 				scaffolder.scaffolding();
 				logger.info("Ending...");
 				long end = System.currentTimeMillis();
-				logger.info("Scaffolding erase time: " + (end - start)/1000 + " s.");
+				logger.info("Scaffolding elapsed time: " + (end - start)/1000 + " s.");
 			}
 		} catch (MissingArgumentException e) {
 			logger.error("Error: ", e);

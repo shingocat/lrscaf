@@ -11,7 +11,6 @@ agis\ps\util\GapRecord.class
 agis\ps\util\Parameter.class
 agis\ps\util\MisassemblyChecker.class
 agis\ps\util\Color.class
-agis\ps\file\ContigCoverageWriter.class
 agis\ps\align\SmithWaterman.class
 agis\ps\file\SimilarityCntWriter.class
 agis\ps\file\MMReader.class
@@ -49,7 +48,6 @@ agis\ps\util\MathTool.class
 agis\ps\link\TriadLinkComparator.class
 agis\ps\seqs\PBGapSeq.class
 agis\ps\path\Node.class
-agis\ps\file\ContigReader.class
 agis\ps\file\M4Reader.class
 agis\ps\Main.class
 agis\ps\align\DynamicProgramming.class

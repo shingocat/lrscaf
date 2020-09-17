@@ -52,7 +52,7 @@ public class OutputFolderBuilder {
 			logger.error(this.getClass().getName() + e.getMessage() + "\t" + e.getClass().getName());
 		}
 		long end = System.currentTimeMillis();
-		logger.info("Building output folder, erase time: " + (end - start) + " ms");
+		logger.info("Building output folder, elapsed time: " + (end - start) + " ms");
 		return isValid;
 	}
 

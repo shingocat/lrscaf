@@ -349,3 +349,22 @@ java.lang.NullPointerException
 2020-04-19 17:42:49  [ ERROR ]  PathBuilder ： The Edges could not be empty!
 2020-04-19 17:43:41  [ ERROR ]  PathBuilder ： The Edges could not be empty!
 2020-04-19 17:43:58  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:12:58  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	null
+2020-09-17 15:12:58  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:15:29  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	null
+2020-09-17 15:15:29  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:15:41  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	null
+2020-09-17 15:15:41  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:17:58  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	null
+2020-09-17 15:18:15  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	null
+2020-09-17 15:18:31  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	null
+2020-09-17 15:22:31  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	null
+2020-09-17 15:25:55  [ ERROR ]  agis.ps.file.MMReader	On lines: 1	The draft assemblies do not have tig00003288_pilon sequence.
+2020-09-17 15:25:55  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:43:52  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:46:03  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:46:56  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:48:56  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:54:12  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 15:55:37  [ ERROR ]  PathBuilder ： The Edges could not be empty!
+2020-09-17 16:10:56  [ ERROR ]  agis.ps.file.ScaffoldWriter	null

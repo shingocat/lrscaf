@@ -1,11 +1,14 @@
 package agis.ps.link;
 
 import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 import agis.ps.util.Strand;
 
 public class Link implements ILink {
-	private Contig original; // original contig of link
-	private Contig terminus; // terminus contig of link
+//	private Contig original; // original contig of link
+//	private Contig terminus; // terminus contig of link
+	private Sequence original; // original sequence of link;
+	private Sequence terminus; // terminus sequence of link;
 	private Strand oStrand; // the strand of original contig
 	private Strand tStrand; // the strand of terminus contig
 	private int dist; // distance of link
@@ -19,19 +22,19 @@ public class Link implements ILink {
 
 	}
 
-	public Contig getOriginal() {
+	public Sequence getOriginal() {
 		return original;
 	}
 
-	public void setOriginal(Contig original) {
+	public void setOriginal(Sequence original) {
 		this.original = original;
 	}
 
-	public Contig getTerminus() {
+	public Sequence getTerminus() {
 		return terminus;
 	}
 
-	public void setTerminus(Contig terminus) {
+	public void setTerminus(Sequence terminus) {
 		this.terminus = terminus;
 	}
 
@@ -121,7 +124,7 @@ public class Link implements ILink {
 
 	@Override
 	public String toString() {
-		return "Link [orignal=" + original.getID() + ", terminus=" + terminus.getID() + ", oStrand=" + oStrand
+		return "Link [orignal=" + original.getId() + ", terminus=" + terminus.getId() + ", oStrand=" + oStrand
 				+ ", tStrand=" + tStrand + ", dist=" + dist + ", lrId=" + lrId + ", oStart=" + oStart + ", oEnd=" + oEnd
 				+ ", tStart=" + tStart + ", tEnd=" + tEnd + "]";
 	}

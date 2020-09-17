@@ -8,18 +8,20 @@ package agis.ps.path;
 
 import java.util.LinkedList;
 
-import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
+
+//import agis.ps.seqs.Contig;
 
 public class InternalPath {
-	private LinkedList<Contig> path = new LinkedList<Contig>(); // the Linked contig list for this internal path
+	private LinkedList<Sequence> path = new LinkedList<Sequence>(); // the Linked contig list for this internal path
 	private int score = 0; // this path score
 	
-	public void addFirst(Contig fst)
+	public void addFirst(Sequence fst)
 	{
 		path.addFirst(fst);
 	}
 	
-	public void addLast(Contig lst)
+	public void addLast(Sequence lst)
 	{
 		path.addLast(lst);
 	}
@@ -47,7 +49,7 @@ public class InternalPath {
 	 * @param c
 	 * @return
 	 */
-	public boolean isContain(Contig c)
+	public boolean isContain(Sequence c)
 	{
 		return path.contains(c);
 //		int index = path.indexOf(c);
@@ -57,14 +59,14 @@ public class InternalPath {
 //			return true;
 	}
 	
-	public Contig getCnt(int index)
+	public Sequence getCnt(int index)
 	{
 		if(index < 0 || index >= path.size())
 			return null;
 		return path.get(index);
 	}
 	
-	public int getIndex(Contig c)
+	public int getIndex(Sequence c)
 	{
 		return path.indexOf(c);
 	}
@@ -77,7 +79,7 @@ public class InternalPath {
 			return false;
 	}
 	
-	public LinkedList<Contig> getPath()
+	public LinkedList<Sequence> getPath()
 	{
 		return path;
 	}

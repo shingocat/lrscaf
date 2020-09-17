@@ -22,6 +22,8 @@ import agis.ps.link.Link;
 import agis.ps.link.MRecord;
 import agis.ps.link.TriadLink;
 import agis.ps.seqs.Contig;
+import agis.ps.seqs.Scaffold;
+import agis.ps.seqs.Sequence;
 import agis.ps.util.Parameter;
 import agis.ps.util.Strand;
 
@@ -42,21 +44,39 @@ public class MRecord2Link implements Callable<Map<String, List<ILink>>> {
 	private double olRatio = 0.6;
 	private double olweight = 0.6;
 	private double identweight = 0.4;
-	private Map<String, Contig> cnts;
+//	private Map<String, Contig> cnts;
+	private Map<String, Sequence> seqs;
 
+//	public MRecord2Link(Parameter paras, List<List<MRecord>> records, 
+//			List<String> repeats, Map<String, Contig> cnts
+//			) {
+//		this.paras = paras;
+//		this.records = records;
+//		this.repeats = repeats;
+//		this.minOLLen = paras.getMinOLLen();
+//		this.minOLRatio = paras.getMinOLRatio();
+//		this.maxOHLen = paras.getMaxOHLen();
+//		this.maxOHRatio = paras.getMaxOHRatio();
+//		this.maxEndLen = paras.getMaxEndLen();
+//		this.maxEndRatio = paras.getMaxEndRatio();
+//		this.cnts = cnts;
+//		this.links = new Vector<ILink>();
+//		this.triadlinks = new Vector<ILink>();
+//	}
+	
 	public MRecord2Link(Parameter paras, List<List<MRecord>> records, 
-			List<String> repeats, Map<String, Contig> cnts
+			List<String> repeats, Map<String, Sequence> seqs
 			) {
 		this.paras = paras;
 		this.records = records;
 		this.repeats = repeats;
+		this.seqs = seqs;
 		this.minOLLen = paras.getMinOLLen();
 		this.minOLRatio = paras.getMinOLRatio();
 		this.maxOHLen = paras.getMaxOHLen();
 		this.maxOHRatio = paras.getMaxOHRatio();
 		this.maxEndLen = paras.getMaxEndLen();
 		this.maxEndRatio = paras.getMaxEndRatio();
-		this.cnts = cnts;
 		this.links = new Vector<ILink>();
 		this.triadlinks = new Vector<ILink>();
 	}
@@ -178,14 +198,14 @@ public class MRecord2Link implements Callable<Map<String, List<ILink>>> {
 		ArrayList<MRecord> ms = new ArrayList<MRecord>(valids.size());
 		MRecord former = valids.get(0);
 		MRecord current = null;
-		String formerCntId = null;
-		String currentCntId = null;
+		String formerSeqId = null;
+		String currentSeqId = null;
 		// boolean isAdded = false;
 		for (int i = 1; i < size; i++) {
 			current = valids.get(i);
-			formerCntId = former.gettName();
-			currentCntId = current.gettName();
-			if (formerCntId.equals(currentCntId))
+			formerSeqId = former.gettName();
+			currentSeqId = current.gettName();
+			if (formerSeqId.equals(currentSeqId))
 				continue;
 			int dist = this.getDistance(former, current);
 			if (dist >= 0) {
@@ -246,11 +266,11 @@ public class MRecord2Link implements Callable<Map<String, List<ILink>>> {
 				Link link = new Link();
 				link.setLrId(former.getqName());
 				link.setDist(dist);
-				link.setOriginal(cnts.get(former.gettName()));
+				link.setOriginal(this.seqs.get(former.gettName()));
 				link.setoStrand(former.gettStrand());
 				link.setoStart(former.getqStart());
 				link.setoEnd(former.getqEnd());
-				link.setTerminus(cnts.get(current.gettName()));
+				link.setTerminus(this.seqs.get(current.gettName()));
 				link.settStrand(current.gettStrand());
 				link.settStart(current.getqStart());
 				link.settEnd(current.getqEnd());
@@ -266,12 +286,12 @@ public class MRecord2Link implements Callable<Map<String, List<ILink>>> {
 					index = i + 2;
 					while ((size - index) > 0) {
 						MRecord lst = ms.get(index);
-						Contig preCnt = new Contig();
-						Contig midCnt = new Contig();
-						Contig lstCnt = new Contig();
-						preCnt.setID(pre.gettName());
-						midCnt.setID(mid.gettName());
-						lstCnt.setID(lst.gettName());
+						Scaffold preCnt = new Scaffold();
+						Scaffold midCnt = new Scaffold();
+						Scaffold lstCnt = new Scaffold();
+						preCnt.setId(pre.gettName());
+						midCnt.setId(mid.gettName());
+						lstCnt.setId(lst.gettName());
 						tl.setPrevious(preCnt);
 						tl.setMiddle(midCnt);
 						tl.setLast(lstCnt);

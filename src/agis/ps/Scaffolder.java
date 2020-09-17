@@ -13,11 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.file.AlignmentFileReader;
-import agis.ps.file.ContigReader;
+import agis.ps.file.SequenceReader;
 import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.M4Reader;
 import agis.ps.file.M5Reader;
 import agis.ps.file.MMReader;
+import agis.ps.file.NodePathWriter;
 //import agis.ps.file.MisassembliesWriter;
 import agis.ps.file.OutputFolderBuilder;
 import agis.ps.file.RepeatWriter;
@@ -32,6 +33,8 @@ import agis.ps.link.MRecord;
 import agis.ps.link.TriadLink;
 import agis.ps.path.NodePath;
 import agis.ps.seqs.Contig;
+import agis.ps.seqs.Scaffold;
+import agis.ps.seqs.Sequence;
 import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
 //import agis.ps.util.MisassemblyChecker;
@@ -50,14 +53,16 @@ public class Scaffolder {
 	private static Logger logger = LoggerFactory.getLogger(Scaffolder.class);
 	private Parameter paras;
 	private List<List<MRecord>> listRecords;
-	private Map<String, Integer> cntCovs;
+	private Map<String, Integer> seqCovs;
 	private List<String> repeats;
 //	private List<String> misassemblies;
 	private List<ILink> links;
 	private List<ILink> triads;
 	private List<Edge> edges;
 	private List<NodePath> paths;
-	private Map<String, Contig> cnts;
+//	private Map<String, Contig> cnts;
+//	private Map<String, Scaffold> scafs;
+	private Map<String, Sequence> seqs;
 	// private List<Contig> unusedCnts; // contigs were not in building
 	// scaffolds;
 
@@ -70,7 +75,7 @@ public class Scaffolder {
 		try {
 			if (!buildOutputFolder())
 				return;
-			this.readCntFile();
+			this.readDraftFile();
 			this.buildLinks();
 			this.buildEdges();
 			this.buildPaths();
@@ -91,13 +96,10 @@ public class Scaffolder {
 	}
 
 	// read the contigs file;
-	private void readCntFile() {
-		// long start = System.currentTimeMillis();
-		ContigReader cr = new ContigReader(paras);
-		cnts = cr.read();
-		// long end = System.currentTimeMillis();
-		// logger.info("Reading Contig file, erase time: " + (end - start) + "
-		// ms.");Ff
+	private void readDraftFile() {
+		SequenceReader cr = new SequenceReader(paras);
+//		cnts = cr.read();
+		this.seqs = cr.read();
 	}
 
 	private void buildLinks() {
@@ -115,12 +117,20 @@ public class Scaffolder {
 			logger.info("The aligned parameter should be not set! only <m5>, <m4>, <sam> or <bam>");
 			return;
 		}
-		listRecords = reader.read(cnts);
-		cntCovs = reader.getCntCoverages();
+//		listRecords = reader.read(cnts);
+		listRecords = reader.read(this.seqs);
+		seqCovs = reader.getCntCoverages();
 		RepeatFinder rf = new RepeatFinder(paras);
-		repeats = rf.findRepeats(cntCovs, cnts);
+		// original code 2020/9/16
+//		repeats = rf.findRepeats(seqCovs, cnts);
+		repeats = rf.findRepeats(seqCovs);
+		// change sequence to repeat
+		for(String id : repeats) {
+			if(this.seqs.containsKey(id))
+				this.seqs.get(id).setIsRepeat(true);
+		}
 //		misassemblies = MisassemblyChecker.findMisassemblies(paras, cnts);
-		LinkBuilder linkBuilder = new LinkBuilder(paras, cnts);
+		LinkBuilder linkBuilder = new LinkBuilder(paras, this.seqs);
 		links = linkBuilder.mRecords2Links(listRecords, repeats);
 //		links = linkBuilder.mRecords2Links(listRecords, repeats, misassemblies);
 		LinkWriter pblw = new LinkWriter(paras);
@@ -140,19 +150,21 @@ public class Scaffolder {
 
 	private void buildPaths() {
 		// PathBuilder pb = new PathBuilder(edges, paras, cntLens);
-		PathBuilder pb = new PathBuilder(edges, paras, cnts);
+		PathBuilder pb = new PathBuilder(edges, paras, this.seqs);
 		paths = pb.buildPath();
 		// cntLens = null;
 		edges = null;
 	}
 
 	private void writeNodePathInfo() {
-		String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "nodePaths.info";
-		DotGraphFileWriter.writeNodePaths(pathFile, paths);
+//		String pathFile = paras.getOutFolder() + System.getProperty("file.separator") + "nodePaths.info";
+//		DotGraphFileWriter.writeNodePaths(pathFile, paths);
+		NodePathWriter writer = new NodePathWriter(this.paras);
+		writer.write(this.paths);
 	}
 
 	private void writeScaffolds() {
-		ScaffoldWriter sw = new ScaffoldWriter(paras, paths, cnts);
+		ScaffoldWriter sw = new ScaffoldWriter(paras, paths, this.seqs);
 		sw.write();
 	}
 
@@ -163,9 +175,8 @@ public class Scaffolder {
 		tlw.close();
 	}
 	
-	private void writeRepeatCnts()
-	{
-		RepeatWriter rw = new RepeatWriter(paras, cnts);
+	private void writeRepeatCnts() {
+		RepeatWriter rw = new RepeatWriter(paras, this.seqs);
 		rw.write();
 	}
 	

@@ -18,14 +18,16 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.file.GapRecordWriter;
+//import agis.ps.file.GapRecordWriter;
 import agis.ps.link.Edge;
 import agis.ps.link.ILink;
 import agis.ps.link.Link;
-import agis.ps.link.PBLink;
+//import agis.ps.link.PBLink;
 //import agis.ps.link.PBLinkM;
-import agis.ps.seqs.Contig;
-import agis.ps.seqs.PBGapSeq;
+//import agis.ps.seqs.Contig;
+//import agis.ps.seqs.PBGapSeq;
+//import agis.ps.seqs.Scaffold;
+import agis.ps.seqs.Sequence;
 
 public class EdgeBundler {
 	static final Logger logger = LoggerFactory.getLogger(EdgeBundler.class);
@@ -33,17 +35,16 @@ public class EdgeBundler {
 	private Parameter paras;
 	private List<Edge> edges = null;
 //	private Map<String, Contig> contigs = null;
-	private List<GapRecord> gaps = new Vector<GapRecord>(50);
+//	private List<GapRecord> gaps = new Vector<GapRecord>(50);
 //	private static int index = 0;
 	private int minSupLinks = 0;
 	private boolean isUseOL = false;
 	
 	
-	public EdgeBundler(Parameter paras)
-	{
+	public EdgeBundler(Parameter paras){
 		this.paras = paras;
-		this.minSupLinks = paras.getMinSupLinks();
-		this.isUseOL = paras.isUseOLLink();
+		this.minSupLinks = this.paras.getMinSupLinks();
+		this.isUseOL = this.paras.isUseOLLink();
 	}
 	
 	public List<Edge> links2edges(List<ILink> links)
@@ -60,8 +61,8 @@ public class EdgeBundler {
 		Map<String, List<Link>> temp = new HashMap<String, List<Link>>();
 		while (it.hasNext()) {
 			Link pb = (Link)it.next();
-			String id1 = pb.getOriginal().getID() + ":->:" + pb.getTerminus().getID();
-			String id2 = pb.getTerminus().getID() + ":->:" + pb.getOriginal().getID();
+			String id1 = pb.getOriginal().getId() + ":->:" + pb.getTerminus().getId();
+			String id2 = pb.getTerminus().getId() + ":->:" + pb.getOriginal().getId();
 			if (temp.containsKey(id1)) {
 				temp.get(id1).add(pb);
 			} else if (temp.containsKey(id2)) {
@@ -83,7 +84,7 @@ public class EdgeBundler {
 			}
 		}
 		long end = System.currentTimeMillis();
-		logger.info("Building Edges, Erase Time: " + (end - start) + " ms");
+		logger.info("Building Edges, elapsed Time: " + (end - start) + " ms");
 		return edges;
 	}
 	
@@ -126,8 +127,7 @@ public class EdgeBundler {
 //		return edges;
 //	}
 	
-	private List<Edge> buildEdge(List<Link> links)
-	{
+	private List<Edge> buildEdge(List<Link> links) {
 		List<Edge> value = new Vector<Edge>(2);
 		int size = links.size();
 		if(size < minSupLinks)
@@ -142,9 +142,9 @@ public class EdgeBundler {
 		{
 			Link link = links.get(i);
 			if(original == null)
-				original = link.getOriginal().getID();
+				original = link.getOriginal().getId();
 			if(terminus == null)
-				terminus = link.getTerminus().getID();
+				terminus = link.getTerminus().getId();
 			if(oStrand == null)
 				oStrand = link.getoStrand();
 			if(tStrand == null)
@@ -157,21 +157,22 @@ public class EdgeBundler {
 			return null;
 			
 		// forward edge
-		Contig oCnt = new Contig();
-		oCnt.setID(original);
+//		Contig oCnt = new Contig();
+		Sequence oSeq = new Sequence();
+		oSeq.setId(original);
 //		oCnt.setLength(length);
-		edge.setOrigin(oCnt);
+		edge.setOrigin(oSeq);
 		edge.setoStrand(oStrand);
-		Contig tCnt = new Contig();
-		tCnt.setID(terminus);
-		edge.setTerminus(tCnt);
+//		Contig tCnt = new Contig();
+		Sequence tSeq = new Sequence();
+		tSeq.setId(terminus);
+		edge.setTerminus(tSeq);
 		edge.settStrand(tStrand);
 		edge.setDistMean(meanDist);
 		edge.setDistSd(sd);
 		edge.setFake(false);
 		edge.setLinkNum(size);
-		if(meanDist < 0)
-		{	
+		if(meanDist < 0){	
 			edge.setOL(true);
 			if(isUseOL)
 				edge.setValid(true);
@@ -179,17 +180,17 @@ public class EdgeBundler {
 		value.add(edge);
 		// reverse edge
 		edge = new Edge();
-		oCnt = new Contig();
-		oCnt.setID(terminus);
+		oSeq = new Sequence();
+		oSeq.setId(terminus);
 //		oCnt.setLength(length);
-		edge.setOrigin(oCnt);
+		edge.setOrigin(oSeq);
 		if(tStrand.equals(Strand.FORWARD))
 			edge.setoStrand(Strand.REVERSE);
 		else
 			edge.setoStrand(Strand.FORWARD);
-		tCnt = new Contig();
-		tCnt.setID(original);
-		edge.setTerminus(tCnt);
+		tSeq = new Sequence();
+		tSeq.setId(original);
+		edge.setTerminus(tSeq);
 		if(oStrand.equals(Strand.FORWARD))
 			edge.settStrand(Strand.REVERSE);
 		else
@@ -198,8 +199,7 @@ public class EdgeBundler {
 		edge.setDistSd(sd);
 		edge.setFake(false);
 		edge.setLinkNum(size);
-		if(meanDist < 0)
-		{	
+		if(meanDist < 0){	
 			edge.setOL(true);
 			if(isUseOL)
 				edge.setValid(true);
@@ -293,16 +293,15 @@ public class EdgeBundler {
 	
 	private List<Link> validateLinks(String id, List<Link> links)
 	{
-		List<Link> values = new Vector<Link>();
+//		List<Link> values = new Vector<Link>();
 		// compute every case valid pblink
 		List<Link> caseA = new Vector<Link>(); // case +, +
 		List<Link> caseB = new Vector<Link>(); // case +, -
 		List<Link> caseC = new Vector<Link>(); // case -, +
 		List<Link> caseD = new Vector<Link>(); // case -, -
-		for(Link link : links)
-		{
+		for(Link link : links) {
 			String [] ids = id.split(":->:");
-			if(ids[0].equals(link.getOriginal().getID()))
+			if(ids[0].equals(link.getOriginal().getId()))
 			{
 				if(link.getoStrand().equals(Strand.FORWARD) && link.gettStrand().equals(Strand.FORWARD))
 					caseA.add(link);

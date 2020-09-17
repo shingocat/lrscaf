@@ -9,7 +9,9 @@ package agis.ps.path;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
+import agis.ps.util.Strand;
 
 
 public class NodePath implements Serializable{
@@ -20,8 +22,7 @@ public class NodePath implements Serializable{
 	 *  push a node into path at the last position
 	 * @param node
 	 */
-	public void push(Node node)
-	{
+	public void push(Node node) {
 		path.addLast(node);
 	}
 	
@@ -71,7 +72,7 @@ public class NodePath implements Serializable{
 	// such as index == 1, means checking the first element,
 	// index == negative number, denoted as checking the reverse specified index,
 	// such as index == -1, means, checking the last element,
-	public boolean isNextExist(Contig next, int index){
+	public boolean isNextExist(Sequence next, int index){
 		// TODO Auto-generated method stub
 		if(path == null)
 			path = new LinkedList<Node>();
@@ -83,7 +84,7 @@ public class NodePath implements Serializable{
 			for(int i =0 ; i < path.size(); i++)
 			{
 				Node node = path.get(i);
-				if(node.getCnt().equals(next))
+				if(node.getSeq().equals(next))
 				{	
 					isExist = true;
 					break;
@@ -96,24 +97,23 @@ public class NodePath implements Serializable{
 			return false;
 //				throw new IllegalArgumentException("The index is out of negative boundary!");
 			Node node = path.get(pathSize + index);
-			if(node.getCnt().equals(next))
+			if(node.getSeq().equals(next))
 				isExist = true;
 		} else if (index > 0)
 		{
 			Node node = path.get(index - 1);
-			if(node.getCnt().equals(next))
+			if(node.getSeq().equals(next))
 				isExist = true;
 		}
 		return isExist;
 	}
 	
-	public boolean isContain(Contig c)
+	public boolean isContain(Sequence c)
 	{
 		if(path == null || path.size() == 0)
 			return false;
-		for(Node n : path)
-		{
-			if(n.getCnt().equals(c))
+		for(Node n : path) {
+			if(n.getSeq().equals(c))
 				return true;
 		}
 		return false;
@@ -125,8 +125,7 @@ public class NodePath implements Serializable{
 			return false;
 		for(Node n : path)
 		{
-			if(n.getCnt().getID().equals(id))
-			{
+			if(n.getSeq().getId().equals(id)){
 				return true;
 			} 
 		}
@@ -141,12 +140,14 @@ public class NodePath implements Serializable{
 	}
 	
 	@Override
-	public String toString()
-	{
+	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		for(int i = 0 ; i < getPathSize(); i++)
-		{
-			sb.append(getElement(i).getCnt().getID());
+		for(int i = 0 ; i < getPathSize(); i++) {
+			sb.append(getElement(i).getSeq().getId());
+			if(getElement(i).getStrand().equals(Strand.FORWARD))
+				sb.append("_F");
+			else
+				sb.append("_R");
 			if(i != getPathSize() - 1)
 				sb.append("->");
 		}

@@ -21,7 +21,8 @@ import java.util.Vector;
 //import org.slf4j.LoggerFactory;
 
 import agis.ps.link.Edge;
-import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 import agis.ps.util.MathTool;
 
 public abstract class Graph implements Serializable, IUntangler {
@@ -32,9 +33,12 @@ public abstract class Graph implements Serializable, IUntangler {
 //	protected Map<String, Contig> vertices = new HashMap<String, Contig>();
 //	protected Map<String, Contig> selectedVertices = new HashMap<String, Contig>();
 //	protected Map<String, Contig> unselectedVertices = new HashMap<String, Contig>();
-	protected List<Contig> vertices = null;
-	protected List<Contig> selectedVertices = null;
-	protected List<Contig> unselectedVertices = null;
+//	protected List<Contig> vertices = null;
+//	protected List<Contig> selectedVertices = null;
+//	protected List<Contig> unselectedVertices = null;
+	protected List<Sequence> vertices = null;
+	protected List<Sequence> selectedVertices = null;
+	protected List<Sequence> unselectedVertices = null;
 
 	public Graph(List<Edge> edges) {
 		if (edges == null || edges.size() == 0)
@@ -43,22 +47,25 @@ public abstract class Graph implements Serializable, IUntangler {
 			this.edges = new HashMap<String, Edge>();
 		if (this.vertices == null)
 //			this.vertices = new HashMap<String, Contig>();
-			this.vertices = new ArrayList<Contig>();
+//			this.vertices = new ArrayList<Contig>();
+			this.vertices = new ArrayList<Sequence>();
 		if (this.selectedVertices == null)
 //			this.selectedVertices = new HashMap<String, Contig>();
-			this.selectedVertices = new ArrayList<Contig>();
+//			this.selectedVertices = new ArrayList<Contig>();
+			this.selectedVertices = new ArrayList<Sequence>();
 		if (this.unselectedVertices == null)
 //			this.unselectedVertices = new HashMap<String, Contig>();
-			this.unselectedVertices = new ArrayList<Contig>();
+//			this.unselectedVertices = new ArrayList<Contig>();
+			this.unselectedVertices = new ArrayList<Sequence>();
 		this.edges.clear();
 		this.vertices.clear();
 		this.selectedVertices.clear();
 		this.unselectedVertices.clear();
 		for (Edge e : edges) {
-			Contig origin = e.getOrigin();
-			Contig terminus = e.getTerminus();
-			String oId = origin.getID();
-			String tId = terminus.getID();
+			Sequence origin = e.getOrigin();
+			Sequence terminus = e.getTerminus();
+			String oId = origin.getId();
+			String tId = terminus.getId();
 			String id = oId + "->" + tId;
 			this.edges.put(id, e);
 			if(!this.vertices.contains(origin))
@@ -97,12 +104,11 @@ public abstract class Graph implements Serializable, IUntangler {
 		return new ArrayList<Edge>(edges.values());
 	}
 
-	public List<Contig> getVertices() {
+	public List<Sequence> getVertices() {
 		if(this.vertices == null)
-			this.vertices = new ArrayList<Contig>();
+			this.vertices = new ArrayList<Sequence>();
 		this.vertices.clear();
-		for(Map.Entry<String, Edge> entry : edges.entrySet())
-		{
+		for(Map.Entry<String, Edge> entry : edges.entrySet()) {
 			Edge e = entry.getValue();
 			if(!this.vertices.contains(e.getOrigin()))
 				this.vertices.add(e.getOrigin());
@@ -159,7 +165,7 @@ public abstract class Graph implements Serializable, IUntangler {
 	// if an vertex is selected, than set as selected status and add into
 	// selectedVertices hashset;
 	// and remove this vertex id from unSelectedVertices hashset;
-	public void setVertexAsSelected(Contig cnt) {
+	public void setVertexAsSelected(Sequence cnt) {
 //		if (this.selectedVertices == null)
 //			this.selectedVertices = new HashMap<String, Contig>();
 //		if (this.unselectedVertices.containsKey(cnt.getID()))
@@ -167,7 +173,7 @@ public abstract class Graph implements Serializable, IUntangler {
 //		if (!this.selectedVertices.containsKey(cnt.getID()))
 //			this.selectedVertices.put(cnt.getID(), cnt);
 		if(this.selectedVertices == null)
-			this.selectedVertices = new ArrayList<Contig>();
+			this.selectedVertices = new ArrayList<Sequence>();
 		if(this.unselectedVertices.contains(cnt))
 			this.unselectedVertices.remove(cnt);
 		if(!this.selectedVertices.contains(cnt))
@@ -175,7 +181,7 @@ public abstract class Graph implements Serializable, IUntangler {
 	}
 	
 	// set vertext as unselect;
-	public void setVertextUnselected(Contig cnt)
+	public void setVertextUnselected(Sequence cnt)
 	{
 //		if (this.selectedVertices == null)
 //			return;
@@ -192,8 +198,8 @@ public abstract class Graph implements Serializable, IUntangler {
 	}
 
 	// return random vertex from graph
-	public Contig getRandomVertex() {
-		Contig cnt = null;
+	public Sequence getRandomVertex() {
+		Sequence cnt = null;
 		if (this.isExistUnSelectedVertices()) {
 //			cnt = new ArrayList<Contig>(this.unselectedVertices.values()).get(0);
 //			Iterator<Contig> it = this.unselectedVertices.values().iterator();
@@ -204,7 +210,7 @@ public abstract class Graph implements Serializable, IUntangler {
 		return cnt;
 	}
 	
-	public boolean isVertexSelected(Contig c)
+	public boolean isVertexSelected(Sequence c)
 	{
 //		String id = c.getID();
 //		if(selectedVertices.containsKey(id))
@@ -218,26 +224,26 @@ public abstract class Graph implements Serializable, IUntangler {
 	}
 	
 	// return whether the contig is divergence contig;
-	public abstract boolean isDivergenceVertex(Contig cnt);
+	public abstract boolean isDivergenceVertex(Sequence cnt);
 
 	// return all the adjacent vertices to or from this contig;
-	public abstract List<Contig> getAdjVertices(Contig cnt);
+	public abstract List<Sequence> getAdjVertices(Sequence cnt);
 
 	// return the next vertex from the current vertex and former vertex;
-	public abstract Contig getNextVertex(Contig current, Contig former);
+	public abstract Sequence getNextVertex(Sequence current, Sequence former);
 	
 	// return the next vertices from the current vertext and former vertext
 	// but exclude the former vertex
-	public abstract List<Contig> getNextVertices(Contig current, Contig former);
+	public abstract List<Sequence> getNextVertices(Sequence current, Sequence former);
 
 	// return the next vertex from the current vertex and former vertex;
-	public abstract Contig getNextVertex2(Contig current, Contig former);
+	public abstract Sequence getNextVertex2(Sequence current, Sequence former);
 
 	// return the vertex by specified id;
-	public abstract Contig getVertex(String id);
+	public abstract Sequence getVertex(String id);
 
 	// return edge info between these two contigs
-	public abstract List<Edge> getEdgesInfo(Contig start, Contig end);
+	public abstract List<Edge> getEdgesInfo(Sequence start, Sequence end);
 
 	// remove an edge
 	public abstract boolean removeEdge(Edge e);

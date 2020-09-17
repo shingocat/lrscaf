@@ -7,11 +7,12 @@
 package agis.ps.link;
 
 import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 
 public class TriadLink implements ILink {
-	private Contig previous; // previous contig in link;
-	private Contig middle; // middle contig in link;
-	private Contig last; // last contig in link
+	private Sequence previous; // previous contig in link;
+	private Sequence middle; // middle contig in link;
+	private Sequence last; // last contig in link
 	private int supLinks; // support triad link nums;
 	private boolean isValid = true; // indicator for used or not;
 	
@@ -19,14 +20,13 @@ public class TriadLink implements ILink {
 		
 	}
 	
-	public TriadLink(Contig previous, Contig middle, Contig last)
-	{
+	public TriadLink(Sequence previous, Sequence middle, Sequence last) {
 		this.previous = previous;
 		this.middle = middle;
 		this.last = last;
 	}
 	
-	public TriadLink(Contig previous, Contig middle, Contig last, boolean isValid)
+	public TriadLink(Sequence previous, Sequence middle, Sequence last, boolean isValid)
 	{
 		this(previous, middle, middle);
 		this.isValid = isValid;
@@ -40,27 +40,27 @@ public class TriadLink implements ILink {
 		this.isValid = isValid;
 	}
 
-	public Contig getPrevious() {
+	public Sequence getPrevious() {
 		return previous;
 	}
 
-	public void setPrevious(Contig previous) {
+	public void setPrevious(Sequence previous) {
 		this.previous = previous;
 	}
 
-	public Contig getMiddle() {
+	public Sequence getMiddle() {
 		return middle;
 	}
 
-	public void setMiddle(Contig middle) {
+	public void setMiddle(Sequence middle) {
 		this.middle = middle;
 	}
 
-	public Contig getLast() {
+	public Sequence getLast() {
 		return last;
 	}
 
-	public void setLast(Contig last) {
+	public void setLast(Sequence last) {
 		this.last = last;
 	}
 	

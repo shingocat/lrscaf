@@ -14,8 +14,9 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import agis.ps.file.ContigCoverageWriter;
-import agis.ps.seqs.Contig;
+import agis.ps.file.SequenceCoverageWriter;
+//import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Scaffold;
 
 public class RepeatFinder {
 
@@ -23,7 +24,8 @@ public class RepeatFinder {
 	private Parameter paras;
 	private List<String> repeats;
 	private double iqrTime;
-	private Map<String, Contig> cnts;
+//	private Map<String, Contig> cnts;
+//	private Map<String, Scaffold> scafs;
 	// private Map<String, List<MRecord>> cntMaps;
 
 	public RepeatFinder(Parameter paras) {
@@ -70,18 +72,18 @@ public class RepeatFinder {
 	// }
 	//
 
-	public List<String> findRepeats(Map<String, Integer> cntCovs, Map<String, Contig> cnts) {
-		this.cnts = cnts;
-		return this.findRepeats(cntCovs);
-	}
+//	public List<String> findRepeats(Map<String, Integer> seqCovs, Map<String, Contig> cnts) {
+//		this.cnts = cnts;
+//		return this.findRepeats(seqCovs);
+//	}
 
-	public List<String> findRepeats(Map<String, Integer> cntCovs) {
+	public List<String> findRepeats(Map<String, Integer> seqCovs) {
 		long start = System.currentTimeMillis();
 		// List<String>>();
 		if (repeats == null)
-			repeats = new ArrayList<String>(cntCovs.size()/5);
-		if (!cntCovs.isEmpty()) {
-			List<Integer> covs = new ArrayList<Integer>(cntCovs.values());
+			repeats = new ArrayList<String>(seqCovs.size()/5);
+		if (!seqCovs.isEmpty()) {
+			List<Integer> covs = new ArrayList<Integer>(seqCovs.values());
 			// int mean = MathTool.mean(covs);
 			// int sd = MathTool.sd(covs);
 			Map<String, Double> values = MathTool.summary(covs);
@@ -110,19 +112,20 @@ public class RepeatFinder {
 			logger.info(iqrTime + "'s IQR " + ", Outlier Threshold: " + upper);
 			// logger.info("Pesudo repeat contigs");
 			// Map<String, List<String>> repeat = new HashMap<String,
-			for (String id : cntCovs.keySet()) {
-				if (cntCovs.get(id) > upper) {
+			for (String id : seqCovs.keySet()) {
+				if (seqCovs.get(id) > upper) {
 					repeats.add(id);
-					if (cnts.containsKey(id))
-						cnts.get(id).setIsRepeat(true);
+					// oringal code 2020/9/16
+//					if (cnts.containsKey(id))
+//						cnts.get(id).setIsRepeat(true);
 				}
 			}
-			ContigCoverageWriter ccw = new ContigCoverageWriter(paras);
-			ccw.write2(cntCovs);
+			SequenceCoverageWriter ccw = new SequenceCoverageWriter(paras);
+			ccw.write2(seqCovs);
 		}
 		logger.info("Repeat count: " + repeats.size());
 		long end = System.currentTimeMillis();
-		logger.info("Finding repeat, erase time: " + (end - start) + " ms");
+		logger.info("Finding repeat, elapsed time: " + (end - start) + " ms");
 		return repeats;
 	}
 

@@ -202,6 +202,54 @@ public class MRecordValidator {
 	// }
 	// return m5;
 	// }
+	
+	
+	public static Map<String, Boolean> validate(MRecord record, Parameter paras, Integer seqLength) {
+		Map<String, Boolean> values = new HashMap<String, Boolean>();
+		boolean isValid4Repeat = true;
+		boolean isValid4Record = true;
+		int maxOHLen = paras.getMaxOHLen();
+		double maxOHRatio = paras.getMaxOHRatio();
+		int minCNTLen = paras.getMinContLen();
+		double defIdentity = paras.getIdentity();
+		// check for repeat
+		int tLen = record.gettLength();
+		int tStart = record.gettStart();
+		int tEnd = record.gettEnd();
+		int tLeftLen = tStart;
+		int tRightLen = tLen - tEnd;
+		int defOHLen = (int) (tLen * maxOHRatio);
+		if (maxOHLen < defOHLen)
+			defOHLen = maxOHLen;
+		if (tLeftLen > defOHLen)
+			isValid4Repeat = false;
+		if (tRightLen > defOHLen)
+			isValid4Repeat = false;
+		
+		// check for record
+		record.settLength(seqLength);
+		double identity = record.getIdentity();
+		// do not filter the pacbio read length
+		// and only filter the contigs length less than 200 bp;
+		// if(cntLen < 100)
+		// isValid4Record = false;
+		// if(pbLen < minPBLen)
+		// isValid4Record = false;
+		if (seqLength < minCNTLen) {
+			isValid4Record = false;
+//			if(cnts.containsKey(record.gettName()))
+//				cnts.get(record.gettName()).setIsUsed(false);
+		}
+		if (identity < defIdentity)
+			isValid4Record = false;
+		// if(tLeftLen > defOHLen )
+		// isValid4Record = false;
+		// if(tRightLen > defOHLen)
+		// isValid4Record = false;
+		values.put("REPEAT", isValid4Repeat);
+		values.put("RECORD", isValid4Record);
+		return values;
+	}
 
 	public static Map<String, Boolean> validate(MRecord record, Parameter paras, Map<String, Contig> cnts) {
 		Map<String, Boolean> values = new HashMap<String, Boolean>();

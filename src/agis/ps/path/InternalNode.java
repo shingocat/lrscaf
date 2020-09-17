@@ -6,11 +6,13 @@
 */
 package agis.ps.path;
 
-import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
+
+//import agis.ps.seqs.Contig;
 
 public class InternalNode {
 	private InternalNode parent;
-	private Contig child;
+	private Sequence child;
 	private boolean isLeaf;
 	public InternalNode getParent() {
 		return parent;
@@ -18,10 +20,10 @@ public class InternalNode {
 	public void setParent(InternalNode parent) {
 		this.parent = parent;
 	}
-	public Contig getChild() {
+	public Sequence getChild() {
 		return child;
 	}
-	public void setChild(Contig child) {
+	public void setChild(Sequence child) {
 		this.child = child;
 	}
 	public boolean isLeaf() {

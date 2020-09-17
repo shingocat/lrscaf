@@ -50,7 +50,7 @@ public class MisassembliesWriter {
 			{
 				Contig c = entry.getValue();
 				String id = entry.getKey();
-				if(c.getIsMisassembly())
+				if(c.isMisassembly())
 				{
 					bwMisassembly.write(">" + id);
 					bwMisassembly.newLine();

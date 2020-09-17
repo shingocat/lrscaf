@@ -8,8 +8,8 @@ package agis.ps.file;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Vector;
 
@@ -17,7 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import agis.ps.link.TriadLink;
-import agis.ps.seqs.Contig;
+//import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 import agis.ps.util.Parameter;
 
 public class TriadLinkReader {
@@ -25,43 +26,36 @@ public class TriadLinkReader {
 	public List<TriadLink> triads = null;
 	public Parameter paras = null;
 	
-	public TriadLinkReader (Parameter paras)
-	{
+	public TriadLinkReader (Parameter paras) {
 		this.paras = paras;
 	}
 	
-	public List<TriadLink> read()
-	{
+	public List<TriadLink> read() {
 		triads = new Vector<TriadLink>(100);
 		String outFolder = paras.getOutFolder();
 		String fileName = outFolder + System.getProperty("file.separator") + "triadlinks.info";
 		File file = null;
-		FileReader fr = null;
 		BufferedReader br = null;
-		try
-		{
+		try {
 			file = new File(fileName);
 			if(!file.exists())
 				throw new IOException("The triad link info file do not exist!");
-			fr = new FileReader(file);
-			br = new BufferedReader(fr);
+			br = Files.newBufferedReader(file.toPath());
 			String line = "";
 			int index = 0;
-			while((line = br.readLine()) != null)
-			{
+			while((line = br.readLine()) != null) {
 //				if(index == 386)
 //					logger.debug(index + " " + line);
 				String [] strs = line.split(",");
-				Contig pre = new Contig();
-				pre.setID(strs[0]);
-				Contig lst = new Contig();
-				lst.setID(strs[2]);
-				Contig mid = null;
+				Sequence pre = new Sequence();
+				pre.setId(strs[0]);
+				Sequence lst = new Sequence();
+				lst.setId(strs[2]);
+				Sequence mid = null;
 				TriadLink tl = null;
-				if(!strs[1].equalsIgnoreCase("-"))
-				{
-					mid = new Contig();
-					mid.setID(strs[1]);
+				if(!strs[1].equalsIgnoreCase("-")) {
+					mid = new Sequence();
+					mid.setId(strs[1]);
 //					tl = new TriadLink(pre, mid, lst);
 //					tl.setSupLinks(Integer.valueOf(strs[3]));
 				}
@@ -71,18 +65,14 @@ public class TriadLinkReader {
 				index++;
 			}
 			
-		} catch(IOException e)
-		{
+		} catch(IOException e) {
 			logger.debug("Error: ", e);
 			logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
-		} finally
-		{
-			try
-			{
+		} finally {
+			try {
 				if(br != null)
 					br.close();
-			}  catch(IOException e)
-			{
+			}  catch(IOException e) {
 				logger.debug("Error: ", e);
 				logger.error(this.getClass().getName() + "\t" + e.getMessage() + "\t" + e.getClass().getName());
 			} 

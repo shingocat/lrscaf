@@ -9,13 +9,15 @@ package agis.ps.path;
 import java.io.Serializable;
 
 import agis.ps.seqs.Contig;
+import agis.ps.seqs.Sequence;
 import agis.ps.util.Strand;
 
 public class Node implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	// the contig 
-	private Contig cnt;
+//	private Contig cnt;
+	private Sequence seq;
 	// the contig strand in the path;
 	// depend on the first start point
 	private Strand strand;
@@ -31,11 +33,11 @@ public class Node implements Serializable {
 	// indicated whether orphan node
 	boolean isOrphan;
 	
-	public Contig getCnt() {
-		return cnt;
+	public Sequence getSeq() {
+		return seq;
 	}
-	public void setCnt(Contig cnt) {
-		this.cnt = cnt;
+	public void setSeq(Sequence seq) {
+		this.seq = seq;
 	}
 	public Strand getStrand() {
 		return strand;
@@ -70,7 +72,7 @@ public class Node implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "Node [cnt=" + cnt + ", strand=" + strand + ", meanDist2Next=" + meanDist2Next + ", sdDist2Next="
+		return "Node [seq=" + seq + ", strand=" + strand + ", meanDist2Next=" + meanDist2Next + ", sdDist2Next="
 				+ sdDist2Next + ", supportLinkNum=" + supportLinkNum + ", isOrphan=" + isOrphan + "]";
 	}
 }
