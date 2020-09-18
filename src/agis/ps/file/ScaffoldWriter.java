@@ -73,14 +73,16 @@ public class ScaffoldWriter {
 //	}
 	
 	public ScaffoldWriter(Parameter paras, List<NodePath> paths, Map<String, Sequence> seqs) {
-		this(paras, paths);
+//		this(paras, paths);
+		this.paras = paras;
+		this.paths = paths;
 		this.seqs = seqs;
 	}
 	
-	public ScaffoldWriter(Parameter paras, List<NodePath> paths){
-		this.paras = paras;
-		this.paths = paths;
-	}
+//	public ScaffoldWriter(Parameter paras, List<NodePath> paths){
+//		this.paras = paras;
+//		this.paths = paths;
+//	}
 	
 	
 	public void write(){
@@ -112,7 +114,7 @@ public class ScaffoldWriter {
 				bw.write(">Scaffolds_" + index + "  " + len);
 				bw.newLine();
 				bw.write(SequenceUtils.formatSeqByLength(seqs, this.lineLength));
-				bw.newLine();
+//				bw.newLine();
 				lens.add(len);
 				index++;
 			}
@@ -124,7 +126,7 @@ public class ScaffoldWriter {
 					bw.write(">Scaffolds_" + index + "  " + c.getId() + " " + len);
 					bw.newLine();
 					bw.write(SequenceUtils.formatSeqByLength(c.getForwardSeqs(), this.lineLength));
-					bw.newLine();
+//					bw.newLine();
 					lens.add(len);
 					index++;
 				}
@@ -223,8 +225,7 @@ public class ScaffoldWriter {
 		for(int i = 0; i < size; i++)
 		{
 			current = path.getElement(i);
-			if(i == 0)
-			{
+			if(i == 0) {
 				cId = current.getSeq().getId();
 //				seq = cntfile.getOriginalSeqByNewId(cId);
 //				seq = cnts.get(cId).getForwardSeqs();

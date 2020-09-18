@@ -55,10 +55,11 @@ public class SequenceUtils {
 			end = seqLen;
 		else
 			end = lineLength;
-		while(start <= seqLen) {
+		while(start < seqLen) {
 			String subSeq = seqs.substring(start, end);
-			sb.append(subSeq);
-			sb.append("\n");
+			sb.append(subSeq.trim());
+			if(end <= seqLen)
+				sb.append("\n");
 			start = start + lineLength;
 			end = start + lineLength;
 			if(end > seqLen)
