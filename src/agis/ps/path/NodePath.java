@@ -142,6 +142,10 @@ public class NodePath implements Serializable{
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
+		if(this.getPathSize() == 1) {
+			getElement(0).setStrand(Strand.FORWARD);
+			return sb.append(getElement(0).getSeq().getId()).append("_F").toString();
+		}
 		for(int i = 0 ; i < getPathSize(); i++) {
 			sb.append(getElement(i).getSeq().getId());
 			if(getElement(i).getStrand().equals(Strand.FORWARD))

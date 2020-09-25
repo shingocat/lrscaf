@@ -21,7 +21,7 @@ import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.TriadLinkReader;
 import agis.ps.graph.DirectedGraph;
 import agis.ps.graph.Graph;
-import agis.ps.link.CntFileEncapsulate;
+//import agis.ps.link.CntFileEncapsulate;
 import agis.ps.link.Edge;
 import agis.ps.link.TriadLink;
 //import agis.ps.link.TriadLinkComparator;
@@ -48,23 +48,6 @@ public class PathBuilder {
 //	private Map<String, Integer> cntLens;
 //	private Map<String, Contig> cnts;
 	private Map<String, Sequence> seqs;
-
-//	public PathBuilder(List<Edge> edges, Parameter paras, CntFileEncapsulate cntfile) {
-//		this.edges = edges;
-//		this.paras = paras;
-////		this.cntfile = cntfile;
-//		TriadLinkReader tlr = new TriadLinkReader(paras);
-//		triads = tlr.read();
-//	}
-	
-//	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Integer> cntLens)
-//	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Contig> cnts)
-//	{
-//		this.edges = edges;
-//		this.paras = paras;
-////		this.cntLens = cntLens;
-//		this.cnts = cnts;
-//	}
 	
 	public PathBuilder(List<Edge> edges, Parameter paras, Map<String, Sequence> seqs) {
 		this.edges = edges;
@@ -80,9 +63,8 @@ public class PathBuilder {
 //		return this.buildPathByCntFileEncapsulate2();
 		return buildPath3();
 	}
-	
-	private List<NodePath> buildPath3()
-	{
+
+	private List<NodePath> buildPath3() {
 		long start = System.currentTimeMillis();
 		if (edges == null || edges.size() == 0)
 			throw new IllegalArgumentException("PathBuilder: The Edges could not be empty!");
@@ -127,16 +109,12 @@ public class PathBuilder {
 			// travel the graph, random start
 			// do not including the divergence end point in the path
 			while (diGraph.isExistUnSelectedVertices()) {
-//				INDEX++;
-//				logger.debug(""+INDEX);
-//				if(INDEX == 700)
-//					logger.debug("breakpoint");
 				Sequence current = diGraph.getRandomVertex();
 				if (current == null)
 					break;
 				List<Sequence> adjs = diGraph.getAdjVertices(current);
 				if (adjs == null) {
-					if (this.isValidCnt(current)) {
+					if (this.isValidVertext(current)) {
 						path = new NodePath();
 						this.addNode(null, current, null, null, null, path, true);
 						paths.add(path);
@@ -148,7 +126,7 @@ public class PathBuilder {
 				int adjsSize = adjs.size();
 				if (adjsSize == 0) {
 					// orphan contig, only one element in path
-					if (this.isValidCnt(current)) {
+					if (this.isValidVertext(current)) {
 						path = new NodePath();
 						this.addNode(null, current, null, null, null, path, true);
 						paths.add(path);
@@ -172,8 +150,7 @@ public class PathBuilder {
 					this.travelgraph(c2, current, c1, path, false);
 					// travel forward
 					int count = 0;
-					while(path.hasLast())
-					{
+					while(path.hasLast()) {
 						if(count > 1)
 							break;
 						Node node = path.pop();
@@ -191,8 +168,7 @@ public class PathBuilder {
 						this.travelgraph(c1, current, c2, path, true);
 //					}
 					// orientation conflict three point;
-					if(path.getPathSize() == 1)
-					{
+					if(path.getPathSize() == 1){
 						// for c1 
 						path = new NodePath();
 						this.addNode(null, c1, null, null, null,  path, false);
@@ -361,20 +337,16 @@ public class PathBuilder {
 //		return paths;
 //	}
 	
-	private void travelgraph(Sequence previous, Sequence current, Sequence next, NodePath path, boolean isForward)
-	{
+	private void travelgraph(Sequence previous, Sequence current, Sequence next, NodePath path, boolean isForward) {
 		Sequence startpoint = current;
 		List<Edge> p2ces = null; // previous to current edges;
 		Edge p2ce = null; // previous to current edge;
 		List<Edge> c2nes = null; // current to next edges;
 		Edge c2ne = null; // current to next edge;
-		if(previous != null)
-		{
+		if(previous != null) {
 			p2ces = diGraph.getEdgesInfo(previous, current);
-			for(Edge e : p2ces)
-			{
-				if(e.getOrigin().equals(previous) && e.getTerminus().equals(current))
-				{
+			for(Edge e : p2ces) {
+				if(e.getOrigin().equals(previous) && e.getTerminus().equals(current)) {
 					p2ce = e;
 					break;
 				}
@@ -382,10 +354,8 @@ public class PathBuilder {
 		}
 		// get current to next edges;
 		c2nes = diGraph.getEdgesInfo(current, next);
-		for(Edge e : c2nes)
-		{
-			if(e.getOrigin().equals(current) && e.getTerminus().equals(next))
-			{
+		for(Edge e : c2nes) {
+			if(e.getOrigin().equals(current) && e.getTerminus().equals(next)) {
 				c2ne = e;
 				break;
 			}
@@ -393,14 +363,13 @@ public class PathBuilder {
 		// try to extend the path;
 		while (true) {
 			if (this.validateOrientation(previous, current, next, p2ce, c2ne)) {
-				if (this.isValidCnt(current)) {
+				if (this.isValidVertext(current)) {
 					this.addNode(previous, current, next, p2ce, c2ne, path, isForward);
 				} else {
 					break;
 				}
 
-			} else
-			{
+			} else {
 				next = null;
 //				if (this.isValidCnt(current)) {
 					this.addNode(previous, current, next, p2ce, c2ne, path, isForward);
@@ -421,10 +390,8 @@ public class PathBuilder {
 				LinkedList<Sequence> formers = new LinkedList<Sequence>();
 				int num = 0;
 				// only considering two former contigs
-				if(isForward)
-				{
-					while(true)
-					{
+				if(isForward) {
+					while(true) {
 						Node node = path.getElement(path.getPathSize() - (num + 2));
 						if(node != null)
 							formers.addLast(node.getSeq());
@@ -434,10 +401,8 @@ public class PathBuilder {
 						if(num == 2)
 							break;
 					}
-				} else
-				{
-					while(true)
-					{
+				} else {
+					while(true) {
 						Node node = path.getElement((num + 1));
 						if(node != null)
 							formers.addLast(node.getSeq());
@@ -459,16 +424,14 @@ public class PathBuilder {
 				int size = selectedCnts.size();
 				if (size == 1) {
 					next = selectedCnts.get(0);
-				} else
-				{
+				} else {
 					int index = 0;
 					boolean isConflict = false;
-					do{
+					do {
 						next = selectedCnts.get(index);
 						// get current to next edges;
 						c2nes = diGraph.getEdgesInfo(current, next);
-						for(Edge e : c2nes)
-						{
+						for(Edge e : c2nes) {
 							if(e.getOrigin().equals(current) && e.getTerminus().equals(next))
 							{
 								c2ne = e;
@@ -485,8 +448,7 @@ public class PathBuilder {
 //								isConflict = true;
 //								break;
 //							}
-						} else
-						{
+						} else {
 							next = null;
 //							if (this.isValidCnt(current)) {
 							this.addNode(previous, current, next, p2ce, c2ne, path, isForward);
@@ -508,8 +470,7 @@ public class PathBuilder {
 			} 
 			// get current to next edges;
 			c2nes = diGraph.getEdgesInfo(current, next);
-			for(Edge e : c2nes)
-			{
+			for(Edge e : c2nes) {
 				if(e.getOrigin().equals(current) && e.getTerminus().equals(next))
 				{
 					c2ne = e;
@@ -523,10 +484,9 @@ public class PathBuilder {
 				break;
 			}
 			// for the circle case 
-			if (next.equals(startpoint))
-			{
+			if (next.equals(startpoint)) {
 				next = null;
-				if(this.isValidCnt(current))
+				if(this.isValidVertext(current))
 					this.addNode(previous, current, next, p2ce, c2ne, path, isForward);
 				break;
 			}
@@ -2488,14 +2448,19 @@ public class PathBuilder {
 			Node node = new Node();
 			node.setSeq(current);
 			node.setOrphan(false);
-			if(p2ce != null)
-			{
+			if(p2ce != null) {
 				node.setMeanDist2Next(p2ce.getDistMean());
 				node.setSdDist2Next(p2ce.getDistSd());
 				if(p2ce.gettStrand().equals(Strand.FORWARD))
 					node.setStrand(Strand.REVERSE);
 				else
 					node.setStrand(Strand.FORWARD);
+//				if(path.getElement(0).getStrand() == null) {
+//					if(p2ce.getoStrand().equals(Strand.FORWARD))
+//						path.getElement(0).setStrand(Strand.REVERSE);
+//					else
+//						path.getElement(0).setStrand(Strand.FORWARD);
+//				}
 			}
 			path.unshift(node);
 			diGraph.setVertexAsSelected(current);
@@ -2503,17 +2468,17 @@ public class PathBuilder {
 	}
 
 	/**
-	 * The method used to check the next contig is not the divergence point and
+	 * The method used to check the current sequence is not the divergence point and
 	 * did not select before. If it is not the divergence point and do not
-	 * seleect former, return true; else it is return false;
+	 * select former, return true; else it is return false;
 	 * 
 	 * @return
 	 */
-	private boolean isValidCnt(Sequence cnt) {
-		if (diGraph.isDivergenceVertex(cnt)) {
+	private boolean isValidVertext(Sequence seq) {
+		if (diGraph.isDivergenceVertex(seq)) {
 			return true;
 		} else {
-			if (diGraph.isVertexSelected(cnt))
+			if (diGraph.isVertexSelected(seq))
 				return false;
 			else
 				return true;

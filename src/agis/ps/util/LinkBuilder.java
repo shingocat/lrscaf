@@ -42,16 +42,16 @@ public class LinkBuilder {
 	private List<ILink> links = null;
 	// private LinkedList<String> simcnts = new LinkedList<String>();
 	private Parameter paras;
-	private int minOLLen;
-	private double minOLRatio;
-	private int maxOHLen;
-	private double maxOHRatio;
-	private int maxEndLen;
-	private double maxEndRatio;
-	private int olLength = -1500; // default overlap 100 bp will consider which is the best;
-	private double olRatio = 0.6;
-	private double olweight = 0.6;
-	private double identweight = 0.4;
+//	private int minOLLen;
+//	private double minOLRatio;
+//	private int maxOHLen;
+//	private double maxOHRatio;
+//	private int maxEndLen;
+//	private double maxEndRatio;
+//	private int olLength = -1500; // default overlap 100 bp will consider which is the best;
+//	private double olRatio = 0.6;
+//	private double olweight = 0.6;
+//	private double identweight = 0.4;
 //	private Map<String, Contig> cnts;
 	private Map<String, Sequence> seqs;
 
@@ -69,12 +69,12 @@ public class LinkBuilder {
 	public LinkBuilder(Parameter paras, Map<String, Sequence> seqs) {
 		this.seqs = seqs;
 		this.paras = paras;
-		minOLLen = paras.getMinOLLen();
-		minOLRatio = paras.getMinOLRatio();
-		maxOHLen = paras.getMaxOHLen();
-		maxOHRatio = paras.getMaxOHRatio();
-		maxEndLen = paras.getMaxEndLen();
-		maxEndRatio = paras.getMaxEndRatio();
+//		minOLLen = paras.getMinOLLen();
+//		minOLRatio = paras.getMinOLRatio();
+//		maxOHLen = paras.getMaxOHLen();
+//		maxOHRatio = paras.getMaxOHRatio();
+//		maxEndLen = paras.getMaxEndLen();
+//		maxEndRatio = paras.getMaxEndRatio();
 	}
 	
 	public List<ILink> mRecords2Links(List<List<MRecord>> records, List<String> repeats) {
@@ -119,13 +119,11 @@ public class LinkBuilder {
 		// close thread pool
 		pool.shutdown();
 		// wait all threads down;
-		while(true)
-		{
+		while(true){
 			if(pool.isTerminated())
 				break;
 		}
-		for(Future<Map<String, List<ILink>>> f : futures)
-		{
+		for(Future<Map<String, List<ILink>>> f : futures) {
 			try {
 				Map<String, List<ILink>> map = f.get();
 				List<ILink> tmpLinks = map.get("LINKS");

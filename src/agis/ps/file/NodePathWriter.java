@@ -32,23 +32,23 @@ public class NodePathWriter {
 	}
 
 	public void write(List<NodePath> paths) {
-		Path out = null;
+		File out = null;
 		BufferedWriter bw = null;
 		try {
-			out = Paths.get(this.paras.getOutFolder(), "nodePaths.info");
+			out = Paths.get(this.paras.getOutFolder(), "nodePaths.info").toFile();
 			// if (out.exists()) {
 			// logger.error(filePath + " is exist!");
 			// return;
 			// }
-			if (Files.exists(out)) {
-				logger.info("The output file " + out.toAbsolutePath().toString() + " existed. It will overwrite.");
+			if (out.exists()) {
+				logger.info("The output file " + out.getCanonicalPath() + " existed. It will overwrite.");
 			} else {
-				if (Files.createFile(out) != null) {
-					logger.info("The output file" + out.toAbsolutePath().toString() + "could not be created!");
+				if (!out.createNewFile()) {
+					logger.info("The output file" + out.getCanonicalPath() + "could not be created!");
 					return;
 				}
 			}
-			bw = Files.newBufferedWriter(out);
+			bw = Files.newBufferedWriter(out.toPath());
 			int count = 0;
 			for (NodePath p : paths) {
 				bw.write("digraph G" + count + "{\n");

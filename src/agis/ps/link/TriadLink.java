@@ -72,8 +72,7 @@ public class TriadLink implements ILink {
 		this.supLinks = supLinks;
 	}
 	
-	public boolean isContain(Contig contig)
-	{
+	public boolean isContain(Contig contig) {
 		if(this.previous != null && this.previous.equals(contig))
 			return true;
 		if(this.middle != null && this.middle.equals(contig))
@@ -114,10 +113,8 @@ public class TriadLink implements ILink {
 //			return true;
 //		else
 //			return false;
-		if(middle == null)
-		{
-			if(other.middle == null)
-			{
+		if(middle == null) {
+			if(other.middle == null) {
 				if(previous.equals(other.previous) && last.equals(other.last))
 					return true;
 				else if(previous.equals(other.last) && last.equals(other.previous))
@@ -128,8 +125,7 @@ public class TriadLink implements ILink {
 			{
 				return false;
 			}
-		} else
-		{
+		} else {
 			if(other.middle == null)
 			{
 //				change this equal method

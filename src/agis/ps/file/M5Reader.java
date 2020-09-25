@@ -6,6 +6,9 @@
 */
 package agis.ps.file;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //import java.io.BufferedReader;
 //import java.io.File;
 //import java.io.FileNotFoundException;
@@ -26,7 +29,7 @@ import agis.ps.util.Strand;
 
 public class M5Reader extends AlignmentFileReader{
 	
-//	private final static Logger logger = LoggerFactory.getLogger(M5Reader.class);
+	private final static Logger logger = LoggerFactory.getLogger(M5Reader.class);
 	
 //	private String path;
 //	private List<MRecord> m5List;
@@ -34,8 +37,7 @@ public class M5Reader extends AlignmentFileReader{
 //	private Parameter paras;
 	
 	
-	public M5Reader(Parameter paras)
-	{
+	public M5Reader(Parameter paras) {
 		super(paras);
 	}
 	
@@ -269,27 +271,27 @@ public class M5Reader extends AlignmentFileReader{
 
 	@Override
 	protected MRecord initMRecord(String[] arrs) {
-		MRecord m = new MRecord();
-		m.setqName(arrs[0]);
-		m.setqLength(arrs[1]);
-		m.setqStart(arrs[2]);
-		m.setqEnd(arrs[3]);
-		m.setqStrand(Strand.FORWARD);
-		m.settName(arrs[5]);
-		m.settLength(arrs[6]);
-		m.settStart(arrs[7]);
-		m.settEnd(arrs[8]);
-		m.settStrand(arrs[9].equals("+") ? Strand.FORWARD : Strand.REVERSE);
+		MRecord record = new MRecord();
+		record.setqName(arrs[0]);
+		record.setqLength(arrs[1]);
+		record.setqStart(arrs[2]);
+		record.setqEnd(arrs[3]);
+		record.setqStrand(Strand.FORWARD);
+		record.settName(arrs[5]);
+		record.settLength(arrs[6]);
+		record.settStart(arrs[7]);
+		record.settEnd(arrs[8]);
+		record.settStrand(arrs[9].equals("+") ? Strand.FORWARD : Strand.REVERSE);
 //		m.setScore(Integer.valueOf(arrs[10]));
 		int match = Integer.valueOf(arrs[11]);
 		int mismatch = Integer.valueOf(arrs[12]);
 		int insert = Integer.valueOf(arrs[13]);
 		int deletion = Integer.valueOf(arrs[14]);
-		double identity = (double)match / (match + mismatch + insert + deletion);
-		identity = Double.valueOf(String.format("%.4f", identity));
-		m.setIdentity(identity);
+		double identity = Math.round((match / (match + mismatch + insert + deletion)) * 10000) / 10000.0;
+		record.setIdentity(identity);
 //		m.setMapQV(Integer.valueOf(arrs[15]));
-		return m;
+		logger.debug(record.toString());
+		return record;
 	}
 	
 }

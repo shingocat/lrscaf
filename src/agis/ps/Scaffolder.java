@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import agis.ps.file.AlignmentFileReader;
 import agis.ps.file.SequenceReader;
-import agis.ps.file.DotGraphFileWriter;
 import agis.ps.file.M4Reader;
 import agis.ps.file.M5Reader;
 import agis.ps.file.MMReader;
@@ -28,12 +27,8 @@ import agis.ps.file.ScaffoldWriter;
 import agis.ps.file.TriadLinkWriter;
 import agis.ps.link.Edge;
 import agis.ps.link.ILink;
-import agis.ps.link.Link;
 import agis.ps.link.MRecord;
-import agis.ps.link.TriadLink;
 import agis.ps.path.NodePath;
-import agis.ps.seqs.Contig;
-import agis.ps.seqs.Scaffold;
 import agis.ps.seqs.Sequence;
 import agis.ps.util.EdgeBundler;
 import agis.ps.util.LinkBuilder;
@@ -41,7 +36,6 @@ import agis.ps.util.LinkBuilder;
 import agis.ps.util.Parameter;
 import agis.ps.util.PathBuilder;
 import agis.ps.util.RepeatFinder;
-//import sun.util.logging.resources.logging_zh_TW;
 
 /**
  * The scaffolder

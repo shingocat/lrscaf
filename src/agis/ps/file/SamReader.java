@@ -29,8 +29,7 @@ public class SamReader extends AlignmentFileReader {
 	}
 	
 	@Override
-	protected MRecord initMRecord(String [] arrs)
-	{
+	protected MRecord initMRecord(String [] arrs) {
 		MRecord record = new MRecord();
 		// mandatory fields in SAM format
 		String qName = arrs[0];
@@ -53,22 +52,17 @@ public class SamReader extends AlignmentFileReader {
 		int xe = 0;
 		int nm = 0;
 		int xq = 0;
-		for(int i = 11; i < arrs.length; i++)
-		{
-			if(!isXSExist && arrs[i].startsWith("XS:i:"))
-			{
+		for(int i = 11; i < arrs.length; i++) {
+			if(!isXSExist && arrs[i].startsWith("XS:i:")) {
 				xs = Integer.valueOf(arrs[i].split(":i:")[1]) - 1;
 				isXSExist = true;
-			} else if(!isXEExist && arrs[i].startsWith("XE:i:"))
-			{
+			} else if(!isXEExist && arrs[i].startsWith("XE:i:")) {
 				xe = Integer.valueOf(arrs[i].split(":i:")[1]) - 1;
 				isXEExist = true;
-			} else if(!isNMExist && arrs[i].startsWith("NM:i:"))
-			{
+			} else if(!isNMExist && arrs[i].startsWith("NM:i:")) {
 				nm = Integer.valueOf(arrs[i].split(":i:")[1]);
 				isNMExist = true;
-			} else if(!isXQExist && arrs[i].startsWith("XQ:i:"))
-			{
+			} else if(!isXQExist && arrs[i].startsWith("XQ:i:")) {
 				xq = Integer.valueOf(arrs[i].split(":i:")[1]);
 				isXQExist = true;
 			}
@@ -85,23 +79,19 @@ public class SamReader extends AlignmentFileReader {
 //		int nm = Integer.valueOf(arrs[20].split(":i:")[1]);
 //		int fi = Integer.valueOf(arrs[21].split(":i:")[1]);
 //		int xq = Integer.valueOf(arrs[22].split(":i:")[1]); // query length
-		if(!isXSExist)
-		{
+		if(!isXSExist) {
 			logger.error("The XS optional field in SAM format is requried!");
 			return null;
 		}
-		if(!isXEExist)
-		{
+		if(!isXEExist) {
 			logger.error("The XE optional field in SAM format is requried!");
 			return null;
 		}
-		if(!isNMExist)
-		{
+		if(!isNMExist) {
 			logger.error("The NM optional field in SAM format is requried!");
 			return null;
 		}
-		if(!isXQExist)
-		{
+		if(!isXQExist) {
 			logger.error("The XQ optional field in SAM format is requried!");
 			return null;
 		}
@@ -119,12 +109,12 @@ public class SamReader extends AlignmentFileReader {
 		record.settStrand((flag & 16) == 16 ? Strand.REVERSE : Strand.FORWARD);
 //		m.setScore(Integer.valueOf(arrs[10]));
 		record.setIdentity(this.getIdentity(cigar, nm));
+		logger.debug(record.toString());
 		return record;
 	}
 	
 	// compute identity from cigar seq
-	private double getIdentity(String cigar, int sumDisMatchs)
-	{
+	private double getIdentity(String cigar, int sumDisMatchs) {
 		double ident = 0.0;
 		Pattern matPat = Pattern.compile(matchRegex, Pattern.CASE_INSENSITIVE);
 		Pattern insPat = Pattern.compile(insRegex, Pattern.CASE_INSENSITIVE);
@@ -133,30 +123,27 @@ public class SamReader extends AlignmentFileReader {
 		Integer ins = 0;
 		Integer dels = 0;
 		Matcher matMat = matPat.matcher(cigar);
-		while(matMat.find())
-		{
+		while(matMat.find()) {
 			String temp = matMat.group();
 			temp = temp.replace("M", "");
 			matchs += Integer.valueOf(temp);
 		}
 		Matcher insMat = insPat.matcher(cigar);
-		while(insMat.find())
-		{
+		while(insMat.find()) {
 			String temp = insMat.group();
 			temp = temp.replace("I", "");
 			ins += Integer.valueOf(temp);
 		}
 		Matcher delMat = delPat.matcher(cigar);
-		while(delMat.find())
-		{
+		while(delMat.find()) {
 			String temp = delMat.group();
 			temp = temp.replace("D", "");
 			dels += Integer.valueOf(temp);
 		}
 		
 		int misMatchs = sumDisMatchs - ins - dels;
-		ident = (double)(matchs - misMatchs) / (matchs + ins + dels);
-		ident = Double.valueOf(String.format("%.4f", ident));
+		ident = Math.round((matchs - misMatchs) / (matchs + ins + dels) * 10000) / 10000.0;
+//		ident = Double.valueOf(String.format("%.4f", ident));
 		return ident;
 	}
 }

@@ -17,8 +17,7 @@ public class MM2Reader extends AlignmentFileReader{
 	}
 	
 	@Override
-	protected MRecord initMRecord(String [] arrs)
-	{
+	protected MRecord initMRecord(String [] arrs) {
 		MRecord record = new MRecord();
 		record.setqName(arrs[0]);
 		record.setqLength(arrs[1]);

@@ -210,8 +210,7 @@ public abstract class Graph implements Serializable, IUntangler {
 		return cnt;
 	}
 	
-	public boolean isVertexSelected(Sequence c)
-	{
+	public boolean isVertexSelected(Sequence c) {
 //		String id = c.getID();
 //		if(selectedVertices.containsKey(id))
 //			return true;

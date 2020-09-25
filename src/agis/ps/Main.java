@@ -28,22 +28,17 @@ public class Main {
 	final static Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) {
-		// System.setProperty("log4j.configuration", "log4j.properties");
 		long start = System.currentTimeMillis();
 		try {
 			Options opts = Main.initOpts();
 			CommandLineParser parser = new DefaultParser();
 			CommandLine cl = parser.parse(opts, args);
-//			HelpFormatter f = new HelpFormatter();
 			Parameter paras = null;
 			
 			if (cl.hasOption("h")) {
-//				f.printHelp("java -jar agisps.jar -c <Contig File> -a <Aligned File> -o <Output Folder> or"
-//						+ " java -jar agisps.jar -x <Parameters File>\n", opts, true);
 				logger.info(printUsageInfo());
 				System.exit(0);
 			} else {
-				// for parse the xml configure, all the other parameters set by command line will dismissed
 				if (cl.hasOption("x")) {
 					logger.info("Parsing the xml configure, all the other parameters set by command line will dismissed!");
 					String xmlFile = cl.getOptionValue("x");
@@ -75,8 +70,7 @@ public class Main {
 		}
 	}
 	
-	private static Options initOpts()
-	{
+	private static Options initOpts() {
 		Options opts = new Options();
 		// parameters sepcified by xml
 		//OptionGroup xmlog = new OptionGroup();
@@ -160,39 +154,21 @@ public class Main {
 		return opts;
 	}
 	
-	private static Parameter parsering(CommandLine cl, Options opts) throws MissingArgumentException
-	{
+	private static Parameter parsering(CommandLine cl, Options opts) throws MissingArgumentException {
 		Parameter paras = new Parameter();
 		// checking the aligned setting valid or not
-//		if((!cl.hasOption("m5")) && (!cl.hasOption("m4")))
-//		{
-//			//logger.error("The aligned file could not be null!");
-////			f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
-////					+ "\t java -jar agisps.jar -x <Parameters File>\n", opts);
-//			throw new MissingArgumentException("The aligned file could not be null!");
-//		}
-		if(!cl.hasOption("a"))
-		{
+		if(!cl.hasOption("a")) {
 			throw new MissingArgumentException("The aligned file could not be null!");
 		}
-		if(!cl.hasOption("t"))
-		{
+		if(!cl.hasOption("t")) {
 			throw new MissingArgumentException("The type of aligned file could not be null!");
 		}
 		// checking the contig setting or not
-		if(!cl.hasOption("c"))
-		{
-			//logger.error("The argument '-c' setting could not be null!");
-//			f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
-//					+ "\t java -jar agisps.jar -x <Parameters File>\n", opts);
+		if(!cl.hasOption("c")) {
 			throw new MissingArgumentException("The draft assemblied genome could not be null!");
 		}
 		// checking the out
-		if(!cl.hasOption("o"))
-		{
-			//logger.error("The argument '-o' setting could not be null!");
-//			f.printHelp("Usage: java -jar agisps.jar -c <Contig File> -a <Aligned File> or"
-//					+ "\t java -jar agisps.jar -x <Parameters File>\n", opts);
+		if(!cl.hasOption("o")) {
 			throw new MissingArgumentException("The ouput folder could not be null!");
 		}
 		// parsing file type
@@ -213,17 +189,14 @@ public class Main {
 //			paras.setAlgFile(cl.getOptionValue("mm"));
 //			paras.setType("mm");
 //		}
-		if(cl.hasOption("a"))
-		{
+		if(cl.hasOption("a")) {
 			paras.setAlgFile(cl.getOptionValue("a"));
 		}
-		if(cl.hasOption("t"))
-		{
+		if(cl.hasOption("t")) {
 			paras.setType(cl.getOptionValue("t"));
 		}
 		// parsering contig;
-		if(cl.hasOption("c"))
-		{
+		if(cl.hasOption("c")) {
 			paras.setCntFile(cl.getOptionValue("c"));;
 		}
 		// parsering pb reads;
@@ -232,13 +205,11 @@ public class Main {
 			paras.setPbFile(cl.getOptionValue("p"));
 		}
 		// parsering output folder;
-		if(cl.hasOption("o"))
-		{
+		if(cl.hasOption("o")) {
 			paras.setOutFolder(cl.getOptionValue("o"));
 		}
 		// parsering minimum contig length
-		if(cl.hasOption("micl"))
-		{
+		if(cl.hasOption("micl")) {
 			int value = Integer.valueOf(cl.getOptionValue("micl"));
 			if(value < 200)
 			{
@@ -251,43 +222,35 @@ public class Main {
 			}
 		}
 		// parsering minimum pacbio lng read
-		if(cl.hasOption("mipl"))
-		{
+		if(cl.hasOption("mipl")) {
 			paras.setMinPBLen(Integer.valueOf(cl.getOptionValue("mipl")));
 		}
 		// parsering identity
-		if(cl.hasOption("i"))
-		{
+		if(cl.hasOption("i")) {
 			double ident = Double.valueOf(cl.getOptionValue("i"));
 			if(paras.getType().equalsIgnoreCase("mm") && ident >= 0.3)
 				logger.warn("The identity for minimap mapper should be less than 0.3!");
 			paras.setIdentity(ident);
-		} else
-		{ // if do not set identity for minimap alignment
-			if(paras.getType().equalsIgnoreCase("mm"))
-			{
+		} else { // if do not set identity for minimap alignment
+			if(paras.getType().equalsIgnoreCase("mm")) {
 				logger.warn("The identity for minimap mapper would be setted to 0.1!");
 				paras.setIdentity(0.1);
 			}
 		}
 		// parsering minimum overlap length
-		if(cl.hasOption("mioll"))
-		{
+		if(cl.hasOption("mioll")) {
 			paras.setMinOLLen(Integer.valueOf(cl.getOptionValue("mioll")));
 		}
 		// parsering minimum overlap ratio
-		if(cl.hasOption("miolr"))
-		{
+		if(cl.hasOption("miolr")) {
 			paras.setMinOLRatio(Double.valueOf(cl.getOptionValue("miolr")));
 		}
 		// parsering maximum overhang length
-		if(cl.hasOption("maohl"))
-		{
+		if(cl.hasOption("maohl")) {
 			paras.setMaxOHLen(Integer.valueOf(cl.getOptionValue("maohl")));
 		}
 		// parsering maximum overhang ratio
-		if(cl.hasOption("maohr"))
-		{
+		if(cl.hasOption("maohr")) {
 			paras.setMaxOHRatio(Double.valueOf(cl.getOptionValue("maohr")));
 		}
 		// parsering maximum ending length
@@ -296,51 +259,41 @@ public class Main {
 			paras.setMaxEndLen(Integer.valueOf(cl.getOptionValue("mael")));
 		}
 		// parsering maximum ending ratio
-		if(cl.hasOption("maer"))
-		{
+		if(cl.hasOption("maer")) {
 			paras.setMaxEndRatio(Double.valueOf(cl.getOptionValue("maer")));
 		}
 		// parsering minimum support links
-		if(cl.hasOption("misl"))
-		{
+		if(cl.hasOption("misl")) {
 			paras.setMinSupLinks(Integer.valueOf(cl.getOptionValue("misl")));
 		}
 		// parsering use overlap link
-		if(cl.hasOption("uoll"))
-		{
-			
+		if(cl.hasOption("uoll")) {
 			paras.setUseOLLink(true);
 		}
 		// parsering delete error prone edges ratio
-		if(cl.hasOption("r"))
-		{
+		if(cl.hasOption("r")) {
 			paras.setRatio(Double.valueOf(cl.getOptionValue("r")));
 		}
 		// parsering masking repeat
-		if(cl.hasOption("mr"))
-		{
+		if(cl.hasOption("mr")) {
 			paras.setRepMask(true);
 		}
 		// parsering gap filling
-		if(cl.hasOption("gf"))
-		{
+		if(cl.hasOption("gf")) {
 			paras.setGapFilling(true);
 		}
 		// parsing tip length
-		if(cl.hasOption("tl"))
-		{
+		if(cl.hasOption("tl")) {
 			paras.setTipLength(Integer.valueOf(cl.getOptionValue("tl")));
 		}
 		// parsing iqr time
-		if(cl.hasOption("iqrt"))
-		{
+		if(cl.hasOption("iqrt")) {
 			paras.setIqrTime(Double.valueOf(cl.getOptionValue("iqrt")));
 		}
 		return paras;
 	}
 	
-	private static String printUsageInfo()
-	{
+	private static String printUsageInfo() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\nLRScaf is a scaffolder by using Thired Generation Sequencing data to "
 				+ "scaffold any draft assemblied genomes. it supports command line argument or XML configure file!\n");

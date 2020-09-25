@@ -84,7 +84,7 @@ public abstract class AlignmentFileReader {
 			seqCovs.clear();
 			listRecords.clear();
 			String line = null;
-			String qId = "";
+			String qId = null;
 //			String maQid = ""; // same as qId, but for misassembly checking; 
 			List<MRecord> rs = new ArrayList<MRecord>(); // aligned record
 //			List<MRecord> maRs = new ArrayList<MRecord>(); // store all record for misassembly checking;
@@ -127,14 +127,16 @@ public abstract class AlignmentFileReader {
 				Integer seqLength = 0;
 				if(this.seqs.containsKey(record.gettName())) {
 					seqLength = this.seqs.get(record.gettName()).getLength();
+					record.settLength(seqLength);
 				} else {
 					br.close();
 					throw new Exception("The draft assemblies do not have " + record.gettName() + " sequence.");
 				}
-				Map<String, Boolean> values = MRecordValidator.validate(record, paras, seqLength);
+				Map<String, Boolean> values = MRecordValidator.validate(record, paras);
 				logger.debug("MRecordValidator on lines " + lineIndex + " done.");
 //				logger.info("Repeat finding on lines " + lineIndex + " start.");
-				if(values.get("REPEAT")) { // only considering valid contigs to compute repeats;
+				// only considering valid contigs to compute repeats;
+				if(values.get("REPEAT")) { 
 					String tName = record.gettName();
 					int minCntLen = paras.getMinContLen();
 					if(seqLength >= minCntLen) {
@@ -186,14 +188,8 @@ public abstract class AlignmentFileReader {
 			}
 		}
 		long end = System.currentTimeMillis();
-//		logger.info("Valid Aligned Records: " + records.values().size());
 		logger.info("Valid Aligned Records: " + listRecords.size());
 		logger.info("Reading Aligned Records, elapsed time: " + (end - start) + " ms");
-//		if(listRecords.isEmpty())
-//		{
-//			throw new IllegalArgumentException("The valid records in alignment file are empty! Please checking the alignment file!");
-//		}
-//		return records;
 		return listRecords;
 	}
 
@@ -476,9 +472,9 @@ public abstract class AlignmentFileReader {
 //		return this.cntLens;
 //	}
 	
-	public List<List<MRecord>> getListRecord() {
-		return this.listRecords;
-	}
+//	public List<List<MRecord>> getListRecord() {
+//		return this.listRecords;
+//	}
 	
 	/*private void misassemblyChecking(List<MRecord> maRs)
 	{

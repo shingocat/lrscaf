@@ -120,12 +120,12 @@ public class RepeatFinder {
 //						cnts.get(id).setIsRepeat(true);
 				}
 			}
-			SequenceCoverageWriter ccw = new SequenceCoverageWriter(paras);
-			ccw.write2(seqCovs);
 		}
 		logger.info("Repeat count: " + repeats.size());
 		long end = System.currentTimeMillis();
 		logger.info("Finding repeat, elapsed time: " + (end - start) + " ms");
+		SequenceCoverageWriter ccw = new SequenceCoverageWriter(paras);
+		ccw.write2(seqCovs);
 		return repeats;
 	}
 

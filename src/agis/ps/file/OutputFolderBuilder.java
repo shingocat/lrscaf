@@ -35,8 +35,6 @@ public class OutputFolderBuilder {
 			if (output.exists()) {
 				logger.info("The output folder existed!");
 				isValid = true;
-//				logger.info("It will delete all file under this folder!");
-//				isValid = this.deleteDir(output);
 			} else {
 				isValid = output.mkdirs();
 				if (isValid)

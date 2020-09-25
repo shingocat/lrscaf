@@ -84,7 +84,7 @@ public class Sequence {
 
 	@Override
 	public String toString() {
-		return "Sequence [ID=" + this.getId() + "Length=" + this.getLength() + "]";
+		return "Sequence [ID=" + this.getId() + ", Length=" + this.getLength() + "]";
 	}
 
 }

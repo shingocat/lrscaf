@@ -107,7 +107,8 @@ public class DirectedGraph extends Graph implements Serializable {
 
 		}
 	}
-
+	
+	// get the specified vertex adjacent number 
 	public int getVertexAdjVerticesNum(Sequence cnt) {
 		List<Sequence> adjCnts = this.getAdjVertices(cnt);
 		if(adjCnts == null)
