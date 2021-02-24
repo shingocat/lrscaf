@@ -147,7 +147,7 @@ public class Main {
 		// tip length
 //		opts.addOption("tl", "tiplength", false, "The maximum tip length.");
 		// iqr time
-		opts.addOption("iqrt", "iqrtime", false, "The IQR time for defined repeat outlier.");
+		opts.addOption("iqrt", "iqrtime", true, "The IQR time for defined repeat outlier.");
 		// only for minimap format , default 8;
 		opts.addOption("mmcm", "mmcm", true, "The filter parameter only for last column format of minimap, default:8.");
 		opts.addOption("p", "process", true, "The multi-threads settings, default: 4.");
