@@ -19,7 +19,7 @@
          <max_end_length>1000</max_end_length>
          <max_end_ratio>0.1</max_end_ratio>
          <min_supported_links>2</min_supported_links>
-		 <tips_length>1500</tips_length>
+		 <tip_length>1500</tip_length>
 		 <ratio>0.2</ratio>
 		 <repeat_mask>true</repeat_mask>
 		 <iqr_time>3</iqr_time>

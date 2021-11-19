@@ -147,7 +147,7 @@ There are two ways to build and run this project:
 &nbsp; &nbsp; &ltmax_end_length&gt500&lt/max_end_length&gt<br>
 &nbsp; &nbsp; &ltmax_end_ratio&gt0.1&lt/max_end_ratio&gt<br>
 &nbsp; &nbsp; &ltmin_supported_links&gt2&lt/min_supported_links&gt<br>
-&nbsp; &nbsp; &lttips_length&gt1500&lt/tips_length&gt<br>
+&nbsp; &nbsp; &lttip_length&gt1500&lt/tip_length&gt<br>
 &nbsp; &nbsp; &ltratio&gt0.2&lt/ratio&gt<br>
 &nbsp; &nbsp; &ltrepeat_mask&gttrue&lt/repeat_mask&gt<br>
 &nbsp; &nbsp; &ltiqr_time&gt3&lt/iqr_time&gt<br>

@@ -1,4 +1,6 @@
+.gitignore
 /bin/
+/target/classes/
 /target/generated-sources/
 /target/maven-archiver/
 /target/maven-status/
@@ -6,3 +8,5 @@
 /target/*-shaded.jar
 /target/original-*
 /logs/
+/output/
+
